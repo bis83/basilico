@@ -9,7 +9,7 @@ import (
 	toml "github.com/pelletier/go-toml/v2"
 )
 
-//go:embed web/_basil.toml
+//go:embed toml/_basil.toml
 var basilToml string
 
 func CreateBasilToml(path string) error {

@@ -1,0 +1,8 @@
+
+class Level {
+    constructor() {
+    }
+
+    tick() {
+    }
+}
