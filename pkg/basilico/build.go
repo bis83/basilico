@@ -27,6 +27,7 @@ func BuildIndexHtml(cfg *Config, path string) error {
 	}
 	return nil
 }
+
 func WriteJs(fp *os.File, path string) error {
 	js, err := web.ReadFile(path)
 	if err != nil {
@@ -60,11 +61,13 @@ func BuildBasilicoJs(path string) error {
 	return nil
 }
 
-func Build(cfg *Config, basePath string) error {
-	if err := BuildIndexHtml(cfg, filepath.Join(basePath, "index.html")); err != nil {
+func Build(cfg *Config, baseDir string) error {
+	htmlFile := filepath.Join(baseDir, "index.html")
+	if err := BuildIndexHtml(cfg, htmlFile); err != nil {
 		return err
 	}
-	if err := BuildBasilicoJs(filepath.Join(basePath, "basilico.js")); err != nil {
+	jsFile := filepath.Join(baseDir, "basilico.js")
+	if err := BuildBasilicoJs(jsFile); err != nil {
 		return err
 	}
 	return nil

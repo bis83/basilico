@@ -5,13 +5,26 @@ import (
 	"path/filepath"
 )
 
-func GetBasePath() (string, error) {
-	if len(os.Args) > 1 {
-		return filepath.Clean(os.Args[1]), nil
+func CreateBaseDirectory() (string, error) {
+	if len(os.Args) <= 1 {
+		cwd, err := os.Getwd()
+		if err != nil {
+			return "", err
+		}
+		return filepath.Clean(cwd), nil
 	}
-	cwd, err := os.Getwd()
+	path := os.Args[1]
+	info, err := os.Stat(path)
 	if err != nil {
-		return "", err
+		if err2 := os.MkdirAll(path, 0777); err2 != nil {
+			return "", err2
+		}
+		return filepath.Clean(path), nil
+	} else {
+		if info.IsDir() {
+			return filepath.Clean(path), nil
+		} else {
+			return filepath.Clean(filepath.Dir(path)), nil
+		}
 	}
-	return filepath.Clean(cwd), nil
 }

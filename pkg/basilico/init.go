@@ -35,8 +35,8 @@ func ReadBasilToml(path string) (*Config, error) {
 	return &cfg, nil
 }
 
-func Init(basePath string) (*Config, error) {
-	tomlPath := filepath.Join(basePath, "_basil.toml")
+func Init(baseDir string) (*Config, error) {
+	tomlPath := filepath.Join(baseDir, "_basil.toml")
 	if err := CreateBasilToml(tomlPath); err != nil {
 		return &Config{}, err
 	}

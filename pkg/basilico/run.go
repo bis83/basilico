@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 )
 
-func Run(cfg *Config, basePath string) error {
-	absPath, err := filepath.Abs(basePath)
+func Run(cfg *Config, baseDir string) error {
+	absPath, err := filepath.Abs(baseDir)
 	if err != nil {
 		return err
 	}
@@ -17,16 +17,16 @@ func Run(cfg *Config, basePath string) error {
 }
 
 func InitBuildRun() error {
-	basePath, err := GetBasePath()
+	baseDir, err := CreateBaseDirectory()
 	if err != nil {
 		return err
 	}
-	cfg, err2 := Init(basePath)
+	cfg, err2 := Init(baseDir)
 	if err2 != nil {
 		return err2
 	}
-	if err := Build(cfg, basePath); err != nil {
+	if err := Build(cfg, baseDir); err != nil {
 		return err
 	}
-	return Run(cfg, basePath)
+	return Run(cfg, baseDir)
 }
