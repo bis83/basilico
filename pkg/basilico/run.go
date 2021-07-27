@@ -7,6 +7,9 @@ import (
 )
 
 func Run(cfg *Config, baseDir string) error {
+	if len(cfg.Addr) == 0 {
+		return nil
+	}
 	absPath, err := filepath.Abs(baseDir)
 	if err != nil {
 		return err

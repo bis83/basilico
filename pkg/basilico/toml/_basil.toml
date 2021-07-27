@@ -1,3 +1,4 @@
-title = "YourProject"
-addr = ":8080"
-scripts = []
+Title = "YourProject"
+Addr = ":8080"
+Scripts = []
+StartLevel = "main"

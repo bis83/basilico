@@ -1,14 +1,22 @@
 
 class Runtime {
     constructor() {
-        this.controller_ = new Controller();
-        this.canvas_ = new Canvas();
+        this.audio_ = new Core_Audio();
+        this.graphics_ = new Core_Graphics();
+        this.controller_ = new Core_Controller();
+        this.data_ = new Core_Data();
+        this.savedata_ = new Core_SaveData();
+
+        if(!this.savedata_.load()) {
+            this.savedata_.save();
+        }
     }
 
     tick() {
-        requestAnimationFrame(() => this.tick());
         this.controller_.tick();
-        this.canvas_.render();
+        this.audio_.render();
+        this.graphics_.render();
+        requestAnimationFrame(() => this.tick());
     }
 }
 

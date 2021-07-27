@@ -6,7 +6,7 @@ A static site generator for Single Page Web App for Game.
 
 ```
 cd ./basilico
-go build
+go build -ldflags '-s -w'
 ```
 
 ## How to use

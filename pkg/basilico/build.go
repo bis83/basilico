@@ -3,9 +3,13 @@ package basilico
 import (
 	"embed"
 
-	"os"
-	"path/filepath"
 	"html/template"
+	"os"
+	"io"
+	"bytes"
+	"path/filepath"
+
+	esbuild "github.com/evanw/esbuild/pkg/api"
 )
 
 //go:embed web
@@ -28,36 +32,53 @@ func BuildIndexHtml(cfg *Config, path string) error {
 	return nil
 }
 
-func WriteJs(fp *os.File, path string) error {
+func WriteJs(cfg *Config, wr io.Writer, path string) error {
 	js, err := web.ReadFile(path)
 	if err != nil {
-		return err;
+		return err
 	}
-	if _, err := fp.WriteString(string(js)); err != nil {
+	tpl := template.Must(template.New("js").Parse(string(js)))
+	if err := tpl.Execute(wr, cfg); err != nil {
 		return err
 	}
 	return nil
 }
 
-func BuildBasilicoJs(path string) error {
-	fp, err := os.Create(path)
-	if err != nil {
-		return err
-	}
-	defer fp.Close()
-
-	filePaths := []string {
+func BuildBasilicoJs(cfg *Config, path string) error {
+	filePaths := []string{
 		"web/js/header.js",
-		"web/js/core/core_canvas.js",
+		"web/js/core/core_audio.js",
+		"web/js/core/core_graphics.js",
 		"web/js/core/core_controller.js",
+		"web/js/core/core_data.js",
+		"web/js/core/core_savedata.js",
 		"web/js/main.js",
 	}
+	var b bytes.Buffer
 	for _, path := range filePaths {
-		if err := WriteJs(fp, path); err != nil {
+		if err := WriteJs(cfg, &b, path); err != nil {
 			return err
 		}
 	}
+	result := esbuild.Transform(string(b.Bytes()), esbuild.TransformOptions{
+		MinifyWhitespace: true,
+		MinifyIdentifiers: true,
+		MinifySyntax: true,
+	})
+	if err := os.WriteFile(path, result.Code, 0666); err != nil {
+		return err
+	}
+	return nil
+}
 
+func BuildDataJson(cfg *Config, path string) error {
+	_, err := os.Stat(path)
+	if err == nil {
+		return nil
+	}
+	if err2 := os.Mkdir(path, 0777); err2 != nil {
+		return err2
+	}
 	return nil
 }
 
@@ -67,7 +88,11 @@ func Build(cfg *Config, baseDir string) error {
 		return err
 	}
 	jsFile := filepath.Join(baseDir, "basilico.js")
-	if err := BuildBasilicoJs(jsFile); err != nil {
+	if err := BuildBasilicoJs(cfg, jsFile); err != nil {
+		return err
+	}
+	dataDir := filepath.Join(baseDir, "data")
+	if err := BuildDataJson(cfg, dataDir); err != nil {
 		return err
 	}
 	return nil

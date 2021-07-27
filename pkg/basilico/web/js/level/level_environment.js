@@ -1,5 +1,5 @@
 
-class Player {
+class Level_Environment {
     constructor() {
     }
 

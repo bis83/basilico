@@ -1,17 +1,23 @@
 
-class Sprite {
+class Core_Shader {
 }
 
-class Camera {
+class Core_Sprite {
 }
 
-class Light {
+class Core_Mesh {
 }
 
-class Mesh {
+class Core_Camera {
 }
 
-class Canvas {
+class Core_Light {
+}
+
+class Core_Scene {
+}
+
+class Core_Graphics {
     constructor() {
         this.canvas_ = document.createElement("canvas");
         document.body.appendChild(this.canvas_);
@@ -19,6 +25,11 @@ class Canvas {
     }
 
     render() {
+        this.fitCanvasSize();
+        this.clearCanvas();
+    }
+
+    fitCanvasSize() {
         const gl = this.gl_;
         const width = window.innerWidth;
         if(width !== gl.canvas.width) {
@@ -28,6 +39,10 @@ class Canvas {
         if(height !== gl.canvas.height) {
             gl.canvas.height = height;
         }
+    }
+
+    clearCanvas() {
+        const gl = this.gl_;
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         gl.clearColor(0, 0, 0, 0);
         gl.clearDepth(1.0);

@@ -1,7 +1,8 @@
 package basilico
 
 type Config struct {
-	Title 	string
-	Addr 	string
-	Scripts []string
+	Title      string
+	Addr       string
+	Scripts    []string
+	StartLevel string
 }

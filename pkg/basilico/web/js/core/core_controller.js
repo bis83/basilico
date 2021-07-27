@@ -1,5 +1,5 @@
 
-class Controller {
+class Core_Controller {
     constructor() {
         this.gamepad_ = null;
         this.isPointerLocked_ = false;
@@ -27,9 +27,6 @@ class Controller {
             ev.preventDefault();
         });
         document.body.addEventListener("click", (ev) => {
-            if(!this.isPointerLocked_) {
-                document.body.requestPointerLock();
-            }
             ev.preventDefault();
         });
         document.addEventListener("keydown", (ev) => {
@@ -68,6 +65,12 @@ class Controller {
         });
         document.body.addEventListener("touchend", (ev) => {
         });
+    }
+
+    requestPointerLock() {
+        if(!this.isPointerLocked_) {
+            document.body.requestPointerLock();
+        }
     }
 
     tick() {

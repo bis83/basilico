@@ -1,5 +1,5 @@
 
-class Level {
+class Level_Player {
     constructor() {
     }
 
