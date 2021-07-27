@@ -15,6 +15,19 @@ func Run(cfg *Config, baseDir string) error {
 		return err
 	}
 	log.Printf("basilico start. addr=%v, dir=%v", cfg.Addr, absPath)
+	http.HandleFunc("/build", func (w http.ResponseWriter, r *http.Request) {
+		log.Printf("basilico build. dir=%v", baseDir)
+		cfg, err := ReadBasilToml(filepath.Join(baseDir, "_basil.toml"))
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return;
+		}
+		if err2 := Build(cfg, baseDir); err2 != nil {
+			http.Error(w, err2.Error(), 500)
+			return;
+		}
+		http.Redirect(w, r, "/", 307)
+	})
 	http.Handle("/", http.FileServer(http.Dir(absPath)))
 	return http.ListenAndServe(cfg.Addr, nil)
 }
