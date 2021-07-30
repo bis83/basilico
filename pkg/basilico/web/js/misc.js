@@ -1,5 +1,9 @@
 
-const LOGGING = {{.Logging}}
+// {{ if .Logging }}
 const LOG = (...args) => {
-    LOGGING && console.log(...args);
+    console.log(...args);
 };
+// {{ else }}
+const LOG = (...args) => {
+};
+// {{ end }}
