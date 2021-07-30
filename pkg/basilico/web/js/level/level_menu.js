@@ -1,5 +1,5 @@
 
-const makeLvPlayer = () => {
+const makeLvMenu = () => {
     return {
         pre: () => {},
         post: () => {}

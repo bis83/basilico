@@ -1,23 +1,26 @@
 
-class Core_Audio {
-    constructor() {
-        this.isStarted_ = false;
-        document.body.addEventListener("click", (ev) => {
-            this.resume();
-        });
-    }
+const makeCoreAudio = () => {
+    let isStarted = false;
+    let context = null;
+    let masterNode = null;
 
-    resume() {
-        if(!this.context_) {
-            this.context_ = new AudioContext();
-            this.masterNode_ = this.context_.createGain();
-            this.masterNode_.gain.value = 0.01;
-            this.masterNode_.connect(this.context_.destination);
-            this.isStarted_ = true;
+    const resume = () => {
+        if(!context) {
+            context = new AudioContext();
+            masterNode = context.createGain();
+            masterNode.gain.value = 0.01;
+            masterNode.connect(context.destination);
+            isStarted = true;
         }
-        this.context_.resume();
-    }
+        context.resume();
+    };
+    const tick = () => {
+    };
 
-    render() {
-    }
-}
+    document.body.addEventListener("click", (ev) => {
+        resume();
+    });
+    return {
+        tick: tick
+    };
+};

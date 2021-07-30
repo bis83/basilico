@@ -1,4 +1,5 @@
 Title = "YourProject"
 Addr = ":8080"
-Scripts = []
+Logging = false
+Minify = true
 StartLevel = "main"

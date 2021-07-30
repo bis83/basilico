@@ -1,0 +1,6 @@
+
+const makeCorePackage = () => {
+    return {
+        tick: () => {}
+    }
+};

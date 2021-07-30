@@ -9,7 +9,7 @@ import (
 	toml "github.com/pelletier/go-toml/v2"
 )
 
-//go:embed toml/_basil.toml
+//go:embed toml/basil.toml
 var basilToml string
 
 func CreateBasilToml(path string) error {
@@ -23,7 +23,7 @@ func CreateBasilToml(path string) error {
 	return nil
 }
 
-//go:embed toml/_level.toml
+//go:embed toml/level.toml
 var levelToml string
 
 func CreateMainLevelToml(path string) error {
