@@ -4,10 +4,12 @@ import (
 	"embed"
 
 	"bytes"
+	"errors"
 	"html/template"
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 
 	esbuild "github.com/evanw/esbuild/pkg/api"
 )
@@ -49,6 +51,9 @@ func BuildBasilicoJs(cfg *Config, path string) error {
 		"web/js/misc.js",
 		"web/js/core/core_audio.js",
 		"web/js/core/core_browser.js",
+		"web/js/core/core_gl_mesh_loader.js",
+		"web/js/core/core_gl_shader_linker.js",
+		"web/js/core/core_gl_tex_loader.js",
 		"web/js/core/core_graphics.js",
 		"web/js/core/core_package.js",
 		"web/js/core/core_space2d.js",
@@ -70,6 +75,11 @@ func BuildBasilicoJs(cfg *Config, path string) error {
 		MinifySyntax:      cfg.Minify,
 		Format:            esbuild.FormatIIFE,
 	})
+	if len(result.Errors) > 0 || len(result.Warnings) > 0 {
+		e := esbuild.FormatMessages(result.Errors, esbuild.FormatMessagesOptions{})
+		w := esbuild.FormatMessages(result.Warnings, esbuild.FormatMessagesOptions{})
+		return errors.New(strings.Join(append(e, w...), "\n"))
+	}
 	if err := os.WriteFile(path, result.Code, 0666); err != nil {
 		return err
 	}

@@ -1,8 +1,8 @@
 
 const makeCoreSpace3d = () => {
-    const tick = () => {
+    const solve = () => {
     };
     return {
-        tick: tick
+        solve: solve
     }
 };

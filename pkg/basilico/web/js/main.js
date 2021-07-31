@@ -1,6 +1,6 @@
 
 window.addEventListener("load", () => {
-    let suspend = true;
+    let suspend = false;
 
     const audio = makeCoreAudio();
     const browser = makeCoreBrowser();
@@ -9,23 +9,24 @@ window.addEventListener("load", () => {
     const space2d = makeCoreSpace2d();
     const space3d = makeCoreSpace3d();
     const userdata = makeCoreUserData();
+    
     const lvMenu = makeLvMenu();
-    const lvPlayer = makeLvPlayer();
+    const lvPlayer = makeLvPlayer(browser, graphics);
 
     userdata.start();
 
     const tickMenu = () => {
         lvMenu.pre();
-        space2d.tick();
+        space2d.solve();
         lvMenu.post();
     };
     const tickWorld = () => {
         lvPlayer.pre();
-        space3d.tick();
+        space3d.solve();
         lvPlayer.post();
     };
     const tick = (t) => {
-        LOG("frame: " + t);
+        // LOG("frame: " + t);
         graphics.begin();
         browser.tick(t);
         package.tick();

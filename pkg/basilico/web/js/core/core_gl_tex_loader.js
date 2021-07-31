@@ -1,0 +1,4 @@
+
+const makeGLTexLoader = (gl) => {
+    return {};
+};
