@@ -1,28 +1,49 @@
 
-const GLES_VS_BASIC = `#version 300 es
-void main() {
-    float x = 0.5 * ((gl_VertexID & 0x1) == 0 ? -1.0 : 1.0);
-    float y = 0.5 * ((gl_VertexID & 0x2) == 0 ? -1.0 : 1.0);
-    gl_Position = vec4(x, y, 0, 1);
-}`;
+const GLES_VERSION = "#version 300 es\n";
+const GLES_FS_PRECISION = "precision mediump float;";
+const GLES_FS_OUTPUT = "out vec4 fc;";
+const GLES_UNIFORM_COLOR = "uniform vec4 col;";
+const GLES_UNIFORM_TEXTURE = "uniform sampler2D tex;";
+const GLES_MAIN_BEGIN = "void main() {";
+const GLES_MAIN_END = "}";
+const GLES_VS_RECT = [
+    "out vec2 uv;",
+    "uniform vec4 xywh;",
+    GLES_MAIN_BEGIN,
+    "float x = xywh.x + xywh.z * ((gl_VertexID & 0x1) == 0 ? 0.0 : 1.0);",
+    "float y = xywh.y - xywh.w * ((gl_VertexID & 0x2) == 0 ? 0.0 : 1.0);",
+    "gl_Position = vec4(x, y, 0, 1);",
+    "float u = (gl_VertexID & 0x1) == 0 ? 0.0 : 1.0;",
+    "float v = (gl_VertexID & 0x2) == 0 ? 0.0 : 1.0;",
+    "uv = vec2(u,v);",
+    GLES_MAIN_END,
+].join("");
+const GLES_FS_RECT = [
+    GLES_FS_PRECISION,
+    GLES_UNIFORM_COLOR,
+    GLES_FS_OUTPUT,
+    "void main() { fc = col; }",
+].join("");
+const GLES_FS_RECT_TEX = [
+    GLES_FS_PRECISION,
+    GLES_UNIFORM_COLOR,
+    GLES_UNIFORM_TEXTURE,
+    GLES_FS_OUTPUT,
+    "in vec2 uv;",
+    GLES_MAIN_BEGIN,
+    "fc = col * texture(tex, uv);",
+    GLES_MAIN_END,
+].join("");
 
-const GLES_FS_BASIC = `#version 300 es
-precision mediump float;
-out vec4 fc;
-void main() {
-    fc = vec4(1,0,0,1);
-}`;
-
-const LINKAGE_MAP = new Map([ 
-    ["basic", {vs: GLES_VS_BASIC, fs: GLES_FS_BASIC}],
+const LINKAGE_MAP = new Map([
+    ["rect", {vs: GLES_VS_RECT, fs: GLES_FS_RECT, attr: [], uniform: ["xywh", "col"]}],
+    ["rect_tex", {vs: GLES_VS_RECT, fs: GLES_FS_RECT_TEX, attr: [], uniform: ["xywh", "col", "tex"]}],
 ]);
 
 const makeGLShaderLinker = (gl) => {
-    const linked = new Map();
-
     const createGLShader = (type, source) => {
         const shader = gl.createShader(type);
-        gl.shaderSource(shader, source);
+        gl.shaderSource(shader, GLES_VERSION+source);
         gl.compileShader(shader);
         const success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
         if(!success) {
@@ -45,12 +66,12 @@ const makeGLShaderLinker = (gl) => {
         }
         return prog;
     };
-    const linkProgram = (srcVS, srcFS) => {
-        const vs = createGLShader(gl.VERTEX_SHADER, srcVS);
+    const linkProgram = (l) => {
+        const vs = createGLShader(gl.VERTEX_SHADER, l.vs);
         if(!vs) {
             return null;
         }
-        const fs = createGLShader(gl.FRAGMENT_SHADER, srcFS);
+        const fs = createGLShader(gl.FRAGMENT_SHADER, l.fs);
         if(!fs) {
             return null;
         }
@@ -58,14 +79,19 @@ const makeGLShaderLinker = (gl) => {
         if(!prog) {
             return null;
         }
-        const use = () => {
-            gl.useProgram(prog);
+        const obj = {
+            use: () => { gl.useProgram(prog); }
         };
-        return {
-            use: use,
-        };
+        for(let a of l.attr) {
+            obj[a] = gl.getAttribLocation(prog, a);
+        }
+        for(let u of l.uniform) {
+            obj[u] = gl.getUniformLocation(prog, u);
+        }
+        return obj;
     };
 
+    const linked = new Map();
     const link = (name) => {
         if(linked.has(name)) {
             return linked.get(name);
@@ -74,11 +100,10 @@ const makeGLShaderLinker = (gl) => {
                 LOG("NOTFOUND: makeGLESProgram " + name);
                 return null;
             }
-            const l = LINKAGE_MAP.get(name);
-            const prog = linkProgram(l.vs, l.fs);
+            const prog = linkProgram(LINKAGE_MAP.get(name));
             if(!prog) {
                 LOG("FAILED: makeGLESProgram " + name);
-                return null;            
+                return null;
             }
             linked.set(name, prog);
             return prog;

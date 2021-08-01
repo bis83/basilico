@@ -7,9 +7,6 @@ const makeCoreGraphics = () => {
     const meshLoader = makeGLMeshLoader(gl);
     const texLoader = makeGLTexLoader(gl);
 
-    let currentCamera = null;
-    let currentScene = null;
-
     const fitCanvasSize = () => {
         const width = window.innerWidth;
         if(width !== gl.canvas.width) {
@@ -26,73 +23,22 @@ const makeCoreGraphics = () => {
         gl.clearDepth(1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     };
-
-    const makeCamera = () => {
-        const view = makeMat44();
-        const proj = makeMat44();
-
-        identityMat44(view);
-        identityMat44(proj);
-
-        const set = (x, y, z, az, al) => {
-        };
-        const show = () => {
-            currentCamera = {
-                view: () => { return view; },
-                proj: () => { return proj; }
-            };
-        }
-        return {
-            set: set,
-            show: show
-        };
-    };
-    const makeScene = () => {
-        let boxes = [];
-
-        const makeBox = (x, y, z) => {
-            const prog = linker("basic");
-            const render = () => {
-                prog.use();
-                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-            };
-            boxes.push(render);
-            return {
-                dispose: () => {
-                },
-                set: (nx, ny, nz) => {
-                    x = nx, y = ny, z = nz;
-                }
-            }
-        };
-
-        const render = () => {
-            for(let b of boxes) {
-                b();
-            }
-        };
-        const show = () => {
-            currentScene = render;
-        };
-        return {
-            show: show,
-            makeBox: makeBox,
-        };
-    };
-
     const begin = () => {
         fitCanvasSize();
         clearCanvas();
     };
+
+    const draw3d = makeDraw3d(gl, linker, meshLoader, texLoader);
+    const draw2d = makeDraw2d(gl, linker, texLoader);
     const end = () => {
-        if(currentScene) {
-            currentScene();
-        }
+        const vp = { x: 0, y: 0, w: gl.canvas.width, h: gl.canvas.height };
+        draw3d.render();
+        draw2d.render(vp);
     };
     return {
         begin: begin,
         end: end,
-        makeCamera: makeCamera,
-        makeScene: makeScene,
+        d3d: draw3d,
+        d2d: draw2d,
     };
 };

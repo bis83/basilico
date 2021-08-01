@@ -1,6 +1,6 @@
 
 window.addEventListener("load", () => {
-    let suspend = false;
+    let suspend = true;
 
     const audio = makeCoreAudio();
     const browser = makeCoreBrowser();
@@ -10,7 +10,7 @@ window.addEventListener("load", () => {
     const space3d = makeCoreSpace3d();
     const userdata = makeCoreUserData();
     
-    const lvMenu = makeLvMenu();
+    const lvMenu = makeLvMenu(graphics);
     const lvPlayer = makeLvPlayer(browser, graphics);
 
     userdata.start();
@@ -26,7 +26,6 @@ window.addEventListener("load", () => {
         lvPlayer.post();
     };
     const tick = (t) => {
-        // LOG("frame: " + t);
         graphics.begin();
         browser.tick(t);
         package.tick();
