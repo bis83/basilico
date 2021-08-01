@@ -14,12 +14,12 @@ const makeCoreAudio = () => {
         }
         context.resume();
     };
-    const tick = () => {
-    };
-
     document.body.addEventListener("click", (ev) => {
         resume();
     });
+
+    const tick = () => {
+    };
     return {
         tick: tick
     };

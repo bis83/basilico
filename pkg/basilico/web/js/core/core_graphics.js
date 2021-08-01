@@ -28,8 +28,8 @@ const makeCoreGraphics = () => {
         clearCanvas();
     };
 
-    const draw3d = makeDraw3d(gl, linker, meshLoader, texLoader);
-    const draw2d = makeDraw2d(gl, linker, texLoader);
+    const draw3d = makeGLDraw3d(gl, linker, meshLoader, texLoader);
+    const draw2d = makeGLDraw2d(gl, linker, texLoader);
     const end = () => {
         const vp = { x: 0, y: 0, w: gl.canvas.width, h: gl.canvas.height };
         draw3d.render();

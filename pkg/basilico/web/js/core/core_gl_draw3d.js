@@ -1,5 +1,5 @@
 
-const makeDraw3d = (gl, linker, meshLoader, texLoader) => {
+const makeGLDraw3d = (gl, linker, meshLoader, texLoader) => {
     // Rendering Pass
     const render = () => {
     };

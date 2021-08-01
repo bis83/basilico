@@ -1,5 +1,5 @@
 
-const makeDraw2d = (gl, linker, texLoader) => {
+const makeGLDraw2d = (gl, linker, texLoader) => {
     // Rendering Pass
     const rects = [];
     const render = (vp) => {

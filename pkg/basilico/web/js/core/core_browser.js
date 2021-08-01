@@ -5,8 +5,6 @@ const makeCoreBrowser = () => {
     let timestamp = 0;
     let dt = 0;
 
-    const controllers = [];
-
     window.addEventListener("focus", (ev) => {
     });
     window.addEventListener("blur", (ev) => {
@@ -68,6 +66,24 @@ const makeCoreBrowser = () => {
     document.body.addEventListener("touchend", (ev) => {
     });
 
+    // Objects
+    let controllers = [];
+    const makeController = () => {
+        let lx = 0;
+        let ly = 0;
+        const tick = () => {
+        };
+        controllers.push(tick);
+        return {
+            dispose: () => {
+                const i = controllers.indexOf();
+                if(i >= 0) {
+                    controllers.splice(i, 1);
+                }
+            }
+        };
+    };
+
     const lock = () => {
         if(!isPointerLocked) {
             document.body.requestPointerLock();
@@ -86,22 +102,6 @@ const makeCoreBrowser = () => {
             c();
         }
     }
-    const makeController = () => {
-        let lx = 0;
-        let ly = 0;
-        const tick = () => {
-        };
-        controllers.push(tick);
-        return {
-            dispose: () => {
-                const i = controllers.indexOf();
-                if(i >= 0) {
-                    controllers.splice(i, 1);
-                }
-            }
-        };
-    };
-
     return {
         lock: lock,
         tick: tick,
