@@ -1,6 +1,6 @@
 # basilico
 
-A static site generator for Single Page Web App for Game.
+A single page application generator for Game.
 
 ## Build
 
