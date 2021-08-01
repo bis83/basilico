@@ -5,5 +5,6 @@ type Config struct {
 	Addr       string
 	Logging    bool
 	Minify     bool
+	Editor     bool
 	StartLevel string
 }

@@ -2,4 +2,5 @@ Title = "YourProject"
 Addr = ":8080"
 Logging = false
 Minify = true
+Editor = false
 StartLevel = "main"
