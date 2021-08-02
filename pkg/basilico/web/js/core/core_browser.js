@@ -10,14 +10,14 @@ const makeCoreBrowser = () => {
     window.addEventListener("blur", (ev) => {
     });
     window.addEventListener("resize", (ev) => {
-        /*{{if .Logging}}*/console.log("resize");/*{{end}}*/
+        LOGGING && console.log("resize");
     });
     window.addEventListener("gamepadconnected", (ev) => {
-        /*{{if .Logging}}*/console.log("gamepadconnected");/*{{end}}*/
+        LOGGING && console.log("gamepadconnected");
         gamepad = ev.gamepad;
     });
     window.addEventListener("gamepaddisconnected", (ev) => {
-        /*{{if .Logging}}*/console.log("gamepaddisconnected");/*{{end}}*/
+        LOGGING && console.log("gamepaddisconnected");
         if(gamepad === ev.gamepad) {
             gamepad = null;
         }

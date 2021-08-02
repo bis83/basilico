@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	esbuild "github.com/evanw/esbuild/pkg/api"
@@ -71,11 +72,17 @@ func BuildBasilicoJs(cfg *Config, path string) error {
 			return err
 		}
 	}
+	defines := map[string]string{
+		"LOGGING":      strconv.FormatBool(cfg.Logging),
+		"ASSERT":       strconv.FormatBool(cfg.Assert),
+		"UNIT_TESTING": strconv.FormatBool(cfg.UnitTesting),
+	}
 	result := esbuild.Transform(string(b.Bytes()), esbuild.TransformOptions{
 		MinifyWhitespace:  cfg.Minify,
 		MinifyIdentifiers: cfg.Minify,
 		MinifySyntax:      cfg.Minify,
 		Format:            esbuild.FormatIIFE,
+		Define:            defines,
 	})
 	if len(result.Errors) > 0 || len(result.Warnings) > 0 {
 		e := esbuild.FormatMessages(result.Errors, esbuild.FormatMessagesOptions{})
