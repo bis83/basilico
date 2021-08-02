@@ -1,16 +1,16 @@
 
-const makeLvMenu = (graphics) => {
+const layerMenu = (graphics) => {
     const rect = graphics.d2d.makeRect(128, 128);
     rect.position(200, 100);
     rect.text("hoge");
 
-    const pre = () => {
+    const begin = () => {
     };
-    const post = () => {
+    const end = () => {
         rect.color(1,1,1,1);
     };
     return {
-        pre: pre,
-        post: post
+        begin: begin,
+        end: end
     }
 };

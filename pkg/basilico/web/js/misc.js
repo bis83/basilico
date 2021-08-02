@@ -1,13 +1,4 @@
 
-// {{ if .Logging }}
-const LOG = (...args) => {
-    console.log(...args);
-};
-// {{ else }}
-const LOG = (...args) => {
-};
-// {{ end }}
-
 const makeMat44 = () => {
     return new Float32Array(16);
 };

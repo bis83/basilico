@@ -1,40 +1,28 @@
 
 window.addEventListener("load", () => {
-    let suspend = true;
-
     const audio = makeCoreAudio();
     const browser = makeCoreBrowser();
     const graphics = makeCoreGraphics();
     const package = makeCorePackage();
     const space2d = makeCoreSpace2d();
     const space3d = makeCoreSpace3d();
-    const userdata = makeCoreUserData();
-    
-    const lvMenu = makeLvMenu(graphics);
-    const lvPlayer = makeLvPlayer(browser, graphics);
+    const userdata = makeCoreUserData();    
+    const layers = [
+        layerMenu(graphics),
+        layerPlayer(browser, graphics),
+    ];
 
     userdata.start();
 
-    const tickMenu = () => {
-        lvMenu.pre();
-        space2d.solve();
-        lvMenu.post();
-    };
-    const tickWorld = () => {
-        lvPlayer.pre();
-        space3d.solve();
-        lvPlayer.post();
-    };
     const tick = (t) => {
         graphics.begin();
         browser.tick(t);
         package.tick();
         userdata.tick();
-        if(suspend) {
-            tickMenu();
-        } else {
-            tickWorld();
-        }
+        layers.forEach(l => l.begin());
+        space3d.solve();
+        space2d.solve();
+        layers.forEach(l => l.end());
         audio.tick();
         graphics.end();
         requestAnimationFrame(tick);

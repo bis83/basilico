@@ -10,14 +10,14 @@ const makeCoreBrowser = () => {
     window.addEventListener("blur", (ev) => {
     });
     window.addEventListener("resize", (ev) => {
-        LOG("resize");
+        /*{{if .Logging}}*/console.log("resize");/*{{end}}*/
     });
     window.addEventListener("gamepadconnected", (ev) => {
-        LOG("gamepadconnected");
+        /*{{if .Logging}}*/console.log("gamepadconnected");/*{{end}}*/
         gamepad = ev.gamepad;
     });
     window.addEventListener("gamepaddisconnected", (ev) => {
-        LOG("gamepaddisconnected");
+        /*{{if .Logging}}*/console.log("gamepaddisconnected");/*{{end}}*/
         if(gamepad === ev.gamepad) {
             gamepad = null;
         }
@@ -97,9 +97,6 @@ const makeCoreBrowser = () => {
         if(gamepad) {
             const gamepads = navigator.getGamepads();
             gamepad = gamepads[gamepad.index];
-        }
-        for(let c of controllers) {
-            c();
         }
     }
     return {

@@ -1,7 +1,9 @@
 
 const makeCoreGraphics = () => {
-    const canvas = document.getElementById("main")
+    const canvas = document.getElementById("main");
+    /*{{if .Assert}}*/console.assert(canvas !== null);/*{{end}}*/
     const gl = canvas.getContext("webgl2");
+    /*{{if .Assert}}*/console.assert(gl !== null);/*{{end}}*/
     
     const linker = makeGLShaderLinker(gl);
     const meshLoader = makeGLMeshLoader(gl);

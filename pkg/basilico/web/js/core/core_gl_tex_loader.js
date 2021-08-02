@@ -4,7 +4,7 @@ const makeGLTexLoader = (gl) => {
         const renderText = (text) => {
             const canvas = document.createElement("canvas");
             if(!canvas) {
-                LOG("FAILED: renderText");
+                /*{{if .Logging}}*/console.log("FAILED: renderText");/*{{end}}*/
                 return null;
             }
             canvas.width = width;
@@ -12,7 +12,7 @@ const makeGLTexLoader = (gl) => {
 
             const context = canvas.getContext('2d');
             if(!context) {
-                LOG("FAILED: renderText");
+                /*{{if .Logging}}*/console.log("FAILED: renderText");/*{{end}}*/
                 return null;
             }
             context.fillStyle = "white";
@@ -33,7 +33,7 @@ const makeGLTexLoader = (gl) => {
         gl.bindTexture(gl.TEXTURE_2D, null);
         const bind = () => {
             if(!texture) {
-                LOG("ERROR: Texture has already released.");
+                /*{{if .Logging}}*/console.log("ERROR: Texture has already released.");/*{{end}}*/
                 return;
             }
             gl.activeTexture(gl.TEXTURE0);

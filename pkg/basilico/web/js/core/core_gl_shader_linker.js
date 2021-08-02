@@ -47,7 +47,7 @@ const makeGLShaderLinker = (gl) => {
         gl.compileShader(shader);
         const success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
         if(!success) {
-            LOG(gl.getShaderInfoLog(shader));
+            /*{{if .Logging}}*/console.log(gl.getShaderInfoLog(shader));/*{{end}}*/
             gl.deleteShader(shader);
             return null;
         }
@@ -60,7 +60,7 @@ const makeGLShaderLinker = (gl) => {
         gl.linkProgram(prog);
         const success = gl.getProgramParameter(prog, gl.LINK_STATUS);
         if(!success) {
-            LOG(gl.getProgramInfoLog(prog));
+            /*{{if .Logging}}*/console.log(gl.getProgramInfoLog(prog));/*{{end}}*/
             gl.deleteProgram(prog);
             return null;
         }
@@ -97,12 +97,12 @@ const makeGLShaderLinker = (gl) => {
             return linked.get(name);
         } else {
             if(!LINKAGE_MAP.has(name)) {
-                LOG("NOTFOUND: makeGLESProgram " + name);
+                /*{{if .Logging}}*/console.log("NOTFOUND: makeGLESProgram " + name);/*{{end}}*/
                 return null;
             }
             const prog = linkProgram(LINKAGE_MAP.get(name));
             if(!prog) {
-                LOG("FAILED: makeGLESProgram " + name);
+                /*{{if .Logging}}*/console.log("FAILED: makeGLESProgram " + name);/*{{end}}*/
                 return null;
             }
             linked.set(name, prog);

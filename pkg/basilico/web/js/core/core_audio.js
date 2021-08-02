@@ -18,9 +18,19 @@ const makeCoreAudio = () => {
         resume();
     });
 
+    // Objects
+    const makeListener = () => {
+        return {};
+    };
+    const makeEmitter = () => {
+        return {};
+    };
+
     const tick = () => {
     };
     return {
-        tick: tick
+        tick: tick,
+        makeListener: makeListener,
+        makeEmitter: makeEmitter,
     };
 };

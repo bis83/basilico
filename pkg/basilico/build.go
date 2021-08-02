@@ -61,8 +61,8 @@ func BuildBasilicoJs(cfg *Config, path string) error {
 		"web/js/core/core_space2d.js",
 		"web/js/core/core_space3d.js",
 		"web/js/core/core_userdata.js",
-		"web/js/level/level_menu.js",
-		"web/js/level/level_player.js",
+		"web/js/layer/layer_menu.js",
+		"web/js/layer/layer_player.js",
 		"web/js/main.js",
 	}
 	var b bytes.Buffer

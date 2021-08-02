@@ -1,6 +1,8 @@
 Title = "YourProject"
 Addr = ":8080"
 Logging = false
+Assert = false
+UnitTesting = false
 Minify = true
 Editor = false
 StartLevel = "main"
