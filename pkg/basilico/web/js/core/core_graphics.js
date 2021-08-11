@@ -9,6 +9,8 @@ const makeCoreGraphics = () => {
     const meshLoader = makeGLMeshLoader(gl);
     const texLoader = makeGLTexLoader(gl);
 
+    const clearColor = [0, 0, 0];
+
     const fitCanvasSize = () => {
         const width = window.innerWidth;
         if(width !== gl.canvas.width) {
@@ -21,25 +23,29 @@ const makeCoreGraphics = () => {
     };
     const clearCanvas = () => {
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-        gl.clearColor(0.2, 0.2, 0.2, 0);
+        gl.clearColor(clearColor[0], clearColor[1], clearColor[2], 0);
         gl.clearDepth(1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     };
-    const begin = () => {
-        fitCanvasSize();
-        clearCanvas();
+    const setClearColor = (r, g, b) => {
+        clearColor[0] = r;
+        clearColor[1] = g;
+        clearColor[2] = b;
     };
 
     const draw3d = makeGLDraw3d(gl, linker, meshLoader, texLoader);
     const draw2d = makeGLDraw2d(gl, linker, texLoader);
-    const end = () => {
+    const render = () => {
+        fitCanvasSize();
+        clearCanvas();
+
         const vp = { x: 0, y: 0, w: gl.canvas.width, h: gl.canvas.height };
         draw3d.render();
         draw2d.render(vp);
     };
     return {
-        begin: begin,
-        end: end,
+        render: render,
+        clearColor: setClearColor,
         d3d: draw3d,
         d2d: draw2d,
     };

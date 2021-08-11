@@ -1,4 +1,11 @@
 
+const masterVolume = () => {
+    if(window.RPGAtsumaru) {
+        return window.RPGAtsumaru.volume.getCurrentValue();
+    }
+    return 1.0;
+};
+
 const makeCoreAudio = () => {
     let isStarted = false;
     let context = null;
@@ -7,16 +14,14 @@ const makeCoreAudio = () => {
     const resume = () => {
         if(!context) {
             context = new AudioContext();
+            ASSERT && console.assert(context !== null);
             masterNode = context.createGain();
-            masterNode.gain.value = 0.01;
+            masterNode.gain.value = masterVolume();
             masterNode.connect(context.destination);
             isStarted = true;
         }
         context.resume();
     };
-    document.body.addEventListener("click", (ev) => {
-        resume();
-    });
 
     // Objects
     const makeListener = () => {
@@ -30,6 +35,7 @@ const makeCoreAudio = () => {
     };
     return {
         tick: tick,
+        resume: resume,
         makeListener: makeListener,
         makeEmitter: makeEmitter,
     };

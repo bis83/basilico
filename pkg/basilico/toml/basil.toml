@@ -5,4 +5,5 @@ Assert = false
 UnitTesting = false
 Minify = true
 Editor = false
+DebugMonitor = false
 StartLevel = "main"

@@ -14,10 +14,14 @@ const makeGLDraw2d = (gl, linker, texLoader) => {
     const makeRect = (w, h) => {
         const xy = [0,0];
         const col = [1,1,1,1];
+        let show = true;
 
         let prog = linker("rect");
         let tex = null;
         const render = (vp) => {
+            if(!show) {
+                return;
+            }
             if(!prog) {
                 return;
             }
@@ -27,10 +31,10 @@ const makeGLDraw2d = (gl, linker, texLoader) => {
                 gl.uniform1i(prog.tex, 0);
             }
             gl.uniform4f(prog.xywh,
-                2 * (xy[0] / vp.w) - 1,
-                1 - 2 * (xy[1] / vp.h),
-                2 * (w / vp.w),
-                2 * (h / vp.h));
+                (xy[0] / vp.w),
+                (xy[1] / vp.h),
+                (w / vp.w),
+                (h / vp.h));
             gl.uniform4f(prog.col, col[0], col[1], col[2], col[3]);
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
         };
@@ -57,6 +61,9 @@ const makeGLDraw2d = (gl, linker, texLoader) => {
             col[2] = b;
             col[3] = a;
         };
+        const visible = (b) => {
+            show = b;
+        };
         const text = (contents) => {
             if(tex) {
                 tex.dispose();
@@ -69,6 +76,7 @@ const makeGLDraw2d = (gl, linker, texLoader) => {
             dispose: dispose,
             position: position,
             color: color,
+            visible: visible,
             text: text,
         };
     };

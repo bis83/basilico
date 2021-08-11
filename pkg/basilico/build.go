@@ -49,9 +49,12 @@ func WriteJs(cfg *Config, wr io.Writer, path string) error {
 
 func BuildBasilicoJs(cfg *Config, path string) error {
 	filePaths := []string{
-		"web/js/misc.js",
+		"web/js/def/math.js",
+		"web/js/def/collision.js",
+		"web/js/def/register.js",
 		"web/js/core/core_audio.js",
 		"web/js/core/core_browser.js",
+		"web/js/core/core_engine.js",
 		"web/js/core/core_gl_draw2d.js",
 		"web/js/core/core_gl_draw3d.js",
 		"web/js/core/core_gl_mesh_loader.js",
@@ -59,9 +62,8 @@ func BuildBasilicoJs(cfg *Config, path string) error {
 		"web/js/core/core_gl_tex_loader.js",
 		"web/js/core/core_graphics.js",
 		"web/js/core/core_package.js",
-		"web/js/core/core_space2d.js",
-		"web/js/core/core_space3d.js",
 		"web/js/core/core_userdata.js",
+		"web/js/layer/layer_debug_monitor.js",
 		"web/js/layer/layer_menu.js",
 		"web/js/layer/layer_player.js",
 		"web/js/main.js",
