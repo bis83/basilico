@@ -2,14 +2,14 @@
 window.addEventListener("load", () => {
     // CoreSystem
     const audio = makeCoreAudio();
-    const browser = makeCoreBrowser();
+    const gamepad = makeCoreGamepad();
     const engine = makeCoreEngine();
     const graphics = makeCoreGraphics();
     const package = makeCorePackage();
     const userdata = makeCoreUserData();    
     const layers = [
-        layerMenu(graphics),
-        layerPlayer(browser, graphics),
+        layerMenu(engine, graphics),
+        layerPlayer(graphics),
     ];
     userdata.start();
 
@@ -17,65 +17,80 @@ window.addEventListener("load", () => {
     window.addEventListener("focus", (ev) => {
     });
     window.addEventListener("blur", (ev) => {
-        browser.blur(ev);
+        gamepad.blur(ev);
+        engine.suspend();
     });
     window.addEventListener("resize", (ev) => {
     });
     window.addEventListener("gamepadconnected", (ev) => {
-        browser.gamepadconnected(ev);
+        LOGGING && console.log("gamepadconnected");
+        gamepad.gamepadconnected(ev);
     });
     window.addEventListener("gamepaddisconnected", (ev) => {
-        browser.gamepaddisconnected(ev);
+        LOGGING && console.log("gamepaddisconnected");
+        gamepad.gamepaddisconnected(ev);
     });
     document.body.addEventListener("click", (ev) => {
         audio.resume();
+        engine.resume();
+        if(gamepad.mode() === GAMEPAD_MODE_MOUSE_KEYBOARD) {
+            if(document.pointerLockElement !== document.body) {
+                LOGGING && console.log("requestPointerLock");
+                document.body.requestPointerLock();
+            }
+        }
     });
     document.addEventListener("pointerlockchange", (ev) => {
-        browser.pointerlockchange(ev);
+        if(document.pointerLockElement === null) {
+            if(gamepad.mode() === GAMEPAD_MODE_MOUSE_KEYBOARD) {
+                LOGGING && console.log("engine.suspend");
+                engine.suspend();
+            }
+        }
+    });
+    document.addEventListener("pointerlockerror", (ev) => {
+        LOGGING && console.log("pointerlockerror");
     });
     document.addEventListener("keydown", (ev) => {
-        browser.keydown(ev);
+        gamepad.keydown(ev);
     });
     document.addEventListener("keyup", (ev) => {
-        browser.keyup(ev);
+        gamepad.keyup(ev);
     });
     document.body.addEventListener("mousedown", (ev) => {
-        browser.mousedown(ev);
+        gamepad.mousedown(ev);
     });
     document.body.addEventListener("mouseup", (ev) => {
-        browser.mouseup(ev);
+        gamepad.mouseup(ev);
     });
     document.body.addEventListener("mousemove", (ev) => {
-        browser.mousemove(ev);
+        gamepad.mousemove(ev);
     });
     document.body.addEventListener("touchstart", (ev) => {
-        browser.touchstart(ev);
+        gamepad.touchstart(ev);
     });
     document.body.addEventListener("touchmove", (ev) => {
-        browser.touchmove(ev);
+        gamepad.touchmove(ev);
     });
     document.body.addEventListener("touchend", (ev) => {
-        browser.touchend(ev);
+        gamepad.touchend(ev);
     });
 
     // AnimationLoop
     const tick = (time) => {
+        gamepad.tick();
+        engine.tick();
+        
         audio.tick();
-        browser.tick();
         package.tick();
         userdata.tick();
 
-        engine.begin(time, browser, userdata);
-        layers.forEach(l => l.begin(engine.reg));
+        engine.begin();
+        layers.forEach(l => l.begin());
         engine.execute();
-        layers.forEach(l => l.end(engine.reg, engine.req));
-        engine.end(browser);
+        layers.forEach(l => l.end());
+        engine.end();
 
-        if(engine.reg(REG_GAME_MODE) === GAME_MODE_ACTIVE) {
-            graphics.clearColor(0, 0, 0);
-        } else {
-            graphics.clearColor(0.2, 0.2, 0.2);
-        }
         graphics.render();
         requestAnimationFrame(tick);
     };

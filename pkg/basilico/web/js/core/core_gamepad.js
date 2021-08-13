@@ -1,5 +1,10 @@
 
-const makeCoreBrowser = () => {
+const GAMEPAD_MODE_GAMEPAD = 0;
+const GAMEPAD_MODE_MOUSE_KEYBOARD = 1;
+const GAMEPAD_MODE_VIRTUAL_TOUCH = 2;
+
+const makeCoreGamepad = () => {
+    let mode = GAMEPAD_MODE_GAMEPAD;
     let mouseMovementX = 0;
     let mouseMovementY = 0;
     let mouse = {
@@ -29,12 +34,6 @@ const makeCoreBrowser = () => {
         rt: false,
     };
     let gamepadIndex = null;
-    let isPointerLocked = false;
-    let isMouseChanged = [false, false];
-    let isKeyboardChanged = [false, false];
-    let isTouchChanged = [false, false];
-    let isGamepadChanged = [false, false];
-    let isSuspend = true;
 
     const updateKeys = (code, value) => {
         switch(code) {
@@ -47,33 +46,28 @@ const makeCoreBrowser = () => {
         }
         return true;
     };
+
     const blur = (ev) => {
-        isSuspend = true;
+        // TODO: Reset
     };
     const gamepadconnected = (ev) => {
         gamepadIndex = ev.gamepad.index;
-        isGamepadChanged[1] = true;
+        mode = GAMEPAD_MODE_GAMEPAD;
     };
     const gamepaddisconnected = (ev) => {
         if(gamepadIndex === ev.gamepad.index) {
             gamepadIndex = null;
         }
     };
-    const pointerlockchange = (ev) => {
-        isPointerLocked = (document.pointerLockElement === document.body);
-        if(!isPointerLocked) {
-            isSuspend = true;
-        }
-    };
     const keydown = (ev) => {
         if(updateKeys(ev.code, true)) {
-            isKeyboardChanged[1] = true;
+            mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
             ev.preventDefault();
         }
     };
     const keyup = (ev) => {
         if(updateKeys(ev.code, false)) {
-            isKeyboardChanged[1] = true;
+            mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
             ev.preventDefault();
         }
     };
@@ -82,7 +76,7 @@ const makeCoreBrowser = () => {
         mouse.y = ev.y;
         mouse.lb = (ev.buttons & 1) !== 0;
         mouse.rb = (ev.buttons & 2) !== 0;
-        isMouseChanged[1] = true;
+        mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
         ev.preventDefault();
     };
     const mouseup = (ev) => {
@@ -90,7 +84,7 @@ const makeCoreBrowser = () => {
         mouse.y = ev.y;
         mouse.lb = (ev.buttons & 1) !== 0;
         mouse.rb = (ev.buttons & 2) !== 0;
-        isMouseChanged[1] = true;
+        mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
         ev.preventDefault();
     };
     const mousemove = (ev) => {
@@ -100,17 +94,17 @@ const makeCoreBrowser = () => {
         mouse.y = ev.y;
         mouse.lb = (ev.buttons & 1) !== 0;
         mouse.rb = (ev.buttons & 2) !== 0;
-        isMouseChanged[1] = true;
+        mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
         ev.preventDefault();
     };
     const touchstart = (ev) => {
-        isTouchChanged[1] = true;
+        mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
     };
     const touchmove = (ev) => {
-        isTouchChanged[1] = true;
+        mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
     };
     const touchend = (ev) => {
-        isTouchChanged[1] = true;
+        mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
     };
 
     const tick = () => {
@@ -125,51 +119,22 @@ const makeCoreBrowser = () => {
             gamepad.b1 = (gp.buttons[1].value >= 0.5);
             gamepad.lt = (gp.buttons[6].value >= 0.5);
             gamepad.rt = (gp.buttons[7].value >= 0.5);
-            isGamepadChanged[1] =
+            const gamepadChanged =
                 (gamepad.lx || gamepad.ly || gamepad.rx || gamepad.ry ||
                  gamepad.b0 || gamepad.b1 || gamepad.lt || gamepad.rt) ? true : false;
-            if(gp.buttons[9].value >= 0.5) {
-                isSuspend = true;
-                document.exitPointerLock();
+            if(gamepadChanged) {
+                mode = GAMEPAD_MODE_GAMEPAD;
             }
         }
-
         mouse.mx = mouseMovementX;
         mouse.my = mouseMovementY;
         mouseMovementX = 0;
         mouseMovementY = 0;
-        isMouseChanged[0] = isMouseChanged[1];
-        isMouseChanged[1] = false;
-
-        isKeyboardChanged[0] = isKeyboardChanged[1];
-        isKeyboardChanged[1] = false;
-        isTouchChanged[0] = isTouchChanged[1];
-        isTouchChanged[1] = false;
-        isGamepadChanged[0] = isGamepadChanged[1];
-        isGamepadChanged[1] = false;
     }
-    const resume = (pointerLock) => {
-        isSuspend = false;
-        if(pointerLock && !isPointerLocked) {
-            document.body.requestPointerLock();
-        }
-    };
     return {
-        tick: tick,
-        resume: resume,
-        mouse: () => mouse,
-        mouseChanged: () => isMouseChanged[0],
-        keys: () => keyboard,
-        keysChanged: () => isKeyboardChanged[0],
-        touch: () => touches,
-        touchChanged: () => isTouchChanged[0],
-        gpad: () => gamepad,
-        gpadChanged: () => isGamepadChanged[0],
-        suspend: () => isSuspend,
         blur: blur,
         gamepadconnected: gamepadconnected,
         gamepaddisconnected: gamepaddisconnected,
-        pointerlockchange: pointerlockchange,
         keydown: keydown,
         keyup: keyup,
         mousedown: mousedown,
@@ -178,5 +143,7 @@ const makeCoreBrowser = () => {
         touchstart: touchstart,
         touchmove: touchmove,
         touchend: touchend,
+        tick: tick,
+        mode: () => mode,
     };
 };

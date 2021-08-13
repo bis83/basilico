@@ -1,8 +1,8 @@
 
 const layerPlayer = (graphics) => {
-    const begin = (reg) => {
+    const begin = () => {
     };
-    const end = (reg, req) => {
+    const end = () => {
     };
     return {
         begin: begin,
