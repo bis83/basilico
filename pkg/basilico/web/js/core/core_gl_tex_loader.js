@@ -31,13 +31,14 @@ const makeGLTexLoader = (gl) => {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, renderText(text));
         gl.bindTexture(gl.TEXTURE_2D, null);
-        const bind = () => {
+        const bind = (location) => {
             if(!texture) {
                 LOGGING && console.log("ERROR: Texture has already released.");
                 return;
             }
             gl.activeTexture(gl.TEXTURE0);
             gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.uniform1i(location, 0);
         };
         const dispose = () => {
             if(!texture) {

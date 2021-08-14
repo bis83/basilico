@@ -10,6 +10,7 @@ window.addEventListener("load", () => {
     const layers = [
         layerMenu(engine, graphics),
         layerPlayer(graphics),
+        layerDebugGrid(engine, graphics),
     ];
     userdata.start();
 

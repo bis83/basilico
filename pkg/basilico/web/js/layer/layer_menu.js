@@ -19,8 +19,7 @@ const layerMenu = (engine, graphics) => {
         const gl = graphics.gl();
         const vp = graphics.viewport();
         prog.use();
-        tex.bind();
-        gl.uniform1i(prog.tex, 0);
+        tex.bind(prog.tex);
         gl.uniform4f(prog.xywh,
             (x / vp.w),
             (x / vp.h),
