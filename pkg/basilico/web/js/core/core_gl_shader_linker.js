@@ -20,24 +20,39 @@ const GLES_VS_RECT = [
 ].join("");
 const GLES_FS_RECT = [
     GLES_FS_PRECISION,
-    GLES_UNIFORM_COLOR,
     GLES_FS_OUTPUT,
+    GLES_UNIFORM_COLOR,
     "void main() { fc = col; }",
 ].join("");
 const GLES_FS_RECT_TEX = [
     GLES_FS_PRECISION,
+    GLES_FS_OUTPUT,
     GLES_UNIFORM_COLOR,
     GLES_UNIFORM_TEXTURE,
-    GLES_FS_OUTPUT,
     "in vec2 uv;",
     GLES_MAIN_BEGIN,
     "fc = col * texture(tex, uv);",
+    GLES_MAIN_END,
+].join("");
+const GLES_VS_MESH = [
+    "layout (location = 0) in vec3 position;",
+    "uniform mat4 viewProj;",
+    GLES_MAIN_BEGIN,
+    "gl_Position = viewProj * vec4(position, 1);",
+    GLES_MAIN_END,
+].join("");
+const GLES_FS_MESH = [
+    GLES_FS_PRECISION,
+    GLES_FS_OUTPUT,
+    GLES_MAIN_BEGIN,
+    "fc = vec4(1,1,1,1);",
     GLES_MAIN_END,
 ].join("");
 
 const LINKAGE_MAP = new Map([
     ["rect", {vs: GLES_VS_RECT, fs: GLES_FS_RECT, attr: [], uniform: ["xywh", "col"]}],
     ["rect_tex", {vs: GLES_VS_RECT, fs: GLES_FS_RECT_TEX, attr: [], uniform: ["xywh", "col", "tex"]}],
+    ["mesh", {vs: GLES_VS_MESH, fs: GLES_FS_MESH, attr: ["viewProj"], uniform: ["viewProj"]}],
 ]);
 
 const makeGLShaderLinker = (gl) => {

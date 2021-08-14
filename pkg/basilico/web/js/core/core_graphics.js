@@ -5,11 +5,9 @@ const makeCoreGraphics = () => {
     const gl = canvas.getContext("webgl2");
     ASSERT && console.assert(gl !== null);
     
-    const linker = makeGLShaderLinker(gl);
+    const shaderLinker = makeGLShaderLinker(gl);
     const meshLoader = makeGLMeshLoader(gl);
     const texLoader = makeGLTexLoader(gl);
-
-    const clearColor = [0, 0, 0];
 
     const fitCanvasSize = () => {
         const width = window.innerWidth;
@@ -21,6 +19,8 @@ const makeCoreGraphics = () => {
             gl.canvas.height = height;
         }
     };
+
+    const clearColor = [0, 0, 0];
     const clearCanvas = () => {
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         gl.clearColor(clearColor[0], clearColor[1], clearColor[2], 0);
@@ -33,20 +33,21 @@ const makeCoreGraphics = () => {
         clearColor[2] = b;
     };
 
-    const draw3d = makeGLDraw3d(gl, linker, meshLoader, texLoader);
-    const draw2d = makeGLDraw2d(gl, linker, texLoader);
-    const render = () => {
+    const reset = () => {
         fitCanvasSize();
         clearCanvas();
-
-        const vp = { x: 0, y: 0, w: gl.canvas.width, h: gl.canvas.height };
-        draw3d.render();
-        draw2d.render(vp);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    };
+    const viewport = () => {
+        return { x: 0, y: 0, w: gl.canvas.width, h: gl.canvas.height };
     };
     return {
-        render: render,
-        clearColor: setClearColor,
-        d3d: draw3d,
-        d2d: draw2d,
+        reset: reset,
+        viewport: viewport,
+        shader: shaderLinker,
+        mesh: meshLoader,
+        texture: texLoader,
+        gl: () => { return gl; },
     };
 };

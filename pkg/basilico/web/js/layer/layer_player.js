@@ -4,8 +4,11 @@ const layerPlayer = (graphics) => {
     };
     const end = () => {
     };
+    const draw = () => {
+    };
     return {
         begin: begin,
-        end: end
+        end: end,
+        draw: draw,
     }
 };

@@ -91,7 +91,8 @@ window.addEventListener("load", () => {
         layers.forEach(l => l.end());
         engine.end();
 
-        graphics.render();
+        graphics.reset();
+        layers.forEach(l => l.draw());
         requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
