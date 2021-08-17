@@ -49,8 +49,9 @@ func WriteJs(cfg *Config, wr io.Writer, path string) error {
 
 func BuildBasilicoJs(cfg *Config, path string) error {
 	filePaths := []string{
-		"web/js/func/math.js",
-		"web/js/func/collision.js",
+		"web/js/math/vec3.js",
+		"web/js/math/mat4.js",
+		"web/js/math/collision.js",
 		"web/js/core/core_audio.js",
 		"web/js/core/core_engine.js",
 		"web/js/core/core_gamepad.js",
