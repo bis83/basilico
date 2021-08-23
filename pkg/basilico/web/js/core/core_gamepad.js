@@ -107,6 +107,35 @@ const makeCoreGamepad = () => {
         mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
     };
 
+    let moveX = 0;
+    let moveY = 0;
+    let cameraX = 0;
+    let cameraY = 0;
+    const tickModeNone = () => {
+        moveX = 0;
+        moveY = 0;
+        cameraX = 0;
+        cameraY = 0;
+    };
+    const tickModeGamepad = () => {
+        moveX = gamepad.lx;
+        moveY = -gamepad.ly;
+        cameraX = -gamepad.rx;
+        cameraY = -gamepad.ry;
+    };
+    const tickModeMouseKeyboard = () => {
+        if(document.pointerLockElement === document.body) {
+            moveX = keyboard.a ? -1 : keyboard.d ? +1 : 0;
+            moveY = keyboard.w ? +1 : keyboard.s ? -1 : 0;
+            cameraX = -mouse.mx * 0.5;
+            cameraY = -mouse.my * 0.5;
+        } else {
+            tickModeNone();
+        }
+    };
+    const tickModeVirtualTouch = () => {
+    };
+
     const tick = () => {
         if(gamepadIndex !== null) {
             const gamepads = navigator.getGamepads();
@@ -130,6 +159,15 @@ const makeCoreGamepad = () => {
         mouse.my = mouseMovementY;
         mouseMovementX = 0;
         mouseMovementY = 0;
+        if(mode === GAMEPAD_MODE_GAMEPAD) {
+            tickModeGamepad();
+        } else if(mode === GAMEPAD_MODE_MOUSE_KEYBOARD) {
+            tickModeMouseKeyboard();
+        } else if(mode === GAMEPAD_MODE_VIRTUAL_TOUCH) {
+            tickModeVirtualTouch();
+        } else {
+            tickModeNone();
+        }
     }
     return {
         blur: blur,
@@ -145,5 +183,9 @@ const makeCoreGamepad = () => {
         touchend: touchend,
         tick: tick,
         mode: () => mode,
+        moveX: () => moveX,
+        moveY: () => moveY,
+        cameraX: () => cameraX,
+        cameraY: () => cameraY,
     };
 };

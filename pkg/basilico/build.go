@@ -49,6 +49,7 @@ func WriteJs(cfg *Config, wr io.Writer, path string) error {
 
 func BuildBasilicoJs(cfg *Config, path string) error {
 	filePaths := []string{
+		"web/js/math/angle.js",
 		"web/js/math/vec3.js",
 		"web/js/math/mat4.js",
 		"web/js/math/collision.js",
@@ -59,7 +60,7 @@ func BuildBasilicoJs(cfg *Config, path string) error {
 		"web/js/core/core_gl_shader_linker.js",
 		"web/js/core/core_gl_tex_loader.js",
 		"web/js/core/core_graphics.js",
-		"web/js/core/core_package.js",
+		"web/js/core/core_resource.js",
 		"web/js/core/core_userdata.js",
 		"web/js/layer/layer_debug_grid.js",
 		"web/js/layer/layer_debug_monitor.js",

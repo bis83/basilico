@@ -55,3 +55,13 @@ const vec3cross = (o, a, b) => {
         a[0]*b[1] - a[1]*b[0]
     ]);
 };
+
+const vec3dir = (o, hang, vang) => {
+    const h = deg2rad(hang);
+    const v = deg2rad(vang);
+    o.set([
+        Math.cos(v) * Math.cos(h),
+        Math.sin(v),
+        Math.cos(v) * Math.sin(h)
+    ]);
+};

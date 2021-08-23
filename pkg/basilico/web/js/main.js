@@ -5,11 +5,11 @@ window.addEventListener("load", () => {
     const gamepad = makeCoreGamepad();
     const engine = makeCoreEngine();
     const graphics = makeCoreGraphics();
-    const package = makeCorePackage();
+    const resource = makeCoreResource();
     const userdata = makeCoreUserData();    
     const layers = [
         layerMenu(engine, graphics),
-        layerPlayer(graphics),
+        layerPlayer(gamepad, graphics),
         layerDebugGrid(engine, graphics),
     ];
     userdata.start();
@@ -83,7 +83,7 @@ window.addEventListener("load", () => {
         engine.tick();
         
         audio.tick();
-        package.tick();
+        resource.tick();
         userdata.tick();
 
         engine.begin();

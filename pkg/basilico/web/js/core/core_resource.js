@@ -1,5 +1,5 @@
 
-const makeCorePackage = () => {
+const makeCoreResource = () => {
     return {
         tick: () => {}
     }
