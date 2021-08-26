@@ -23,9 +23,9 @@ func run(cfg *project.Config, baseDir string) error {
 }
 
 func NewBuildRun(baseDir string) error {
-	cfg, err2 := project.New(baseDir)
-	if err2 != nil {
-		return err2
+	cfg, err := project.New(baseDir)
+	if err != nil {
+		return err
 	}
 	if err := build.Build(cfg, baseDir); err != nil {
 		return err

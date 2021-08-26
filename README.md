@@ -15,7 +15,7 @@ go build -ldflags '-s -w'
 ./basilico [your-project-directory]
 ```
 
-- Create `_basil.toml` (a project setting file) if not exists.
+- Create `_config.toml` (a project setting file) if not exists.
 - Start a server. See `localhost:8080`
 - Customize your project and rerun.
 - `index.html` `basilico.js` are generated files. (No need add to repository)
