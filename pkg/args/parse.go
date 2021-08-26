@@ -1,11 +1,11 @@
-package basilico
+package args
 
 import (
 	"os"
 	"path/filepath"
 )
 
-func CreateBaseDirectory() (string, error) {
+func Parse() (string, error) {
 	if len(os.Args) <= 1 {
 		cwd, err := os.Getwd()
 		if err != nil {

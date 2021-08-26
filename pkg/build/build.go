@@ -1,4 +1,4 @@
-package basilico
+package build
 
 import (
 	"embed"
@@ -12,14 +12,16 @@ import (
 	"strconv"
 	"strings"
 
+	project "github.com/bis83/basilico/pkg/project"
+
 	esbuild "github.com/evanw/esbuild/pkg/api"
 )
 
 //go:embed web
-var web embed.FS
+var fs embed.FS
 
-func BuildIndexHtml(cfg *Config, path string) error {
-	html, err := web.ReadFile("web/index.html")
+func buildIndexHtml(cfg *project.Config, path string) error {
+	html, err := fs.ReadFile("web/index.html")
 	if err != nil {
 		return err
 	}
@@ -35,8 +37,8 @@ func BuildIndexHtml(cfg *Config, path string) error {
 	return nil
 }
 
-func WriteJs(cfg *Config, wr io.Writer, path string) error {
-	js, err := web.ReadFile(path)
+func writeJs(cfg *project.Config, wr io.Writer, path string) error {
+	js, err := fs.ReadFile(path)
 	if err != nil {
 		return err
 	}
@@ -47,7 +49,7 @@ func WriteJs(cfg *Config, wr io.Writer, path string) error {
 	return nil
 }
 
-func BuildBasilicoJs(cfg *Config, path string) error {
+func buildBasilicoJs(cfg *project.Config, path string) error {
 	filePaths := []string{
 		"web/js/math/angle.js",
 		"web/js/math/vec3.js",
@@ -70,14 +72,13 @@ func BuildBasilicoJs(cfg *Config, path string) error {
 	}
 	var b bytes.Buffer
 	for _, path := range filePaths {
-		if err := WriteJs(cfg, &b, path); err != nil {
+		if err := writeJs(cfg, &b, path); err != nil {
 			return err
 		}
 	}
 	defines := map[string]string{
-		"LOGGING":      strconv.FormatBool(cfg.Logging),
-		"ASSERT":       strconv.FormatBool(cfg.Assert),
-		"UNIT_TESTING": strconv.FormatBool(cfg.UnitTesting),
+		"LOGGING": strconv.FormatBool(cfg.Logging),
+		"ASSERT":  strconv.FormatBool(cfg.Assert),
 	}
 	result := esbuild.Transform(string(b.Bytes()), esbuild.TransformOptions{
 		MinifyWhitespace:  cfg.Minify,
@@ -97,7 +98,7 @@ func BuildBasilicoJs(cfg *Config, path string) error {
 	return nil
 }
 
-func BuildDataJson(cfg *Config, path string) error {
+func buildDataJson(cfg *project.Config, path string) error {
 	_, err := os.Stat(path)
 	if err == nil {
 		return nil
@@ -108,17 +109,17 @@ func BuildDataJson(cfg *Config, path string) error {
 	return nil
 }
 
-func Build(cfg *Config, baseDir string) error {
+func Build(cfg *project.Config, baseDir string) error {
 	htmlFile := filepath.Join(baseDir, "index.html")
-	if err := BuildIndexHtml(cfg, htmlFile); err != nil {
+	if err := buildIndexHtml(cfg, htmlFile); err != nil {
 		return err
 	}
 	jsFile := filepath.Join(baseDir, "basilico.js")
-	if err := BuildBasilicoJs(cfg, jsFile); err != nil {
+	if err := buildBasilicoJs(cfg, jsFile); err != nil {
 		return err
 	}
 	dataDir := filepath.Join(baseDir, "data")
-	if err := BuildDataJson(cfg, dataDir); err != nil {
+	if err := buildDataJson(cfg, dataDir); err != nil {
 		return err
 	}
 	return nil
