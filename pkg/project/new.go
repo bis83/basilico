@@ -4,14 +4,12 @@ import (
 	"embed"
 	"os"
 	"path/filepath"
-
-	toml "github.com/pelletier/go-toml/v2"
 )
 
 //go:embed toml
 var fs embed.FS
 
-func createConfigToml(path string) error {
+func createConfig(path string) error {
 	_, err := os.Stat(path)
 	if err == nil {
 		return nil
@@ -26,22 +24,10 @@ func createConfigToml(path string) error {
 	return nil
 }
 
-func readBasilToml(path string) (*Config, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return &Config{}, err
-	}
-	var cfg Config
-	if err := toml.Unmarshal(data, &cfg); err != nil {
-		return &Config{}, err
-	}
-	return &cfg, nil
-}
-
-func New(baseDir string) (*Config, error) {
+func New(baseDir string) (*Project, error) {
 	tomlPath := filepath.Join(baseDir, "_config.toml")
-	if err := createConfigToml(tomlPath); err != nil {
-		return &Config{}, err
+	if err := createConfig(tomlPath); err != nil {
+		return nil, err
 	}
-	return readBasilToml(tomlPath)
+	return Read(baseDir)
 }

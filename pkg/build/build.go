@@ -109,17 +109,17 @@ func buildDataJson(cfg *project.Config, path string) error {
 	return nil
 }
 
-func Build(cfg *project.Config, baseDir string) error {
+func Build(prj *project.Project, baseDir string) error {
 	htmlFile := filepath.Join(baseDir, "index.html")
-	if err := buildIndexHtml(cfg, htmlFile); err != nil {
+	if err := buildIndexHtml(prj.Cfg, htmlFile); err != nil {
 		return err
 	}
 	jsFile := filepath.Join(baseDir, "basilico.js")
-	if err := buildBasilicoJs(cfg, jsFile); err != nil {
+	if err := buildBasilicoJs(prj.Cfg, jsFile); err != nil {
 		return err
 	}
 	dataDir := filepath.Join(baseDir, "data")
-	if err := buildDataJson(cfg, dataDir); err != nil {
+	if err := buildDataJson(prj.Cfg, dataDir); err != nil {
 		return err
 	}
 	return nil

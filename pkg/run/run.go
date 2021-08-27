@@ -23,12 +23,12 @@ func run(cfg *project.Config, baseDir string) error {
 }
 
 func NewBuildRun(baseDir string) error {
-	cfg, err := project.New(baseDir)
+	prj, err := project.New(baseDir)
 	if err != nil {
 		return err
 	}
-	if err := build.Build(cfg, baseDir); err != nil {
+	if err := build.Build(prj, baseDir); err != nil {
 		return err
 	}
-	return run(cfg, baseDir)
+	return run(prj.Cfg, baseDir)
 }
