@@ -26,13 +26,20 @@ func encodeUint8Array(data []uint8) ([]byte, error) {
 	return b.Bytes(), nil
 }
 
+func encodeUint16Array(data []uint16) ([]byte, error) {
+	var b bytes.Buffer
+	if err := binary.Write(&b, binary.LittleEndian, data); err != nil {
+		return nil, err
+	}
+	return b.Bytes(), nil
+}
+
 func buildBundle(prj *project.Project, name string) (*Bundle, error) {
 	spec := prj.Spec[name]
 	var b Bundle
 	for _, m := range spec.Mesh {
 		var mm Mesh
 		mm.Name = m.Name
-		mm.Position = nil
 		if len(m.Position) > 0 {
 			bytes, err := encodeFloat32Array(m.Position)
 			if err != nil {
@@ -41,7 +48,6 @@ func buildBundle(prj *project.Project, name string) (*Bundle, error) {
 			str := base64.StdEncoding.EncodeToString(bytes)
 			mm.Position = &str
 		}
-		mm.Color = nil
 		if len(m.Color) > 0 {
 			bytes, err := encodeUint8Array(m.Color)
 			if err != nil {
@@ -50,8 +56,29 @@ func buildBundle(prj *project.Project, name string) (*Bundle, error) {
 			str := base64.StdEncoding.EncodeToString(bytes)
 			mm.Color = &str
 		}
-		mm.Uv = nil
-		mm.Index = nil
+		if len(m.Uv) > 0 {
+			bytes, err := encodeFloat32Array(m.Uv)
+			if err != nil {
+				return nil, err
+			}
+			str := base64.StdEncoding.EncodeToString(bytes)
+			mm.Uv = &str
+		}
+		if len(m.Index) > 0 {
+			bytes, err := encodeUint16Array(m.Index)
+			if err != nil {
+				return nil, err
+			}
+			str := base64.StdEncoding.EncodeToString(bytes)
+			mm.Index = &str
+		}
+		var count int
+		if len(m.Index) > 0 {
+			count = len(m.Index)
+		} else {
+			count = len(m.Position) / 3
+		}
+		mm.View = []int{3, 0, count}
 		b.Mesh = append(b.Mesh, &mm)
 	}
 	return &b, nil

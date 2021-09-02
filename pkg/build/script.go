@@ -5,11 +5,11 @@ import (
 	"errors"
 	project "github.com/bis83/basilico/pkg/project"
 	esbuild "github.com/evanw/esbuild/pkg/api"
-	"text/template"
 	"io"
 	"os"
 	"strconv"
 	"strings"
+	"text/template"
 )
 
 func executeJs(cfg *project.Config, wr io.Writer, path string) error {

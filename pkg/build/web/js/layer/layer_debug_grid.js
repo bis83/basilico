@@ -2,6 +2,8 @@
 const layerDebugGrid = (engine, graphics) => {
     let prog = graphics.shader("mesh");
     let mesh = graphics.mesh.makeMesh(
+        [2, 0, 38],
+        null,
         new Float32Array([
             -100,    0,    0,
             +100,    0,    0,
@@ -96,8 +98,7 @@ const layerDebugGrid = (engine, graphics) => {
         prog.use();
         const gl = graphics.gl();
         gl.uniformMatrix4fv(prog.viewProj, false, graphics.viewProj());
-        mesh.bind();
-        gl.drawArrays(gl.LINES, 0, 38);
+        mesh.draw();
     };
     return {
         begin: begin,

@@ -15,3 +15,6 @@ const base64ToFloat32Array = (base64) => {
 const base64ToUint8Array = (base64) => {
     return new Uint8Array(base64ToArrayBuffer(base64));
 };
+const base64ToUint16Array = (base64) => {
+    return new Uint16Array(base64ToArrayBuffer(base64));
+};

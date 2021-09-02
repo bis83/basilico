@@ -7,6 +7,7 @@ type Prop struct {
 
 type Mesh struct {
 	Name     string  `json:"name"`
+	View     []int   `json:"view"`
 	Position *string `json:"position"`
 	Color    *string `json:"color"`
 	Uv       *string `json:"uv"`

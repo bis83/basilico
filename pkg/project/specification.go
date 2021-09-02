@@ -14,7 +14,7 @@ type Mesh struct {
 	Position []float32 `toml:"position"`
 	Color    []uint8   `toml:"color"`
 	Uv       []float32 `toml:"uv"`
-	Index    []uint32  `toml:"index"`
+	Index    []uint16  `toml:"index"`
 }
 
 type Specification struct {
