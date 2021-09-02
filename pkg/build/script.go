@@ -5,14 +5,14 @@ import (
 	"errors"
 	project "github.com/bis83/basilico/pkg/project"
 	esbuild "github.com/evanw/esbuild/pkg/api"
-	"html/template"
+	"text/template"
 	"io"
 	"os"
 	"strconv"
 	"strings"
 )
 
-func writeJs(cfg *project.Config, wr io.Writer, path string) error {
+func executeJs(cfg *project.Config, wr io.Writer, path string) error {
 	js, err := fs.ReadFile(path)
 	if err != nil {
 		return err
@@ -24,8 +24,9 @@ func writeJs(cfg *project.Config, wr io.Writer, path string) error {
 	return nil
 }
 
-func buildBasilicoJs(cfg *project.Config, path string) error {
+func writeBasilicoJs(cfg *project.Config, path string) error {
 	filePaths := []string{
+		"web/js/math/base64.js",
 		"web/js/math/angle.js",
 		"web/js/math/vec3.js",
 		"web/js/math/mat4.js",
@@ -37,8 +38,8 @@ func buildBasilicoJs(cfg *project.Config, path string) error {
 		"web/js/core/core_gl_shader_linker.js",
 		"web/js/core/core_gl_tex_loader.js",
 		"web/js/core/core_graphics.js",
-		"web/js/core/core_resource.js",
 		"web/js/core/core_userdata.js",
+		"web/js/bundle/bundle_loader.js",
 		"web/js/layer/layer_debug_grid.js",
 		"web/js/layer/layer_debug_monitor.js",
 		"web/js/layer/layer_menu.js",
@@ -47,7 +48,7 @@ func buildBasilicoJs(cfg *project.Config, path string) error {
 	}
 	var b bytes.Buffer
 	for _, path := range filePaths {
-		if err := writeJs(cfg, &b, path); err != nil {
+		if err := executeJs(cfg, &b, path); err != nil {
 			return err
 		}
 	}

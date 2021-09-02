@@ -7,12 +7,12 @@ import (
 )
 
 func main() {
-	baseDir, err := args.Parse()
+	arg, err := args.Parse()
 	if err != nil {
 		log.Print(err)
 		return
 	}
-	if err := run.NewBuildRun(baseDir); err != nil {
+	if err := run.NewBuildRun(arg.BaseDir); err != nil {
 		log.Print(err)
 	}
 }

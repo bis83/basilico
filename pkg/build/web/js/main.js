@@ -2,17 +2,18 @@
 window.addEventListener("load", () => {
     // CoreSystem
     const audio = makeCoreAudio();
-    const gamepad = makeCoreGamepad();
     const engine = makeCoreEngine();
+    const gamepad = makeCoreGamepad();
     const graphics = makeCoreGraphics();
-    const resource = makeCoreResource();
     const userdata = makeCoreUserData();    
+    const bundle = makeBundleLoader(graphics);
     const layers = [
         layerMenu(engine, graphics),
         layerPlayer(gamepad, graphics),
         layerDebugGrid(engine, graphics),
     ];
     userdata.start();
+    bundle.start();
 
     // EventListener
     window.addEventListener("focus", (ev) => {
@@ -82,9 +83,9 @@ window.addEventListener("load", () => {
         gamepad.tick();
         engine.tick();
         
-        audio.tick();
-        resource.tick();
+        bundle.tick();
         userdata.tick();
+        audio.tick();
 
         engine.begin();
         layers.forEach(l => l.begin());

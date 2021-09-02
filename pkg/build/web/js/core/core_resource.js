@@ -1,6 +1,0 @@
-
-const makeCoreResource = () => {
-    return {
-        tick: () => {}
-    }
-};

@@ -1,5 +1,5 @@
 package args
 
 type Args struct {
-	baseDir string
+	BaseDir string
 }

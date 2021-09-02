@@ -1,30 +1,30 @@
 package project
 
 type Prop struct {
-	Name     string
-	Mesh     string
-	Material string
-	Position [][]float64
-	Scale    [][]float64
-	Rotation [][]float64
+	Name     string      `toml:"name"`
+	Mesh     string      `toml:"mesh"`
+	Material string      `toml:"material"`
+	Position [][]float64 `toml:"position"`
+	Scale    [][]float64 `toml:"scale"`
+	Rotation [][]float64 `toml:"rotation"`
 }
 
 type Mesh struct {
-	Name     string
-	Position []float64
-	Color    []float64
-	Uv       []float64
-	Index    []uint32
+	Name     string    `toml:"name"`
+	Position []float32 `toml:"position"`
+	Color    []uint8   `toml:"color"`
+	Uv       []float32 `toml:"uv"`
+	Index    []uint32  `toml:"index"`
 }
 
 type Specification struct {
 	// Configure
-	Type   string
-	Import []string
+	Type   string   `toml:"type"`
+	Import []string `toml:"import"`
 
 	// Entity
-	Prop []*Prop
+	Prop []*Prop `toml:"prop"`
 
 	// Resources
-	Mesh []*Mesh
+	Mesh []*Mesh `toml:"mesh"`
 }

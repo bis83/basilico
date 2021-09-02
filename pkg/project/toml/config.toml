@@ -1,5 +1,5 @@
-Title = "YourProject"
-Addr = ":8080"
-Logging = false
-Assert = false
-Minify = true
+title = "YourProject"
+addr = ":8080"
+logging = false
+assert = false
+minify = true

@@ -18,6 +18,7 @@ const makeGLMeshLoader = (gl) => {
         gl.vertexAttribPointer(location, size, type, normalized, stride, 0);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
     };
+
     const makeMesh = (positions, colors) => {
         let pos = createArrayBuffer(positions);        
         let color = createArrayBuffer(colors);
@@ -44,7 +45,17 @@ const makeGLMeshLoader = (gl) => {
             dispose: dispose,
         };
     };
+
+    const meshes = {};
+    const loadMesh = (data) => {
+    };
+    const getMesh = (name) => {
+        return meshes[name];
+    };
+
     return {
         makeMesh: makeMesh,
+        loadMesh: loadMesh,
+        getMesh: getMesh,
     };
 };

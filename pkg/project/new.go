@@ -9,7 +9,7 @@ import (
 //go:embed toml
 var fs embed.FS
 
-func createConfig(path string) error {
+func writeConfig(path string) error {
 	_, err := os.Stat(path)
 	if err == nil {
 		return nil
@@ -26,7 +26,7 @@ func createConfig(path string) error {
 
 func New(baseDir string) (*Project, error) {
 	tomlPath := filepath.Join(baseDir, "_config.toml")
-	if err := createConfig(tomlPath); err != nil {
+	if err := writeConfig(tomlPath); err != nil {
 		return nil, err
 	}
 	return Read(baseDir)

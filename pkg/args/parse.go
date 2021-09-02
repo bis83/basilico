@@ -5,26 +5,26 @@ import (
 	"path/filepath"
 )
 
-func Parse() (string, error) {
+func Parse() (*Args, error) {
 	if len(os.Args) <= 1 {
 		cwd, err := os.Getwd()
 		if err != nil {
-			return "", err
+			return nil, err
 		}
-		return filepath.Clean(cwd), nil
+		return &Args{BaseDir: filepath.Clean(cwd)}, nil
 	}
 	path := os.Args[1]
 	info, err := os.Stat(path)
 	if err != nil {
 		if err2 := os.MkdirAll(path, 0777); err2 != nil {
-			return "", err2
+			return nil, err2
 		}
-		return filepath.Clean(path), nil
+		return &Args{BaseDir: filepath.Clean(path)}, nil
 	} else {
 		if info.IsDir() {
-			return filepath.Clean(path), nil
+			return &Args{BaseDir: filepath.Clean(path)}, nil
 		} else {
-			return filepath.Clean(filepath.Dir(path)), nil
+			return &Args{BaseDir: filepath.Clean(filepath.Dir(path))}, nil
 		}
 	}
 }

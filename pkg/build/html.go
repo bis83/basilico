@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func buildIndexHtml(cfg *project.Config, path string) error {
+func writeIndexHtml(cfg *project.Config, path string) error {
 	html, err := fs.ReadFile("web/index.html")
 	if err != nil {
 		return err
