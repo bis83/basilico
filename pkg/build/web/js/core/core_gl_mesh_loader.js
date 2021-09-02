@@ -18,18 +18,18 @@ const makeGLMeshLoader = (gl) => {
         gl.vertexAttribPointer(location, size, type, normalized, stride, 0);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
     };
-    const makeMesh = (view, index, positions, colors) => {
+    const makeMesh = (view, index, position, color) => {
         let pb = null;
         let cb = null;
         let ib = null;
         let vao = gl.createVertexArray();
         gl.bindVertexArray(vao);
-        if(positions) {
-            pb = createArrayBuffer(positions);
+        if(position) {
+            pb = createArrayBuffer(position);
             bindAttribArray(VS_LAYOUT_POSITION, pb, 3, gl.FLOAT, false, 12);
         }
-        if(colors) {
-            cb = createArrayBuffer(colors);
+        if(color) {
+            cb = createArrayBuffer(color);
             bindAttribArray(VS_LAYOUT_COLOR, cb, 4, gl.UNSIGNED_BYTE, true, 4);
         }
         if(index) {
@@ -69,6 +69,7 @@ const makeGLMeshLoader = (gl) => {
 
     const meshes = {};
     const loadMesh = (data) => {
+        meshes[data.name] = makeMesh(data.view, data.index, data.position, data.color);
     };
     const getMesh = (name) => {
         return meshes[name];
