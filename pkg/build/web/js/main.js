@@ -11,7 +11,6 @@ window.addEventListener("load", () => {
     const layers = [
         layerMenu(engine, graphics),
         layerPlayer(gamepad, graphics),
-        layerDebugGrid(engine, graphics),
         layerProp(graphics, scene),
     ];
     userdata.start();

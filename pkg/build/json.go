@@ -70,13 +70,19 @@ func buildMesh(mesh *project.Mesh) (*Mesh, error) {
 		str := base64.StdEncoding.EncodeToString(bytes)
 		mm.Index = &str
 	}
+	var mode int
+	if mesh.IsLine {
+		mode = 2
+	} else {
+		mode = 3
+	}
 	var count int
 	if len(mesh.Index) > 0 {
 		count = len(mesh.Index)
 	} else {
 		count = len(mesh.Position) / 3
 	}
-	mm.View = []int{3, 0, count}
+	mm.View = []int{mode, 0, count}
 	return &mm, nil
 }
 

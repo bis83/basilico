@@ -14,6 +14,7 @@ type Mesh struct {
 	Color    []uint8   `toml:"color"`
 	Uv       []float32 `toml:"uv"`
 	Index    []uint16  `toml:"index"`
+	IsLine   bool      `toml:"is_line"`
 }
 
 type Specification struct {

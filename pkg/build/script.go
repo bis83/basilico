@@ -41,7 +41,6 @@ func writeBasilicoJs(cfg *project.Config, path string) error {
 		"web/js/core/core_scene.js",
 		"web/js/core/core_userdata.js",
 		"web/js/bundle/bundle_loader.js",
-		"web/js/layer/layer_debug_grid.js",
 		"web/js/layer/layer_menu.js",
 		"web/js/layer/layer_player.js",
 		"web/js/layer/layer_prop.js",
