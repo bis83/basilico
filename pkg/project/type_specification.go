@@ -3,9 +3,7 @@ package project
 type Prop struct {
 	Mesh     string      `toml:"mesh"`
 	Material string      `toml:"material"`
-	Position [][]float32 `toml:"position"`
-	Scale    [][]float32 `toml:"scale"`
-	Rotation [][]float32 `toml:"rotation"`
+	Layout   [][]float32 `toml:"layout"`
 }
 
 type Mesh struct {

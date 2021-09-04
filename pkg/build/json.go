@@ -86,14 +86,31 @@ func buildMesh(mesh *project.Mesh) (*Mesh, error) {
 	return &mm, nil
 }
 
+func layoutMatrix(t []float32) mgl.Mat4 {
+	l := len(t)
+	if l == 3 {
+		return mgl.Translate3D(t[0], t[1], t[2])
+	} else if l == 7 {
+		a := mgl.Translate3D(t[0], t[1], t[2])
+		r := mgl.HomogRotate3D(mgl.DegToRad(t[3]), mgl.Vec3{t[4], t[5], t[6]})
+		return a.Mul4(r)
+	} else if l == 10 {
+		a := mgl.Translate3D(t[0], t[1], t[2])
+		r := mgl.HomogRotate3D(mgl.DegToRad(t[3]), mgl.Vec3{t[4], t[5], t[6]})
+		s := mgl.Scale3D(t[7], t[8], t[9])
+		return a.Mul4(r).Mul4(s)
+	}
+	return mgl.Ident4()
+}
+
 func buildProp(prop *project.Prop) (*Prop, error) {
 	var pp Prop
 	pp.Mesh = prop.Mesh
 
 	var matrix []float32
 	var aabb []float32
-	for _, pos := range prop.Position {
-		m := mgl.Translate3D(pos[0], pos[1], pos[2])
+	for _, l := range prop.Layout {
+		m := layoutMatrix(l)
 		matrix = append(matrix, m[:]...)
 	}
 
