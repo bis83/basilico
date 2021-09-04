@@ -1,12 +1,11 @@
 package project
 
 type Prop struct {
-	Name     string      `toml:"name"`
 	Mesh     string      `toml:"mesh"`
 	Material string      `toml:"material"`
-	Position [][]float64 `toml:"position"`
-	Scale    [][]float64 `toml:"scale"`
-	Rotation [][]float64 `toml:"rotation"`
+	Position [][]float32 `toml:"position"`
+	Scale    [][]float32 `toml:"scale"`
+	Rotation [][]float32 `toml:"rotation"`
 }
 
 type Mesh struct {

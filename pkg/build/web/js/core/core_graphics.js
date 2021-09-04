@@ -20,17 +20,11 @@ const makeCoreGraphics = () => {
         }
     };
 
-    const clearColor = [0, 0, 0];
     const clearCanvas = () => {
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-        gl.clearColor(clearColor[0], clearColor[1], clearColor[2], 0);
+        gl.clearColor(0, 0, 0, 1);
         gl.clearDepth(1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    };
-    const setClearColor = (r, g, b) => {
-        clearColor[0] = r;
-        clearColor[1] = g;
-        clearColor[2] = b;
     };
 
     const dir = vec3make();
@@ -63,6 +57,8 @@ const makeCoreGraphics = () => {
         calcMatrix();
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc(gl.LEQUAL);
     };
     const viewport = () => {
         return { x: 0, y: 0, w: gl.canvas.width, h: gl.canvas.height };

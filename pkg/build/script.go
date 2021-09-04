@@ -38,12 +38,13 @@ func writeBasilicoJs(cfg *project.Config, path string) error {
 		"web/js/core/core_gl_shader_linker.js",
 		"web/js/core/core_gl_tex_loader.js",
 		"web/js/core/core_graphics.js",
+		"web/js/core/core_scene.js",
 		"web/js/core/core_userdata.js",
 		"web/js/bundle/bundle_loader.js",
 		"web/js/layer/layer_debug_grid.js",
-		"web/js/layer/layer_debug_monitor.js",
 		"web/js/layer/layer_menu.js",
 		"web/js/layer/layer_player.js",
+		"web/js/layer/layer_prop.js",
 		"web/js/main.js",
 	}
 	var b bytes.Buffer

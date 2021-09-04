@@ -37,10 +37,11 @@ const GLES_FS_RECT_TEX = [
 const GLES_VS_MESH = [
     "layout (location = 0) in vec3 position;",
     "layout (location = 1) in vec4 color;",
+    "uniform mat4 world;",
     "uniform mat4 viewProj;",
     "out vec4 col;",
     GLES_MAIN_BEGIN,
-    "gl_Position = viewProj * vec4(position, 1);",
+    "gl_Position = viewProj * world * vec4(position, 1);",
     "col = color;",
     GLES_MAIN_END,
 ].join("");
@@ -56,7 +57,7 @@ const GLES_FS_MESH = [
 const LINKAGE_MAP = new Map([
     ["rect", {vs: GLES_VS_RECT, fs: GLES_FS_RECT, attr: [], uniform: ["xywh", "col"]}],
     ["rect_tex", {vs: GLES_VS_RECT, fs: GLES_FS_RECT_TEX, attr: [], uniform: ["xywh", "col", "tex"]}],
-    ["mesh", {vs: GLES_VS_MESH, fs: GLES_FS_MESH, attr: ["position", "color"], uniform: ["viewProj"]}],
+    ["mesh", {vs: GLES_VS_MESH, fs: GLES_FS_MESH, attr: ["position", "color"], uniform: ["viewProj", "world"]}],
 ]);
 
 const makeGLShaderLinker = (gl) => {

@@ -1,5 +1,8 @@
 
 const layerDebugGrid = (engine, graphics) => {
+    const worldMatrix = mat4make();
+    mat4identity(worldMatrix);
+
     let prog = graphics.shader("mesh");
     let mesh = graphics.mesh.makeMesh(
         [2, 0, 38],
@@ -91,10 +94,7 @@ const layerDebugGrid = (engine, graphics) => {
     const end = () => {
     };
     const draw = () => {
-        if(!engine.active()) {
-            return;
-        }
-
+        mesh.use();
         prog.use();
         const gl = graphics.gl();
         gl.uniformMatrix4fv(prog.viewProj, false, graphics.viewProj());

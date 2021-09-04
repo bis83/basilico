@@ -5,12 +5,14 @@ window.addEventListener("load", () => {
     const engine = makeCoreEngine();
     const gamepad = makeCoreGamepad();
     const graphics = makeCoreGraphics();
+    const scene = makeCoreScene();
     const userdata = makeCoreUserData();    
-    const bundle = makeBundleLoader(graphics);
+    const bundle = makeBundleLoader(graphics, scene);
     const layers = [
         layerMenu(engine, graphics),
         layerPlayer(gamepad, graphics),
         layerDebugGrid(engine, graphics),
+        layerProp(graphics, scene),
     ];
     userdata.start();
     bundle.start();

@@ -3,6 +3,7 @@ package build
 type Prop struct {
 	Mesh   string  `json:"mesh"`
 	Matrix *string `json:"matrix"`
+	AABB   *string `json:"aabb"`
 }
 
 type Mesh struct {

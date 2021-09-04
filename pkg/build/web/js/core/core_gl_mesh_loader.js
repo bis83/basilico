@@ -39,14 +39,16 @@ const makeGLMeshLoader = (gl) => {
         }
         gl.bindVertexArray(null);
 
+        const use = () => {
+            gl.bindVertexArray(vao);
+        }
         const draw = (no) => {
             no = no || 0;
             const mode = view[no*3+0];
             const first = view[no*3+1];
             const count = view[no*3+2];
-            gl.bindVertexArray(vao);
             if(ib) {
-                gl.drawElements(TYPES[mode], count, gl.UNSIGHED_SHORT, 2*first);
+                gl.drawElements(TYPES[mode], count, gl.UNSIGNED_SHORT, 2*first);
             } else {
                 gl.drawArrays(TYPES[mode], first, count);
             }
@@ -62,6 +64,7 @@ const makeGLMeshLoader = (gl) => {
             vao = null;
         };
         return {
+            use: use,
             draw: draw,
             dispose: dispose,
         };
@@ -69,7 +72,10 @@ const makeGLMeshLoader = (gl) => {
 
     const meshes = {};
     const loadMesh = (data) => {
-        meshes[data.name] = makeMesh(data.view, data.index, data.position, data.color);
+        const ib = data.index ? base64ToUint16Array(data.index) : null;
+        const pb = data.position ? base64ToFloat32Array(data.position) : null;
+        const cb = data.color ? base64ToUint8Array(data.color) : null;
+        meshes[data.name] = makeMesh(data.view, ib, pb, cb);
     };
     const getMesh = (name) => {
         return meshes[name];
