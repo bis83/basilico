@@ -17,8 +17,9 @@ type Mesh struct {
 
 type Specification struct {
 	// Configure
-	Type   string   `toml:"type"`
-	Import []string `toml:"import"`
+	Type           string    `toml:"type"`
+	Import         []string  `toml:"import"`
+	PlayerPosition []float32 `toml:"player_position"`
 
 	// Entity
 	Prop []*Prop `toml:"prop"`

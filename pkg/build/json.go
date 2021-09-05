@@ -150,6 +150,7 @@ func buildBundle(prj *project.Project, name string) (*Bundle, error) {
 		}
 		b.Prop = append(b.Prop, prop)
 	}
+	b.PlayerPosition = spec.PlayerPosition
 	return &b, nil
 }
 
@@ -199,10 +200,7 @@ func writeBundleJsons(prj *project.Project, dir string) error {
 	if err := makeDir(dir); err != nil {
 		return err
 	}
-	for name, spec := range prj.Spec {
-		if spec.Type != "scene" {
-			continue
-		}
+	for name, _ := range prj.Spec {
 		if err := writeBundle(prj, name, dir); err != nil {
 			return err
 		}

@@ -16,6 +16,9 @@ type Mesh struct {
 }
 
 type Bundle struct {
+	// Configure
+	PlayerPosition []float32 `json:"player_position"`
+
 	// Entity
 	Prop []*Prop `json:"prop"`
 

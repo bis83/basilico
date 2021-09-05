@@ -1,3 +1,4 @@
+type = "core"
 
 [[Mesh]]
 name = "debug-grid"

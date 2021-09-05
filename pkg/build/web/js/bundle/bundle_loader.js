@@ -24,6 +24,7 @@ const makeBundleLoader = (graphics, scene) => {
     };
 
     const start = () => {
+        load("core");
         load("start");
         load("hoge");
     };

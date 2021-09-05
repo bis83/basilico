@@ -18,6 +18,18 @@ func readConfig(path string) (*Config, error) {
 	return &cfg, nil
 }
 
+func readCoreSpec() (*Specification, error) {
+	data, err := fs.ReadFile("toml/core.toml")
+	if err != nil {
+		return nil, err
+	}
+	var spec Specification
+	if err := toml.Unmarshal(data, &spec); err != nil {
+		return nil, err
+	}
+	return &spec, nil	
+}
+
 func readSpec(path string) (*Specification, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -70,5 +82,10 @@ func Read(baseDir string) (*Project, error) {
 		name := filepath.Base(file[:len(file)-len(filepath.Ext(file))])
 		prj.Spec[name] = spec
 	}
+	spec, err3 := readCoreSpec()
+	if err3 != nil {		
+		return nil, err
+	}
+	prj.Spec["core"] = spec
 	return &prj, nil
 }

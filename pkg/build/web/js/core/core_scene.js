@@ -1,6 +1,6 @@
 
 const makeCoreScene = () => {
-    let current = "{{.StartScene}}"
+    let current = null;
     const scenes = {};
     const loadProp = (name, props) => {
         if(!scenes[name]) {

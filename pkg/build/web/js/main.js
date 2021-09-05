@@ -16,6 +16,8 @@ window.addEventListener("load", () => {
     userdata.start();
     bundle.start();
 
+    scene.change("{{.StartScene}}");
+
     // EventListener
     window.addEventListener("focus", (ev) => {
     });
