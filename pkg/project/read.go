@@ -27,7 +27,7 @@ func readCoreSpec() (*Specification, error) {
 	if err := toml.Unmarshal(data, &spec); err != nil {
 		return nil, err
 	}
-	return &spec, nil	
+	return &spec, nil
 }
 
 func readSpec(path string) (*Specification, error) {
@@ -83,7 +83,7 @@ func Read(baseDir string) (*Project, error) {
 		prj.Spec[name] = spec
 	}
 	spec, err3 := readCoreSpec()
-	if err3 != nil {		
+	if err3 != nil {
 		return nil, err
 	}
 	prj.Spec["core"] = spec

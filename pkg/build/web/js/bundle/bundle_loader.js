@@ -22,14 +22,10 @@ const makeBundleLoader = (graphics, scene) => {
             loadProp(name, json.prop);
         });
     };
-
-    const start = () => {
-        load("core");
-        load("start");
-        load("hoge");
+    const unload = (name) => {
     };
     return {
-        start: start,
-        tick: () => {}
+        load: load,
+        unload: unload,
     };
 };

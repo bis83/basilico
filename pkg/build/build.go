@@ -11,11 +11,11 @@ var fs embed.FS
 
 func Build(prj *project.Project, baseDir string) error {
 	htmlFile := filepath.Join(baseDir, "index.html")
-	if err := writeIndexHtml(prj.Cfg, htmlFile); err != nil {
+	if err := writeIndexHtml(prj, htmlFile); err != nil {
 		return err
 	}
 	jsFile := filepath.Join(baseDir, "basilico.js")
-	if err := writeBasilicoJs(prj.Cfg, jsFile); err != nil {
+	if err := writeBasilicoJs(prj, jsFile); err != nil {
 		return err
 	}
 	dataDir := filepath.Join(baseDir, "data")

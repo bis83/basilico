@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func writeIndexHtml(cfg *project.Config, path string) error {
+func writeIndexHtml(prj *project.Project, path string) error {
 	html, err := fs.ReadFile("web/index.html")
 	if err != nil {
 		return err
@@ -17,7 +17,7 @@ func writeIndexHtml(cfg *project.Config, path string) error {
 		return err
 	}
 	defer fp.Close()
-	if err := tpl.Execute(fp, cfg); err != nil {
+	if err := tpl.Execute(fp, prj); err != nil {
 		return err
 	}
 	return nil

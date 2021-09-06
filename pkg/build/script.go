@@ -12,19 +12,19 @@ import (
 	"text/template"
 )
 
-func executeJs(cfg *project.Config, wr io.Writer, path string) error {
+func executeJs(prj *project.Project, wr io.Writer, path string) error {
 	js, err := fs.ReadFile(path)
 	if err != nil {
 		return err
 	}
 	tpl := template.Must(template.New("js").Parse(string(js)))
-	if err := tpl.Execute(wr, cfg); err != nil {
+	if err := tpl.Execute(wr, prj); err != nil {
 		return err
 	}
 	return nil
 }
 
-func writeBasilicoJs(cfg *project.Config, path string) error {
+func writeBasilicoJs(prj *project.Project, path string) error {
 	filePaths := []string{
 		"web/js/math/base64.js",
 		"web/js/math/angle.js",
@@ -34,12 +34,12 @@ func writeBasilicoJs(cfg *project.Config, path string) error {
 		"web/js/core/core_audio.js",
 		"web/js/core/core_engine.js",
 		"web/js/core/core_gamepad.js",
-		"web/js/core/core_gl_mesh_loader.js",
-		"web/js/core/core_gl_shader_linker.js",
-		"web/js/core/core_gl_tex_loader.js",
 		"web/js/core/core_graphics.js",
 		"web/js/core/core_scene.js",
 		"web/js/core/core_userdata.js",
+		"web/js/bundle/bundle_gl_mesh.js",
+		"web/js/bundle/bundle_gl_shader.js",
+		"web/js/bundle/bundle_gl_texture.js",
 		"web/js/bundle/bundle_loader.js",
 		"web/js/layer/layer_menu.js",
 		"web/js/layer/layer_player.js",
@@ -48,18 +48,18 @@ func writeBasilicoJs(cfg *project.Config, path string) error {
 	}
 	var b bytes.Buffer
 	for _, path := range filePaths {
-		if err := executeJs(cfg, &b, path); err != nil {
+		if err := executeJs(prj, &b, path); err != nil {
 			return err
 		}
 	}
 	defines := map[string]string{
-		"LOGGING": strconv.FormatBool(cfg.Logging),
-		"ASSERT":  strconv.FormatBool(cfg.Assert),
+		"LOGGING": strconv.FormatBool(prj.Cfg.Logging),
+		"ASSERT":  strconv.FormatBool(prj.Cfg.Assert),
 	}
 	result := esbuild.Transform(string(b.Bytes()), esbuild.TransformOptions{
-		MinifyWhitespace:  cfg.Minify,
-		MinifyIdentifiers: cfg.Minify,
-		MinifySyntax:      cfg.Minify,
+		MinifyWhitespace:  prj.Cfg.Minify,
+		MinifyIdentifiers: prj.Cfg.Minify,
+		MinifySyntax:      prj.Cfg.Minify,
 		Format:            esbuild.FormatIIFE,
 		Define:            defines,
 	})
