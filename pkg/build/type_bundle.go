@@ -1,9 +1,10 @@
 package build
 
-type Screen struct {
+type Billboard struct {
 	Mesh    string  `json:"mesh"`
 	Matrix  *string `json:"matrix"`
 	IsPause bool    `json:"is_pause"`
+	IsOrtho bool    `json:"is_ortho"`
 }
 
 type Prop struct {
@@ -41,8 +42,8 @@ type Bundle struct {
 	PlayerPosition []float32 `json:"player_position"`
 
 	// Entity
-	Screen []*Screen `json:"screen"`
-	Prop   []*Prop   `json:"prop"`
+	Billboard []*Billboard `json:"billboard"`
+	Prop      []*Prop      `json:"prop"`
 
 	// Resources
 	Mesh    []*Mesh    `json:"mesh"`

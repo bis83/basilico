@@ -16,6 +16,14 @@ const makeBundleLoader = (graphics, scene) => {
             graphics.texture.load(data);
         }
     };
+    const loadShader = (shader) => {
+        if(!shader) {
+            return;
+        }
+        for(let data of shader) {
+            graphics.shader.load(data);
+        }
+    };
     const loadProp = (name, prop) => {
         if(!prop) {
             return;
@@ -26,8 +34,11 @@ const makeBundleLoader = (graphics, scene) => {
     const load = (name) => {
         const path = "data/" + name + ".json";
         fetch(path).then(res => res.json()).then((json) => {
+            // Resources
             loadMesh(json.mesh);
             loadTexture(json.texture);
+            loadShader(json.shader);
+            // Entity
             loadProp(name, json.prop);
         });
     };

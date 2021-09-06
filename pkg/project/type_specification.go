@@ -1,10 +1,11 @@
 package project
 
-type Screen struct {
+type Billboard struct {
 	Mesh     string      `toml:"mesh"`
 	Material string      `toml:"material"`
 	Layout   [][]float32 `toml:"layout"`
 	IsPause  bool        `toml:"is_pause"`
+	IsOrtho  bool        `toml:"is_ortho"`
 }
 
 type Prop struct {
@@ -44,8 +45,8 @@ type Specification struct {
 	PlayerPosition []float32 `toml:"player_position"`
 
 	// Entity
-	Screen []*Screen `toml:"screen"`
-	Prop   []*Prop   `toml:"prop"`
+	Billboard []*Billboard `toml:"billboard"`
+	Prop      []*Prop      `toml:"prop"`
 
 	// Resources
 	Mesh    []*Mesh    `toml:"mesh"`

@@ -41,6 +41,7 @@ func writeBasilicoJs(prj *project.Project, path string) error {
 		"web/js/bundle/bundle_gl_shader.js",
 		"web/js/bundle/bundle_gl_texture.js",
 		"web/js/bundle/bundle_loader.js",
+		"web/js/layer/layer_billboard.js",
 		"web/js/layer/layer_menu.js",
 		"web/js/layer/layer_player.js",
 		"web/js/layer/layer_prop.js",

@@ -6,8 +6,8 @@ const makeCoreGraphics = () => {
     ASSERT && console.assert(gl !== null);
     
     const meshLoader = makeGLMeshLoader(gl);
-    const textureLoader = makeGLTexLoader(gl);
-    const shaderLinker = makeGLShaderLinker(gl);
+    const textureLoader = makeGLTextureLoader(gl);
+    const shaderLoader = makeGLShaderLoader(gl);
 
     const fitCanvasSize = () => {
         const width = window.innerWidth;
@@ -71,6 +71,6 @@ const makeCoreGraphics = () => {
         viewProj: () => { return viewProj; },
         mesh: meshLoader,
         texture: textureLoader,
-        shader: shaderLinker,
+        shader: shaderLoader,
     };
 };

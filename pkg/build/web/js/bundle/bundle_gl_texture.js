@@ -1,5 +1,5 @@
 
-const makeGLTexLoader = (gl) => {
+const makeGLTextureLoader = (gl) => {
     const createGLTexture2D = (img) => {
         let texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -56,12 +56,12 @@ const makeGLTexLoader = (gl) => {
     };
 
     // loader
-    let textures = {};
+    const map = {};
     const get = (name) => {
-        return textures[name];
+        return map[name];
     };
     const load = (data) => {
-        textures[data.name] = makeText(data.text, data.width, data.height);
+        map[data.name] = makeText(data.text, data.width, data.height);
     };
     return {
         get: get,

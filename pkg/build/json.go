@@ -112,6 +112,16 @@ func buildTexture(tex *project.Texture) (*Texture, error) {
 	return &tt, nil
 }
 
+func buildShader(s *project.Shader) (*Shader, error) {
+	var ss Shader
+	ss.Name = s.Name
+	ss.VertexShader = s.VertexShader
+	ss.FragmentShader = s.FragmentShader
+	ss.Attribute = s.Attribute
+	ss.Uniform = s.Uniform
+	return &ss, nil
+}
+
 func buildProp(prop *project.Prop) (*Prop, error) {
 	var pp Prop
 	pp.Mesh = prop.Mesh
@@ -158,6 +168,13 @@ func buildBundle(prj *project.Project, name string) (*Bundle, error) {
 			return nil, err
 		}
 		b.Texture = append(b.Texture, tex)
+	}
+	for _, v := range spec.Shader {
+		shader, err := buildShader(v)
+		if err != nil {
+			return nil, err
+		}
+		b.Shader = append(b.Shader, shader)
 	}
 	for _, v := range spec.Prop {
 		prop, err := buildProp(v)
