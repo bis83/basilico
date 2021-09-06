@@ -4,7 +4,6 @@ const layerMenu = (engine, graphics) => {
     let y = 0;
     let w = 128;
     let h = 128;
-    const tex = graphics.texture.makeText("pause", w, h);
     const prog = graphics.shader("rect_tex");
 
     const begin = () => {
@@ -15,6 +14,10 @@ const layerMenu = (engine, graphics) => {
         if(engine.active()) {
             return;
         }
+        const tex = graphics.texture.get("pause")
+        if(!tex) {
+            return;
+        }
 
         const gl = graphics.gl();
         const vp = graphics.viewport();
@@ -22,7 +25,7 @@ const layerMenu = (engine, graphics) => {
         tex.bind(prog.tex);
         gl.uniform4f(prog.xywh,
             (x / vp.w),
-            (x / vp.h),
+            (y / vp.h),
             (w / vp.w),
             (h / vp.h));
         gl.uniform4f(prog.col, 1, 1, 1, 1);

@@ -70,20 +70,19 @@ const makeGLMeshLoader = (gl) => {
         };
     };
 
+    // loader
     const meshes = {};
-    const loadMesh = (data) => {
+    const get = (name) => {
+        return meshes[name];
+    };
+    const load = (data) => {
         const ib = data.index ? base64ToUint16Array(data.index) : null;
         const pb = data.position ? base64ToFloat32Array(data.position) : null;
         const cb = data.color ? base64ToUint8Array(data.color) : null;
         meshes[data.name] = makeMesh(data.view, ib, pb, cb);
     };
-    const getMesh = (name) => {
-        return meshes[name];
-    };
-
     return {
-        makeMesh: makeMesh,
-        loadMesh: loadMesh,
-        getMesh: getMesh,
+        get: get,
+        load: load,
     };
 };

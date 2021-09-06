@@ -83,3 +83,9 @@ color = [
      64,  64,  64, 255,
      64,  64,  64, 255,
 ]
+
+[[Texture]]
+name = "pause"
+text = "pause"
+width = 128
+height = 128

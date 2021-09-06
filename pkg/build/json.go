@@ -103,6 +103,15 @@ func layoutMatrix(t []float32) mgl.Mat4 {
 	return mgl.Ident4()
 }
 
+func buildTexture(tex *project.Texture) (*Texture, error) {
+	var tt Texture
+	tt.Name = tex.Name
+	tt.Text = tex.Text
+	tt.Width = tex.Width
+	tt.Height = tex.Height
+	return &tt, nil
+}
+
 func buildProp(prop *project.Prop) (*Prop, error) {
 	var pp Prop
 	pp.Mesh = prop.Mesh
@@ -142,6 +151,13 @@ func buildBundle(prj *project.Project, name string) (*Bundle, error) {
 			return nil, err
 		}
 		b.Mesh = append(b.Mesh, mesh)
+	}
+	for _, v := range spec.Texture {
+		tex, err := buildTexture(v)
+		if err != nil {
+			return nil, err
+		}
+		b.Texture = append(b.Texture, tex)
 	}
 	for _, v := range spec.Prop {
 		prop, err := buildProp(v)

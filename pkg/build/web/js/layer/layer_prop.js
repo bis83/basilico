@@ -16,7 +16,10 @@ const layerProp = (graphics, scene) => {
         gl.uniformMatrix4fv(prog.viewProj, false, graphics.viewProj());
 
         for(const prop of s.prop) {
-            const mesh = graphics.mesh.getMesh(prop.mesh);
+            const mesh = graphics.mesh.get(prop.mesh);
+            if(!mesh) {
+                continue;
+            }
             mesh.use();
 
             const count = prop.matrix.length/16;

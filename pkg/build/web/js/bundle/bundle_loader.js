@@ -4,8 +4,16 @@ const makeBundleLoader = (graphics, scene) => {
         if(!mesh) {
             return;
         }
-        for(let m of mesh) {
-            graphics.mesh.loadMesh(m);
+        for(let data of mesh) {
+            graphics.mesh.load(data);
+        }
+    };
+    const loadTexture = (texture) => {
+        if(!texture) {
+            return;
+        }
+        for(let data of texture) {
+            graphics.texture.load(data);
         }
     };
     const loadProp = (name, prop) => {
@@ -19,6 +27,7 @@ const makeBundleLoader = (graphics, scene) => {
         const path = "data/" + name + ".json";
         fetch(path).then(res => res.json()).then((json) => {
             loadMesh(json.mesh);
+            loadTexture(json.texture);
             loadProp(name, json.prop);
         });
     };

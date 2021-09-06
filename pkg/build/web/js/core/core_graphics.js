@@ -5,9 +5,9 @@ const makeCoreGraphics = () => {
     const gl = canvas.getContext("webgl2");
     ASSERT && console.assert(gl !== null);
     
-    const shaderLinker = makeGLShaderLinker(gl);
     const meshLoader = makeGLMeshLoader(gl);
-    const texLoader = makeGLTexLoader(gl);
+    const textureLoader = makeGLTexLoader(gl);
+    const shaderLinker = makeGLShaderLinker(gl);
 
     const fitCanvasSize = () => {
         const width = window.innerWidth;
@@ -64,13 +64,13 @@ const makeCoreGraphics = () => {
         return { x: 0, y: 0, w: gl.canvas.width, h: gl.canvas.height };
     };
     return {
+        gl: () => { return gl; },
         reset: reset,
         viewport: viewport,
         setCamera: setCamera,
         viewProj: () => { return viewProj; },
-        shader: shaderLinker,
         mesh: meshLoader,
-        texture: texLoader,
-        gl: () => { return gl; },
+        texture: textureLoader,
+        shader: shaderLinker,
     };
 };
