@@ -61,7 +61,15 @@ const makeGLTextureLoader = (gl) => {
         return map[name];
     };
     const load = (data) => {
-        map[data.name] = makeText(data.text, data.width, data.height);
+        const loadOne = (data) => {
+            map[data.name] = makeText(data.text, data.width, data.height);
+        };
+        if(!data) {
+            return;
+        }
+        for(let item of data) {
+            loadOne(item);
+        }
     };
     return {
         get: get,

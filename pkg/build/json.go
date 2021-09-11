@@ -122,9 +122,41 @@ func buildProp(prop *project.Prop) (*Prop, error) {
 	return &pp, nil
 }
 
+func isEmptyScene(s *Scene) bool {
+	if len(s.Prop) > 0 {
+		return false;
+	}
+	if len(s.Billboard) > 0 {
+		return false;
+	}
+	return true;
+}
+
+func buildScene(spec *project.Specification) (*Scene, error) {
+	var s Scene
+	for _, v := range spec.Scene.Prop {
+		prop, err := buildProp(v)
+		if err != nil {
+			return nil, err
+		}
+		s.Prop = append(s.Prop, prop)
+	}
+	if isEmptyScene(&s) {
+		return nil, nil
+	}
+	return &s, nil
+}
+
 func buildBundle(prj *project.Project, name string) (*Bundle, error) {
 	spec := prj.Spec[name]
+
 	var b Bundle
+	if scene, err := buildScene(spec); err != nil {
+		return nil, err
+	} else {
+		b.Scene = scene
+	}
+	// Resources
 	for _, v := range spec.Mesh {
 		mesh, err := buildMesh(v)
 		if err != nil {
@@ -146,14 +178,6 @@ func buildBundle(prj *project.Project, name string) (*Bundle, error) {
 		}
 		b.Shader = append(b.Shader, shader)
 	}
-	for _, v := range spec.Prop {
-		prop, err := buildProp(v)
-		if err != nil {
-			return nil, err
-		}
-		b.Prop = append(b.Prop, prop)
-	}
-	b.PlayerPosition = spec.PlayerPosition
 	return &b, nil
 }
 

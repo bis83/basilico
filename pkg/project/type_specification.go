@@ -14,6 +14,11 @@ type Prop struct {
 	Layout   [][]float32 `toml:"layout"`
 }
 
+type Scene struct {
+	Billboard []*Billboard `toml:"billboard"`
+	Prop      []*Prop      `toml:"prop"`
+}
+
 type Mesh struct {
 	Name     string    `toml:"name"`
 	Position []float32 `toml:"position"`
@@ -39,14 +44,8 @@ type Shader struct {
 }
 
 type Specification struct {
-	// Configure
-	Type           string    `toml:"type"`
-	Import         []string  `toml:"import"`
-	PlayerPosition []float32 `toml:"player_position"`
-
-	// Entity
-	Billboard []*Billboard `toml:"billboard"`
-	Prop      []*Prop      `toml:"prop"`
+	Import []string `toml:"import"`
+	Scene  Scene   `toml:"scene"`
 
 	// Resources
 	Mesh    []*Mesh    `toml:"mesh"`

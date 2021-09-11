@@ -1,6 +1,5 @@
-type = "core"
 
-[[Mesh]]
+[[mesh]]
 name = "rect"
 position = [
   -1.0, -1.0, 0.0,
@@ -25,7 +24,7 @@ index = [
   1, 3, 1,
 ]
 
-[[Mesh]]
+[[mesh]]
 name = "debug-grid"
 is_line = true
 position = [
@@ -109,13 +108,13 @@ color = [
    64,  64,  64, 255,
 ]
 
-[[Texture]]
+[[texture]]
 name = "pause"
 text = "pause"
 width = 128
 height = 128
 
-[[Shader]]
+[[shader]]
 name = "mesh_pc"
 vertex_shader = """
 #version 300 es
@@ -138,7 +137,7 @@ void main() { fc = vc; }
 """
 uniform = ["w", "vp"]
 
-[[Shader]]
+[[shader]]
 name = "mesh_pct"
 vertex_shader = """
 #version 300 es

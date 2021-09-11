@@ -54,7 +54,15 @@ const makeGLShaderLoader = (gl) => {
         return map[name];  
     };
     const load = (data) => {
-        map[data.name] = linkProgram(data.vertex_shader, data.fragment_shader, data.uniform);
+        const loadOne = (data) => {
+            map[data.name] = linkProgram(data.vertex_shader, data.fragment_shader, data.uniform);
+        };
+        if(!data) {
+            return;
+        }
+        for(let item of data) {
+            loadOne(item);
+        }
     };
     return {
         get: get,

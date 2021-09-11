@@ -13,6 +13,11 @@ type Prop struct {
 	AABB   *string `json:"aabb"`
 }
 
+type Scene struct {
+	Billboard []*Billboard `json:"billboard"`
+	Prop      []*Prop      `json:"prop"`
+}
+
 type Mesh struct {
 	Name     string  `json:"name"`
 	View     []int   `json:"view"`
@@ -38,13 +43,7 @@ type Shader struct {
 }
 
 type Bundle struct {
-	// Configure
-	PlayerPosition []float32 `json:"player_position"`
-
-	// Entity
-	Billboard []*Billboard `json:"billboard"`
-	Prop      []*Prop      `json:"prop"`
-
+	Scene *Scene `json:"scene"`
 	// Resources
 	Mesh    []*Mesh    `json:"mesh"`
 	Texture []*Texture `json:"texture"`

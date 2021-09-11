@@ -1,6 +1,5 @@
-type = "scene"
 
-[[Prop]]
+[[scene.prop]]
 mesh = "debug-grid"
 layout = [
     [0.0, 0.0, 0.0],

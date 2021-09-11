@@ -76,10 +76,18 @@ const makeGLMeshLoader = (gl) => {
         return map[name];
     };
     const load = (data) => {
-        const ib = data.index ? base64ToUint16Array(data.index) : null;
-        const pb = data.position ? base64ToFloat32Array(data.position) : null;
-        const cb = data.color ? base64ToUint8Array(data.color) : null;
-        map[data.name] = makeMesh(data.view, ib, pb, cb);
+        const loadOne = (data) => {
+            const ib = data.index ? base64ToUint16Array(data.index) : null;
+            const pb = data.position ? base64ToFloat32Array(data.position) : null;
+            const cb = data.color ? base64ToUint8Array(data.color) : null;
+            map[data.name] = makeMesh(data.view, ib, pb, cb);        
+        };
+        if(!data) {
+            return;
+        }
+        for(let item of data) {
+            loadOne(item);
+        }
     };
     return {
         get: get,
