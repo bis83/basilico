@@ -12,7 +12,7 @@ const makeCoreUserConfig = () => {
 
 const makeCoreUserProgress = () => {
     let scene = "";
-    const angle = [90, 0];
+    const angle = [0, 0];
     const pos = vec3make();
     vec3set(pos, 0, 0, 0);
 

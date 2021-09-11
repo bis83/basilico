@@ -1,4 +1,19 @@
 
+const CFG = {
+    START: {
+        SCENE: "{{.Cfg.Start.Scene}}",
+        POSITION: [
+            parseFloat("{{index .Cfg.Start.Position 0}}"),
+            parseFloat("{{index .Cfg.Start.Position 1}}"),
+            parseFloat("{{index .Cfg.Start.Position 2}}")
+        ],
+        ANGLE: [
+            parseFloat("{{index .Cfg.Start.Angle 0}}"),
+            parseFloat("{{index .Cfg.Start.Angle 1}}")
+        ]
+    },
+};
+
 window.addEventListener("load", () => {
     // CoreSystem
     const audio = makeCoreAudio();
@@ -19,7 +34,9 @@ window.addEventListener("load", () => {
     loader.load("{{$key}}");
     // {{end}}
 
-    userdata.prog().setScene("{{.Cfg.StartScene}}");
+    userdata.prog().setScene(CFG.START.SCENE);
+    userdata.prog().setPosition(CFG.START.POSITION[0], CFG.START.POSITION[1], CFG.START.POSITION[2]);
+    userdata.prog().setAngle(CFG.START.ANGLE[0], CFG.START.ANGLE[1]);
 
     // EventListener
     window.addEventListener("focus", (ev) => {
