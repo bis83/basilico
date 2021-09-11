@@ -1,9 +1,10 @@
 package build
 
 import (
-	project "github.com/bis83/basilico/pkg/project"
 	"html/template"
 	"os"
+
+	project "github.com/bis83/basilico/pkg/project"
 )
 
 func writeIndexHtml(prj *project.Project, path string) error {

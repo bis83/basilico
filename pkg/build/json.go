@@ -1,73 +1,45 @@
 package build
 
 import (
-	"bytes"
-	"encoding/base64"
-	"encoding/binary"
 	"encoding/json"
-	project "github.com/bis83/basilico/pkg/project"
-	mgl "github.com/go-gl/mathgl/mgl32"
 	"os"
 	"path/filepath"
+
+	mgl "github.com/go-gl/mathgl/mgl32"
+
+	file "github.com/bis83/basilico/pkg/file"
+	project "github.com/bis83/basilico/pkg/project"
 )
-
-func encodeFloat32Array(data []float32) ([]byte, error) {
-	var b bytes.Buffer
-	if err := binary.Write(&b, binary.LittleEndian, data); err != nil {
-		return nil, err
-	}
-	return b.Bytes(), nil
-}
-
-func encodeUint8Array(data []uint8) ([]byte, error) {
-	var b bytes.Buffer
-	if err := binary.Write(&b, binary.LittleEndian, data); err != nil {
-		return nil, err
-	}
-	return b.Bytes(), nil
-}
-
-func encodeUint16Array(data []uint16) ([]byte, error) {
-	var b bytes.Buffer
-	if err := binary.Write(&b, binary.LittleEndian, data); err != nil {
-		return nil, err
-	}
-	return b.Bytes(), nil
-}
 
 func buildMesh(mesh *project.Mesh) (*Mesh, error) {
 	var mm Mesh
 	mm.Name = mesh.Name
 	if len(mesh.Position) > 0 {
-		bytes, err := encodeFloat32Array(mesh.Position)
+		str, err := encodeFloat32Array(mesh.Position)
 		if err != nil {
 			return nil, err
 		}
-		str := base64.StdEncoding.EncodeToString(bytes)
 		mm.Position = &str
 	}
 	if len(mesh.Color) > 0 {
-		bytes, err := encodeUint8Array(mesh.Color)
+		str, err := encodeUint8Array(mesh.Color)
 		if err != nil {
 			return nil, err
 		}
-		str := base64.StdEncoding.EncodeToString(bytes)
 		mm.Color = &str
 	}
 	if len(mesh.Uv) > 0 {
-		bytes, err := encodeFloat32Array(mesh.Uv)
+		str, err := encodeFloat32Array(mesh.Uv)
 		if err != nil {
 			return nil, err
 		}
-		str := base64.StdEncoding.EncodeToString(bytes)
 		mm.Uv = &str
 	}
 	if len(mesh.Index) > 0 {
-		bytes, err := encodeUint16Array(mesh.Index)
+		str, err := encodeUint16Array(mesh.Index)
 		if err != nil {
 			return nil, err
 		}
-		str := base64.StdEncoding.EncodeToString(bytes)
 		mm.Index = &str
 	}
 	var mode int
@@ -84,23 +56,6 @@ func buildMesh(mesh *project.Mesh) (*Mesh, error) {
 	}
 	mm.View = []int{mode, 0, count}
 	return &mm, nil
-}
-
-func layoutMatrix(t []float32) mgl.Mat4 {
-	l := len(t)
-	if l == 3 {
-		return mgl.Translate3D(t[0], t[1], t[2])
-	} else if l == 7 {
-		a := mgl.Translate3D(t[0], t[1], t[2])
-		r := mgl.HomogRotate3D(mgl.DegToRad(t[3]), mgl.Vec3{t[4], t[5], t[6]})
-		return a.Mul4(r)
-	} else if l == 10 {
-		a := mgl.Translate3D(t[0], t[1], t[2])
-		r := mgl.HomogRotate3D(mgl.DegToRad(t[3]), mgl.Vec3{t[4], t[5], t[6]})
-		s := mgl.Scale3D(t[7], t[8], t[9])
-		return a.Mul4(r).Mul4(s)
-	}
-	return mgl.Ident4()
 }
 
 func buildTexture(tex *project.Texture) (*Texture, error) {
@@ -122,6 +77,23 @@ func buildShader(s *project.Shader) (*Shader, error) {
 	return &ss, nil
 }
 
+func layoutMatrix(t []float32) mgl.Mat4 {
+	l := len(t)
+	if l == 3 {
+		return mgl.Translate3D(t[0], t[1], t[2])
+	} else if l == 7 {
+		a := mgl.Translate3D(t[0], t[1], t[2])
+		r := mgl.HomogRotate3D(mgl.DegToRad(t[3]), mgl.Vec3{t[4], t[5], t[6]})
+		return a.Mul4(r)
+	} else if l == 10 {
+		a := mgl.Translate3D(t[0], t[1], t[2])
+		r := mgl.HomogRotate3D(mgl.DegToRad(t[3]), mgl.Vec3{t[4], t[5], t[6]})
+		s := mgl.Scale3D(t[7], t[8], t[9])
+		return a.Mul4(r).Mul4(s)
+	}
+	return mgl.Ident4()
+}
+
 func buildProp(prop *project.Prop) (*Prop, error) {
 	var pp Prop
 	pp.Mesh = prop.Mesh
@@ -134,19 +106,17 @@ func buildProp(prop *project.Prop) (*Prop, error) {
 	}
 
 	if len(matrix) > 0 {
-		bytes, err := encodeFloat32Array(matrix)
+		str, err := encodeFloat32Array(matrix)
 		if err != nil {
 			return nil, err
 		}
-		str := base64.StdEncoding.EncodeToString(bytes)
 		pp.Matrix = &str
 	}
 	if len(aabb) > 0 {
-		bytes, err := encodeFloat32Array(aabb)
+		str, err := encodeFloat32Array(aabb)
 		if err != nil {
 			return nil, err
 		}
-		str := base64.StdEncoding.EncodeToString(bytes)
 		pp.AABB = &str
 	}
 	return &pp, nil
@@ -218,19 +188,8 @@ func writeBundle(prj *project.Project, name string, dir string) error {
 	return nil
 }
 
-func makeDir(dir string) error {
-	_, err := os.Stat(dir)
-	if err == nil {
-		return nil
-	}
-	if err2 := os.Mkdir(dir, 0777); err2 != nil {
-		return err2
-	}
-	return nil
-}
-
 func writeBundleJsons(prj *project.Project, dir string) error {
-	if err := makeDir(dir); err != nil {
+	if err := file.MakeDir(dir); err != nil {
 		return err
 	}
 	for name, _ := range prj.Spec {

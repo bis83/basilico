@@ -1,5 +1,5 @@
 
-const makeBundleLoader = (graphics, scene) => {
+const makeBundleLoader = (graphics) => {
     const loadMesh = (mesh) => {
         if(!mesh) {
             return;
@@ -24,12 +24,9 @@ const makeBundleLoader = (graphics, scene) => {
             graphics.shader.load(data);
         }
     };
-    const loadProp = (name, prop) => {
-        if(!prop) {
-            return;
-        }
-        scene.loadProp(name, prop);
-    };
+
+    const billboard = makeSceneBillboardLoader();
+    const prop = makeScenePropLoader();
 
     const load = (name) => {
         const path = "data/" + name + ".json";
@@ -39,7 +36,8 @@ const makeBundleLoader = (graphics, scene) => {
             loadTexture(json.texture);
             loadShader(json.shader);
             // Entity
-            loadProp(name, json.prop);
+            billboard.load(name, json.billboard);
+            prop.load(name, json.prop);
         });
     };
     const unload = (name) => {
@@ -47,5 +45,7 @@ const makeBundleLoader = (graphics, scene) => {
     return {
         load: load,
         unload: unload,
+        billboard: billboard,
+        prop: prop,
     };
 };

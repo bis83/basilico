@@ -3,13 +3,15 @@ package build
 import (
 	"bytes"
 	"errors"
-	project "github.com/bis83/basilico/pkg/project"
-	esbuild "github.com/evanw/esbuild/pkg/api"
 	"io"
 	"os"
 	"strconv"
 	"strings"
 	"text/template"
+
+	esbuild "github.com/evanw/esbuild/pkg/api"
+
+	project "github.com/bis83/basilico/pkg/project"
 )
 
 func executeJs(prj *project.Project, wr io.Writer, path string) error {
@@ -24,7 +26,7 @@ func executeJs(prj *project.Project, wr io.Writer, path string) error {
 	return nil
 }
 
-func writeBasilicoJs(prj *project.Project, path string) error {
+func makeScriptJs(prj *project.Project) ([]byte, error) {
 	filePaths := []string{
 		"web/js/math/base64.js",
 		"web/js/math/angle.js",
@@ -35,22 +37,22 @@ func writeBasilicoJs(prj *project.Project, path string) error {
 		"web/js/core/core_engine.js",
 		"web/js/core/core_gamepad.js",
 		"web/js/core/core_graphics.js",
-		"web/js/core/core_scene.js",
 		"web/js/core/core_userdata.js",
 		"web/js/bundle/bundle_gl_mesh.js",
 		"web/js/bundle/bundle_gl_shader.js",
 		"web/js/bundle/bundle_gl_texture.js",
+		"web/js/bundle/bundle_scene_billboard.js",
+		"web/js/bundle/bundle_scene_prop.js",
 		"web/js/bundle/bundle_loader.js",
-		"web/js/layer/layer_billboard.js",
-		"web/js/layer/layer_menu.js",
-		"web/js/layer/layer_player.js",
-		"web/js/layer/layer_prop.js",
+		"web/js/update/update_player.js",
+		"web/js/draw/draw_billboard.js",
+		"web/js/draw/draw_prop.js",
 		"web/js/main.js",
 	}
 	var b bytes.Buffer
 	for _, path := range filePaths {
 		if err := executeJs(prj, &b, path); err != nil {
-			return err
+			return nil, err
 		}
 	}
 	defines := map[string]string{
@@ -67,10 +69,18 @@ func writeBasilicoJs(prj *project.Project, path string) error {
 	if len(result.Errors) > 0 || len(result.Warnings) > 0 {
 		e := esbuild.FormatMessages(result.Errors, esbuild.FormatMessagesOptions{})
 		w := esbuild.FormatMessages(result.Warnings, esbuild.FormatMessagesOptions{})
-		return errors.New(strings.Join(append(e, w...), "\n"))
+		return nil, errors.New(strings.Join(append(e, w...), "\n"))
 	}
-	if err := os.WriteFile(path, result.Code, 0666); err != nil {
+	return result.Code, nil
+}
+
+func writeScriptJs(prj *project.Project, path string) error {
+	data, err := makeScriptJs(prj)
+	if err != nil {
 		return err
+	}
+	if err2 := os.WriteFile(path, data, 0666); err2 != nil {
+		return err2
 	}
 	return nil
 }

@@ -5,21 +5,21 @@ window.addEventListener("load", () => {
     const engine = makeCoreEngine();
     const gamepad = makeCoreGamepad();
     const graphics = makeCoreGraphics();
-    const scene = makeCoreScene();
     const userdata = makeCoreUserData();    
-    const loader = makeBundleLoader(graphics, scene);
-    const layers = [
-        layerMenu(engine, graphics),
-        layerPlayer(gamepad, graphics),
-        layerProp(graphics, scene),
+    const loader = makeBundleLoader(graphics);
+    const update = [
+        updatePlayer(gamepad, graphics, userdata),
     ];
-    userdata.start();
+    const draw = [
+        drawProp(graphics, userdata, loader),
+        drawBillboard(engine, graphics),
+    ];
 
     // {{range $key, $value := .Spec}}
     loader.load("{{$key}}");
     // {{end}}
 
-    scene.change("{{.Cfg.StartScene}}");
+    userdata.prog().setScene("{{.Cfg.StartScene}}");
 
     // EventListener
     window.addEventListener("focus", (ev) => {
@@ -90,15 +90,14 @@ window.addEventListener("load", () => {
         engine.tick();
 
         engine.begin();
-        layers.forEach(l => l.begin());
+        update.forEach(a => a.begin());
         engine.execute();
-        layers.forEach(l => l.end());
+        update.forEach(a => a.end());
         engine.end();
         audio.tick();
-        userdata.tick();
 
         graphics.reset();
-        layers.forEach(l => l.draw());
+        draw.forEach(a => a.draw());
         requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);

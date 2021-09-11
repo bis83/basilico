@@ -3,6 +3,8 @@ package args
 import (
 	"os"
 	"path/filepath"
+
+	file "github.com/bis83/basilico/pkg/file"
 )
 
 func Parse() (*Args, error) {
@@ -14,14 +16,13 @@ func Parse() (*Args, error) {
 		return &Args{BaseDir: filepath.Clean(cwd)}, nil
 	}
 	path := os.Args[1]
-	info, err := os.Stat(path)
-	if err != nil {
-		if err2 := os.MkdirAll(path, 0777); err2 != nil {
-			return nil, err2
+	if file.Exists(path) {
+		if err := file.MakeDir(path); err != nil {
+			return nil, err
 		}
 		return &Args{BaseDir: filepath.Clean(path)}, nil
 	} else {
-		if info.IsDir() {
+		if file.IsDir(path) {
 			return &Args{BaseDir: filepath.Clean(path)}, nil
 		} else {
 			return &Args{BaseDir: filepath.Clean(filepath.Dir(path))}, nil

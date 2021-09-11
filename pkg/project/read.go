@@ -1,9 +1,10 @@
 package project
 
 import (
-	toml "github.com/pelletier/go-toml/v2"
 	"os"
 	"path/filepath"
+
+	toml "github.com/pelletier/go-toml/v2"
 )
 
 func readConfig(path string) (*Config, error) {

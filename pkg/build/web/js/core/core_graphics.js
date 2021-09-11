@@ -31,12 +31,13 @@ const makeCoreGraphics = () => {
     const eye = vec3make();
     const at = vec3make();
     const up = vec3make();
-    const fovy = Math.PI / 8;
+    const fovy = deg2rad(30);
     const zNear = 0.1;
     const zFar = 1000;
     const view = mat4make();
     const proj = mat4make();
     const viewProj = mat4make();
+    const ortho = mat4make();
     const setCamera = (x, y, z, ha, va) => {
         vec3dir(dir, ha, va);
         vec3set(eye, x, y, z);
@@ -49,6 +50,7 @@ const makeCoreGraphics = () => {
         mat4perspective(proj, fovy, gl.canvas.width / gl.canvas.height, zNear, zFar);
         mat4copy(viewProj, view);
         mat4multiply(viewProj, proj);
+        mat4ortho(ortho, gl.canvas.width, gl.canvas.height, zNear, zFar);
     };
 
     const reset = () => {
@@ -60,15 +62,12 @@ const makeCoreGraphics = () => {
         gl.enable(gl.DEPTH_TEST);
         gl.depthFunc(gl.LEQUAL);
     };
-    const viewport = () => {
-        return { x: 0, y: 0, w: gl.canvas.width, h: gl.canvas.height };
-    };
     return {
         gl: () => { return gl; },
         reset: reset,
-        viewport: viewport,
         setCamera: setCamera,
         viewProj: () => { return viewProj; },
+        ortho: () => { return ortho; },
         mesh: meshLoader,
         texture: textureLoader,
         shader: shaderLoader,
