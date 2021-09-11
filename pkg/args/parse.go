@@ -17,15 +17,15 @@ func Parse() (*Args, error) {
 	}
 	path := os.Args[1]
 	if file.Exists(path) {
-		if err := file.MakeDir(path); err != nil {
-			return nil, err
-		}
-		return &Args{BaseDir: filepath.Clean(path)}, nil
-	} else {
 		if file.IsDir(path) {
 			return &Args{BaseDir: filepath.Clean(path)}, nil
 		} else {
 			return &Args{BaseDir: filepath.Clean(filepath.Dir(path))}, nil
 		}
+	} else {
+		if err := file.MakeDir(path); err != nil {
+			return nil, err
+		}
+		return &Args{BaseDir: filepath.Clean(path)}, nil
 	}
 }

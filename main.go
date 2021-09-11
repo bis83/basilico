@@ -1,9 +1,10 @@
 package main
 
 import (
+	"log"
+
 	args "github.com/bis83/basilico/pkg/args"
 	run "github.com/bis83/basilico/pkg/run"
-	"log"
 )
 
 func main() {

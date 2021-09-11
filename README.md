@@ -18,7 +18,7 @@ go build -ldflags '-s -w'
 - Create `_config.toml` (a project setting file) if not exists.
 - Start a server. See `localhost:8080`
 - Customize your project and rerun.
-- `index.html` `basilico.js` are generated files. (No need add to repository)
+- `index.html` `app.js` `data/` are generated files. (No need add to repository)
 
 ## License
 

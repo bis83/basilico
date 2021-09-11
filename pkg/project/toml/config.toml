@@ -3,4 +3,4 @@ addr = ":8080"
 logging = false
 assert = false
 minify = true
-start_scene = "main"
+start_scene = "empty"
