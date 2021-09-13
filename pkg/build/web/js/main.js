@@ -27,7 +27,7 @@ window.addEventListener("load", () => {
     ];
     const draw = [
         drawProp(graphics, userdata, loader),
-        drawBillboard(engine, graphics),
+        drawBillboard(engine, graphics, userdata, loader),
     ];
 
     // {{range $key, $value := .Spec}}

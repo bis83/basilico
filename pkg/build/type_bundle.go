@@ -2,6 +2,7 @@ package build
 
 type Billboard struct {
 	Mesh    string  `json:"mesh"`
+	Texture string  `json:"texture"`
 	Matrix  *string `json:"matrix"`
 	IsPause bool    `json:"is_pause"`
 	IsOrtho bool    `json:"is_ortho"`

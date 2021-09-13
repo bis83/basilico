@@ -10,11 +10,11 @@ const makeScenePropLoader = () => {
         if(!data) {
             return;
         }
-        for(let p of data) {
+        for(let item of data) {
             const obj = {
-                mesh: p.mesh,
-                matrix: p.matrix ? base64ToFloat32Array(p.matrix) : null,
-                aabb: p.aabb ? base64ToFloat32Array(p.aabb) : null,
+                mesh: item.mesh,
+                matrix: item.matrix ? base64ToFloat32Array(item.matrix) : null,
+                aabb: item.aabb ? base64ToFloat32Array(item.aabb) : null,
             };
             map[name].push(obj);
         }

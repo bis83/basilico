@@ -94,6 +94,28 @@ func layoutMatrix(t []float32) mgl.Mat4 {
 	return mgl.Ident4()
 }
 
+func buildBillboard(b *project.Billboard) (*Billboard, error) {
+	var bb Billboard
+	bb.Mesh = b.Mesh
+	bb.Texture = b.Texture
+	bb.IsPause = b.IsPause
+	bb.IsOrtho = b.IsOrtho
+
+	var matrix []float32
+	for _, l := range b.Layout {
+		m := layoutMatrix(l)
+		matrix = append(matrix, m[:]...)
+	}
+	if len(matrix) > 0 {
+		str, err := encodeFloat32Array(matrix)
+		if err != nil {
+			return nil, err
+		}
+		bb.Matrix = &str
+	}
+	return &bb, nil
+}
+
 func buildProp(prop *project.Prop) (*Prop, error) {
 	var pp Prop
 	pp.Mesh = prop.Mesh
@@ -124,16 +146,23 @@ func buildProp(prop *project.Prop) (*Prop, error) {
 
 func isEmptyScene(s *Scene) bool {
 	if len(s.Prop) > 0 {
-		return false;
+		return false
 	}
 	if len(s.Billboard) > 0 {
-		return false;
+		return false
 	}
-	return true;
+	return true
 }
 
 func buildScene(spec *project.Specification) (*Scene, error) {
 	var s Scene
+	for _, v := range spec.Scene.Billboard {
+		billboard, err := buildBillboard(v)
+		if err != nil {
+			return nil, err
+		}
+		s.Billboard = append(s.Billboard, billboard)
+	}
 	for _, v := range spec.Scene.Prop {
 		prop, err := buildProp(v)
 		if err != nil {

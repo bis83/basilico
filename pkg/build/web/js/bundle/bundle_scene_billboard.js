@@ -10,8 +10,15 @@ const makeSceneBillboardLoader = () => {
         if(!data) {
             return;
         }
-        for(let p of data) {
-            map[name].push({});
+        for(let item of data) {
+            const obj = {
+                mesh: item.mesh,
+                texture: item.texture,
+                matrix: item.matrix ? base64ToFloat32Array(item.matrix) : null,
+                is_ortho: item.is_ortho,
+                is_pause: item.is_pause,
+            };
+            map[name].push(obj);
         }
     };
     return {

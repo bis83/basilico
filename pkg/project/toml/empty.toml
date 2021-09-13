@@ -4,3 +4,12 @@ mesh = "debug-grid"
 layout = [
     [0.0, 0.0, 0.0],
 ]
+
+[[scene.billboard]]
+mesh = "rect"
+texture = "pause"
+is_ortho = true
+is_pause = true
+layout = [
+    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 128.0, 128.0, 1.0],
+]

@@ -50,22 +50,34 @@ const makeCoreGraphics = () => {
         mat4perspective(proj, fovy, gl.canvas.width / gl.canvas.height, zNear, zFar);
         mat4copy(viewProj, view);
         mat4multiply(viewProj, proj);
-        mat4ortho(ortho, gl.canvas.width, gl.canvas.height, zNear, zFar);
+        mat4ortho(ortho, gl.canvas.width, gl.canvas.height, 0, 1);
     };
 
     const reset = () => {
         fitCanvasSize();
         clearCanvas();
         calcMatrix();
-        gl.enable(gl.BLEND);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        gl.enable(gl.DEPTH_TEST);
-        gl.depthFunc(gl.LEQUAL);
+    };
+    const setState = (depth, alpha) => {
+        if(depth) {
+            gl.enable(gl.DEPTH_TEST);
+            gl.depthFunc(gl.LEQUAL);
+        } else {
+            gl.disable(gl.DEPTH_TEST);
+        }
+        if(alpha) {
+            gl.enable(gl.BLEND);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        } else {
+            gl.disable(gl.BLEND);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        }
     };
     return {
         gl: () => { return gl; },
         reset: reset,
         setCamera: setCamera,
+        setState: setState,
         viewProj: () => { return viewProj; },
         ortho: () => { return ortho; },
         mesh: meshLoader,

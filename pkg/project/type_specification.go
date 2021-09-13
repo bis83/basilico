@@ -1,11 +1,11 @@
 package project
 
 type Billboard struct {
-	Mesh     string      `toml:"mesh"`
-	Material string      `toml:"material"`
-	Layout   [][]float32 `toml:"layout"`
-	IsPause  bool        `toml:"is_pause"`
-	IsOrtho  bool        `toml:"is_ortho"`
+	Mesh    string      `toml:"mesh"`
+	Texture string      `toml:"texture"`
+	Layout  [][]float32 `toml:"layout"`
+	IsPause bool        `toml:"is_pause"`
+	IsOrtho bool        `toml:"is_ortho"`
 }
 
 type Prop struct {
@@ -45,7 +45,7 @@ type Shader struct {
 
 type Specification struct {
 	Import []string `toml:"import"`
-	Scene  Scene   `toml:"scene"`
+	Scene  Scene    `toml:"scene"`
 
 	// Resources
 	Mesh    []*Mesh    `toml:"mesh"`
