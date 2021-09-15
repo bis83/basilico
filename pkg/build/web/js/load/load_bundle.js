@@ -1,5 +1,8 @@
 
-const makeBundleLoader = (graphics) => {
+const makeLoadBundle = (gl) => {
+    const mesh = makeGLMeshLoader(gl);
+    const shader = makeGLShaderLoader(gl);
+    const texture = makeGLTextureLoader(gl);
     const billboard = makeSceneBillboardLoader();
     const prop = makeScenePropLoader();
     
@@ -12,9 +15,9 @@ const makeBundleLoader = (graphics) => {
                 prop.load(name, json.scene.prop);
             }
             // Resource
-            graphics.mesh.load(json.mesh);
-            graphics.texture.load(json.texture);
-            graphics.shader.load(json.shader);
+            mesh.load(json.mesh);
+            texture.load(json.texture);
+            shader.load(json.shader);
         });
     };
     const unload = (name) => {
@@ -22,6 +25,9 @@ const makeBundleLoader = (graphics) => {
     return {
         load: load,
         unload: unload,
+        mesh: mesh,
+        shader: shader,
+        texture: texture,
         billboard: billboard,
         prop: prop,
     };

@@ -15,52 +15,48 @@ const CFG = {
 };
 
 window.addEventListener("load", () => {
-    // CoreSystem
-    const audio = makeCoreAudio();
-    const engine = makeCoreEngine();
-    const gamepad = makeCoreGamepad();
-    const graphics = makeCoreGraphics();
-    const userdata = makeCoreUserData();    
-    const loader = makeBundleLoader(graphics);
-    const update = [
-        updatePlayer(gamepad, graphics, userdata),
-    ];
-    const draw = [
-        drawProp(graphics, userdata, loader),
-        drawBillboard(engine, graphics, userdata, loader),
-    ];
+    const canvas = document.getElementById("main");
+    ASSERT && console.assert(canvas !== null);
+    const gl = canvas.getContext("webgl2");
+    ASSERT && console.assert(gl !== null);
+    const audio = new AudioContext();
+    ASSERT && console.assert(audio !== null);
+    // const masterNode = audio.createGain();
+    // masterNode.gain.value = masterVolume();
+    // masterNode.connect(audio.destination);
 
+    // load
+    const bundle = makeLoadBundle(gl);
     // {{range $key, $value := .Spec}}
-    loader.load("{{$key}}");
+    bundle.load("{{$key}}");
     // {{end}}
 
-    userdata.prog().setScene(CFG.START.SCENE);
-    userdata.prog().setPosition(CFG.START.POSITION[0], CFG.START.POSITION[1], CFG.START.POSITION[2]);
-    userdata.prog().setAngle(CFG.START.ANGLE[0], CFG.START.ANGLE[1]);
+    // store
+    const gamepad = makeStoreGamepad();
+    const frame = makeStoreFrame();
+    const save = makeStoreSave();
+    save.setScene(CFG.START.SCENE);
+    save.setPosition(CFG.START.POSITION[0], CFG.START.POSITION[1], CFG.START.POSITION[2]);
+    save.setAngle(CFG.START.ANGLE[0], CFG.START.ANGLE[1]);
 
     // EventListener
     window.addEventListener("focus", (ev) => {
     });
     window.addEventListener("blur", (ev) => {
         gamepad.blur(ev);
-        engine.suspend();
     });
     window.addEventListener("resize", (ev) => {
     });
     window.addEventListener("gamepadconnected", (ev) => {
-        LOGGING && console.log("gamepadconnected");
         gamepad.gamepadconnected(ev);
     });
     window.addEventListener("gamepaddisconnected", (ev) => {
-        LOGGING && console.log("gamepaddisconnected");
         gamepad.gamepaddisconnected(ev);
     });
     document.body.addEventListener("click", (ev) => {
         audio.resume();
-        engine.resume();
         if(gamepad.mode() === GAMEPAD_MODE_MOUSE_KEYBOARD) {
             if(document.pointerLockElement !== document.body) {
-                LOGGING && console.log("requestPointerLock");
                 document.body.requestPointerLock();
             }
         }
@@ -68,13 +64,10 @@ window.addEventListener("load", () => {
     document.addEventListener("pointerlockchange", (ev) => {
         if(document.pointerLockElement === null) {
             if(gamepad.mode() === GAMEPAD_MODE_MOUSE_KEYBOARD) {
-                LOGGING && console.log("engine.suspend");
-                engine.suspend();
             }
         }
     });
     document.addEventListener("pointerlockerror", (ev) => {
-        LOGGING && console.log("pointerlockerror");
     });
     document.addEventListener("keydown", (ev) => {
         gamepad.keydown(ev);
@@ -103,18 +96,16 @@ window.addEventListener("load", () => {
 
     // AnimationLoop
     const tick = (time) => {
+        // update
         gamepad.tick();
-        engine.tick();
+        updatePlayer(gamepad, save);
+        updateCamera(save, frame);
 
-        engine.begin();
-        update.forEach(a => a.begin());
-        engine.execute();
-        update.forEach(a => a.end());
-        engine.end();
-        audio.tick();
-
-        graphics.reset();
-        draw.forEach(a => a.draw());
+        // draw
+        gl_resizeCanvas(gl);
+        gl_clear(gl);
+        drawProp(gl, frame, save, bundle);
+        drawBillboard(gl, frame, save, bundle);
         requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);

@@ -27,30 +27,8 @@ func executeJs(prj *project.Project, wr io.Writer, path string) error {
 }
 
 func makeScriptJs(prj *project.Project) ([]byte, error) {
-	filePaths := []string{
-		"web/js/math/base64.js",
-		"web/js/math/angle.js",
-		"web/js/math/vec3.js",
-		"web/js/math/mat4.js",
-		"web/js/math/collision.js",
-		"web/js/core/core_audio.js",
-		"web/js/core/core_engine.js",
-		"web/js/core/core_gamepad.js",
-		"web/js/core/core_graphics.js",
-		"web/js/core/core_userdata.js",
-		"web/js/bundle/bundle_gl_mesh.js",
-		"web/js/bundle/bundle_gl_shader.js",
-		"web/js/bundle/bundle_gl_texture.js",
-		"web/js/bundle/bundle_scene_billboard.js",
-		"web/js/bundle/bundle_scene_prop.js",
-		"web/js/bundle/bundle_loader.js",
-		"web/js/update/update_player.js",
-		"web/js/draw/draw_billboard.js",
-		"web/js/draw/draw_prop.js",
-		"web/js/main.js",
-	}
 	var b bytes.Buffer
-	for _, path := range filePaths {
+	for _, path := range scripts {
 		if err := executeJs(prj, &b, path); err != nil {
 			return nil, err
 		}

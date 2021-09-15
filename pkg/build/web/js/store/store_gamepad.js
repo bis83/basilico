@@ -3,7 +3,7 @@ const GAMEPAD_MODE_GAMEPAD = 0;
 const GAMEPAD_MODE_MOUSE_KEYBOARD = 1;
 const GAMEPAD_MODE_VIRTUAL_TOUCH = 2;
 
-const makeCoreGamepad = () => {
+const makeStoreGamepad = () => {
     let mode = GAMEPAD_MODE_GAMEPAD;
     let mouseMovementX = 0;
     let mouseMovementY = 0;
