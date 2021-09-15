@@ -14,7 +14,10 @@ const CFG = {
     },
 };
 
-window.addEventListener("load", () => {
+const listen = (target, key, func) => {
+    target.addEventListener(key, func);
+};
+listen(window, "load", () => {
     const canvas = document.getElementById("main");
     ASSERT && console.assert(canvas !== null);
     const gl = canvas.getContext("webgl2");
@@ -40,20 +43,34 @@ window.addEventListener("load", () => {
     save.setAngle(CFG.START.ANGLE[0], CFG.START.ANGLE[1]);
 
     // EventListener
-    window.addEventListener("focus", (ev) => {
+    listen(window, "focus", (ev) => {
     });
-    window.addEventListener("blur", (ev) => {
+    listen(window, "blur", (ev) => {
         gamepad.blur(ev);
     });
-    window.addEventListener("resize", (ev) => {
+    listen(window, "resize", (ev) => {
     });
-    window.addEventListener("gamepadconnected", (ev) => {
+    listen(window, "gamepadconnected", (ev) => {
         gamepad.gamepadconnected(ev);
     });
-    window.addEventListener("gamepaddisconnected", (ev) => {
+    listen(window, "gamepaddisconnected", (ev) => {
         gamepad.gamepaddisconnected(ev);
     });
-    document.body.addEventListener("click", (ev) => {
+    listen(document, "pointerlockchange", (ev) => {
+        if(document.pointerLockElement === null) {
+            if(gamepad.mode() === GAMEPAD_MODE_MOUSE_KEYBOARD) {
+            }
+        }
+    });
+    listen(document, "pointerlockerror", (ev) => {
+    });
+    listen(document, "keydown", (ev) => {
+        gamepad.keydown(ev);
+    });
+    listen(document, "keyup", (ev) => {
+        gamepad.keyup(ev);
+    });
+    listen(document.body, "click", (ev) => {
         audio.resume();
         if(gamepad.mode() === GAMEPAD_MODE_MOUSE_KEYBOARD) {
             if(document.pointerLockElement !== document.body) {
@@ -61,36 +78,22 @@ window.addEventListener("load", () => {
             }
         }
     });
-    document.addEventListener("pointerlockchange", (ev) => {
-        if(document.pointerLockElement === null) {
-            if(gamepad.mode() === GAMEPAD_MODE_MOUSE_KEYBOARD) {
-            }
-        }
-    });
-    document.addEventListener("pointerlockerror", (ev) => {
-    });
-    document.addEventListener("keydown", (ev) => {
-        gamepad.keydown(ev);
-    });
-    document.addEventListener("keyup", (ev) => {
-        gamepad.keyup(ev);
-    });
-    document.body.addEventListener("mousedown", (ev) => {
+    listen(document.body, "mousedown", (ev) => {
         gamepad.mousedown(ev);
     });
-    document.body.addEventListener("mouseup", (ev) => {
+    listen(document.body, "mouseup", (ev) => {
         gamepad.mouseup(ev);
     });
-    document.body.addEventListener("mousemove", (ev) => {
+    listen(document.body, "mousemove", (ev) => {
         gamepad.mousemove(ev);
     });
-    document.body.addEventListener("touchstart", (ev) => {
+    listen(document.body, "touchstart", (ev) => {
         gamepad.touchstart(ev);
     });
-    document.body.addEventListener("touchmove", (ev) => {
+    listen(document.body, "touchmove", (ev) => {
         gamepad.touchmove(ev);
     });
-    document.body.addEventListener("touchend", (ev) => {
+    listen(document.body, "touchend", (ev) => {
         gamepad.touchend(ev);
     });
 
