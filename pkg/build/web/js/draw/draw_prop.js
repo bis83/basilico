@@ -1,7 +1,7 @@
 
-const drawProp = (gl, frame, save, bundle) => {
+const drawProp = (gl, bundle, getFrame, getSave) => {
     gl_state(gl, true, false);
-    const data = bundle.prop.get(save.scene());
+    const data = bundle.prop.get(getSave.scene());
     if(!data) {
         return;
     }
@@ -10,7 +10,7 @@ const drawProp = (gl, frame, save, bundle) => {
         return;
     }
     shader.use();
-    gl.uniformMatrix4fv(shader.vp, false, frame.viewProj());
+    gl.uniformMatrix4fv(shader.vp, false, getFrame.viewProj());
     for(const item of data) {
         const mesh = bundle.mesh.get(item.mesh);
         if(!mesh) {

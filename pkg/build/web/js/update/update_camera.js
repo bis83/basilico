@@ -1,8 +1,8 @@
 
-const updateCamera = (save, frame) => {
+const updateCamera = (getSave, setFrame) => {
     const height = 1.75;
-    const [x, y, z] = save.position();
-    const [ax, ay] = save.angle();
-    frame.setCamera(x, y + height, z, ax, ay);
-    frame.calcMatrix();
+    const [x, y, z] = getSave.position();
+    const [ax, ay] = getSave.angle();
+
+    setFrame.camera(x, y + height, z, ax, ay);
 };

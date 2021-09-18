@@ -18,13 +18,6 @@ const makeStoreFrame = () => {
     const proj = mat4make();
     const viewProj = mat4make();
     const ortho = mat4make();
-    const setCamera = (x, y, z, ha, va) => {
-        vec3dir(dir, ha, va);
-        vec3set(eye, x, y, z);
-        vec3set(at, x, y, z);
-        vec3add(at, at, dir);
-        vec3set(up, 0, 1, 0);
-    };
     const calcMatrix = () => {
         const w = window.innerWidth;
         const h = window.innerHeight;
@@ -35,14 +28,23 @@ const makeStoreFrame = () => {
         mat4multiply(viewProj, proj);
         mat4ortho(ortho, w, h, 0, 1);
     };
+    const setCamera = (x, y, z, ha, va) => {
+        vec3dir(dir, ha, va);
+        vec3set(eye, x, y, z);
+        vec3set(at, x, y, z);
+        vec3add(at, at, dir);
+        vec3set(up, 0, 1, 0);
+        calcMatrix();
+    };
 
-    const obj = {
-        setCamera: setCamera,
-        calcMatrix: calcMatrix,
-
+    const get = {
         pause: () => pause,
         viewProj: () => viewProj,
         ortho: () => ortho,
     };
-    return obj;
+    const set = {
+        pause: setPause,
+        camera: setCamera,
+    };
+    return [get, set];
 };

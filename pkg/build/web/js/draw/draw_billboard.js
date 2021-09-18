@@ -1,7 +1,7 @@
 
-const drawBillboard = (gl, frame, save, bundle) => {
+const drawBillboard = (gl, bundle, getFrame, getSave) => {
     gl_state(gl, false, true);
-    const data = bundle.billboard.get(save.scene());
+    const data = bundle.billboard.get(getSave.scene());
     if(!data) {
         return;
     }
@@ -11,13 +11,13 @@ const drawBillboard = (gl, frame, save, bundle) => {
     }
     shader.use();
     for(const item of data) {
-        if(item.is_pause && !frame.pause()) {
+        if(item.is_pause && !getFrame.pause()) {
             continue;
         }
         if(item.is_ortho) {
-            gl.uniformMatrix4fv(shader.vp, false, frame.ortho());
+            gl.uniformMatrix4fv(shader.vp, false, getFrame.ortho());
         } else {
-            gl.uniformMatrix4fv(shader.vp, false, frame.viewProj());
+            gl.uniformMatrix4fv(shader.vp, false, getFrame.viewProj());
         }
         const mesh = bundle.mesh.get(item.mesh);
         if(!mesh) {

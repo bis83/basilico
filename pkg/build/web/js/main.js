@@ -17,6 +17,7 @@ const CFG = {
 const listen = (target, key, func) => {
     target.addEventListener(key, func);
 };
+
 listen(window, "load", () => {
     const canvas = document.getElementById("main");
     ASSERT && console.assert(canvas !== null);
@@ -35,80 +36,80 @@ listen(window, "load", () => {
     // {{end}}
 
     // store
-    const gamepad = makeStoreGamepad();
-    const frame = makeStoreFrame();
-    const save = makeStoreSave();
-    save.setScene(CFG.START.SCENE);
-    save.setPosition(CFG.START.POSITION[0], CFG.START.POSITION[1], CFG.START.POSITION[2]);
-    save.setAngle(CFG.START.ANGLE[0], CFG.START.ANGLE[1]);
+    const [getGamepad, setGamepad] = makeStoreGamepad();
+    const [getFrame, setFrame] = makeStoreFrame();
+    const [getSave, setSave] = makeStoreSave();
+    setSave.scene(CFG.START.SCENE);
+    setSave.position(CFG.START.POSITION[0], CFG.START.POSITION[1], CFG.START.POSITION[2]);
+    setSave.angle(CFG.START.ANGLE[0], CFG.START.ANGLE[1]);
 
     // EventListener
     listen(window, "focus", (ev) => {
     });
     listen(window, "blur", (ev) => {
-        gamepad.blur(ev);
+        setGamepad.blur(ev);
     });
     listen(window, "resize", (ev) => {
     });
     listen(window, "gamepadconnected", (ev) => {
-        gamepad.gamepadconnected(ev);
+        setGamepad.gamepadconnected(ev);
     });
     listen(window, "gamepaddisconnected", (ev) => {
-        gamepad.gamepaddisconnected(ev);
+        setGamepad.gamepaddisconnected(ev);
     });
     listen(document, "pointerlockchange", (ev) => {
         if(document.pointerLockElement === null) {
-            if(gamepad.mode() === GAMEPAD_MODE_MOUSE_KEYBOARD) {
+            if(getGamepad.mode() === GAMEPAD_MODE_MOUSE_KEYBOARD) {
             }
         }
     });
     listen(document, "pointerlockerror", (ev) => {
     });
     listen(document, "keydown", (ev) => {
-        gamepad.keydown(ev);
+        setGamepad.keydown(ev);
     });
     listen(document, "keyup", (ev) => {
-        gamepad.keyup(ev);
+        setGamepad.keyup(ev);
     });
     listen(document.body, "click", (ev) => {
         audio.resume();
-        if(gamepad.mode() === GAMEPAD_MODE_MOUSE_KEYBOARD) {
+        if(getGamepad.mode() === GAMEPAD_MODE_MOUSE_KEYBOARD) {
             if(document.pointerLockElement !== document.body) {
                 document.body.requestPointerLock();
             }
         }
     });
     listen(document.body, "mousedown", (ev) => {
-        gamepad.mousedown(ev);
+        setGamepad.mousedown(ev);
     });
     listen(document.body, "mouseup", (ev) => {
-        gamepad.mouseup(ev);
+        setGamepad.mouseup(ev);
     });
     listen(document.body, "mousemove", (ev) => {
-        gamepad.mousemove(ev);
+        setGamepad.mousemove(ev);
     });
     listen(document.body, "touchstart", (ev) => {
-        gamepad.touchstart(ev);
+        setGamepad.touchstart(ev);
     });
     listen(document.body, "touchmove", (ev) => {
-        gamepad.touchmove(ev);
+        setGamepad.touchmove(ev);
     });
     listen(document.body, "touchend", (ev) => {
-        gamepad.touchend(ev);
+        setGamepad.touchend(ev);
     });
 
     // AnimationLoop
     const tick = (time) => {
         // update
-        gamepad.tick();
-        updatePlayer(gamepad, save);
-        updateCamera(save, frame);
+        setGamepad.tick();
+        updatePlayer(getGamepad, getSave, setSave);
+        updateCamera(getSave, setFrame);
 
         // draw
         gl_resizeCanvas(gl);
         gl_clear(gl);
-        drawProp(gl, frame, save, bundle);
-        drawBillboard(gl, frame, save, bundle);
+        drawProp(gl, bundle, getFrame, getSave);
+        drawBillboard(gl, bundle, getFrame, getSave);
         requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);

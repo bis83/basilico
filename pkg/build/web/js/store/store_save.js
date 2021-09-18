@@ -3,15 +3,16 @@ const makeStoreSave = () => {
     let scene = "";
     let position = [0, 0, 0];
     let angle = [0, 0];
-    const obj = {
-        // getter
+
+    const get = {
         scene: () => scene,
         position: () => position,
         angle: () => angle,
-        // setter
-        setScene: (name) => { scene = name; },
-        setPosition: (x, y, z) => { position = [x, y, z]; },
-        setAngle: (x, y) => { angle = [x, y]; },
     };
-    return obj;
+    const set = {
+        scene: (name) => { scene = name; },
+        position: (x, y, z) => { position = [x, y, z]; },
+        angle: (x, y) => { angle = [x, y]; },
+    };
+    return [get, set];
 };

@@ -1,0 +1,4 @@
+
+const makeStoreConfig = () => {
+    return [];
+};

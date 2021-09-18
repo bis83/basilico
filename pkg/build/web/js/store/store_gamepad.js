@@ -22,7 +22,6 @@ const makeStoreGamepad = () => {
         d: false,
         space: false,
     };
-    let touches = [];
     let gamepad = {
         lx: 0,
         ly: 0,
@@ -45,6 +44,32 @@ const makeStoreGamepad = () => {
             default: return false;
         }
         return true;
+    };
+    const updateMouseMove = () => {
+        mouse.mx = mouseMovementX;
+        mouse.my = mouseMovementY;
+        mouseMovementX = 0;
+        mouseMovementY = 0;
+    };
+    const updateGamepad = () => {
+        if(gamepadIndex !== null) {
+            const gamepads = navigator.getGamepads();
+            const gp = gamepads[gamepadIndex];
+            gamepad.lx = Math.trunc(gp.axes[0] * 4) / 4;
+            gamepad.ly = Math.trunc(gp.axes[1] * 4) / 4;
+            gamepad.rx = Math.trunc(gp.axes[2] * 4) / 4;
+            gamepad.ry = Math.trunc(gp.axes[3] * 4) / 4;
+            gamepad.b0 = (gp.buttons[0].value >= 0.5);
+            gamepad.b1 = (gp.buttons[1].value >= 0.5);
+            gamepad.lt = (gp.buttons[6].value >= 0.5);
+            gamepad.rt = (gp.buttons[7].value >= 0.5);
+            const gamepadChanged =
+                (gamepad.lx || gamepad.ly || gamepad.rx || gamepad.ry ||
+                 gamepad.b0 || gamepad.b1 || gamepad.lt || gamepad.rt) ? true : false;
+            if(gamepadChanged) {
+                mode = GAMEPAD_MODE_GAMEPAD;
+            }
+        }
     };
 
     const blur = (ev) => {
@@ -107,6 +132,7 @@ const makeStoreGamepad = () => {
         mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
     };
 
+    // state
     let moveX = 0;
     let moveY = 0;
     let cameraX = 0;
@@ -135,30 +161,10 @@ const makeStoreGamepad = () => {
     };
     const tickModeVirtualTouch = () => {
     };
-
     const tick = () => {
-        if(gamepadIndex !== null) {
-            const gamepads = navigator.getGamepads();
-            const gp = gamepads[gamepadIndex];
-            gamepad.lx = Math.trunc(gp.axes[0] * 4) / 4;
-            gamepad.ly = Math.trunc(gp.axes[1] * 4) / 4;
-            gamepad.rx = Math.trunc(gp.axes[2] * 4) / 4;
-            gamepad.ry = Math.trunc(gp.axes[3] * 4) / 4;
-            gamepad.b0 = (gp.buttons[0].value >= 0.5);
-            gamepad.b1 = (gp.buttons[1].value >= 0.5);
-            gamepad.lt = (gp.buttons[6].value >= 0.5);
-            gamepad.rt = (gp.buttons[7].value >= 0.5);
-            const gamepadChanged =
-                (gamepad.lx || gamepad.ly || gamepad.rx || gamepad.ry ||
-                 gamepad.b0 || gamepad.b1 || gamepad.lt || gamepad.rt) ? true : false;
-            if(gamepadChanged) {
-                mode = GAMEPAD_MODE_GAMEPAD;
-            }
-        }
-        mouse.mx = mouseMovementX;
-        mouse.my = mouseMovementY;
-        mouseMovementX = 0;
-        mouseMovementY = 0;
+        updateGamepad();
+        updateMouseMove();
+
         if(mode === GAMEPAD_MODE_GAMEPAD) {
             tickModeGamepad();
         } else if(mode === GAMEPAD_MODE_MOUSE_KEYBOARD) {
@@ -168,8 +174,16 @@ const makeStoreGamepad = () => {
         } else {
             tickModeNone();
         }
-    }
-    return {
+    };
+
+    const get = {
+        mode: () => mode,
+        moveX: () => moveX,
+        moveY: () => moveY,
+        cameraX: () => cameraX,
+        cameraY: () => cameraY,
+    };
+    const set = {
         blur: blur,
         gamepadconnected: gamepadconnected,
         gamepaddisconnected: gamepaddisconnected,
@@ -182,10 +196,6 @@ const makeStoreGamepad = () => {
         touchmove: touchmove,
         touchend: touchend,
         tick: tick,
-        mode: () => mode,
-        moveX: () => moveX,
-        moveY: () => moveY,
-        cameraX: () => cameraX,
-        cameraY: () => cameraY,
     };
+    return [get, set];
 };
