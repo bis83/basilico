@@ -1,5 +1,7 @@
 
-const updatePlayer = (getGamepad, getSave, setSave) => {
+const updatePlayer = (getFrame, getGamepad, getSave, setSave) => {
+    const speed = 4;
+    let dt = getFrame.deltaTime();
     let [ax, ay] = getSave.angle();
     let [x, y, z] = getSave.position();
 
@@ -8,8 +10,8 @@ const updatePlayer = (getGamepad, getSave, setSave) => {
 
     const rx = deg2rad(ax-90);
     const ry = deg2rad(ax);
-    const dx = getGamepad.moveX() * Math.cos(rx) + getGamepad.moveY() * Math.cos(ry);
-    const dz = getGamepad.moveX() * Math.sin(rx) + getGamepad.moveY() * Math.sin(ry); 
+    const dx = speed * dt * (getGamepad.moveX() * Math.cos(rx) + getGamepad.moveY() * Math.cos(ry));
+    const dz = speed * dt * (getGamepad.moveX() * Math.sin(rx) + getGamepad.moveY() * Math.sin(ry));
     x += dx;
     z += dz;
 

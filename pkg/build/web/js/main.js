@@ -101,8 +101,9 @@ listen(window, "load", () => {
     // AnimationLoop
     const tick = (time) => {
         // update
+        setFrame.tick(time);
         setGamepad.tick();
-        updatePlayer(getGamepad, getSave, setSave);
+        updatePlayer(getFrame, getGamepad, getSave, setSave);
         updateCamera(getSave, setFrame);
 
         // draw

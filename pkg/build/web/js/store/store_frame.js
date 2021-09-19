@@ -1,5 +1,13 @@
 
 const makeStoreFrame = () => {
+    // deltaTime
+    let prevTime = performance.now();
+    let deltaTime = 0;
+    const tick = (time) => {
+        deltaTime = (time - prevTime) / 1000;
+        prevTime = time;
+    };
+
     // pause
     let pause = true;
     const setPause = (flag) => {
@@ -38,6 +46,7 @@ const makeStoreFrame = () => {
     };
 
     const get = {
+        deltaTime: () => deltaTime,
         pause: () => pause,
         viewProj: () => viewProj,
         ortho: () => ortho,
@@ -45,6 +54,7 @@ const makeStoreFrame = () => {
     const set = {
         pause: setPause,
         camera: setCamera,
+        tick: tick,
     };
     return [get, set];
 };
