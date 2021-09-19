@@ -33,7 +33,7 @@ var scripts = []string{
 	// draw
 	"web/js/draw/draw_billboard.js",
 	"web/js/draw/draw_prop.js",
-	
+
 	// main
 	"web/js/main.js",
 }
