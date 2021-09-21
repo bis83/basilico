@@ -24,4 +24,4 @@ jobs:
       - name: Build
         run: go build -ldflags '-s -w' ./cmd/basilico
       - name: Test
-        run: go test
+        run: go test ./...
