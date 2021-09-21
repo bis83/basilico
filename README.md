@@ -5,8 +5,8 @@ A single page application generator for Game.
 ## Build
 
 ```
-cd ./basilico
-go build -ldflags '-s -w'
+cd <clone-directory>
+go build -ldflags '-s -w' ./cmd/basilico
 ```
 
 ## How to use

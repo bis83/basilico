@@ -7,8 +7,11 @@ on:
 
 jobs:
   test:
-    name: test
-    runs-on: ubuntu-latest
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -19,6 +22,6 @@ jobs:
       - name: Get
         run: go get
       - name: Build
-        run: go build -ldflags '-s -w'
+        run: go build -ldflags '-s -w' ./cmd/basilico
       - name: Test
         run: go test
