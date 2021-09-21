@@ -9,8 +9,10 @@ var scripts = []string{
 	"web/js/math/collision.js",
 
 	// misc
+	"web/js/misc/listen.js",
 	"web/js/misc/localstorage.js",
 	"web/js/misc/graphics.js",
+	"web/js/misc/audio.js",
 
 	// load
 	"web/js/load/load_gl_mesh.js",
@@ -27,10 +29,13 @@ var scripts = []string{
 	"web/js/store/store_frame.js",
 
 	// update
+	"web/js/update/update_start_game.js",
+	"web/js/update/update_start_frame.js",
 	"web/js/update/update_player.js",
 	"web/js/update/update_camera.js",
 
 	// draw
+	"web/js/draw/draw_start_frame.js",
 	"web/js/draw/draw_billboard.js",
 	"web/js/draw/draw_prop.js",
 

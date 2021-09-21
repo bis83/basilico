@@ -1,4 +1,12 @@
 
+const gl_createContext = () => {
+    const canvas = document.getElementById("main");
+    ASSERT && console.assert(canvas !== null);
+    const gl = canvas.getContext("webgl2");
+    ASSERT && console.assert(gl !== null);
+    return gl;
+};
+
 const gl_resizeCanvas = (gl) => {
     const width = window.innerWidth;
     if(width !== gl.canvas.width) {

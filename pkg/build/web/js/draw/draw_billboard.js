@@ -1,39 +1,45 @@
 
-const drawBillboard = (gl, bundle, getFrame, getSave) => {
+const drawBillboard = (gl, { billboard, shader, mesh, texture }, { save, frame }) => {
     gl_state(gl, false, true);
-    const data = bundle.billboard.get(getSave.scene());
+    
+    const data = billboard.get(save.scene());
     if(!data) {
         return;
     }
-    const shader = bundle.shader.get("mesh_pct");
-    if(!shader) {
+    
+    const sh = shader.get("mesh_pct");
+    if(!sh) {
         return;
     }
-    shader.use();
+    sh.use();
+
     for(const item of data) {
-        if(item.is_pause && !getFrame.pause()) {
+        if(item.is_pause && !frame.pause()) {
             continue;
         }
         if(item.is_ortho) {
-            gl.uniformMatrix4fv(shader.vp, false, getFrame.ortho());
+            gl.uniformMatrix4fv(sh.vp, false, frame.ortho());
         } else {
-            gl.uniformMatrix4fv(shader.vp, false, getFrame.viewProj());
+            gl.uniformMatrix4fv(sh.vp, false, frame.viewProj());
         }
-        const mesh = bundle.mesh.get(item.mesh);
-        if(!mesh) {
+        
+        const m = mesh.get(item.mesh);
+        if(!m) {
             continue;
         }
-        mesh.use();
-        const texture = bundle.texture.get(item.texture);
-        if(!texture) {
+        m.use();
+        
+        const tex = texture.get(item.texture);
+        if(!tex) {
             continue;
         }
-        texture.bind(shader.t);
+        tex.bind(sh.t);
+
         const count = item.matrix.length/16;
         for(let i=0; i<count; ++i) {
             const mat = item.matrix.slice(i*16, i*16+16);
-            gl.uniformMatrix4fv(shader.w, false, mat);
-            mesh.draw();
+            gl.uniformMatrix4fv(sh.w, false, mat);
+            m.draw();
         }
     } 
 };

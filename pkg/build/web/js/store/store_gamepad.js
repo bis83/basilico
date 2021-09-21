@@ -175,27 +175,27 @@ const makeStoreGamepad = () => {
             tickModeNone();
         }
     };
-
-    const get = {
+    
+    return {
         mode: () => mode,
         moveX: () => moveX,
         moveY: () => moveY,
         cameraX: () => cameraX,
         cameraY: () => cameraY,
+
+        action: {
+            blur: blur,
+            gamepadconnected: gamepadconnected,
+            gamepaddisconnected: gamepaddisconnected,
+            keydown: keydown,
+            keyup: keyup,
+            mousedown: mousedown,
+            mouseup: mouseup,
+            mousemove: mousemove,
+            touchstart: touchstart,
+            touchmove: touchmove,
+            touchend: touchend,
+            tick: tick,
+        },
     };
-    const set = {
-        blur: blur,
-        gamepadconnected: gamepadconnected,
-        gamepaddisconnected: gamepaddisconnected,
-        keydown: keydown,
-        keyup: keyup,
-        mousedown: mousedown,
-        mouseup: mouseup,
-        mousemove: mousemove,
-        touchstart: touchstart,
-        touchmove: touchmove,
-        touchend: touchend,
-        tick: tick,
-    };
-    return [get, set];
 };

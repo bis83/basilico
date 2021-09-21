@@ -3,7 +3,8 @@ const makeStoreFrame = () => {
     // deltaTime
     let prevTime = performance.now();
     let deltaTime = 0;
-    const tick = (time) => {
+    const tick = () => {
+        const time = performance.now();
         deltaTime = (time - prevTime) / 1000;
         prevTime = time;
     };
@@ -45,16 +46,16 @@ const makeStoreFrame = () => {
         calcMatrix();
     };
 
-    const get = {
+    return {
         deltaTime: () => deltaTime,
         pause: () => pause,
         viewProj: () => viewProj,
         ortho: () => ortho,
+
+        action: {
+            pause: setPause,
+            camera: setCamera,
+            tick: tick,
+        },
     };
-    const set = {
-        pause: setPause,
-        camera: setCamera,
-        tick: tick,
-    };
-    return [get, set];
 };
