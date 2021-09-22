@@ -20,8 +20,8 @@ jobs:
         with:
           go-version: 1.16
       - name: Get
-        run: go get ./cmd/basilico
+        run: go get ./...
       - name: Build
-        run: go build -ldflags '-s -w' ./cmd/basilico
+        run: go build -ldflags '-s -w' ./cmd/...
       - name: Test
         run: go test ./...

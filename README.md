@@ -6,7 +6,8 @@ A single page application generator for Game.
 
 ```
 cd <clone-directory>
-go build -ldflags '-s -w' ./cmd/basilico
+go get ./...
+go build -ldflags '-s -w' ./cmd/...
 ```
 
 ## How to use
