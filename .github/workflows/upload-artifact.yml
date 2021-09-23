@@ -37,5 +37,6 @@ jobs:
         run: go build -ldflags '-s -w' -o dist/ ./cmd/...
       - name: Upload
         uses: actions/upload-artifact@v2
-        name: basilico
-        path: dist/
+        with:
+          name: basilico
+          path: dist/
