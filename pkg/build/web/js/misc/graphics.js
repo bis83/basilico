@@ -26,6 +26,9 @@ const gl_clear = (gl) => {
 };
 
 const gl_state = (gl, depth, alpha) => {
+    gl.enable(gl.CULL_FACE);
+    // gl.cullFace(gl.BACK);
+    // gl.frontFace(gl.CCW);
     if(depth) {
         gl.enable(gl.DEPTH_TEST);
         gl.depthFunc(gl.LEQUAL);
