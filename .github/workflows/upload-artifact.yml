@@ -1,0 +1,42 @@
+name: upload-artifact
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Upload Artifacts
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [linux-amd64, windows-amd64]
+        include:
+        - os: linux-amd64
+          goos: linux
+          arch: amd64
+        - os: windows-amd64
+          goos: windows
+          arch: amd64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+      - name: Get
+        run: go get ./...
+      - name: Test
+        run: go test ./...
+      - name: Build
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.arch }}
+        run: go build -ldflags '-s -w' -o dist/ ./cmd/...
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        bane: basilico
+        path: dist/
+        
