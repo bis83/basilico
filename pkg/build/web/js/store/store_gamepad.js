@@ -153,13 +153,17 @@ const makeStoreGamepad = () => {
         if(document.pointerLockElement === document.body) {
             moveX = keyboard.a ? -1 : keyboard.d ? +1 : 0;
             moveY = keyboard.w ? +1 : keyboard.s ? -1 : 0;
-            cameraX = -mouse.mx * 0.5;
-            cameraY = -mouse.my * 0.5;
+            cameraX = -Math.max(-1.0, Math.min(1.0, mouse.mx * 0.5));
+            cameraY = -Math.max(-1.0, Math.min(1.0, mouse.my * 0.5));
         } else {
             tickModeNone();
         }
     };
     const tickModeVirtualTouch = () => {
+    };
+    const normalizeXY = () => {
+        [moveX, moveY] = xy_normalize(moveX, moveY);
+        [cameraX, cameraY] = xy_normalize(cameraX, cameraY);
     };
     const tick = () => {
         updateGamepad();
@@ -174,6 +178,8 @@ const makeStoreGamepad = () => {
         } else {
             tickModeNone();
         }
+
+        normalizeXY();
     };
     
     return {
