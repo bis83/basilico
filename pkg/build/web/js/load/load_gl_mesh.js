@@ -36,7 +36,7 @@ const makeGLMeshLoader = (gl) => {
         }
         if(uv) {
             ub = createArrayBuffer(uv);
-            bindAttribArray(VS_LAYOUT_UV, ub, 2, gl.FLOAT, false, 0);
+            bindAttribArray(VS_LAYOUT_UV, ub, 2, gl.HALF_FLOAT, false, 0);
         }
         if(index) {
             ib = gl.createBuffer();
@@ -88,7 +88,7 @@ const makeGLMeshLoader = (gl) => {
             const ib = data.index ? base64ToUint16Array(data.index) : null;
             const pb = data.position ? base64ToFloat32Array(data.position) : null;
             const cb = data.color ? base64ToUint8Array(data.color) : null;
-            const ub = data.uv ? base64ToFloat32Array(data.uv) : null;
+            const ub = data.uv ? base64ToUint16Array(data.uv) : null;
             map[data.name] = makeMesh(data.view, ib, pb, cb, ub);
         };
         if(!data) {

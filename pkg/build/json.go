@@ -27,7 +27,7 @@ func buildMesh(mesh *project.Mesh) (*Mesh, error) {
 		mm.Color = &str
 	}
 	if len(mesh.Uv) > 0 {
-		str, err := encodeFloat32Array(mesh.Uv)
+		str, err := encodeFloat16Array(mesh.Uv)
 		if err != nil {
 			return nil, err
 		}
