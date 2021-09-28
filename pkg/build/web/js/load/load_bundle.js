@@ -3,7 +3,6 @@ const makeLoadBundle = (gl) => {
     const mesh = makeGLMeshLoader(gl);
     const shader = makeGLShaderLoader(gl);
     const texture = makeGLTextureLoader(gl);
-    const billboard = makeSceneBillboardLoader();
     const prop = makeScenePropLoader();
     
     const load = (name) => {
@@ -11,7 +10,6 @@ const makeLoadBundle = (gl) => {
         fetch(path).then(res => res.json()).then((json) => {
             // Scene
             if(json.scene) {
-                billboard.load(name, json.scene.billboard);
                 prop.load(name, json.scene.prop);
             }
             // Resource
@@ -28,7 +26,6 @@ const makeLoadBundle = (gl) => {
         mesh: mesh,
         shader: shader,
         texture: texture,
-        billboard: billboard,
         prop: prop,
     };
 };

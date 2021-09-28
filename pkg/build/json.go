@@ -75,29 +75,7 @@ func buildShader(s *project.Shader) (*Shader, error) {
 	return &ss, nil
 }
 
-func buildBillboard(b *project.Billboard) (*Billboard, error) {
-	var bb Billboard
-	bb.Mesh = b.Mesh
-	bb.Texture = b.Texture
-	bb.IsPause = b.IsPause
-	bb.IsOrtho = b.IsOrtho
-
-	var matrix []float32
-	for _, l := range b.Layout {
-		m := layoutMatrix(l)
-		matrix = append(matrix, m[:]...)
-	}
-	if len(matrix) > 0 {
-		str, err := encodeFloat32Array(matrix)
-		if err != nil {
-			return nil, err
-		}
-		bb.Matrix = &str
-	}
-	return &bb, nil
-}
-
-func buildProp(prop *project.Prop) (*Prop, error) {
+func buildSceneProp(prop *project.Prop) (*Prop, error) {
 	var pp Prop
 	pp.Mesh = prop.Mesh
 
@@ -125,11 +103,8 @@ func buildProp(prop *project.Prop) (*Prop, error) {
 	return &pp, nil
 }
 
-func isEmptyScene(s *Scene) bool {
+func isSceneEmpty(s *Scene) bool {
 	if len(s.Prop) > 0 {
-		return false
-	}
-	if len(s.Billboard) > 0 {
 		return false
 	}
 	return true
@@ -137,21 +112,14 @@ func isEmptyScene(s *Scene) bool {
 
 func buildScene(spec *project.Specification) (*Scene, error) {
 	var s Scene
-	for _, v := range spec.Scene.Billboard {
-		billboard, err := buildBillboard(v)
-		if err != nil {
-			return nil, err
-		}
-		s.Billboard = append(s.Billboard, billboard)
-	}
 	for _, v := range spec.Scene.Prop {
-		prop, err := buildProp(v)
+		prop, err := buildSceneProp(v)
 		if err != nil {
 			return nil, err
 		}
 		s.Prop = append(s.Prop, prop)
 	}
-	if isEmptyScene(&s) {
+	if isSceneEmpty(&s) {
 		return nil, nil
 	}
 	return &s, nil

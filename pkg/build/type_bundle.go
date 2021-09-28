@@ -1,13 +1,5 @@
 package build
 
-type Billboard struct {
-	Mesh    string  `json:"mesh"`
-	Texture string  `json:"texture"`
-	Matrix  *string `json:"matrix"`
-	IsPause bool    `json:"is_pause"`
-	IsOrtho bool    `json:"is_ortho"`
-}
-
 type Prop struct {
 	Mesh   string  `json:"mesh"`
 	Matrix *string `json:"matrix"`
@@ -15,7 +7,6 @@ type Prop struct {
 }
 
 type Scene struct {
-	Billboard []*Billboard `json:"billboard"`
 	Prop      []*Prop      `json:"prop"`
 }
 

@@ -27,7 +27,6 @@ listen(window, "load", () => {
         // draw
         drawStartFrame(gl);
         drawProp(gl, bundle, store);
-        drawBillboard(gl, bundle, store);
         requestAnimationFrame(tick);
     };
     tick();

@@ -18,7 +18,6 @@ var scripts = []string{
 	"web/js/load/load_gl_mesh.js",
 	"web/js/load/load_gl_shader.js",
 	"web/js/load/load_gl_texture.js",
-	"web/js/load/load_scene_billboard.js",
 	"web/js/load/load_scene_prop.js",
 	"web/js/load/load_bundle.js",
 
@@ -36,7 +35,6 @@ var scripts = []string{
 
 	// draw
 	"web/js/draw/draw_start_frame.js",
-	"web/js/draw/draw_billboard.js",
 	"web/js/draw/draw_prop.js",
 
 	// main

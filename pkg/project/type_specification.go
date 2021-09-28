@@ -1,13 +1,5 @@
 package project
 
-type Billboard struct {
-	Mesh    string      `toml:"mesh"`
-	Texture string      `toml:"texture"`
-	Layout  [][]float32 `toml:"layout"`
-	IsPause bool        `toml:"is_pause"`
-	IsOrtho bool        `toml:"is_ortho"`
-}
-
 type Prop struct {
 	Mesh     string      `toml:"mesh"`
 	Material string      `toml:"material"`
@@ -15,7 +7,6 @@ type Prop struct {
 }
 
 type Scene struct {
-	Billboard []*Billboard `toml:"billboard"`
 	Prop      []*Prop      `toml:"prop"`
 }
 
