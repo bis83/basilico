@@ -5,7 +5,7 @@ const drawProp = (gl, { prop, shader, mesh }, { save, frame }) => {
     if(!data) {
         return;
     }
-    const sh = shader.get("mesh_pc");
+    const sh = shader.get("mesh_pnc");
     if(!sh) {
         return;
     }

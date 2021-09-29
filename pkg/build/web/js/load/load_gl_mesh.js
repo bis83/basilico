@@ -1,7 +1,8 @@
 
 const VS_LAYOUT_POSITION = 0;
-const VS_LAYOUT_COLOR = 1;
-const VS_LAYOUT_UV = 2;
+const VS_LAYOUT_NORMAL = 1;
+const VS_LAYOUT_COLOR = 2;
+const VS_LAYOUT_UV = 3;
 
 const makeGLMeshLoader = (gl) => {
     const TYPES = [null, gl.POINTS, gl.LINES, gl.TRIANGLES];
@@ -19,8 +20,9 @@ const makeGLMeshLoader = (gl) => {
         gl.vertexAttribPointer(location, size, type, normalized, stride, 0);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
     };
-    const makeMesh = (view, index, position, color, uv) => {
+    const makeMesh = (view, index, position, normal, color, uv) => {
         let pb = null;
+        let nb = null;
         let cb = null;
         let ub = null;
         let ib = null;
@@ -29,6 +31,10 @@ const makeGLMeshLoader = (gl) => {
         if(position) {
             pb = createArrayBuffer(position);
             bindAttribArray(VS_LAYOUT_POSITION, pb, 3, gl.FLOAT, false, 0);
+        }
+        if(normal) {
+            nb = createArrayBuffer(normal);
+            bindAttribArray(VS_LAYOUT_NORMAL, nb, 3, gl.HALF_FLOAT, false, 0);
         }
         if(color) {
             cb = createArrayBuffer(color);
@@ -62,10 +68,12 @@ const makeGLMeshLoader = (gl) => {
         const dispose = () => {
             gl.deleteVertexArray(vao);
             gl.deleteBuffer(pb);
+            gl.deleteBuffer(nb);
             gl.deleteBuffer(cb);
             gl.deleteBuffer(ub);
             gl.deleteBuffer(ib);
             pb = null;
+            nb = null;
             cb = null;
             ub = null;
             ib = null;
@@ -87,9 +95,10 @@ const makeGLMeshLoader = (gl) => {
         const loadOne = (data) => {
             const ib = data.index ? base64ToUint16Array(data.index) : null;
             const pb = data.position ? base64ToFloat32Array(data.position) : null;
+            const nb = data.normal ? base64ToUint16Array(data.normal) : null;
             const cb = data.color ? base64ToUint8Array(data.color) : null;
             const ub = data.uv ? base64ToUint16Array(data.uv) : null;
-            map[data.name] = makeMesh(data.view, ib, pb, cb, ub);
+            map[data.name] = makeMesh(data.view, ib, pb, nb, cb, ub);
         };
         if(!data) {
             return;

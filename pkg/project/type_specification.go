@@ -7,12 +7,13 @@ type Prop struct {
 }
 
 type Scene struct {
-	Prop      []*Prop      `toml:"prop"`
+	Prop []*Prop `toml:"prop"`
 }
 
 type Mesh struct {
 	Name     string    `toml:"name"`
 	Position []float32 `toml:"position"`
+	Normal   []float32 `toml:"normal"`
 	Color    []uint8   `toml:"color"`
 	Uv       []float32 `toml:"uv"`
 	Index    []uint16  `toml:"index"`

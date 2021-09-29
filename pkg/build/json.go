@@ -19,6 +19,14 @@ func buildMesh(mesh *project.Mesh) (*Mesh, error) {
 		}
 		mm.Position = &str
 	}
+	if len(mesh.Normal) > 0 {
+		nn := normalizeVector3(mesh.Normal)
+		str, err := encodeFloat16Array(nn)
+		if err != nil {
+			return nil, err
+		}
+		mm.Normal = &str
+	}
 	if len(mesh.Color) > 0 {
 		str, err := encodeUint8Array(mesh.Color)
 		if err != nil {

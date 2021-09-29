@@ -7,13 +7,14 @@ type Prop struct {
 }
 
 type Scene struct {
-	Prop      []*Prop      `json:"prop"`
+	Prop []*Prop `json:"prop"`
 }
 
 type Mesh struct {
 	Name     string  `json:"name"`
 	View     []int   `json:"view"`
 	Position *string `json:"position"`
+	Normal   *string `json:"normal"`
 	Color    *string `json:"color"`
 	Uv       *string `json:"uv"`
 	Index    *string `json:"index"`

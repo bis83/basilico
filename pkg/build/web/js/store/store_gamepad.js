@@ -5,8 +5,6 @@ const GAMEPAD_MODE_VIRTUAL_TOUCH = 2;
 
 const makeStoreGamepad = () => {
     let mode = GAMEPAD_MODE_GAMEPAD;
-    let mouseMovementX = 0;
-    let mouseMovementY = 0;
     let mouse = {
         x: 0,
         y: 0,
@@ -33,6 +31,16 @@ const makeStoreGamepad = () => {
         rt: false,
     };
     let gamepadIndex = null;
+    const halfMouseMove = () => {
+        mouse.mx = mouse.mx / 2;
+        if(Math.abs(mouse.mx) < 1) {
+            mouse.mx = 0;
+        }
+        mouse.my = mouse.my / 2;
+        if(Math.abs(mouse.my) < 1) {
+            mouse.my = 0;
+        }
+    };
 
     const updateKeys = (code, value) => {
         switch(code) {
@@ -44,12 +52,6 @@ const makeStoreGamepad = () => {
             default: return false;
         }
         return true;
-    };
-    const updateMouseMove = () => {
-        mouse.mx = mouseMovementX;
-        mouse.my = mouseMovementY;
-        mouseMovementX = 0;
-        mouseMovementY = 0;
     };
     const updateGamepad = () => {
         if(gamepadIndex !== null) {
@@ -113,8 +115,8 @@ const makeStoreGamepad = () => {
         ev.preventDefault();
     };
     const mousemove = (ev) => {
-        mouseMovementX += ev.movementX || 0;
-        mouseMovementY += ev.movementY || 0;
+        mouse.mx += ev.movementX || 0;
+        mouse.my += ev.movementY || 0;
         mouse.x = ev.x;
         mouse.y = ev.y;
         mouse.lb = (ev.buttons & 1) !== 0;
@@ -153,8 +155,8 @@ const makeStoreGamepad = () => {
         if(document.pointerLockElement === document.body) {
             moveX = keyboard.a ? -1 : keyboard.d ? +1 : 0;
             moveY = keyboard.w ? +1 : keyboard.s ? -1 : 0;
-            cameraX = -Math.max(-1.0, Math.min(1.0, mouse.mx * 0.5));
-            cameraY = -Math.max(-1.0, Math.min(1.0, mouse.my * 0.5));
+            cameraX = -mouse.mx;
+            cameraY = -mouse.my;
         } else {
             tickModeNone();
         }
@@ -167,8 +169,6 @@ const makeStoreGamepad = () => {
     };
     const tick = () => {
         updateGamepad();
-        updateMouseMove();
-
         if(mode === GAMEPAD_MODE_GAMEPAD) {
             tickModeGamepad();
         } else if(mode === GAMEPAD_MODE_MOUSE_KEYBOARD) {
@@ -178,8 +178,8 @@ const makeStoreGamepad = () => {
         } else {
             tickModeNone();
         }
-
         normalizeXY();
+        halfMouseMove();
     };
     
     return {

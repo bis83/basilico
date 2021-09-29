@@ -109,54 +109,30 @@ color = [
 ]
 
 [[shader]]
-name = "mesh_pc"
+name = "mesh_pnc"
 vertex_shader = """
 #version 300 es
 layout (location = 0) in vec3 p;
-layout (location = 1) in vec4 c;
+layout (location = 1) in vec3 n;
+layout (location = 2) in vec4 c;
 uniform mat4 w;
 uniform mat4 vp;
+out vec3 vn;
 out vec4 vc;
 void main() {
   gl_Position = vp * w * vec4(p, 1);
+  vn = vec3(w * vec4(n, 0));
   vc = c;
 }
 """
 fragment_shader = """
 #version 300 es
 precision mediump float;
+in vec3 vn;
 in vec4 vc;
 out vec4 fc;
-void main() { fc = vc; }
+void main() {
+  fc = vc;
+}
 """
 uniform = ["w", "vp"]
-
-[[shader]]
-name = "mesh_pct"
-vertex_shader = """
-#version 300 es
-layout (location = 0) in vec3 p;
-layout (location = 1) in vec4 c;
-layout (location = 2) in vec2 u;
-uniform mat4 w;
-uniform mat4 vp;
-out vec2 vu;
-out vec4 vc;
-void main() {
-  gl_Position = vp * w * vec4(p, 1);
-  vu = u;
-  vc = c;
-}
-"""
-fragment_shader = """
-#version 300 es
-precision mediump float;
-uniform sampler2D t;
-in vec4 vc;
-in vec2 vu;
-out vec4 fc;
-void main() {
-  fc = vc * texture(t, vu);
-}
-"""
-uniform = ["w", "vp", "t"]
