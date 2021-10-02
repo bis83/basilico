@@ -9,61 +9,6 @@ import (
 	project "github.com/bis83/basilico/pkg/project"
 )
 
-func buildMesh(mesh *project.Mesh) (*Mesh, error) {
-	var mm Mesh
-	mm.Name = mesh.Name
-	if len(mesh.Position) > 0 {
-		str, err := encodeFloat32Array(mesh.Position)
-		if err != nil {
-			return nil, err
-		}
-		mm.Position = &str
-	}
-	if len(mesh.Normal) > 0 {
-		nn := normalizeVector3(mesh.Normal)
-		str, err := encodeFloat16Array(nn)
-		if err != nil {
-			return nil, err
-		}
-		mm.Normal = &str
-	}
-	if len(mesh.Color) > 0 {
-		str, err := encodeUint8Array(mesh.Color)
-		if err != nil {
-			return nil, err
-		}
-		mm.Color = &str
-	}
-	if len(mesh.Uv) > 0 {
-		str, err := encodeFloat16Array(mesh.Uv)
-		if err != nil {
-			return nil, err
-		}
-		mm.Uv = &str
-	}
-	if len(mesh.Index) > 0 {
-		str, err := encodeUint16Array(mesh.Index)
-		if err != nil {
-			return nil, err
-		}
-		mm.Index = &str
-	}
-	var mode int
-	if mesh.IsLine {
-		mode = 2
-	} else {
-		mode = 3
-	}
-	var count int
-	if len(mesh.Index) > 0 {
-		count = len(mesh.Index)
-	} else {
-		count = len(mesh.Position) / 3
-	}
-	mm.View = []int{mode, 0, count}
-	return &mm, nil
-}
-
 func buildTexture(tex *project.Texture) (*Texture, error) {
 	var tt Texture
 	tt.Name = tex.Name

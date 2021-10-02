@@ -11,13 +11,11 @@ type Scene struct {
 }
 
 type Mesh struct {
-	Name     string  `json:"name"`
-	View     []int   `json:"view"`
-	Position *string `json:"position"`
-	Normal   *string `json:"normal"`
-	Color    *string `json:"color"`
-	Uv       *string `json:"uv"`
-	Index    *string `json:"index"`
+	Name       string  `json:"name"`
+	Buffer     *string `json:"b"`
+	BufferView []int   `json:"bv"`
+	Index      *string `json:"i"`
+	IndexView  []int   `json:"iv"`
 }
 
 type Texture struct {
