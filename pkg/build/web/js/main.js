@@ -1,16 +1,11 @@
 
 listen(window, "load", () => {
+    // context
     const gl = gl_createContext();
     const audio = audio_createContext();
-
-    // load
-    const bundle = makeLoadBundle(gl);
-    // {{range $key, $value := .Spec}}
-    bundle.load("{{$key}}");
-    // {{end}}
-
     // store
     const store = {
+        bundle: makeLoadBundle(gl),
         gamepad: makeStoreGamepad(),
         frame: makeStoreFrame(),
         save: makeStoreSave(),
@@ -18,15 +13,18 @@ listen(window, "load", () => {
     updateStartGame(store);
 
     // AnimationLoop
-    const tick = () => {
-        // update
+    const update = () => {
         updateStartFrame(store);
         updatePlayer(store);
         updateCamera(store);
-
-        // draw
+    };
+    const draw = () => {
         drawStartFrame(gl);
-        drawProp(gl, bundle, store);
+        drawProp(gl, store);
+    };
+    const tick = () => {
+        update();
+        draw();
         requestAnimationFrame(tick);
     };
     tick();

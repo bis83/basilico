@@ -26,10 +26,8 @@ func Clean(baseDir string) error {
 		}
 	}
 	dataDir := filepath.Join(baseDir, "data")
-	if file.Exists(jsFile) {
-		if err := os.RemoveAll(dataDir); err != nil {
-			return err
-		}
+	if err := os.RemoveAll(dataDir); err != nil {
+		return err
 	}
 	return nil
 }

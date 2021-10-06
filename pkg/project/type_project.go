@@ -1,6 +1,9 @@
 package project
 
 type Project struct {
-	Cfg  *Config
-	Spec map[string]*Specification
+	Cfg     *Config
+	Scene   map[string]*Scene
+	Mesh    map[string]*Mesh
+	Texture map[string]*Texture
+	Shader  map[string]*Shader
 }

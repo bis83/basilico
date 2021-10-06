@@ -18,7 +18,8 @@ var scripts = []string{
 	"web/js/load/load_gl_mesh.js",
 	"web/js/load/load_gl_shader.js",
 	"web/js/load/load_gl_texture.js",
-	"web/js/load/load_scene_prop.js",
+	"web/js/load/load_draw.js",
+	"web/js/load/load_update.js",
 	"web/js/load/load_bundle.js",
 
 	// store

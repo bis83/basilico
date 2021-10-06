@@ -31,18 +31,6 @@ func readCoreSpec() (*Specification, error) {
 	return &spec, nil
 }
 
-func readSpec(path string) (*Specification, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	var spec Specification
-	if err := toml.Unmarshal(data, &spec); err != nil {
-		return nil, err
-	}
-	return &spec, nil
-}
-
 func listSpecFiles(dir string) ([]string, error) {
 	var files []string
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
@@ -61,32 +49,69 @@ func listSpecFiles(dir string) ([]string, error) {
 	return files, nil
 }
 
+func readSpec(path string) (*Specification, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	var spec Specification
+	if err := toml.Unmarshal(data, &spec); err != nil {
+		return nil, err
+	}
+	return &spec, nil
+}
+
+func listSpecs(baseDir string) ([]*Specification, error) {
+	specDir := filepath.Join(baseDir, "_spec")
+	list, err := listSpecFiles(specDir)
+	if err != nil {
+		return nil, err
+	}
+	var s []*Specification
+	for _, file := range list {
+		spec, err := readSpec(file)
+		if err != nil {
+			return nil, err
+		}
+		s = append(s, spec)
+	}
+	core, err2 := readCoreSpec()
+	if err2 != nil {
+		return nil, err2
+	}
+	s = append(s, core)
+	return s, nil
+}
+
 func Read(baseDir string) (*Project, error) {
 	tomlPath := filepath.Join(baseDir, "_config.toml")
 	cfg, err := readConfig(tomlPath)
 	if err != nil {
 		return nil, err
 	}
-	specDir := filepath.Join(baseDir, "_spec")
-	specs, err2 := listSpecFiles(specDir)
+	var prj Project
+	prj.Cfg = cfg
+	prj.Scene = make(map[string]*Scene)
+	prj.Mesh = make(map[string]*Mesh)
+	prj.Texture = make(map[string]*Texture)
+	prj.Shader = make(map[string]*Shader)
+	specs, err2 := listSpecs(baseDir)
 	if err2 != nil {
 		return nil, err2
 	}
-	var prj Project
-	prj.Cfg = cfg
-	prj.Spec = make(map[string]*Specification)
-	for _, file := range specs {
-		spec, err3 := readSpec(file)
-		if err3 != nil {
-			return nil, err3
+	for _, spec := range specs {
+		if spec.Scene.Name != "" {
+			prj.Scene[spec.Scene.Name] = &spec.Scene
 		}
-		name := filepath.Base(file[:len(file)-len(filepath.Ext(file))])
-		prj.Spec[name] = spec
+		for _, mesh := range spec.Mesh {
+			prj.Mesh[mesh.Name] = mesh
+		}
+		for _, texture := range spec.Texture {
+			prj.Texture[texture.Name] = texture
+		}
+		for _, shader := range spec.Shader {
+			prj.Shader[shader.Name] = shader
+		}
 	}
-	spec, err3 := readCoreSpec()
-	if err3 != nil {
-		return nil, err
-	}
-	prj.Spec["core"] = spec
 	return &prj, nil
 }

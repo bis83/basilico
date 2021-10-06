@@ -1,5 +1,5 @@
 
-const updateStartGame = ({ save, gamepad }) => {
+const updateStartGame = ({ bundle, save, gamepad }) => {
     const CFG = {
         START: {
             SCENE: "{{.Cfg.Start.Scene}}",
@@ -14,6 +14,8 @@ const updateStartGame = ({ save, gamepad }) => {
             ]
         },
     };
+
+    bundle.load("core");
 
     save.action.scene(CFG.START.SCENE);
     save.action.position(CFG.START.POSITION[0], CFG.START.POSITION[1], CFG.START.POSITION[2]);

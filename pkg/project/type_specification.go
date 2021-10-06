@@ -7,6 +7,7 @@ type Prop struct {
 }
 
 type Scene struct {
+	Name string  `toml:"name"`
 	Prop []*Prop `toml:"prop"`
 }
 
@@ -36,10 +37,7 @@ type Shader struct {
 }
 
 type Specification struct {
-	Import []string `toml:"import"`
-	Scene  Scene    `toml:"scene"`
-
-	// Resources
+	Scene   Scene      `toml:"scene"`
 	Mesh    []*Mesh    `toml:"mesh"`
 	Texture []*Texture `toml:"texture"`
 	Shader  []*Shader  `toml:"shader"`
