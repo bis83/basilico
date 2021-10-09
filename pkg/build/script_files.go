@@ -1,28 +1,19 @@
 package build
 
 var scripts = []string{
-	// math
-	"web/js/math/base64.js",
-	"web/js/math/angle.js",
-	"web/js/math/vec3.js",
-	"web/js/math/mat4.js",
-	"web/js/math/collision.js",
-
 	// misc
+	"web/js/misc/base64.js",
+	"web/js/misc/angle.js",
+	"web/js/misc/vec3.js",
+	"web/js/misc/mat4.js",
+	"web/js/misc/collision.js",
 	"web/js/misc/listen.js",
 	"web/js/misc/localstorage.js",
 	"web/js/misc/graphics.js",
 	"web/js/misc/audio.js",
 
-	// load
-	"web/js/load/load_gl_mesh.js",
-	"web/js/load/load_gl_shader.js",
-	"web/js/load/load_gl_texture.js",
-	"web/js/load/load_draw.js",
-	"web/js/load/load_update.js",
-	"web/js/load/load_bundle.js",
-
 	// store
+	"web/js/store/store_data.js",
 	"web/js/store/store_gamepad.js",
 	"web/js/store/store_config.js",
 	"web/js/store/store_save.js",

@@ -19,7 +19,6 @@ type Shader struct {
 	Name           string   `json:"name"`
 	VertexShader   string   `json:"vertex_shader"`
 	FragmentShader string   `json:"fragment_shader"`
-	Attribute      []string `json:"attribute"`
 	Uniform        []string `json:"uniform"`
 }
 

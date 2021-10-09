@@ -1,11 +1,11 @@
 
 listen(window, "load", () => {
-    // context
     const gl = gl_createContext();
     const audio = audio_createContext();
-    // store
     const store = {
-        bundle: makeLoadBundle(gl),
+        gl,
+        audio,
+        data: makeStoreData(gl, audio),
         gamepad: makeStoreGamepad(),
         frame: makeStoreFrame(),
         save: makeStoreSave(),
@@ -19,8 +19,8 @@ listen(window, "load", () => {
         updateCamera(store);
     };
     const draw = () => {
-        drawStartFrame(gl);
-        drawProp(gl, store);
+        drawStartFrame(store);
+        drawProp(store);
     };
     const tick = () => {
         update();

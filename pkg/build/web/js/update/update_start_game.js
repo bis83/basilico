@@ -1,5 +1,7 @@
 
-const updateStartGame = ({ bundle, save, gamepad }) => {
+const updateStartGame = ({ data, save, gamepad }) => {
+    data.action.load("core");
+
     const CFG = {
         START: {
             SCENE: "{{.Cfg.Start.Scene}}",
@@ -14,9 +16,6 @@ const updateStartGame = ({ bundle, save, gamepad }) => {
             ]
         },
     };
-
-    bundle.load("core");
-
     save.action.scene(CFG.START.SCENE);
     save.action.position(CFG.START.POSITION[0], CFG.START.POSITION[1], CFG.START.POSITION[2]);
     save.action.angle(CFG.START.ANGLE[0], CFG.START.ANGLE[1]);
