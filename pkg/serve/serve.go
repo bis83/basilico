@@ -12,7 +12,7 @@ func Serve(cfg *project.Config, baseDir string) error {
 	if len(cfg.Addr) == 0 {
 		return nil
 	}
-	absPath, err := filepath.Abs(baseDir)
+	absPath, err := filepath.Abs(filepath.Join(baseDir, "_site"))
 	if err != nil {
 		return err
 	}

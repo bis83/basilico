@@ -24,7 +24,7 @@ go build -ldflags '-s -w' -trimpath ./cmd/...
 ```
 ./basilico serve [your-project-directory]
 ```
-- `index.html` `app.js` `data/` are generated files. (No need add to repository)
+- `_site` are generated files. (No need add to repository)
 
 ## License
 
