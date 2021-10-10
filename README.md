@@ -13,7 +13,7 @@ go build -ldflags '-s -w' -trimpath ./cmd/...
 ## How to use
 
 ```
-./basilico [your-project-directory]
+./basilico [init/clean/build/run] [your-project-directory]
 ```
 
 - Create `_config.toml` (a project setting), `_spec/` (asset descriptions) if not exists.
