@@ -5,5 +5,5 @@ type Args struct {
 	DoInit  bool
 	DoClean bool
 	DoBuild bool
-	DoRun   bool
+	DoServe bool
 }

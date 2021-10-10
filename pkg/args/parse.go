@@ -22,7 +22,7 @@ func Parse() (*Args, error) {
 	if len(os.Args) <= 1 {
 		args.DoInit = true
 		args.DoBuild = true
-		args.DoRun = true
+		args.DoServe = true
 		return &args, nil
 	}
 	if len(os.Args) >= 2 {
@@ -34,8 +34,9 @@ func Parse() (*Args, error) {
 			args.DoClean = true
 		case "build":
 			args.DoBuild = true
-		case "run":
-			args.DoRun = true
+		case "serve":
+			args.DoBuild = true
+			args.DoServe = true
 		default:
 			return nil, errors.New("Invalid Subcommand.")
 		}

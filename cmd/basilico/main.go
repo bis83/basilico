@@ -6,7 +6,7 @@ import (
 	args "github.com/bis83/basilico/pkg/args"
 	build "github.com/bis83/basilico/pkg/build"
 	project "github.com/bis83/basilico/pkg/project"
-	run "github.com/bis83/basilico/pkg/run"
+	serve "github.com/bis83/basilico/pkg/serve"
 )
 
 func steps() error {
@@ -35,8 +35,8 @@ func steps() error {
 			return err
 		}
 	}
-	if arg.DoRun {
-		err = run.Run(prj.Cfg, arg.BaseDir)
+	if arg.DoServe {
+		err = serve.Serve(prj.Cfg, arg.BaseDir)
 		if err != nil {
 			return err
 		}

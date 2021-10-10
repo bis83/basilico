@@ -8,7 +8,7 @@ import (
 	project "github.com/bis83/basilico/pkg/project"
 )
 
-func Run(cfg *project.Config, baseDir string) error {
+func Serve(cfg *project.Config, baseDir string) error {
 	if len(cfg.Addr) == 0 {
 		return nil
 	}

@@ -10,14 +10,20 @@ go get ./...
 go build -ldflags '-s -w' -trimpath ./cmd/...
 ```
 
-## How to use
+## Usage
 
 ```
-./basilico [init/clean/build/run] [your-project-directory]
+./basilico [init/clean/build/serve] [your-project-directory]
 ```
 
 - Create `_config.toml` (a project setting), `_spec/` (asset descriptions) if not exists.
+```
+./basilico init [your-project-directory]
+```
 - Start a server. Visit `localhost:8080`
+```
+./basilico serve [your-project-directory]
+```
 - `index.html` `app.js` `data/` are generated files. (No need add to repository)
 
 ## License
