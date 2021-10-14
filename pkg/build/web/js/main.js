@@ -91,7 +91,6 @@ listen(window, "load", () => {
         drawStartFrame(store);
         drawProp(store);
     };
-    let c = 0;
     const tick = () => {
         update();
         draw();
