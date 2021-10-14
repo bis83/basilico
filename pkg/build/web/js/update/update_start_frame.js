@@ -1,5 +1,5 @@
 
-const updateStartFrame = ({ frame, gamepad }) => {
-    frame.action.tick();
-    gamepad.action.tick();
+const updateStartFrame = (store) => {
+    store_frameTickAction(store);
+    store_gamepadTickAction(store);
 };

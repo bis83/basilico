@@ -1,29 +1,29 @@
 
-const drawProp = ({ gl, data, save, frame }) => {
-    gl_state(gl, true, false);
-    let draw = data.draw(save.scene());
+const drawProp = (store) => {
+    gl_state(store.gl, true, false);
+    const draw = store_bundleGet(store, "draw", store.save.scene);
     if(!draw) {
         return;
     }
-
-    const sh = data.shader("mesh_pnc");
-    if(!sh) {
+    const shader = store_bundleGet(store, "shader", "mesh_pnc");
+    if(!shader) {
         return;
     }
-    sh.use();
-    gl.uniformMatrix4fv(sh.vp, false, frame.viewProj());
+
+    store.gl.useProgram(shader.prog);
+    store.gl.uniformMatrix4fv(shader.uniform.vp, false, store.frame.viewProj);
     for(const item of draw.prop) {
-        const m = data.mesh(item.mesh);
-        if(!m) {
+        const mesh = store_bundleGet(store, "mesh", item.mesh);
+        if(!mesh) {
             continue;
         }
-        m.use();
+        store.gl.bindVertexArray(mesh.vao);
 
         const count = item.matrix.length/16;
         for(let i=0; i<count; ++i) {
             const mat = item.matrix.slice(i*16, i*16+16);
-            gl.uniformMatrix4fv(sh.w, false, mat);
-            m.draw();
+            store.gl.uniformMatrix4fv(shader.uniform.w, false, mat);
+            gl_drawMesh(store.gl, mesh);
         }
     }
 };

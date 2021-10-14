@@ -1,9 +1,9 @@
 
-const updateCamera = ({ save, frame }) => {
+const updateCamera = (store) => {
     const height = 1.75;
 
-    const [x, y, z] = save.position();
-    const [ax, ay] = save.angle();
+    const [x, y, z] = store.save.position;
+    const [ax, ay] = store.save.angle;
 
-    frame.action.camera(x, y + height, z, ax, ay);
+    store_frameCameraAction(store, x, y + height, z, ax, ay);
 };

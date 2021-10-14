@@ -1,18 +1,23 @@
 
-const makeStoreSave = () => {
-    let scene = "";
-    let position = [0, 0, 0];
-    let angle = [0, 0];
-
-    return {
-        scene: () => scene,
-        position: () => position,
-        angle: () => angle,
-        
-        action: {
-            scene: (name) => { scene = name; },
-            position: (x, y, z) => { position = [x, y, z]; },
-            angle: (x, y) => { angle = [x, y]; },
-        }
+// store
+const store_save = (store) => {
+    store.save = {
+        scene: "",
+        position: [0, 0, 0],
+        angle: [0, 0],
     };
+    return store;
+};
+
+// getter
+
+// action
+const store_saveSceneAction = ({ save }, name) => {
+    save.scene = name;
+};
+const store_savePositionAction = ({ save }, x, y, z) => {
+    save.position = [x, y, z];
+};
+const store_saveAngleAction = ({ save }, x, y) => {
+    save.angle = [x, y];
 };

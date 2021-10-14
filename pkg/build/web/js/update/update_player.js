@@ -1,12 +1,12 @@
 
-const updatePlayer = ({ save, gamepad, frame }) => {
-    const dt = frame.deltaTime();
-    let [ax, ay] = save.angle();
-    let [x, y, z] = save.position();
-    const cameraX = gamepad.cameraX();
-    const cameraY = gamepad.cameraY();
-    const moveX = gamepad.moveX();
-    const moveY = gamepad.moveY();
+const updatePlayer = (store) => {
+    const dt = store.frame.deltaTime;
+    let [ax, ay] = store.save.angle;
+    let [x, y, z] = store.save.position;
+    const cameraX = store.gamepad.cameraX;
+    const cameraY = store.gamepad.cameraY;
+    const moveX = store.gamepad.moveX;
+    const moveY = store.gamepad.moveY;
 
     // Camera
     const cameraSpeed = 90; // deg/s
@@ -24,6 +24,6 @@ const updatePlayer = ({ save, gamepad, frame }) => {
     x += dx;
     z += dz;
 
-    save.action.angle(ax, ay);
-    save.action.position(x, y, z);
+    store_saveAngleAction(store, ax, ay);
+    store_savePositionAction(store, x, y, z);
 };

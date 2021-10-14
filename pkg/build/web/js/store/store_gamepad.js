@@ -3,160 +3,98 @@ const GAMEPAD_MODE_GAMEPAD = 0;
 const GAMEPAD_MODE_MOUSE_KEYBOARD = 1;
 const GAMEPAD_MODE_VIRTUAL_TOUCH = 2;
 
-const makeStoreGamepad = () => {
-    let mode = GAMEPAD_MODE_GAMEPAD;
-    let mouse = {
-        x: 0,
-        y: 0,
-        mx: 0,
-        my: 0,
-        lb: false,
-        rb: false,
-    };
-    let keyboard = {
-        w: false,
-        a: false,
-        s: false,
-        d: false,
-        space: false,
-    };
-    let gamepad = {
-        lx: 0,
-        ly: 0,
-        rx: 0,
-        ry: 0,
-        b0: false,
-        b1: false,
-        lt: false,
-        rt: false,
-    };
-    let gamepadIndex = null;
-    const halfMouseMove = () => {
-        mouse.mx = mouse.mx / 2;
-        if(Math.abs(mouse.mx) < 1) {
-            mouse.mx = 0;
-        }
-        mouse.my = mouse.my / 2;
-        if(Math.abs(mouse.my) < 1) {
-            mouse.my = 0;
-        }
-    };
+const updateKeys = (keyboard, code, value) => {
+    switch(code) {
+        case "KeyW": keyboard.w = value; break;
+        case "KeyA": keyboard.a = value; break;
+        case "KeyS": keyboard.s = value; break;
+        case "KeyD": keyboard.d = value; break;
+        case "Space": keyboard.space = value; break;
+        default: return false;
+    }
+    return true;
+};
 
-    const updateKeys = (code, value) => {
-        switch(code) {
-            case "KeyW": keyboard.w = value; break;
-            case "KeyA": keyboard.a = value; break;
-            case "KeyS": keyboard.s = value; break;
-            case "KeyD": keyboard.d = value; break;
-            case "Space": keyboard.space = value; break;
-            default: return false;
+// store
+const store_gamepad = (store) => {
+    store.gamepad = {
+        mode: GAMEPAD_MODE_GAMEPAD,
+        moveX: 0,
+        moveY: 0,
+        cameraX: 0,
+        cameraY: 0,
+        mouse: {
+            x: 0,
+            y: 0,
+            mx: 0,
+            my: 0,
+            lb: false,
+            rb: false,
+        },
+        keyboard: {
+            w: false,
+            a: false,
+            s: false,
+            d: false,
+            space: false,
+        },
+        gamepadIndex: null,
+        gamepad: {
+            lx: 0,
+            ly: 0,
+            rx: 0,
+            ry: 0,
+            b0: false,
+            b1: false,
+            lt: false,
+            rt: false,
         }
-        return true;
     };
+    return store;
+};
+
+// getter
+
+// action
+const store_gamepadTickAction = ({ gamepad }) => {
     const updateGamepad = () => {
-        if(gamepadIndex !== null) {
+        if(gamepad.gamepadIndex !== null) {
             const gamepads = navigator.getGamepads();
-            const gp = gamepads[gamepadIndex];
-            gamepad.lx = Math.trunc(gp.axes[0] * 4) / 4;
-            gamepad.ly = Math.trunc(gp.axes[1] * 4) / 4;
-            gamepad.rx = Math.trunc(gp.axes[2] * 4) / 4;
-            gamepad.ry = Math.trunc(gp.axes[3] * 4) / 4;
-            gamepad.b0 = (gp.buttons[0].value >= 0.5);
-            gamepad.b1 = (gp.buttons[1].value >= 0.5);
-            gamepad.lt = (gp.buttons[6].value >= 0.5);
-            gamepad.rt = (gp.buttons[7].value >= 0.5);
+            const gp = gamepads[gamepad.gamepadIndex];
+            gamepad.gamepad.lx = Math.trunc(gp.axes[0] * 4) / 4;
+            gamepad.gamepad.ly = Math.trunc(gp.axes[1] * 4) / 4;
+            gamepad.gamepad.rx = Math.trunc(gp.axes[2] * 4) / 4;
+            gamepad.gamepad.ry = Math.trunc(gp.axes[3] * 4) / 4;
+            gamepad.gamepad.b0 = (gp.buttons[0].value >= 0.5);
+            gamepad.gamepad.b1 = (gp.buttons[1].value >= 0.5);
+            gamepad.gamepad.lt = (gp.buttons[6].value >= 0.5);
+            gamepad.gamepad.rt = (gp.buttons[7].value >= 0.5);
             const gamepadChanged =
-                (gamepad.lx || gamepad.ly || gamepad.rx || gamepad.ry ||
-                 gamepad.b0 || gamepad.b1 || gamepad.lt || gamepad.rt) ? true : false;
+                (gamepad.gamepad.lx || gamepad.gamepad.ly || gamepad.gamepad.rx || gamepad.gamepad.ry ||
+                 gamepad.gamepad.b0 || gamepad.gamepad.b1 || gamepad.gamepad.lt || gamepad.gamepad.rt) ? true : false;
             if(gamepadChanged) {
-                mode = GAMEPAD_MODE_GAMEPAD;
+                gamepad.mode = GAMEPAD_MODE_GAMEPAD;
             }
         }
     };
-
-    const blur = (ev) => {
-        // TODO: Reset
-    };
-    const gamepadconnected = (ev) => {
-        gamepadIndex = ev.gamepad.index;
-        mode = GAMEPAD_MODE_GAMEPAD;
-    };
-    const gamepaddisconnected = (ev) => {
-        if(gamepadIndex === ev.gamepad.index) {
-            gamepadIndex = null;
-        }
-    };
-    const keydown = (ev) => {
-        if(updateKeys(ev.code, true)) {
-            mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
-            ev.preventDefault();
-        }
-    };
-    const keyup = (ev) => {
-        if(updateKeys(ev.code, false)) {
-            mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
-            ev.preventDefault();
-        }
-    };
-    const mousedown =  (ev) => {
-        mouse.x = ev.x;
-        mouse.y = ev.y;
-        mouse.lb = (ev.buttons & 1) !== 0;
-        mouse.rb = (ev.buttons & 2) !== 0;
-        mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
-        ev.preventDefault();
-    };
-    const mouseup = (ev) => {
-        mouse.x = ev.x;
-        mouse.y = ev.y;
-        mouse.lb = (ev.buttons & 1) !== 0;
-        mouse.rb = (ev.buttons & 2) !== 0;
-        mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
-        ev.preventDefault();
-    };
-    const mousemove = (ev) => {
-        mouse.mx += ev.movementX || 0;
-        mouse.my += ev.movementY || 0;
-        mouse.x = ev.x;
-        mouse.y = ev.y;
-        mouse.lb = (ev.buttons & 1) !== 0;
-        mouse.rb = (ev.buttons & 2) !== 0;
-        mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
-        ev.preventDefault();
-    };
-    const touchstart = (ev) => {
-        mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
-    };
-    const touchmove = (ev) => {
-        mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
-    };
-    const touchend = (ev) => {
-        mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
-    };
-
-    // state
-    let moveX = 0;
-    let moveY = 0;
-    let cameraX = 0;
-    let cameraY = 0;
     const tickModeNone = () => {
-        moveX = 0;
-        moveY = 0;
-        cameraX = 0;
-        cameraY = 0;
+        gamepad.moveX = 0;
+        gamepad.moveY = 0;
+        gamepad.cameraX = 0;
+        gamepad.cameraY = 0;
     };
     const tickModeGamepad = () => {
-        moveX = gamepad.lx;
-        moveY = -gamepad.ly;
-        cameraX = -gamepad.rx;
-        cameraY = -gamepad.ry;
+        gamepad.moveX = gamepad.gamepad.lx;
+        gamepad.moveY = -gamepad.gamepad.ly;
+        gamepad.cameraX = -gamepad.gamepad.rx;
+        gamepad.cameraY = -gamepad.gamepad.ry;
     };
     const tickModeMouseKeyboard = () => {
         if(document.pointerLockElement === document.body) {
-            moveX = keyboard.a ? -1 : keyboard.d ? +1 : 0;
-            moveY = keyboard.w ? +1 : keyboard.s ? -1 : 0;
-            cameraX = -mouse.mx;
-            cameraY = -mouse.my;
+            gamepad.moveX = gamepad.keyboard.a ? -1 : gamepad.keyboard.d ? +1 : 0;
+            gamepad.moveY = gamepad.keyboard.w ? +1 : gamepad.keyboard.s ? -1 : 0;
+            gamepad.cameraX = -gamepad.mouse.mx;
+            gamepad.cameraY = -gamepad.mouse.my;
         } else {
             tickModeNone();
         }
@@ -164,44 +102,89 @@ const makeStoreGamepad = () => {
     const tickModeVirtualTouch = () => {
     };
     const normalizeXY = () => {
-        [moveX, moveY] = xy_normalize(moveX, moveY);
-        [cameraX, cameraY] = xy_normalize(cameraX, cameraY);
+        [gamepad.moveX, gamepad.moveY] = xy_normalize(gamepad.moveX, gamepad.moveY);
+        [gamepad.cameraX, gamepad.cameraY] = xy_normalize(gamepad.cameraX, gamepad.cameraY);
     };
-    const tick = () => {
-        updateGamepad();
-        if(mode === GAMEPAD_MODE_GAMEPAD) {
-            tickModeGamepad();
-        } else if(mode === GAMEPAD_MODE_MOUSE_KEYBOARD) {
-            tickModeMouseKeyboard();
-        } else if(mode === GAMEPAD_MODE_VIRTUAL_TOUCH) {
-            tickModeVirtualTouch();
-        } else {
-            tickModeNone();
+    const halfMouseMove = () => {
+        gamepad.mouse.mx = gamepad.mouse.mx / 2;
+        if(Math.abs(gamepad.mouse.mx) < 1) {
+            gamepad.mouse.mx = 0;
         }
-        normalizeXY();
-        halfMouseMove();
+        gamepad.mouse.my = gamepad.mouse.my / 2;
+        if(Math.abs(gamepad.mouse.my) < 1) {
+            gamepad.mouse.my = 0;
+        }
     };
-    
-    return {
-        mode: () => mode,
-        moveX: () => moveX,
-        moveY: () => moveY,
-        cameraX: () => cameraX,
-        cameraY: () => cameraY,
 
-        action: {
-            blur: blur,
-            gamepadconnected: gamepadconnected,
-            gamepaddisconnected: gamepaddisconnected,
-            keydown: keydown,
-            keyup: keyup,
-            mousedown: mousedown,
-            mouseup: mouseup,
-            mousemove: mousemove,
-            touchstart: touchstart,
-            touchmove: touchmove,
-            touchend: touchend,
-            tick: tick,
-        },
-    };
+    updateGamepad();
+    if(gamepad.mode === GAMEPAD_MODE_GAMEPAD) {
+        tickModeGamepad();
+    } else if(gamepad.mode === GAMEPAD_MODE_MOUSE_KEYBOARD) {
+        tickModeMouseKeyboard();
+    } else if(gamepad.mode === GAMEPAD_MODE_VIRTUAL_TOUCH) {
+        tickModeVirtualTouch();
+    } else {
+        tickModeNone();
+    }
+    normalizeXY();
+    halfMouseMove();
+};
+
+const store_gamepadBlurAction = ({ gamepad }, ev) => {
+};
+const store_gamepadGamepadConnectedAction = ({ gamepad }, ev) => {
+    gamepad.gamepadIndex = ev.gamepad.index;
+    gamepad.mode = GAMEPAD_MODE_GAMEPAD;
+};
+const store_gamepadGamepaDisconnectedAction = ({ gamepad }, ev) => {
+    if(gamepad.gamepadIndex === ev.gamepad.index) {
+        gamepad.gamepadIndex = null;
+    }
+};
+const store_gamepadKeydownAction = ({ gamepad }, ev) => {
+    if(updateKeys(gamepad.keyboard, ev.code, true)) {
+        gamepad.mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
+        ev.preventDefault();
+    }
+};
+const store_gamepadKeyupAction = ({ gamepad }, ev) => {
+    if(updateKeys(gamepad.keyboard, ev.code, false)) {
+        gamepad.mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
+        ev.preventDefault();
+    }
+};
+const store_gamepadMousedownAction =  ({ gamepad }, ev) => {
+    gamepad.mouse.x = ev.x;
+    gamepad.mouse.y = ev.y;
+    gamepad.mouse.lb = (ev.buttons & 1) !== 0;
+    gamepad.mouse.rb = (ev.buttons & 2) !== 0;
+    gamepad.mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
+    ev.preventDefault();
+};
+const store_gamepadMouseupAction = ({ gamepad }, ev) => {
+    gamepad.mouse.x = ev.x;
+    gamepad.mouse.y = ev.y;
+    gamepad.mouse.lb = (ev.buttons & 1) !== 0;
+    gamepad.mouse.rb = (ev.buttons & 2) !== 0;
+    gamepad.mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
+    ev.preventDefault();
+};
+const store_gamepadMousemoveAction = ({ gamepad }, ev) => {
+    gamepad.mouse.mx += ev.movementX || 0;
+    gamepad.mouse.my += ev.movementY || 0;
+    gamepad.mouse.x = ev.x;
+    gamepad.mouse.y = ev.y;
+    gamepad.mouse.lb = (ev.buttons & 1) !== 0;
+    gamepad.mouse.rb = (ev.buttons & 2) !== 0;
+    gamepad.mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
+    ev.preventDefault();
+};
+const store_gamepadTouchstartAction = ({ gamepad }, ev) => {
+    gamepad.mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
+};
+const store_gamepadTouchmoveAction = ({ gamepad }, ev) => {
+    gamepad.mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
+};
+const store_gamepadTouchendAction = ({ gamepad }, ev) => {
+    gamepad.mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
 };
