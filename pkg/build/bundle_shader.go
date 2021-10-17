@@ -10,5 +10,6 @@ func buildShader(s *project.Shader) (*Shader, error) {
 	ss.VertexShader = s.VertexShader
 	ss.FragmentShader = s.FragmentShader
 	ss.Uniform = s.Uniform
+	ss.UniformBlock = s.UniformBlock
 	return &ss, nil
 }

@@ -3,12 +3,27 @@ const decodeUpdate = (data) => {
     return data;
 };
 
+const decodeDrawProp = (gl, data) => {
+    if(data.matrix) {
+        const m = base64ToFloat32Array(data.matrix);
+        data.count = Math.floor(m.length / 16);
+        // NOTE: gl.bindBufferRange required UNIFORM_BUFFER_OFFSET_ALIGNMENT
+        const mAligned = new Float32Array(data.count * 64);
+        for(let i=0; i<data.count; ++i) {
+            for(j=0; j<16; ++j) {
+                mAligned[i*64+j] = m[i*16+j];
+            }
+        }
+        data.size = 64;
+        data.stride = 256;
+        data.matrix = gl_staticBuffer(gl, gl.UNIFORM_BUFFER, mAligned);
+    }
+    return data;
+};
+
 const decodeDraw = (gl, data) => {
     if(data.prop) {
-        data.prop = data.prop.map(data => {
-            data.matrix = data.matrix ? base64ToFloat32Array(data.matrix) : null;
-            return data;
-        });
+        data.prop = data.prop.map(data => decodeDrawProp(gl, data));
     }
     return data;
 };
@@ -50,15 +65,28 @@ const decodeTexture = (gl, data) => {
 };
 
 const decodeShader = (gl, data) => {
-    data.vertex_shader = gl_createGLShader(gl, gl.VERTEX_SHADER, data.vertex_shader);
-    data.fragment_shader = gl_createGLShader(gl, gl.FRAGMENT_SHADER, data.fragment_shader);
-    data.prog = gl_createGLProgram(gl, data.vertex_shader, data.fragment_shader);
+    data.vs = gl_createGLShader(gl, gl.VERTEX_SHADER, data.vs);
+    data.fs = gl_createGLShader(gl, gl.FRAGMENT_SHADER, data.fs);
+    data.prog = gl_createGLProgram(gl, data.vs, data.fs);
 
-    const umap = {};
-    for(let u of data.uniform) {
-        umap[u] = gl.getUniformLocation(data.prog, u);
+    if(data.u) {
+        const umap = {};
+        for(let u of data.u) {
+            umap[u] = gl.getUniformLocation(data.prog, u);
+        }
+        data.u = umap;
     }
-    data.uniform = umap;
+    if(data.ub) {
+        const umap = {};
+        let bindIndex = 0;
+        for(let u of data.ub) {
+            const index = gl.getUniformBlockIndex(data.prog, u);
+            gl.uniformBlockBinding(data.prog, index, bindIndex);
+            umap[u] = bindIndex;
+            bindIndex += 1;
+        }
+        data.ub = umap;
+    }
     
     return data;
 };

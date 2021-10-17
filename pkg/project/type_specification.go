@@ -32,8 +32,8 @@ type Shader struct {
 	Name           string   `toml:"name"`
 	VertexShader   string   `toml:"vertex_shader"`
 	FragmentShader string   `toml:"fragment_shader"`
-	Attribute      []string `toml:"attribute"`
 	Uniform        []string `toml:"uniform"`
+	UniformBlock   []string `toml:"uniform_block"`
 }
 
 type Specification struct {

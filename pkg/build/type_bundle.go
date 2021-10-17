@@ -17,9 +17,10 @@ type Texture struct {
 
 type Shader struct {
 	Name           string   `json:"name"`
-	VertexShader   string   `json:"vertex_shader"`
-	FragmentShader string   `json:"fragment_shader"`
-	Uniform        []string `json:"uniform"`
+	VertexShader   string   `json:"vs"`
+	FragmentShader string   `json:"fs"`
+	Uniform        []string `json:"u"`
+	UniformBlock   []string `json:"ub"`
 }
 
 type Bundle struct {

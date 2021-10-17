@@ -11,18 +11,15 @@ const drawProp = (store) => {
     }
 
     store.gl.useProgram(shader.prog);
-    store.gl.uniformMatrix4fv(shader.uniform.vp, false, store.frame.viewProj);
+    store.gl.uniformMatrix4fv(shader.u.vp, false, store.frame.viewProj);
     for(const item of draw.prop) {
         const mesh = store_bundleGet(store, "mesh", item.mesh);
         if(!mesh) {
             continue;
         }
         store.gl.bindVertexArray(mesh.vao);
-
-        const count = item.matrix.length/16;
-        for(let i=0; i<count; ++i) {
-            const mat = item.matrix.slice(i*16, i*16+16);
-            store.gl.uniformMatrix4fv(shader.uniform.w, false, mat);
+        for(let i=0; i<item.count; ++i) {
+            store.gl.bindBufferRange(store.gl.UNIFORM_BUFFER, shader.ub.a, item.matrix, i*item.stride, item.size);
             gl_drawMesh(store.gl, mesh);
         }
     }
