@@ -23,6 +23,7 @@ const store_gamepad = (store) => {
         moveY: 0,
         cameraX: 0,
         cameraY: 0,
+        touches: new Map(),
         mouse: {
             x: 0,
             y: 0,
@@ -90,30 +91,42 @@ const store_gamepadTickAction = ({ gamepad }) => {
         gamepad.cameraY = -gamepad.gamepad.ry;
     };
     const tickModeMouseKeyboard = () => {
-        if(document.pointerLockElement === document.body) {
-            gamepad.moveX = gamepad.keyboard.a ? -1 : gamepad.keyboard.d ? +1 : 0;
-            gamepad.moveY = gamepad.keyboard.w ? +1 : gamepad.keyboard.s ? -1 : 0;
+        gamepad.moveX = gamepad.keyboard.a ? -1 : gamepad.keyboard.d ? +1 : 0;
+        gamepad.moveY = gamepad.keyboard.w ? +1 : gamepad.keyboard.s ? -1 : 0;
+        if(gamepad.mouse.lb) {
             gamepad.cameraX = -gamepad.mouse.mx;
             gamepad.cameraY = -gamepad.mouse.my;
         } else {
-            tickModeNone();
+            gamepad.cameraX = 0;
+            gamepad.cameraY = 0;
         }
+
     };
     const tickModeVirtualTouch = () => {
+        gamepad.moveX = 0;
+        gamepad.moveY = 0;
+        gamepad.cameraX = 0;
+        gamepad.cameraY = 0;
+        for(const touch of gamepad.touches.values()) {
+            if(touch.sx < window.innerWidth/2) {
+                // screen left
+                gamepad.moveX = (touch.x - touch.sx);
+                gamepad.moveY = -(touch.y - touch.sy);
+            } else {
+                // screen right
+                gamepad.cameraX = -(touch.x - touch.sx);
+                gamepad.cameraY = -(touch.y - touch.sy);
+            }
+        }
     };
     const normalizeXY = () => {
         [gamepad.moveX, gamepad.moveY] = xy_normalize(gamepad.moveX, gamepad.moveY);
         [gamepad.cameraX, gamepad.cameraY] = xy_normalize(gamepad.cameraX, gamepad.cameraY);
     };
     const halfMouseMove = () => {
-        gamepad.mouse.mx = gamepad.mouse.mx / 2;
-        if(Math.abs(gamepad.mouse.mx) < 1) {
-            gamepad.mouse.mx = 0;
-        }
-        gamepad.mouse.my = gamepad.mouse.my / 2;
-        if(Math.abs(gamepad.mouse.my) < 1) {
-            gamepad.mouse.my = 0;
-        }
+        const halfValue = v => Math.trunc(v/2);
+        gamepad.mouse.mx = halfValue(gamepad.mouse.mx);
+        gamepad.mouse.my = halfValue(gamepad.mouse.my);
     };
 
     updateGamepad();
@@ -153,7 +166,7 @@ const store_gamepadKeyupAction = ({ gamepad }, ev) => {
         ev.preventDefault();
     }
 };
-const store_gamepadMousedownAction =  ({ gamepad }, ev) => {
+const store_gamepadMouseDownAction =  ({ gamepad }, ev) => {
     gamepad.mouse.x = ev.x;
     gamepad.mouse.y = ev.y;
     gamepad.mouse.lb = (ev.buttons & 1) !== 0;
@@ -161,7 +174,7 @@ const store_gamepadMousedownAction =  ({ gamepad }, ev) => {
     gamepad.mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
     ev.preventDefault();
 };
-const store_gamepadMouseupAction = ({ gamepad }, ev) => {
+const store_gamepadMouseUpAction = ({ gamepad }, ev) => {
     gamepad.mouse.x = ev.x;
     gamepad.mouse.y = ev.y;
     gamepad.mouse.lb = (ev.buttons & 1) !== 0;
@@ -169,7 +182,7 @@ const store_gamepadMouseupAction = ({ gamepad }, ev) => {
     gamepad.mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
     ev.preventDefault();
 };
-const store_gamepadMousemoveAction = ({ gamepad }, ev) => {
+const store_gamepadMouseMoveAction = ({ gamepad }, ev) => {
     gamepad.mouse.mx += ev.movementX || 0;
     gamepad.mouse.my += ev.movementY || 0;
     gamepad.mouse.x = ev.x;
@@ -179,12 +192,31 @@ const store_gamepadMousemoveAction = ({ gamepad }, ev) => {
     gamepad.mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
     ev.preventDefault();
 };
-const store_gamepadTouchstartAction = ({ gamepad }, ev) => {
+const store_gamepadTouchStartAction =  ({ gamepad }, ev) => {
+    for(const t of ev.changedTouches) {
+        gamepad.touches.set(t.identifier, {
+            x: t.clientX,
+            y: t.clientY,
+            sx: t.clientX,
+            sy: t.clientY
+        });
+    }
     gamepad.mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
 };
-const store_gamepadTouchmoveAction = ({ gamepad }, ev) => {
+const store_gamepadTouchEndAction = ({ gamepad }, ev) => {
+    for(const t of ev.changedTouches) {
+        gamepad.touches.delete(t.identifier);
+    }
     gamepad.mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
 };
-const store_gamepadTouchendAction = ({ gamepad }, ev) => {
+const store_gamepadTouchMoveAction = ({ gamepad }, ev) => {
+    for(const t of ev.changedTouches) {
+        const touch = gamepad.touches.get(t.identifier);
+        if(touch) {
+            touch.x = t.clientX;
+            touch.y = t.clientY;
+        }
+    }
     gamepad.mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
 };
+

@@ -43,42 +43,32 @@ listen(window, "load", () => {
         LOGGING && console.log("gamepaddisconnected: " + ev.gamepad.index);
         store_gamepadGamepadDisconnectedAction(store, ev);
     });
-    listen(document, "pointerlockchange", (ev) => {
-        if(document.pointerLockElement === null) {
-            if(store.gamepad.mode === GAMEPAD_MODE_MOUSE_KEYBOARD) {
-            }
-        }
-    });
     listen(document, "keydown", (ev) => {
         store_gamepadKeydownAction(store, ev);
     });
     listen(document, "keyup", (ev) => {
         store_gamepadKeyupAction(store, ev);
     });
-    listen(document.body, "click", (ev) => {
-        if(store.gamepad.mode === GAMEPAD_MODE_MOUSE_KEYBOARD) {
-            if(document.pointerLockElement !== document.body) {
-                document.body.requestPointerLock();
-            }
-        }
-    });
     listen(document.body, "mousedown", (ev) => {
-        store_gamepadMousedownAction(store, ev);
+        store_gamepadMouseDownAction(store, ev);
     });
     listen(document.body, "mouseup", (ev) => {
-        store_gamepadMouseupAction(store, ev);
+        store_gamepadMouseUpAction(store, ev);
     });
     listen(document.body, "mousemove", (ev) => {
-        store_gamepadMousemoveAction(store, ev);
+        store_gamepadMouseMoveAction(store, ev);
     });
     listen(document.body, "touchstart", (ev) => {
-        store_gamepadTouchstartAction(store, ev);
-    });
-    listen(document.body, "touchmove", (ev) => {
-        store_gamepadTouchmoveAction(store, ev);
+        store_gamepadTouchStartAction(store, ev);
     });
     listen(document.body, "touchend", (ev) => {
-        store_gamepadTouchendAction(store, ev);
+        store_gamepadTouchEndAction(store, ev);
+    });
+    listen(document.body, "touchcancel", (ev) => {
+        store_gamepadTouchEndAction(store, ev);
+    });
+    listen(document.body, "touchmove", (ev) => {
+        store_gamepadTouchMoveAction(store, ev);
     });
 
     // AnimationLoop
