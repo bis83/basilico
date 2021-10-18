@@ -1,7 +1,12 @@
 
 listen(window, "load", () => {
-    const gl = gl_createContext();
-    const audio = audio_createContext();
+    const canvas = document.getElementById("main");
+    ASSERT && console.assert(canvas !== null);
+    const gl = canvas.getContext("webgl2");
+    ASSERT && console.assert(gl !== null);
+    const audio = new AudioContext();
+    ASSERT && console.assert(audio !== null);
+
     const store = { gl, audio };
     store_bundle(store);
     store_frame(store);
@@ -49,25 +54,25 @@ listen(window, "load", () => {
     listen(document, "keyup", (ev) => {
         store_gamepadKeyupAction(store, ev);
     });
-    listen(document.body, "mousedown", (ev) => {
+    listen(canvas, "mousedown", (ev) => {
         store_gamepadMouseDownAction(store, ev);
     });
-    listen(document.body, "mouseup", (ev) => {
+    listen(canvas, "mouseup", (ev) => {
         store_gamepadMouseUpAction(store, ev);
     });
-    listen(document.body, "mousemove", (ev) => {
+    listen(canvas, "mousemove", (ev) => {
         store_gamepadMouseMoveAction(store, ev);
     });
-    listen(document.body, "touchstart", (ev) => {
+    listen(canvas, "touchstart", (ev) => {
         store_gamepadTouchStartAction(store, ev);
     });
-    listen(document.body, "touchend", (ev) => {
+    listen(canvas, "touchend", (ev) => {
         store_gamepadTouchEndAction(store, ev);
     });
-    listen(document.body, "touchcancel", (ev) => {
+    listen(canvas, "touchcancel", (ev) => {
         store_gamepadTouchEndAction(store, ev);
     });
-    listen(document.body, "touchmove", (ev) => {
+    listen(canvas, "touchmove", (ev) => {
         store_gamepadTouchMoveAction(store, ev);
     });
 

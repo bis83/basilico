@@ -4,14 +4,6 @@ const VS_LAYOUT_NORMAL = 1;
 const VS_LAYOUT_COLOR = 2;
 const VS_LAYOUT_UV = 3;
 
-const gl_createContext = () => {
-    const canvas = document.getElementById("main");
-    ASSERT && console.assert(canvas !== null);
-    const gl = canvas.getContext("webgl2");
-    ASSERT && console.assert(gl !== null);
-    return gl;
-};
-
 const gl_createGLTexture2D = (gl, img) => {
     let texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
