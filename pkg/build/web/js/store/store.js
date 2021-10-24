@@ -14,23 +14,9 @@ const store_init = () => {
     store_timer(store);
     store_save(store);
 
-    const CFG = {
-        START: {
-            SCENE: "{{.Cfg.Start.Scene}}",
-            POSITION: [
-                parseFloat("{{index .Cfg.Start.Position 0}}"),
-                parseFloat("{{index .Cfg.Start.Position 1}}"),
-                parseFloat("{{index .Cfg.Start.Position 2}}")
-            ],
-            ANGLE: [
-                parseFloat("{{index .Cfg.Start.Angle 0}}"),
-                parseFloat("{{index .Cfg.Start.Angle 1}}")
-            ]
-        },
-    };    
-    store_saveSceneAction(store, CFG.START.SCENE);
-    store_savePositionAction(store, CFG.START.POSITION[0], CFG.START.POSITION[1], CFG.START.POSITION[2]);
-    store_saveAngleAction(store, CFG.START.ANGLE[0], CFG.START.ANGLE[1]);
+    store_saveSceneAction(store, embed.start.scene);
+    store_savePositionAction(store, embed.start.position[0], embed.start.position[1], embed.start.position[2]);
+    store_saveAngleAction(store, embed.start.angle[0], embed.start.angle[1]);
     store_bundleLoadAction(store, "core");
 
     // listen

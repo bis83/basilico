@@ -3,44 +3,84 @@ package build
 import (
 	"bytes"
 	"errors"
+	htmlT "html/template"
 	"io"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
-	"text/template"
+	"encoding/json"
+	textT "text/template"
 
 	esbuild "github.com/evanw/esbuild/pkg/api"
 
 	project "github.com/bis83/basilico/pkg/project"
 )
 
-func executeJs(prj *project.Project, wr io.Writer, path string) error {
-	js, err := fs.ReadFile(path)
+func makeFeature(prj *project.Project) (*Feature, error) {
+	var f Feature
+	f.Title = prj.Cfg.Title
+	f.Logging = prj.Cfg.Logging
+	f.Assert = prj.Cfg.Assert
+	f.Minify = prj.Cfg.Minify
+
+	var embed Embed
+	embed.Start.Scene = prj.Cfg.Start.Scene
+	embed.Start.Position = prj.Cfg.Start.Position
+	embed.Start.Angle = prj.Cfg.Start.Angle
+	data, err := json.Marshal(embed)
+	if err != nil {
+		return nil, err
+	}
+	f.Embed = string(data)
+
+	return &f, nil
+}
+
+func writeIndexHtml(feat *Feature, path string) error {
+	html, err := fs.ReadFile("web/index.html")
 	if err != nil {
 		return err
 	}
-	tpl := template.Must(template.New("js").Parse(string(js)))
-	if err := tpl.Execute(wr, prj); err != nil {
+	tpl := htmlT.Must(htmlT.New("index").Parse(string(html)))
+	fp, err2 := os.Create(path)
+	if err2 != nil {
+		return err
+	}
+	defer fp.Close()
+	if err := tpl.Execute(fp, feat); err != nil {
 		return err
 	}
 	return nil
 }
 
-func makeScriptJs(prj *project.Project) ([]byte, error) {
+func executeJs(feat *Feature, wr io.Writer, path string) error {
+	js, err := fs.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	tpl := textT.Must(textT.New("js").Parse(string(js)))
+	if err := tpl.Execute(wr, feat); err != nil {
+		return err
+	}
+	return nil
+}
+
+func makeScriptJs(feat *Feature) ([]byte, error) {
 	var b bytes.Buffer
 	for _, path := range scripts {
-		if err := executeJs(prj, &b, path); err != nil {
+		if err := executeJs(feat, &b, path); err != nil {
 			return nil, err
 		}
 	}
 	defines := map[string]string{
-		"LOGGING": strconv.FormatBool(prj.Cfg.Logging),
-		"ASSERT":  strconv.FormatBool(prj.Cfg.Assert),
+		"LOGGING": strconv.FormatBool(feat.Logging),
+		"ASSERT":  strconv.FormatBool(feat.Assert),
 	}
 	result := esbuild.Transform(string(b.Bytes()), esbuild.TransformOptions{
-		MinifyWhitespace:  prj.Cfg.Minify,
-		MinifyIdentifiers: prj.Cfg.Minify,
-		MinifySyntax:      prj.Cfg.Minify,
+		MinifyWhitespace:  feat.Minify,
+		MinifyIdentifiers: feat.Minify,
+		MinifySyntax:      feat.Minify,
 		Format:            esbuild.FormatIIFE,
 		Define:            defines,
 	})
@@ -52,13 +92,27 @@ func makeScriptJs(prj *project.Project) ([]byte, error) {
 	return result.Code, nil
 }
 
-func writeScriptJs(prj *project.Project, path string) error {
-	data, err := makeScriptJs(prj)
+func writeAppJs(feat *Feature, path string) error {
+	data, err2 := makeScriptJs(feat)
+	if err2 != nil {
+		return err2
+	}
+	if err := os.WriteFile(path, data, 0666); err != nil {
+		return err
+	}
+	return nil
+}
+
+func writeCoreScripts(prj *project.Project, baseDir string) error {
+	feat, err := makeFeature(prj)
 	if err != nil {
 		return err
 	}
-	if err2 := os.WriteFile(path, data, 0666); err2 != nil {
-		return err2
+	if err := writeIndexHtml(feat, filepath.Join(baseDir, "index.html")); err != nil {
+		return err
+	}
+	if err := writeAppJs(feat, filepath.Join(baseDir, "app.js")); err != nil {
+		return err
 	}
 	return nil
 }

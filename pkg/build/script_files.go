@@ -2,6 +2,7 @@ package build
 
 var scripts = []string{
 	// misc
+	"web/js/misc/embed.js",
 	"web/js/misc/base64.js",
 	"web/js/misc/angle.js",
 	"web/js/misc/vec3.js",

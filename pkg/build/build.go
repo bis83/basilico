@@ -27,16 +27,10 @@ func Build(prj *project.Project, baseDir string) error {
 	if err := file.MakeDir(filepath.Join(baseDir, "_site")); err != nil {
 		return err
 	}
-	htmlFile := filepath.Join(baseDir, "_site", "index.html")
-	if err := writeIndexHtml(prj, htmlFile); err != nil {
+	if err := writeCoreScripts(prj, filepath.Join(baseDir, "_site")); err != nil {
 		return err
 	}
-	jsFile := filepath.Join(baseDir, "_site", "app.js")
-	if err := writeScriptJs(prj, jsFile); err != nil {
-		return err
-	}
-	dataDir := filepath.Join(baseDir, "_site", "data")
-	if err := writeBundleJsons(prj, dataDir); err != nil {
+	if err := writeBundleJsons(prj, filepath.Join(baseDir, "_site", "data")); err != nil {
 		return err
 	}
 	return nil
