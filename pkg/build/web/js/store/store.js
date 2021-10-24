@@ -41,6 +41,9 @@ const store_init = () => {
     listen(document, "keyup", (ev) => {
         store_inputKeyUpAction(store, ev);
     });
+    listen(canvas, "contextmenu", (ev) => {
+        ev.preventDefault();
+    });
     listen(canvas, "mousedown", (ev) => {
         store_inputMouseDownAction(store, ev);
     });
