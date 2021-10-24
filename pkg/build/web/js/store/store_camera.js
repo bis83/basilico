@@ -1,10 +1,7 @@
 
 // store
-const store_frame = (store) => {
-    store.frame = {
-        prevTime: performance.now(),
-        deltaTime: 0,
-        pause: true,
+const store_camera = (store) => {
+    store.camera = {
         viewProj: mat4make(),
         ortho: mat4make(),
     };
@@ -14,15 +11,7 @@ const store_frame = (store) => {
 // getter
 
 // action
-const store_frameTickAction = ({ frame }) => {  
-    const time = performance.now();
-    frame.deltaTime = (time - frame.prevTime) / 1000;
-    frame.prevTime = time;
-};
-const store_framePauseAction = ({ frame }, flag) => {
-    frame.pause = flag;
-};
-const store_frameCameraAction = ({ frame }, x, y, z, ha, va) => {
+const store_cameraTickAction = ({ camera }, x, y, z, ha, va) => {
     const dir = vec3make();
     const eye = vec3make();
     const at = vec3make();
@@ -42,7 +31,7 @@ const store_frameCameraAction = ({ frame }, x, y, z, ha, va) => {
     const h = window.innerHeight;
     mat4lookat(view, eye, at, up);
     mat4perspective(proj, fovy, w / h, zNear, zFar);
-    mat4copy(frame.viewProj, view);
-    mat4multiply(frame.viewProj, proj);
-    mat4ortho(frame.ortho, w, h, 0, 1);
+    mat4copy(camera.viewProj, view);
+    mat4multiply(camera.viewProj, proj);
+    mat4ortho(camera.ortho, w, h, 0, 1);
 };

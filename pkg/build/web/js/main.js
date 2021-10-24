@@ -9,7 +9,8 @@ listen(window, "load", () => {
 
     const store = { gl, audio };
     store_bundle(store);
-    store_frame(store);
+    store_camera(store);
+    store_timer(store);
     store_gamepad(store);
     store_save(store);
 

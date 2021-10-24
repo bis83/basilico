@@ -1,6 +1,6 @@
 
 const updatePlayer = (store) => {
-    const dt = store.frame.deltaTime;
+    const dt = store.timer.deltaTime;
     let [ax, ay] = store.save.angle;
     let [x, y, z] = store.save.position;
     const cameraX = store.gamepad.cameraX;

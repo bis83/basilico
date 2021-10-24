@@ -11,7 +11,7 @@ const drawProp = (store) => {
     }
 
     store.gl.useProgram(shader.prog);
-    store.gl.uniformMatrix4fv(shader.u.vp, false, store.frame.viewProj);
+    store.gl.uniformMatrix4fv(shader.u.vp, false, store.camera.viewProj);
     for(const item of draw.prop) {
         const mesh = store_bundleGet(store, "mesh", item.mesh);
         if(!mesh) {

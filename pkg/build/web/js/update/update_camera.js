@@ -5,5 +5,5 @@ const updateCamera = (store) => {
     const [x, y, z] = store.save.position;
     const [ax, ay] = store.save.angle;
 
-    store_frameCameraAction(store, x, y + height, z, ax, ay);
+    store_cameraTickAction(store, x, y + height, z, ax, ay);
 };
