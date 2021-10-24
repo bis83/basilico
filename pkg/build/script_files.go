@@ -21,6 +21,7 @@ var scripts = []string{
 	"web/js/store/store_camera.js",
 	"web/js/store/store_timer.js",
 	"web/js/store/store_save.js",
+	"web/js/store/store.js",
 
 	// update
 	"web/js/update/update_start_frame.js",
