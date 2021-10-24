@@ -10,7 +10,8 @@ var scripts = []string{
 	"web/js/misc/dynamics.js",
 	"web/js/misc/listen.js",
 	"web/js/misc/localstorage.js",
-	"web/js/misc/graphics.js",
+	"web/js/misc/graphics_create.js",
+	"web/js/misc/graphics_command.js",
 	"web/js/misc/audio.js",
 	"web/js/misc/decode_bundle.js",
 
