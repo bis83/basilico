@@ -9,9 +9,9 @@ const store_init = () => {
 
     const store = { gl, audio };
     store_bundle(store);
+    store_input(store);
     store_camera(store);
     store_timer(store);
-    store_gamepad(store);
     store_save(store);
 
     const CFG = {
@@ -37,44 +37,44 @@ const store_init = () => {
     listen(window, "focus", (ev) => {
     });
     listen(window, "blur", (ev) => {
-        store_gamepadBlurAction(store, ev);
+        store_inputBlurAction(store, ev);
     });
     listen(window, "resize", (ev) => {
     });
     listen(window, "gamepadconnected", (ev) => {
         LOGGING && console.log("gamepadconnected: " + ev.gamepad.index);
-        store_gamepadGamepadConnectedAction(store, ev);
+        store_inputGamepadConnectedAction(store, ev);
     });
     listen(window, "gamepaddisconnected", (ev) => {
         LOGGING && console.log("gamepaddisconnected: " + ev.gamepad.index);
-        store_gamepadGamepadDisconnectedAction(store, ev);
+        store_inputGamepadDisconnectedAction(store, ev);
     });
     listen(document, "keydown", (ev) => {
-        store_gamepadKeydownAction(store, ev);
+        store_inputKeyDownAction(store, ev);
     });
     listen(document, "keyup", (ev) => {
-        store_gamepadKeyupAction(store, ev);
+        store_inputKeyUpAction(store, ev);
     });
     listen(canvas, "mousedown", (ev) => {
-        store_gamepadMouseDownAction(store, ev);
+        store_inputMouseDownAction(store, ev);
     });
     listen(canvas, "mouseup", (ev) => {
-        store_gamepadMouseUpAction(store, ev);
+        store_inputMouseUpAction(store, ev);
     });
     listen(canvas, "mousemove", (ev) => {
-        store_gamepadMouseMoveAction(store, ev);
+        store_inputMouseMoveAction(store, ev);
     });
     listen(canvas, "touchstart", (ev) => {
-        store_gamepadTouchStartAction(store, ev);
+        store_inputTouchStartAction(store, ev);
     });
     listen(canvas, "touchend", (ev) => {
-        store_gamepadTouchEndAction(store, ev);
+        store_inputTouchEndAction(store, ev);
     });
     listen(canvas, "touchcancel", (ev) => {
-        store_gamepadTouchEndAction(store, ev);
+        store_inputTouchEndAction(store, ev);
     });
     listen(canvas, "touchmove", (ev) => {
-        store_gamepadTouchMoveAction(store, ev);
+        store_inputTouchMoveAction(store, ev);
     });    
 
     return store;

@@ -3,10 +3,10 @@ const updatePlayer = (store) => {
     const dt = store.timer.deltaTime;
     let [ax, ay] = store.save.angle;
     let [x, y, z] = store.save.position;
-    const cameraX = store.gamepad.cameraX;
-    const cameraY = store.gamepad.cameraY;
-    const moveX = store.gamepad.moveX;
-    const moveY = store.gamepad.moveY;
+    const cameraX = store.input.cameraX;
+    const cameraY = store.input.cameraY;
+    const moveX = store.input.moveX;
+    const moveY = store.input.moveY;
 
     // Camera
     const cameraSpeed = 90; // deg/s

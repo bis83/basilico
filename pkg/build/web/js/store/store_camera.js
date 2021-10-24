@@ -1,5 +1,5 @@
 
-// store
+// init
 const store_camera = (store) => {
     store.camera = {
         viewProj: mat4make(),

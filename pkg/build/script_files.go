@@ -17,7 +17,7 @@ var scripts = []string{
 
 	// store
 	"web/js/store/store_bundle.js",
-	"web/js/store/store_gamepad.js",
+	"web/js/store/store_input.js",
 	"web/js/store/store_camera.js",
 	"web/js/store/store_timer.js",
 	"web/js/store/store_save.js",
