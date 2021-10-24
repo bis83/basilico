@@ -78,18 +78,9 @@ listen(window, "load", () => {
     });
 
     // AnimationLoop
-    const update = () => {
-        updateStartFrame(store);
-        updatePlayer(store);
-        updateCamera(store);
-    };
-    const draw = () => {
-        drawStartFrame(store);
-        drawProp(store);
-    };
     const tick = () => {
-        update();
-        draw();
+        update(store);
+        draw(store);
         requestAnimationFrame(tick);
     };
     tick();

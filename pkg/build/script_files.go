@@ -26,10 +26,12 @@ var scripts = []string{
 	"web/js/update/update_start_frame.js",
 	"web/js/update/update_player.js",
 	"web/js/update/update_camera.js",
+	"web/js/update/update.js",
 
 	// draw
 	"web/js/draw/draw_start_frame.js",
 	"web/js/draw/draw_prop.js",
+	"web/js/draw/draw.js",
 
 	// main
 	"web/js/main.js",
