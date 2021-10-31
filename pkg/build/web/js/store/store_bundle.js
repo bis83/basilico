@@ -2,7 +2,6 @@
 // init
 const store_bundle = (store) => {
     store.bundle = [];
-    return store;
 };
 
 // getter

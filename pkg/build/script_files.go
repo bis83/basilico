@@ -18,6 +18,10 @@ var scripts = []string{
 
 	// store
 	"web/js/store/store_bundle.js",
+	"web/js/store/store_input_mouse.js",
+	"web/js/store/store_input_keyboard.js",
+	"web/js/store/store_input_gamepad.js",
+	"web/js/store/store_input_touch.js",
 	"web/js/store/store_input.js",
 	"web/js/store/store_camera.js",
 	"web/js/store/store_timer.js",

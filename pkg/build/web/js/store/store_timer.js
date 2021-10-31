@@ -5,7 +5,6 @@ const store_timer = (store) => {
         prevTime: performance.now(),
         deltaTime: 0,
     };
-    return store;
 };
 
 // getter

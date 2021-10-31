@@ -10,6 +10,10 @@ const store_init = () => {
     const store = { gl, audio };
     store_bundle(store);
     store_input(store);
+    store_inputMouse(store);
+    store_inputKeyboard(store);
+    store_inputGamepad(store);
+    store_inputTouch(store);
     store_camera(store);
     store_timer(store);
     store_save(store);
@@ -23,7 +27,6 @@ const store_init = () => {
     listen(window, "focus", (ev) => {
     });
     listen(window, "blur", (ev) => {
-        store_inputBlurAction(store, ev);
     });
     listen(window, "resize", (ev) => {
     });

@@ -2,6 +2,7 @@ package build
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	htmlT "html/template"
 	"io"
@@ -9,7 +10,6 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-	"encoding/json"
 	textT "text/template"
 
 	esbuild "github.com/evanw/esbuild/pkg/api"

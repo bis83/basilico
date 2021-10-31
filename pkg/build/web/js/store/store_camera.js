@@ -5,7 +5,6 @@ const store_camera = (store) => {
         viewProj: mat4make(),
         ortho: mat4make(),
     };
-    return store;
 };
 
 // getter
