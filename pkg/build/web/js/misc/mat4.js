@@ -47,6 +47,15 @@ const mat4translate = (o, x, y, z) => {
     ]);
 };
 
+const mat4scale = (o, x, y, z) => {
+    o.set([
+        x, 0, 0, 0,
+        0, y, 0, 0,
+        0, 0, z, 0,
+        0, 0, 0, 1
+    ]);
+};
+
 const mat4lookat = (o, eye, at, up) => {
     const tz = vec3make();
     vec3sub(tz, at, eye);

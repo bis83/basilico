@@ -25,6 +25,25 @@ index = [
 ]
 
 [[mesh]]
+name = "reticle"
+position = [
+  -1.0,  0.0, 0.0,
+   0.0, -1.0, 0.0,
+   0.0, +1.0, 0.0,
+  +1.0,  0.0, 0.0,
+]
+color = [
+  255, 255, 255, 255,
+  255, 255, 255, 255,
+  255, 255, 255, 255,
+  255, 255, 255, 255,
+]
+index = [
+  0, 1, 2,
+  1, 3, 2,
+]
+
+[[mesh]]
 name = "debug-grid"
 is_line = true
 position = [
@@ -137,5 +156,30 @@ void main() {
   fc = vc;
 }
 """
-uniform = ["w", "vp"]
+uniform = ["vp"]
 uniform_block = ["a"]
+
+[[shader]]
+name = "mesh_pc"
+vertex_shader = """
+#version 300 es
+layout (location = 0) in vec3 p;
+layout (location = 2) in vec4 c;
+uniform mat4 w;
+uniform mat4 vp;
+out vec4 vc;
+void main() {
+  gl_Position = vp * w * vec4(p, 1);
+  vc = c;
+}
+"""
+fragment_shader = """
+#version 300 es
+precision mediump float;
+in vec4 vc;
+out vec4 fc;
+void main() {
+  fc = vc;
+}
+"""
+uniform = ["w", "vp"]

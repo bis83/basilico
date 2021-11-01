@@ -37,6 +37,7 @@ var scripts = []string{
 	// draw
 	"web/js/draw/draw_start_frame.js",
 	"web/js/draw/draw_prop.js",
+	"web/js/draw/draw_reticle.js",
 	"web/js/draw/draw.js",
 
 	// main
