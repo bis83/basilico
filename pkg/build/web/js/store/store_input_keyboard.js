@@ -8,6 +8,7 @@ const store_inputKeyboard = (store) => {
         s: false,
         d: false,
         space: false,
+        lctrl: false,
     };
 };
 
@@ -21,6 +22,7 @@ const updateKeys = (keyboard, code, value) => {
         case "KeyS": keyboard.s = value; break;
         case "KeyD": keyboard.d = value; break;
         case "Space": keyboard.space = value; break;
+        case "ControlLeft": keyboard.lctrl = value; break;
         default: return false;
     }
     return true;

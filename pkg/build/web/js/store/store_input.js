@@ -51,6 +51,10 @@ const store_inputTickMouseKeyboardModeAction = ({ input }) => {
         input.cameraX = 0;
         input.cameraY = 0;
     }
+    input.jump = (!input.jumpButton && input.keyboard.space);
+    input.sneak = (!input.sneakButton && input.keyboard.lctrl);
+    input.jumpButton = input.keyboard.space;
+    input.sneakButton = input.keyboard.lctrl;
 };
 const store_inputTickTouchModeAction = ({ input }) => {
     input.moveX = 0;
