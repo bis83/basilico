@@ -1,20 +1,23 @@
 package build
 
 var scripts = []string{
-	// misc
-	"web/js/misc/embed.js",
-	"web/js/misc/base64.js",
-	"web/js/misc/angle.js",
-	"web/js/misc/vec3.js",
-	"web/js/misc/mat4.js",
-	"web/js/misc/collision.js",
-	"web/js/misc/dynamics.js",
-	"web/js/misc/listen.js",
-	"web/js/misc/localstorage.js",
-	"web/js/misc/graphics_create.js",
-	"web/js/misc/graphics_command.js",
-	"web/js/misc/audio.js",
-	"web/js/misc/decode_bundle.js",
+	// math
+	"web/js/math/base64.js",
+	"web/js/math/angle.js",
+	"web/js/math/vec3.js",
+	"web/js/math/mat4.js",
+	"web/js/math/shape.js",
+	"web/js/math/intersect.js",
+	"web/js/math/dynamics.js",
+
+	// core
+	"web/js/core/embed.js",
+	"web/js/core/listen.js",
+	"web/js/core/localstorage.js",
+	"web/js/core/graphics_create.js",
+	"web/js/core/graphics_command.js",
+	"web/js/core/audio.js",
+	"web/js/core/decode_bundle.js",
 
 	// store
 	"web/js/store/store_bundle.js",
