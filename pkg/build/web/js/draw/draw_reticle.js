@@ -17,8 +17,8 @@ const drawReticle = (store) => {
     
     // TODO: UniformBuffer
     // store.gl.bindBufferRange(store.gl.UNIFORM_BUFFER, shader.ub.a, 0, 0, 0);
-    const m = mat4make();
-    mat4scale(m, 4, 4, 1);
+    const m = new Float32Array(16);
+    m.set(mat4scale(4, 4, 1));
     store.gl.uniformMatrix4fv(shader.u.w, false, m);
 
     gl_drawMesh(store.gl, mesh);
