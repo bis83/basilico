@@ -1,5 +1,5 @@
 
-const drawProp = (store) => {
+const drawStaticMesh = (store) => {
     gl_state(store.gl, true, false);
     const draw = store_bundleGet(store, "draw", store.save.scene);
     if(!draw) {
@@ -12,7 +12,7 @@ const drawProp = (store) => {
 
     store.gl.useProgram(shader.prog);
     store.gl.uniformMatrix4fv(shader.u.vp, false, store.camera.viewProj);
-    for(const item of draw.prop) {
+    for(const item of draw.static) {
         const mesh = store_bundleGet(store, "mesh", item.mesh);
         if(!mesh) {
             continue;

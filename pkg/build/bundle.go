@@ -11,21 +11,19 @@ import (
 
 func buildBundle(prj *project.Project) (*Bundle, error) {
 	var b Bundle
-	for _, s := range prj.Scene {
-		var d Draw
-		d.Name = s.Name
-		for _, p := range s.Prop {
-			dp, err := buildDrawProp(p)
-			if err != nil {
-				return nil, err
-			}
-			d.Prop = append(d.Prop, dp)
-		}
-		var u Update
-		u.Name = s.Name
-		b.Draw = append(b.Draw, &d)
-		b.Update = append(b.Update, &u)
+
+	draw, err := buildDraw(prj)
+	if err != nil {
+		return nil, err
 	}
+	b.Draw = draw
+
+	update, err2 := buildUpdate(prj)
+	if err2 != nil {
+		return nil, err2
+	}
+	b.Update = update
+
 	for _, v := range prj.Mesh {
 		mesh, err := buildMesh(v)
 		if err != nil {

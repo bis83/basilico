@@ -1,16 +1,5 @@
 package project
 
-type Prop struct {
-	Mesh     string      `toml:"mesh"`
-	Material string      `toml:"material"`
-	Layout   [][]float32 `toml:"layout"`
-}
-
-type Scene struct {
-	Name string  `toml:"name"`
-	Prop []*Prop `toml:"prop"`
-}
-
 type Mesh struct {
 	Name     string    `toml:"name"`
 	Position []float32 `toml:"position"`
@@ -36,7 +25,7 @@ type Shader struct {
 	UniformBlock   []string `toml:"uniform_block"`
 }
 
-type Specification struct {
+type Spec struct {
 	Scene   Scene      `toml:"scene"`
 	Mesh    []*Mesh    `toml:"mesh"`
 	Texture []*Texture `toml:"texture"`

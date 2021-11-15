@@ -19,12 +19,12 @@ func readConfig(path string) (*Config, error) {
 	return &cfg, nil
 }
 
-func readCoreSpec() (*Specification, error) {
+func readCoreSpec() (*Spec, error) {
 	data, err := fs.ReadFile("toml/core.toml")
 	if err != nil {
 		return nil, err
 	}
-	var spec Specification
+	var spec Spec
 	if err := toml.Unmarshal(data, &spec); err != nil {
 		return nil, err
 	}
@@ -49,25 +49,25 @@ func listSpecFiles(dir string) ([]string, error) {
 	return files, nil
 }
 
-func readSpec(path string) (*Specification, error) {
+func readSpec(path string) (*Spec, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-	var spec Specification
+	var spec Spec
 	if err := toml.Unmarshal(data, &spec); err != nil {
 		return nil, err
 	}
 	return &spec, nil
 }
 
-func listSpecs(baseDir string) ([]*Specification, error) {
+func listSpecs(baseDir string) ([]*Spec, error) {
 	specDir := filepath.Join(baseDir, "_spec")
 	list, err := listSpecFiles(specDir)
 	if err != nil {
 		return nil, err
 	}
-	var s []*Specification
+	var s []*Spec
 	for _, file := range list {
 		spec, err := readSpec(file)
 		if err != nil {

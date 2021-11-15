@@ -3,7 +3,7 @@ const decodeUpdate = (data) => {
     return data;
 };
 
-const decodeDrawProp = (gl, data) => {
+const decodeDrawStaticMesh = (gl, data) => {
     if(data.matrix) {
         const m = base64ToFloat32Array(data.matrix);
         data.count = Math.floor(m.length / 16);
@@ -22,8 +22,8 @@ const decodeDrawProp = (gl, data) => {
 };
 
 const decodeDraw = (gl, data) => {
-    if(data.prop) {
-        data.prop = data.prop.map(data => decodeDrawProp(gl, data));
+    if(data.static) {
+        data.static = data.static.map(data => decodeDrawStaticMesh(gl, data));
     }
     return data;
 };

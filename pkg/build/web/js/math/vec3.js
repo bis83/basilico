@@ -24,6 +24,14 @@ const vec3sub = (a, b) => {
     ];
 };
 
+const vec3mul = (v, x) => {
+    return [
+        v[0] * x,
+        v[1] * x,
+        v[2] * x
+    ];
+};
+
 const vec3normalize = (v) => {
     const l = vec3length(v);
     return [

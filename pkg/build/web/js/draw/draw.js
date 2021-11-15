@@ -1,6 +1,6 @@
 
 const draw = (store) => {
     drawStartFrame(store);
-    drawProp(store);
+    drawStaticMesh(store);
     drawReticle(store);
 };
