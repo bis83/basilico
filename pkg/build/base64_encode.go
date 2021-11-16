@@ -42,3 +42,12 @@ func encodeUint16Array(data []uint16) (string, error) {
 	str := base64.StdEncoding.EncodeToString(b.Bytes())
 	return str, nil
 }
+
+func encodeInt32Array(data []int32) (string, error) {
+	var b bytes.Buffer
+	if err := binary.Write(&b, binary.LittleEndian, data); err != nil {
+		return "", err
+	}
+	str := base64.StdEncoding.EncodeToString(b.Bytes())
+	return str, nil
+}

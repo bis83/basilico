@@ -8,7 +8,7 @@ func toVec3Array(pos []float32) []mgl.Vec3 {
 	l := len(pos)
 	var v []mgl.Vec3
 	for i := 0; i < l; i += 3 {
-		v = append(v, mgl.Vec3{pos[i*3+0], pos[i*3+1], pos[i*3+2]})
+		v = append(v, mgl.Vec3{pos[i+0], pos[i+1], pos[i+2]})
 	}
 	return v
 }

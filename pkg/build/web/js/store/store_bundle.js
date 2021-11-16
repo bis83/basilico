@@ -39,5 +39,6 @@ const store_bundleLoadAction = ({ gl, bundle }, name) => {
             json.shader = json.shader.map(data => decodeShader(gl, data));
         }
         bundle.push(json);
+        LOGGING && console.log(json);
     });
 };
