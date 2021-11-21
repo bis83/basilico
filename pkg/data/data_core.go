@@ -13,7 +13,7 @@ func makeCore(prj *project.Project) (*Core, error) {
 	if _, i := prj.FindScene(prj.Cfg.Start.Scene); i >= 0 {
 		c.Start.Scene = i
 	} else {
-		return nil, fmt.Errorf("Scene Not Found: %s", c.Start.Scene)
+		return nil, fmt.Errorf("Scene Not Found: %s", prj.Cfg.Start.Scene)
 	}
 	c.Start.Position = prj.Cfg.Start.Position
 	c.Start.Angle = prj.Cfg.Start.Angle
