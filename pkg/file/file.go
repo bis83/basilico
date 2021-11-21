@@ -29,3 +29,11 @@ func MakeDir(dir string) error {
 	}
 	return nil
 }
+
+func WriteFile(path string, data []byte) error {
+	err := os.WriteFile(path, data, 0666)
+	if err != nil {
+		return err
+	}
+	return nil
+}

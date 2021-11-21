@@ -91,26 +91,22 @@ func Read(baseDir string) (*Project, error) {
 	}
 	var prj Project
 	prj.Cfg = cfg
-	prj.Scene = make(map[string]*Scene)
-	prj.Mesh = make(map[string]*Mesh)
-	prj.Texture = make(map[string]*Texture)
-	prj.Shader = make(map[string]*Shader)
 	specs, err2 := listSpecs(baseDir)
 	if err2 != nil {
 		return nil, err2
 	}
 	for _, spec := range specs {
 		if spec.Scene.Name != "" {
-			prj.Scene[spec.Scene.Name] = &spec.Scene
+			prj.Scene = append(prj.Scene, &spec.Scene)
 		}
 		for _, mesh := range spec.Mesh {
-			prj.Mesh[mesh.Name] = mesh
+			prj.Mesh = append(prj.Mesh, mesh)
 		}
 		for _, texture := range spec.Texture {
-			prj.Texture[texture.Name] = texture
+			prj.Texture = append(prj.Texture, texture)
 		}
 		for _, shader := range spec.Shader {
-			prj.Shader[shader.Name] = shader
+			prj.Shader = append(prj.Shader, shader)
 		}
 	}
 	return &prj, nil

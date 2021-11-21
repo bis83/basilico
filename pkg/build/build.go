@@ -1,16 +1,14 @@
 package build
 
 import (
-	"embed"
 	"os"
 	"path/filepath"
 
+	data "github.com/bis83/basilico/pkg/data"
 	file "github.com/bis83/basilico/pkg/file"
 	project "github.com/bis83/basilico/pkg/project"
+	script "github.com/bis83/basilico/pkg/script"
 )
-
-//go:embed web
-var fs embed.FS
 
 func Clean(baseDir string) error {
 	dir := filepath.Join(baseDir, "_site")
@@ -20,18 +18,77 @@ func Clean(baseDir string) error {
 	return nil
 }
 
+func buildScript(prj *project.Project, baseDir string) error {
+	var err error
+
+	var feat *script.Feature
+	feat, err = script.MakeFeature(prj)
+	if err != nil {
+		return err
+	}
+
+	var b []byte
+	b, err = script.MakeIndexHtml(feat)
+	if err != nil {
+		return err
+	}
+	err = file.WriteFile(filepath.Join(baseDir, "index.html"), b)
+	if err != nil {
+		return err
+	}
+	b, err = script.MakeAppJs(feat)
+	if err != nil {
+		return err
+	}
+	err = file.WriteFile(filepath.Join(baseDir, "app.js"), b)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func buildData(prj *project.Project, baseDir string) error {
+	fs, err := data.MakeData(prj)
+	if err != nil {
+		return err
+	}
+	for _, f := range fs {
+		err = file.WriteFile(filepath.Join(baseDir, f.Name), f.Data)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func Build(prj *project.Project, baseDir string) error {
-	if err := Clean(baseDir); err != nil {
+	var err error
+	err = Clean(baseDir)
+	if err != nil {
 		return err
 	}
-	if err := file.MakeDir(filepath.Join(baseDir, "_site")); err != nil {
+
+	var path string
+	path = filepath.Join(baseDir, "_site")
+	err = file.MakeDir(path)
+	if err != nil {
 		return err
 	}
-	if err := writeCoreScripts(prj, filepath.Join(baseDir, "_site")); err != nil {
+	err = buildScript(prj, path)
+	if err != nil {
 		return err
 	}
-	if err := writeBundleJsons(prj, filepath.Join(baseDir, "_site", "data")); err != nil {
+
+	path = filepath.Join(baseDir, "_site", "data")
+	err = file.MakeDir(path)
+	if err != nil {
 		return err
 	}
+	err = buildData(prj, path)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

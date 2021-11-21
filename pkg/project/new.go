@@ -2,7 +2,6 @@ package project
 
 import (
 	"embed"
-	"os"
 	"path/filepath"
 
 	file "github.com/bis83/basilico/pkg/file"
@@ -19,7 +18,7 @@ func writeConfig(path string) error {
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(path, data, 0666); err != nil {
+	if err := file.WriteFile(path, data); err != nil {
 		return err
 	}
 	return nil
@@ -34,7 +33,7 @@ func writeEmptySpec(path string) error {
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(emptyPath, data, 0666); err != nil {
+	if err := file.WriteFile(emptyPath, data); err != nil {
 		return err
 	}
 	return nil
