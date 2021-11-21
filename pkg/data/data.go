@@ -11,16 +11,16 @@ func MakeData(prj *project.Project) ([]File, error) {
 	var err error
 	var b []byte
 
-	var c *Core
-	c, err = makeCore(prj)
+	var i *Index
+	i, err = makeIndex(prj)
 	if err != nil {
 		return nil, err
 	}
-	b, err = marshalJSON(c, minify)
+	b, err = marshalJSON(i, minify)
 	if err != nil {
 		return nil, err
 	}
-	fs = append(fs, File{"core.json", b})
+	fs = append(fs, File{"index.json", b})
 
 	var p *Pack
 	p, err = makePack(prj)

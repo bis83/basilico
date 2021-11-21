@@ -33,9 +33,9 @@ const store_saveVelocityAction = ({ save }, vy) => {
 };
 
 const store_saveStartPositionAction = (store) => {
-    const scene = $core.start.scene;
-    const [x, y, z] = $core.start.position;
-    const [ax, ay] = $core.start.angle;
+    const scene = $data.index.start.scene;
+    const [x, y, z] = $data.index.start.position;
+    const [ax, ay] = $data.index.start.angle;
     store_saveSceneAction(store, scene);
     store_savePositionAction(store, x, y, z);
     store_saveAngleAction(store, ax, ay);

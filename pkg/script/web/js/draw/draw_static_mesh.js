@@ -1,11 +1,11 @@
 
 const drawStaticMesh = (store) => {
     gl_state(true, false);
-    const draw = $pack_draw(store.save.scene);  // FIXME:
+    const draw = $data_draw(store.save.scene);  // FIXME:
     if(!draw) {
         return;
     }
-    const shader = $pack_shader($core.data.mesh_pnc);
+    const shader = $data_shader($data.index.data.mesh_pnc);
     if(!shader) {
         return;
     }
@@ -13,7 +13,7 @@ const drawStaticMesh = (store) => {
     $gl.useProgram(shader.prog);
     $gl.uniformMatrix4fv(shader.u.vp, false, store.camera.viewProj);
     for(const item of draw.static) {
-        const mesh = $pack_mesh(item.mesh);
+        const mesh = $data_mesh(item.mesh);
         if(!mesh) {
             continue;
         }

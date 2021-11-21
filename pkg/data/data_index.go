@@ -6,41 +6,41 @@ import (
 	project "github.com/bis83/basilico/pkg/project"
 )
 
-func makeCore(prj *project.Project) (*Core, error) {
-	var c Core
+func makeIndex(prj *project.Project) (*Index, error) {
+	var idx Index
 
 	// CoreStart
 	if _, i := prj.FindScene(prj.Cfg.Start.Scene); i >= 0 {
-		c.Start.Scene = i
+		idx.Start.Scene = i
 	} else {
 		return nil, fmt.Errorf("Scene Not Found: %s", prj.Cfg.Start.Scene)
 	}
-	c.Start.Position = prj.Cfg.Start.Position
-	c.Start.Angle = prj.Cfg.Start.Angle
+	idx.Start.Position = prj.Cfg.Start.Position
+	idx.Start.Angle = prj.Cfg.Start.Angle
 
 	// CoreData
 	if _, i := prj.FindMesh("reticle"); i >= 0 {
-		c.Data.Reticle = i
+		idx.Data.Reticle = i
 	} else {
 		return nil, fmt.Errorf("Mesh Not Found: reticle")
 	}
 	if _, i := prj.FindShader("mesh_pc"); i >= 0 {
-		c.Data.MeshPC = i
+		idx.Data.MeshPC = i
 	} else {
 		return nil, fmt.Errorf("Mesh Not Found: mesh_pc")
 	}
 	if _, i := prj.FindShader("mesh_pnc"); i >= 0 {
-		c.Data.MeshPNC = i
+		idx.Data.MeshPNC = i
 	} else {
 		return nil, fmt.Errorf("Mesh Not Found: mesh_pnc")
 	}
 
 	// CoreScene
 	for _, v := range prj.Scene {
-		var s CoreScene
+		var s IndexScene
 		s.Name = v.Name
-		c.Scene = append(c.Scene, &s)
+		idx.Scene = append(idx.Scene, &s)
 	}
 
-	return &c, nil
+	return &idx, nil
 }

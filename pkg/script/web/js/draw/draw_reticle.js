@@ -2,14 +2,14 @@
 const drawReticle = (store) => {
     gl_state(false, true);
 
-    const shader = $pack_shader($core.data.mesh_pc);
+    const shader = $data_shader($data.index.data.mesh_pc);
     if(!shader) {
         return;
     }
     $gl.useProgram(shader.prog);
     $gl.uniformMatrix4fv(shader.u.vp, false, store.camera.ortho);
 
-    const mesh = $pack_mesh($core.data.reticle);
+    const mesh = $data_mesh($data.index.data.reticle);
     if(!mesh) {
         return;
     }

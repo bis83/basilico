@@ -26,8 +26,7 @@ var scripts = []string{
 	"web/js/decode/decode_update.js",
 
 	// data
-	"web/js/data/data_core.js",
-	"web/js/data/data_pack.js",
+	"web/js/data.js",
 
 	// store
 	"web/js/store/store_input_mouse.js",
