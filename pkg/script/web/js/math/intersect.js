@@ -1,4 +1,18 @@
 
+// intersect
+
+const not_intersect = (min0, max0, min1, max1) => {
+    return (max0 < min1) || (min0 > max1);
+};
+const not_intersect_n = (v0, v1, k) => {
+    for(let i=0; i<k; i+=2) {
+        if(not_intersect(v0[i], v0[i+1], v1[i], v1[i+1])) {
+            return false;
+        }
+    }
+    return true;
+};
+
 // Sphere
 
 const intersectSphereToSphere = (a, b) => {
@@ -14,27 +28,15 @@ const intersectSphereToCapsule = (a, b) => {
     return d2 <= r*r;
 };
 
-const intersectSphereToKDOP = (a, b) => {
-    // TODO:
-    return false;
-};
-
 const intersectCapsuleToCapsule = (a, b) => {
-    // TODO:
-    return false;
-};
-
-const intersectCapsuleToKDOP = (a, b) => {
     // TODO:
     return false;
 };
 
 const intersectKDOPToKDOP = (a, b) => {
     const l = Math.min(a.length, b.length);
-    for(let i=0; i<l; i+=2) {
-        if(a[i+0] > b[i+1] || a[i+1] < b[i+0]) {
-            return false;
-        }
+    if(not_intersect_n(a, b, l)) {
+        return false;
     }
     return true;
 };

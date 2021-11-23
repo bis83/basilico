@@ -11,3 +11,7 @@ const xy_normalize = (x, y) => {
     const l = xy_length(x, y);
     return l != 0 ? [x/l, y/l] : [0, 0];
 };
+
+const xy_mul = ([x, y], l) => {
+    return [x*l, y*l];
+};

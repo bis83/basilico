@@ -27,6 +27,7 @@ var scripts = []string{
 
 	// data
 	"web/js/data.js",
+	"web/js/data/data_update_ground.js",
 
 	// store
 	"web/js/store/store_input_mouse.js",
