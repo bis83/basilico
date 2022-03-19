@@ -10,13 +10,13 @@ func makeIndex(prj *project.Project) (*Index, error) {
 	var idx Index
 
 	// CoreStart
-	if _, i := prj.FindScene(prj.Cfg.Start.Scene); i >= 0 {
+	if _, i := prj.FindScene(prj.Setup.Start.Scene); i >= 0 {
 		idx.Start.Scene = i
 	} else {
-		return nil, fmt.Errorf("Scene Not Found: %s", prj.Cfg.Start.Scene)
+		return nil, fmt.Errorf("Scene Not Found: %s", prj.Setup.Start.Scene)
 	}
-	idx.Start.Position = prj.Cfg.Start.Position
-	idx.Start.Angle = prj.Cfg.Start.Angle
+	idx.Start.Position = prj.Setup.Start.Position
+	idx.Start.Angle = prj.Setup.Start.Angle
 
 	// CoreData
 	if _, i := prj.FindMesh("reticle"); i >= 0 {

@@ -25,7 +25,7 @@ type Shader struct {
 	UniformBlock   []string `toml:"uniform_block"`
 }
 
-type Spec struct {
+type Page struct {
 	Scene   Scene      `toml:"scene"`
 	Mesh    []*Mesh    `toml:"mesh"`
 	Texture []*Texture `toml:"texture"`

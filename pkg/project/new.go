@@ -10,11 +10,11 @@ import (
 //go:embed toml
 var fs embed.FS
 
-func writeConfig(path string) error {
+func writeSetup(path string) error {
 	if file.Exists(path) {
 		return nil
 	}
-	data, err := fs.ReadFile("toml/config.toml")
+	data, err := fs.ReadFile("toml/setup.toml")
 	if err != nil {
 		return err
 	}
@@ -24,7 +24,7 @@ func writeConfig(path string) error {
 	return nil
 }
 
-func writeEmptySpec(path string) error {
+func writeEmptyPage(path string) error {
 	if err := file.MakeDir(path); err != nil {
 		return err
 	}
@@ -40,15 +40,15 @@ func writeEmptySpec(path string) error {
 }
 
 func New(baseDir string) (*Project, error) {
-	tomlPath := filepath.Join(baseDir, "_config.toml")
+	tomlPath := filepath.Join(baseDir, "setup.toml")
 	if !file.Exists(tomlPath) {
-		if err := writeConfig(tomlPath); err != nil {
+		if err := writeSetup(tomlPath); err != nil {
 			return nil, err
 		}
 	}
-	specPath := filepath.Join(baseDir, "_spec")
-	if !file.Exists(specPath) {
-		if err := writeEmptySpec(specPath); err != nil {
+	pagePath := filepath.Join(baseDir, "pages")
+	if !file.Exists(pagePath) {
+		if err := writeEmptyPage(pagePath); err != nil {
 			return nil, err
 		}
 	}

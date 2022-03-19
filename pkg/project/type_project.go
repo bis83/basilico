@@ -1,7 +1,7 @@
 package project
 
 type Project struct {
-	Cfg     *Config
+	Setup   *Setup
 	Scene   []*Scene
 	Mesh    []*Mesh
 	Texture []*Texture

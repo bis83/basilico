@@ -11,7 +11,7 @@ import (
 )
 
 func Clean(baseDir string) error {
-	dir := filepath.Join(baseDir, "_site")
+	dir := filepath.Join(baseDir, "dist")
 	if err := os.RemoveAll(dir); err != nil {
 		return err
 	}
@@ -70,7 +70,7 @@ func Build(prj *project.Project, baseDir string) error {
 	}
 
 	var path string
-	path = filepath.Join(baseDir, "_site")
+	path = filepath.Join(baseDir, "dist")
 	err = file.MakeDir(path)
 	if err != nil {
 		return err
@@ -80,7 +80,7 @@ func Build(prj *project.Project, baseDir string) error {
 		return err
 	}
 
-	path = filepath.Join(baseDir, "_site", "data")
+	path = filepath.Join(baseDir, "dist", "data")
 	err = file.MakeDir(path)
 	if err != nil {
 		return err

@@ -5,7 +5,7 @@ import (
 )
 
 func MakeData(prj *project.Project) ([]File, error) {
-	minify := prj.Cfg.Minify
+	minify := prj.Setup.Minify
 
 	var fs []File
 	var err error

@@ -36,7 +36,7 @@ func steps() error {
 		}
 	}
 	if arg.DoServe {
-		err = serve.Serve(prj.Cfg, arg.BaseDir)
+		err = serve.Serve(prj.Setup, arg.BaseDir)
 		if err != nil {
 			return err
 		}

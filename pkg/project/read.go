@@ -7,31 +7,31 @@ import (
 	toml "github.com/pelletier/go-toml/v2"
 )
 
-func readConfig(path string) (*Config, error) {
+func readSetup(path string) (*Setup, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-	var cfg Config
-	if err := toml.Unmarshal(data, &cfg); err != nil {
+	var s Setup
+	if err := toml.Unmarshal(data, &s); err != nil {
 		return nil, err
 	}
-	return &cfg, nil
+	return &s, nil
 }
 
-func readCoreSpec() (*Spec, error) {
+func readCorePage() (*Page, error) {
 	data, err := fs.ReadFile("toml/core.toml")
 	if err != nil {
 		return nil, err
 	}
-	var spec Spec
-	if err := toml.Unmarshal(data, &spec); err != nil {
+	var page Page
+	if err := toml.Unmarshal(data, &page); err != nil {
 		return nil, err
 	}
-	return &spec, nil
+	return &page, nil
 }
 
-func listSpecFiles(dir string) ([]string, error) {
+func listPageFiles(dir string) ([]string, error) {
 	var files []string
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -49,63 +49,63 @@ func listSpecFiles(dir string) ([]string, error) {
 	return files, nil
 }
 
-func readSpec(path string) (*Spec, error) {
+func readPage(path string) (*Page, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
-	var spec Spec
-	if err := toml.Unmarshal(data, &spec); err != nil {
+	var page Page
+	if err := toml.Unmarshal(data, &page); err != nil {
 		return nil, err
 	}
-	return &spec, nil
+	return &page, nil
 }
 
-func listSpecs(baseDir string) ([]*Spec, error) {
-	specDir := filepath.Join(baseDir, "_spec")
-	list, err := listSpecFiles(specDir)
+func listPages(baseDir string) ([]*Page, error) {
+	pageDir := filepath.Join(baseDir, "pages")
+	list, err := listPageFiles(pageDir)
 	if err != nil {
 		return nil, err
 	}
-	var s []*Spec
+	var pages []*Page
 	for _, file := range list {
-		spec, err := readSpec(file)
+		page, err := readPage(file)
 		if err != nil {
 			return nil, err
 		}
-		s = append(s, spec)
+		pages = append(pages, page)
 	}
-	core, err2 := readCoreSpec()
+	core, err2 := readCorePage()
 	if err2 != nil {
 		return nil, err2
 	}
-	s = append(s, core)
-	return s, nil
+	pages = append(pages, core)
+	return pages, nil
 }
 
 func Read(baseDir string) (*Project, error) {
-	tomlPath := filepath.Join(baseDir, "_config.toml")
-	cfg, err := readConfig(tomlPath)
+	tomlPath := filepath.Join(baseDir, "setup.toml")
+	setup, err := readSetup(tomlPath)
 	if err != nil {
 		return nil, err
 	}
 	var prj Project
-	prj.Cfg = cfg
-	specs, err2 := listSpecs(baseDir)
+	prj.Setup = setup
+	pages, err2 := listPages(baseDir)
 	if err2 != nil {
 		return nil, err2
 	}
-	for _, spec := range specs {
-		if spec.Scene.Name != "" {
-			prj.Scene = append(prj.Scene, &spec.Scene)
+	for _, page := range pages {
+		if page.Scene.Name != "" {
+			prj.Scene = append(prj.Scene, &page.Scene)
 		}
-		for _, mesh := range spec.Mesh {
+		for _, mesh := range page.Mesh {
 			prj.Mesh = append(prj.Mesh, mesh)
 		}
-		for _, texture := range spec.Texture {
+		for _, texture := range page.Texture {
 			prj.Texture = append(prj.Texture, texture)
 		}
-		for _, shader := range spec.Shader {
+		for _, shader := range page.Shader {
 			prj.Shader = append(prj.Shader, shader)
 		}
 	}

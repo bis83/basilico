@@ -16,7 +16,7 @@ go build -ldflags '-s -w' -trimpath ./cmd/...
 ./basilico [init/clean/build/serve] [your-project-directory]
 ```
 
-- Create `_config.toml` (a project setting), `_spec/` (asset descriptions) if not exists.
+- Create `setup.toml` (a project setting), `pages/` (asset descriptions) if not exists.
 ```
 ./basilico init [your-project-directory]
 ```
@@ -24,7 +24,7 @@ go build -ldflags '-s -w' -trimpath ./cmd/...
 ```
 ./basilico serve [your-project-directory]
 ```
-- `_site` are generated files. (No need add to repository)
+- `dist` are generated files. (No need add to repository)
 
 ## License
 

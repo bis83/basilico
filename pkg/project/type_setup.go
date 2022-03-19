@@ -6,7 +6,7 @@ type Start struct {
 	Angle    []float32 `toml:"angle"`
 }
 
-type Config struct {
+type Setup struct {
 	Title   string `toml:"title"`
 	Addr    string `toml:"addr"`
 	Logging bool   `toml:"logging"`
