@@ -2,19 +2,9 @@ package project
 
 type Project struct {
 	Setup   *Setup
-	Scene   []*Scene
 	Mesh    []*Mesh
 	Texture []*Texture
 	Shader  []*Shader
-}
-
-func (p *Project) FindScene(name string) (*Scene, int) {
-	for i, v := range p.Scene {
-		if v.Name == name {
-			return v, i
-		}
-	}
-	return nil, -1
 }
 
 func (p *Project) FindMesh(name string) (*Mesh, int) {

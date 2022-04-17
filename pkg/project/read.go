@@ -96,9 +96,6 @@ func Read(baseDir string) (*Project, error) {
 		return nil, err2
 	}
 	for _, page := range pages {
-		if page.Scene.Name != "" {
-			prj.Scene = append(prj.Scene, &page.Scene)
-		}
 		for _, mesh := range page.Mesh {
 			prj.Mesh = append(prj.Mesh, mesh)
 		}

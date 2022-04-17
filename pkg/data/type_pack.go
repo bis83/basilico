@@ -21,8 +21,6 @@ type Shader struct {
 }
 
 type Pack struct {
-	Update  []*Update  `json:"update"`
-	Draw    []*Draw    `json:"draw"`
 	Mesh    []*Mesh    `json:"mesh"`
 	Texture []*Texture `json:"texture"`
 	Shader  []*Shader  `json:"shader"`

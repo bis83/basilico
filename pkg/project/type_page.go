@@ -26,7 +26,6 @@ type Shader struct {
 }
 
 type Page struct {
-	Scene   Scene      `toml:"scene"`
 	Mesh    []*Mesh    `toml:"mesh"`
 	Texture []*Texture `toml:"texture"`
 	Shader  []*Shader  `toml:"shader"`

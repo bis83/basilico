@@ -58,3 +58,7 @@ const vec3dir = (hang, vang) => {
         Math.cos(v) * Math.sin(h)
     ];
 };
+
+const vec3world = (x, y, h) => {
+    return [x*2, h*0.5, y*2];
+};

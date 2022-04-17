@@ -7,18 +7,6 @@ import (
 func makePack(prj *project.Project) (*Pack, error) {
 	var b Pack
 
-	draw, err := makeDraw(prj)
-	if err != nil {
-		return nil, err
-	}
-	b.Draw = draw
-
-	update, err2 := makeUpdate(prj)
-	if err2 != nil {
-		return nil, err2
-	}
-	b.Update = update
-
 	for _, v := range prj.Mesh {
 		mesh, err := makeMesh(v)
 		if err != nil {

@@ -1,7 +1,7 @@
 
 var $gl = null;
 
-const $gl_init = () => {
+const gl_init = () => {
     const canvas = document.getElementById("main");
     ASSERT && console.assert(canvas !== null);
     $gl = canvas.getContext("webgl2");

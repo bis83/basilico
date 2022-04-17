@@ -31,10 +31,10 @@ const mat4multiply = (a, b) => {
 
 const mat4translate = (x, y, z) => {
     return [
-        1, 0, 0, x,
-        0, 1, 0, y,
-        0, 0, 1, z,
-        0, 0, 0, 1
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        x, y, z, 1
     ];
 };
 
