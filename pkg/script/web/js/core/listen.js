@@ -21,10 +21,10 @@ const listen_init = () => {
         moveY: 0,
         cameraX: 0,
         cameraY: 0,
-        jump: false,
-        sneak: false,
-        jumpButton: false,
-        sneakButton: false,
+        act: false,
+        sub: false,
+        actButton: false,
+        subButton: false,
     };
     $listen.input.gamepad = {
         index: null,
@@ -199,10 +199,10 @@ const listen_tick_input = (input) => {
         input.moveY = -input.gamepad.ly;
         input.cameraX = -input.gamepad.rx;
         input.cameraY = -input.gamepad.ry;
-        input.jump = (!input.jumpButton && input.gamepad.b0);
-        input.sneak = (!input.sneakButton && input.gamepad.b1);
-        input.jumpButton = input.gamepad.b0;
-        input.sneakButton = input.gamepad.b1;
+        input.act = (!input.actButton && input.gamepad.b0);
+        input.sub = (!input.subButton && input.gamepad.b1);
+        input.actButton = input.gamepad.b0;
+        input.subButton = input.gamepad.b1;
     } else if(mode === GAMEPAD_MODE_MOUSE_KEYBOARD) {
         input.moveX = input.keyboard.a ? -1 : input.keyboard.d ? +1 : 0;
         input.moveY = input.keyboard.w ? +1 : input.keyboard.s ? -1 : 0;
@@ -213,10 +213,10 @@ const listen_tick_input = (input) => {
             input.cameraX = 0;
             input.cameraY = 0;
         }
-        input.jump = (!input.jumpButton && input.keyboard.space);
-        input.sneak = (!input.sneakButton && input.keyboard.lctrl);
-        input.jumpButton = input.keyboard.space;
-        input.sneakButton = input.keyboard.lctrl;
+        input.act = (!input.actButton && input.keyboard.space);
+        input.sub = (!input.subButton && input.keyboard.lctrl);
+        input.actButton = input.keyboard.space;
+        input.subButton = input.keyboard.lctrl;
     } else if(mode === GAMEPAD_MODE_VIRTUAL_TOUCH) {
         input.moveX = 0;
         input.moveY = 0;

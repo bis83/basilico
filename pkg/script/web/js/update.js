@@ -68,7 +68,31 @@ const update_camera = () => {
     $temp.cam.o.set(mat4ortho(ww, wh, 0, 1));
 };
 
+const update_creative = () => {
+    if($listen.input.act) {
+        const stack = temp_world_stack($temp.pos.x, $temp.pos.y);
+        if(stack && stack.length > 0) {
+            let [id, count] = stack_get(stack[stack.length-1]);
+            count += 1;
+            stack[stack.length-1] = stack_set(id, count);
+        }
+    }
+    if($listen.input.sub) {
+        const stack = temp_world_stack($temp.pos.x, $temp.pos.y);
+        if(stack && stack.length > 0) {
+            let [id, count] = stack_get(stack[stack.length-1]);
+            count -= 1;
+            if(count > 0) { 
+                stack[stack.length-1] = stack_set(id, count);
+            } else {
+                stack.pop();
+            }
+        }
+    }
+};
+
 const update = () => {
     update_pos();
     update_camera();
+    update_creative();
 };
