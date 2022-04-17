@@ -45,6 +45,14 @@ const update_pos = () => {
     const dx = moveSpeed * dt * vx;
     const dy = moveSpeed * dt * vy;
     [$temp.pos.x, $temp.pos.y] = update_pos_adjust($temp.pos.x, $temp.pos.y, dx, dy);
+
+    const h = temp_world_height($temp.pos.x, $temp.pos.y);
+    if(Math.abs(h-$temp.pos.h) > 2) {
+        $temp.pos.h = h;
+    } else {
+        const vh = h - $temp.pos.h;
+        $temp.pos.h += 10 * dt * vh;
+    }
 };
 
 const update_camera = () => {
@@ -55,9 +63,8 @@ const update_camera = () => {
     const zFar = 1000;
 
     const dir = vec3dir($temp.pos.ha, $temp.pos.va);
-    const h = temp_world_height($temp.pos.x, $temp.pos.y);
-    const eye = vec3world($temp.pos.x, $temp.pos.y, h);
-    eye[1] += $temp.pos.h;
+    const eye = vec3world($temp.pos.x, $temp.pos.y, $temp.pos.h);
+    eye[1] += $temp.pos.eyeh;
 
     const at = vec3add(eye, dir);
     const up = [0, 1, 0];

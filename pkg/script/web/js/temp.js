@@ -9,7 +9,8 @@ var $temp = {
         y: 0,
         ha: 0,
         va: 0,
-        h: 1.75,
+        h: 0,
+        eyeh: 1.75,
     },
     world: {
         w: 0,
