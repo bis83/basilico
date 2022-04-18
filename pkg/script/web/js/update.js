@@ -33,6 +33,7 @@ const update_pos = () => {
     const cameraSpeed = 90; // deg/s
     $temp.pos.ha += cameraSpeed * dt * $listen.input.cameraX;
     $temp.pos.va += cameraSpeed * dt * $listen.input.cameraY;
+    $temp.pos.va = Math.max(-60, Math.min($temp.pos.va, 80));
 
     const moveSpeed = 2;    // cell/s
     const rx = deg2rad($temp.pos.ha-90);
