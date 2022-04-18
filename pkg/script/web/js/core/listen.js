@@ -42,6 +42,10 @@ const listen_init = () => {
         a: false,
         s: false,
         d: false,
+        up: false,
+        left: false,
+        down: false,
+        right: false,
         space: false,
         lctrl: false,
     };
@@ -52,6 +56,7 @@ const listen_init = () => {
         my: 0,
         lb: false,
         rb: false,
+        mb: false,
     };
     $listen.input.touch = new Map();
 
@@ -148,6 +153,10 @@ const listen_keyboard = (keyboard, code, value) => {
         case "KeyA": keyboard.a = value; break;
         case "KeyS": keyboard.s = value; break;
         case "KeyD": keyboard.d = value; break;
+        case "ArrowUp": keyboard.up = value; break;
+        case "ArrowLeft": keyboard.left = value; break;
+        case "ArrowDown": keyboard.down = value; break;
+        case "ArrowRight": keyboard.right = value; break;
         case "Space": keyboard.space = value; break;
         case "ControlLeft": keyboard.lctrl = value; break;
         default: return false;
@@ -162,6 +171,7 @@ const listen_mouse = (mouse, ev) => {
     mouse.y = ev.y;
     mouse.lb = (ev.buttons & 1) !== 0;
     mouse.rb = (ev.buttons & 2) !== 0;
+    mouse.mb = (ev.buttons & 4) !== 0;
     return true;
 };
 
@@ -206,17 +216,16 @@ const listen_tick_input = (input) => {
     } else if(mode === GAMEPAD_MODE_MOUSE_KEYBOARD) {
         input.moveX = input.keyboard.a ? -1 : input.keyboard.d ? +1 : 0;
         input.moveY = input.keyboard.w ? +1 : input.keyboard.s ? -1 : 0;
-        if(input.mouse.lb) {
+        input.cameraX = input.keyboard.right ? -1 : input.keyboard.left ? +1 : 0;
+        input.cameraY = input.keyboard.up ? +1 : input.keyboard.down ? -1 : 0;
+        if(input.mouse.mb) {
             input.cameraX = -input.mouse.mx;
             input.cameraY = -input.mouse.my;
-        } else {
-            input.cameraX = 0;
-            input.cameraY = 0;
         }
-        input.act = (!input.actButton && input.keyboard.space);
-        input.sub = (!input.subButton && input.keyboard.lctrl);
-        input.actButton = input.keyboard.space;
-        input.subButton = input.keyboard.lctrl;
+        input.act = (!input.actButton && input.mouse.lb);
+        input.sub = (!input.subButton && input.mouse.rb);
+        input.actButton = input.mouse.lb;
+        input.subButton = input.mouse.rb;
     } else if(mode === GAMEPAD_MODE_VIRTUAL_TOUCH) {
         input.moveX = 0;
         input.moveY = 0;
