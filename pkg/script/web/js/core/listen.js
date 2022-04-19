@@ -9,7 +9,17 @@ const listen = (target, key, func) => {
     target.addEventListener(key, func);
 };
 
+const listen_disable_user_select = () => {
+    const body = document.body;
+    body.style.userSelect = 'none';
+    body.style.webkitUserSelect = 'none';
+    body.style.msUserSelect = 'none';
+    body.style.mozUserSelect = 'none';
+};
+
 const listen_init = () => {
+    listen_disable_user_select();
+
     $listen = {};
     $listen.timer = {
         prevTime: performance.now(),
