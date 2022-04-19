@@ -17,8 +17,14 @@ const listen_disable_user_select = () => {
     body.style.mozUserSelect = 'none';
 };
 
+const listen_disable_touch_action = () => {
+    const body = document.body;
+    body.style.touchAction = 'none';
+};
+
 const listen_init = () => {
     listen_disable_user_select();
+    listen_disable_touch_action();
 
     $listen = {};
     $listen.timer = {
