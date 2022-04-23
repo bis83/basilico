@@ -1,26 +1,30 @@
 
+const update_pos_is_wall = (x, y, dx, dy) => {
+    const h0 = temp_world_height(x, y);
+    const h1 = temp_world_height(x+dx, y+dy);
+    if(Math.abs(h0-h1) > 1) {
+        return true;
+    }
+    return false;
+};
+
 const update_pos_adjust = (x, y, dx, dy) => {
     let xx = x + dx;
     let yy = y + dy;
 
     const ix = Math.floor(x);
     const iy = Math.floor(y);
-    const h0 = temp_world_height(ix+0, iy+0);
-    const h1 = temp_world_height(ix-1, iy+0);
-    const h2 = temp_world_height(ix+1, iy+0);
-    const h3 = temp_world_height(ix+0, iy-1);
-    const h4 = temp_world_height(ix+0, iy+1);
     const r = 0.25;
-    if(Math.abs(h0-h1) > 1) {
+    if(update_pos_is_wall(ix, iy, -1, 0)) {
         xx = Math.max(xx, ix+r);
     }
-    if(Math.abs(h0-h2) > 1) {
+    if(update_pos_is_wall(ix, iy, +1, 0)) {
         xx = Math.min(xx, ix-r+1);
     }
-    if(Math.abs(h0-h3) > 1) {
+    if(update_pos_is_wall(ix, iy, 0, -1)) {
         yy = Math.max(yy, iy+r);
     }
-    if(Math.abs(h0-h4) > 1) {
+    if(update_pos_is_wall(ix, iy, 0, +1)) {
         yy = Math.min(yy, iy-r+1);
     }
 
