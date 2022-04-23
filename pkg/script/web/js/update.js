@@ -52,11 +52,11 @@ const update_pos = () => {
     [$temp.pos.x, $temp.pos.y] = update_pos_adjust($temp.pos.x, $temp.pos.y, dx, dy);
 
     const h = temp_world_height($temp.pos.x, $temp.pos.y);
-    if(Math.abs(h-$temp.pos.h) > 2) {
-        $temp.pos.h = h;
-    } else {
+    if(Math.abs(h-$temp.pos.h) <= 2) {
         const vh = h - $temp.pos.h;
         $temp.pos.h += 10 * dt * vh;
+    } else {
+        $temp.pos.h = h;
     }
 };
 
