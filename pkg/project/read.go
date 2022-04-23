@@ -89,22 +89,11 @@ func Read(baseDir string) (*Project, error) {
 	if err != nil {
 		return nil, err
 	}
-	var prj Project
-	prj.Setup = setup
 	pages, err2 := listPages(baseDir)
 	if err2 != nil {
 		return nil, err2
 	}
-	for _, page := range pages {
-		for _, mesh := range page.Mesh {
-			prj.Mesh = append(prj.Mesh, mesh)
-		}
-		for _, texture := range page.Texture {
-			prj.Texture = append(prj.Texture, texture)
-		}
-		for _, shader := range page.Shader {
-			prj.Shader = append(prj.Shader, shader)
-		}
-	}
+	var prj Project
+	prj.Set(setup, pages)
 	return &prj, nil
 }

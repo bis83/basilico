@@ -15,16 +15,6 @@ func makeIndex(prj *project.Project) (*Index, error) {
 	} else {
 		return nil, fmt.Errorf("Mesh Not Found: reticle")
 	}
-	if _, i := prj.FindMesh("box"); i >= 0 {
-		idx.Data.Box = i
-	} else {
-		return nil, fmt.Errorf("Mesh Not Found: box")
-	}
-	if _, i := prj.FindMesh("stack"); i >= 0 {
-		idx.Data.Stack = i
-	} else {
-		return nil, fmt.Errorf("Mesh Not Found: stack")
-	}
 	if _, i := prj.FindMesh("debug_grid"); i >= 0 {
 		idx.Data.DebugGrid = i
 	} else {
@@ -34,11 +24,6 @@ func makeIndex(prj *project.Project) (*Index, error) {
 		idx.Data.MeshPC = i
 	} else {
 		return nil, fmt.Errorf("Mesh Not Found: mesh_pc")
-	}
-	if _, i := prj.FindShader("mesh_pnc"); i >= 0 {
-		idx.Data.MeshPNC = i
-	} else {
-		return nil, fmt.Errorf("Mesh Not Found: mesh_pnc")
 	}
 
 	return &idx, nil

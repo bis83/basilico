@@ -20,8 +20,16 @@ type Shader struct {
 	UniformBlock   []string `json:"ub"`
 }
 
+type Stack struct {
+	ID     int `json:"id"`
+	Mesh   int `json:"mesh"`
+	Shader int `json:"shader"`
+	Height int `json:"height"`
+}
+
 type Pack struct {
 	Mesh    []*Mesh    `json:"mesh"`
 	Texture []*Texture `json:"texture"`
 	Shader  []*Shader  `json:"shader"`
+	Stack   []*Stack   `json:"stack"`
 }

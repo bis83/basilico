@@ -56,7 +56,11 @@ const temp_world_height = (x, y) => {
     let h = 0;
     for(const s of stack) {
         const [id, count] = stack_get(s);
-        h += count;
+        const data = data_stack(id);
+        if(!data) {
+            continue;
+        }
+        h += count * data.height;
     }
     return h;
 };

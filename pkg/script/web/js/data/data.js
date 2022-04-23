@@ -40,3 +40,7 @@ const data_texture = (no) => {
 const data_shader = (no) => {
     return $data.pack[0].shader[no];
 };
+
+const data_stack = (id) => {
+    return $data.pack[0].stack.find(obj => obj.id == id);
+};

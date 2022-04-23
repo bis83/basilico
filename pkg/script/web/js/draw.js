@@ -4,43 +4,42 @@ const draw_start_frame = () => {
     gl_clear();
 };
 
-const draw_world_stack = (shader, mesh, x, y) => {
-    const stack = temp_world_stack(x, y);
-    if(!stack) {
-        return;
-    }
-    let h=0;
-    for(const s of stack) {
-        const [id, count] = stack_get(s);
-        for(let i=0; i<count; ++i) {
-            const pos = vec3world(x, y, h);
-            const m = new Float32Array(16);
-            m.set(mat4translate(pos[0], pos[1], pos[2]));
-            $gl.uniformMatrix4fv(shader.u.w, false, m);
-            gl_drawMesh(mesh);
-            ++h;
-        }
-    }
-};
-const draw_world = () => {
+const draw_stack = () => {
     gl_state(true, false);
-
-    const shader = data_shader($data.index.data.mesh_pc);
-    if(!shader) {
-        return;
-    }
-    $gl.useProgram(shader.prog);
-    $gl.uniformMatrix4fv(shader.u.vp, false, $temp.cam.vp);
-
-    const mesh = data_mesh($data.index.data.stack);
-    if(!mesh) {
-        return;
-    }
-    $gl.bindVertexArray(mesh.vao);
-
     for(let x=0; x<$temp.world.w; ++x) {
         for(let y=0; y<$temp.world.h; ++y) {
-            draw_world_stack(shader, mesh, x, y);
+            const stack = temp_world_stack(x, y);
+            if(!stack) {
+                return;
+            }
+
+            let h=0;
+            for(const s of stack) {
+                const [id, count] = stack_get(s);
+                const data = data_stack(id);
+                if(!data) {
+                    continue;
+                }
+                const shader = data_shader(data.shader);
+                if(!shader) {
+                    continue;
+                }            
+                const mesh = data_mesh(data.mesh);
+                if(!mesh) {
+                    continue;
+                }
+                $gl.useProgram(shader.prog);
+                $gl.uniformMatrix4fv(shader.u.vp, false, $temp.cam.vp);
+                $gl.bindVertexArray(mesh.vao);
+                for(let i=0; i<count; ++i) {
+                    const pos = vec3world(x, y, h);
+                    const m = new Float32Array(16);
+                    m.set(mat4translate(pos[0], pos[1], pos[2]));
+                    $gl.uniformMatrix4fv(shader.u.w, false, m);
+                    gl_drawMesh(mesh);
+                    h += data.height;
+                }
+            }
         }
     }
 };
@@ -95,7 +94,7 @@ const draw_reticle = () => {
 
 const draw = () => {
     draw_start_frame();
-    draw_world();
+    draw_stack();
     draw_debug_grid();
     draw_reticle();
 };

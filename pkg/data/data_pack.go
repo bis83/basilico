@@ -28,5 +28,12 @@ func makePack(prj *project.Project) (*Pack, error) {
 		}
 		b.Shader = append(b.Shader, shader)
 	}
+	for _, v := range prj.Stack {
+		stack, err := makeStack(prj, v)
+		if err != nil {
+			return nil, err
+		}
+		b.Stack = append(b.Stack, stack)
+	}
 	return &b, nil
 }

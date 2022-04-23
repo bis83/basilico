@@ -5,6 +5,25 @@ type Project struct {
 	Mesh    []*Mesh
 	Texture []*Texture
 	Shader  []*Shader
+	Stack   []*Stack
+}
+
+func (p *Project) Set(setup *Setup, pages []*Page) {
+	p.Setup = setup
+	for _, page := range pages {
+		for _, mesh := range page.Mesh {
+			p.Mesh = append(p.Mesh, mesh)
+		}
+		for _, texture := range page.Texture {
+			p.Texture = append(p.Texture, texture)
+		}
+		for _, shader := range page.Shader {
+			p.Shader = append(p.Shader, shader)
+		}
+		for _, stack := range page.Stack {
+			p.Stack = append(p.Stack, stack)
+		}
+	}
 }
 
 func (p *Project) FindMesh(name string) (*Mesh, int) {

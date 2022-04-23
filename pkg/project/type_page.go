@@ -25,8 +25,16 @@ type Shader struct {
 	UniformBlock   []string `toml:"uniform_block"`
 }
 
+type Stack struct {
+	ID     int    `toml:"id"`
+	Mesh   string `toml:"mesh"`
+	Shader string `toml:"shader"`
+	Height int    `toml:"height"`
+}
+
 type Page struct {
 	Mesh    []*Mesh    `toml:"mesh"`
 	Texture []*Texture `toml:"texture"`
 	Shader  []*Shader  `toml:"shader"`
+	Stack   []*Stack   `tom:"stack"`
 }

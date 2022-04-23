@@ -257,3 +257,9 @@ void main() {
 }
 """
 uniform = ["w", "vp"]
+
+[[stack]]
+id = 1
+mesh = "stack"
+shader = "mesh_pc"
+height = 1
