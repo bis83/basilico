@@ -88,6 +88,7 @@ const update_creative = () => {
             count += 1;
             stack[stack.length-1] = stack_set(id, count);
         }
+        init_save();
     }
     if($listen.input.sub) {
         const stack = temp_stack($temp.pos.x, $temp.pos.y);
@@ -100,6 +101,7 @@ const update_creative = () => {
                 stack.pop();
             }
         }
+        init_save();
     }
 };
 

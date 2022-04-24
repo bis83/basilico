@@ -4,6 +4,7 @@ var $temp = {
         vp: new Float32Array(16),
         o: new Float32Array(16),
     },
+    init: false,
     pos: {
         x: 0,
         y: 0,
@@ -17,21 +18,6 @@ var $temp = {
         h: 0,
         a: [],
     },
-};
-
-const temp_stack_init = () => {
-    $temp.stack.w = 64;
-    $temp.stack.h = 64;
-    $temp.stack.a.length = 0;
-    $temp.stack.a.length = $temp.stack.w * $temp.stack.h;
-    for(let i=0; i<$temp.stack.a.length; ++i) {
-        const h = 1 + Math.floor(Math.random() * 10)
-        $temp.stack.a[i] = [];
-        $temp.stack.a[i].push(stack_set(1, h));
-    }
-
-    $temp.pos.x = 0.5;
-    $temp.pos.y = 0.5;
 };
 
 const temp_stack = (x, y) => {
