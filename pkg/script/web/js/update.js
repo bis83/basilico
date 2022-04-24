@@ -1,7 +1,7 @@
 
 const update_pos_is_wall = (x, y, dx, dy) => {
-    const h0 = temp_world_height(x, y);
-    const h1 = temp_world_height(x+dx, y+dy);
+    const h0 = temp_stack_height(x, y);
+    const h1 = temp_stack_height(x+dx, y+dy);
     if(Math.abs(h0-h1) > 1) {
         return true;
     }
@@ -51,7 +51,7 @@ const update_pos = () => {
     const dy = moveSpeed * dt * vy;
     [$temp.pos.x, $temp.pos.y] = update_pos_adjust($temp.pos.x, $temp.pos.y, dx, dy);
 
-    const h = temp_world_height($temp.pos.x, $temp.pos.y);
+    const h = temp_stack_height($temp.pos.x, $temp.pos.y);
     if(Math.abs(h-$temp.pos.h) <= 2) {
         const vh = h - $temp.pos.h;
         $temp.pos.h += 10 * dt * vh;
@@ -82,7 +82,7 @@ const update_camera = () => {
 
 const update_creative = () => {
     if($listen.input.act) {
-        const stack = temp_world_stack($temp.pos.x, $temp.pos.y);
+        const stack = temp_stack($temp.pos.x, $temp.pos.y);
         if(stack && stack.length > 0) {
             let [id, count] = stack_get(stack[stack.length-1]);
             count += 1;
@@ -90,7 +90,7 @@ const update_creative = () => {
         }
     }
     if($listen.input.sub) {
-        const stack = temp_world_stack($temp.pos.x, $temp.pos.y);
+        const stack = temp_stack($temp.pos.x, $temp.pos.y);
         if(stack && stack.length > 0) {
             let [id, count] = stack_get(stack[stack.length-1]);
             count -= 1;

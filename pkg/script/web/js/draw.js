@@ -6,9 +6,9 @@ const draw_start_frame = () => {
 
 const draw_stack = () => {
     gl_state(true, false);
-    for(let x=0; x<$temp.world.w; ++x) {
-        for(let y=0; y<$temp.world.h; ++y) {
-            const stack = temp_world_stack(x, y);
+    for(let x=0; x<$temp.stack.w; ++x) {
+        for(let y=0; y<$temp.stack.h; ++y) {
+            const stack = temp_stack(x, y);
             if(!stack) {
                 return;
             }
