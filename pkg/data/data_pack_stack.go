@@ -17,7 +17,7 @@ func makeStack(prj *project.Project, s *project.Stack) (*Stack, error) {
 	if _, i := prj.FindShader(s.Shader); i >= 0 {
 		ss.Shader = i
 	} else {
-		return nil, fmt.Errorf("Shader Not Found: $d", s.Shader)
+		return nil, fmt.Errorf("Shader Not Found: %s", s.Shader)
 	}
 	ss.Height = s.Height
 	return &ss, nil
