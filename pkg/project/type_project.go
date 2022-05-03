@@ -6,6 +6,7 @@ type Project struct {
 	Texture []*Texture
 	Shader  []*Shader
 	Stack   []*Stack
+	UI      []*UI
 }
 
 func (p *Project) Set(setup *Setup, pages []*Page) {
@@ -22,6 +23,9 @@ func (p *Project) Set(setup *Setup, pages []*Page) {
 		}
 		for _, stack := range page.Stack {
 			p.Stack = append(p.Stack, stack)
+		}
+		for _, ui := range page.UI {
+			p.UI = append(p.UI, ui)
 		}
 	}
 }

@@ -27,9 +27,17 @@ type Stack struct {
 	Height int `json:"height"`
 }
 
+type UI struct {
+	Mesh   int       `json:"mesh"`
+	Shader int       `json:"shader"`
+	Width  int       `json:"width"`
+	Height int       `json:"height"`
+}
+
 type Pack struct {
 	Mesh    []*Mesh    `json:"mesh"`
 	Texture []*Texture `json:"texture"`
 	Shader  []*Shader  `json:"shader"`
 	Stack   []*Stack   `json:"stack"`
+	UI      []*UI      `json:"ui"`
 }

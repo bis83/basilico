@@ -32,9 +32,17 @@ type Stack struct {
 	Height int    `toml:"height"`
 }
 
+type UI struct {
+	Mesh   string    `toml:"mesh"`
+	Shader string    `toml:"shader"`
+	Width  int       `toml:"width"`
+	Height int       `toml:"height"`
+}
+
 type Page struct {
 	Mesh    []*Mesh    `toml:"mesh"`
 	Texture []*Texture `toml:"texture"`
 	Shader  []*Shader  `toml:"shader"`
-	Stack   []*Stack   `tom:"stack"`
+	Stack   []*Stack   `toml:"stack"`
+	UI      []*UI      `toml:"ui"`
 }

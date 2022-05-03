@@ -44,3 +44,7 @@ const data_shader = (no) => {
 const data_stack = (id) => {
     return $data.pack[0].stack.find(obj => obj.id == id);
 };
+
+const data_ui = () => {
+    return $data.pack[0].ui;
+};

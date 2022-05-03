@@ -44,57 +44,32 @@ const draw_stack = () => {
     }
 };
 
-const draw_debug_grid = () => {
-    gl_state(true, false);
-
-    const shader = data_shader($data.index.data.mesh_pc);
-    if(!shader) {
-        return;
-    }
-    $gl.useProgram(shader.prog);
-    $gl.uniformMatrix4fv(shader.u.vp, false, $temp.cam.vp);
-
-    const mesh = data_mesh($data.index.data.debug_grid);
-    if(!mesh) {
-        return;
-    }
-    $gl.bindVertexArray(mesh.vao);
-
-    const m = new Float32Array(16);
-    m.set(mat4translate(0, 0, 0));
-    $gl.uniformMatrix4fv(shader.u.w, false, m);
-
-    gl_drawMesh(mesh);
-};
-
-const draw_reticle = () => {
+const draw_ui = () => {
     gl_state(false, true);
+    for(let ui of data_ui()) {
+        const shader = data_shader(ui.shader);
+        if(!shader) {
+            return;
+        }
+        $gl.useProgram(shader.prog);
+        $gl.uniformMatrix4fv(shader.u.vp, false, $temp.cam.o);
 
-    const shader = data_shader($data.index.data.mesh_pc);
-    if(!shader) {
-        return;
+        const mesh = data_mesh(ui.mesh);
+        if(!mesh) {
+            return;
+        }
+        $gl.bindVertexArray(mesh.vao);    
+        
+        const m = new Float32Array(16);
+        m.set(mat4scale(ui.width, ui.height, 1));
+        $gl.uniformMatrix4fv(shader.u.w, false, m);
+
+        gl_drawMesh(mesh);
     }
-    $gl.useProgram(shader.prog);
-    $gl.uniformMatrix4fv(shader.u.vp, false, $temp.cam.o);
-
-    const mesh = data_mesh($data.index.data.reticle);
-    if(!mesh) {
-        return;
-    }
-    $gl.bindVertexArray(mesh.vao);
-    
-    // TODO: UniformBuffer
-    // store.gl.bindBufferRange(store.gl.UNIFORM_BUFFER, shader.ub.a, 0, 0, 0);
-    const m = new Float32Array(16);
-    m.set(mat4scale(4, 4, 1));
-    $gl.uniformMatrix4fv(shader.u.w, false, m);
-
-    gl_drawMesh(mesh);
 };
 
 const draw = () => {
     draw_start_frame();
     draw_stack();
-    draw_debug_grid();
-    draw_reticle();
+    draw_ui();
 };

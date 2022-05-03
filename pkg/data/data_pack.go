@@ -35,5 +35,12 @@ func makePack(prj *project.Project) (*Pack, error) {
 		}
 		b.Stack = append(b.Stack, stack)
 	}
+	for _, v := range prj.UI {
+		ui, err := makeUI(prj, v)
+		if err != nil {
+			return nil, err
+		}
+		b.UI = append(b.UI, ui)
+	}
 	return &b, nil
 }
