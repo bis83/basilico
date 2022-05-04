@@ -31,6 +31,10 @@ const data_loadPack = (no) => {
     });
 };
 
+const data_ui = () => {
+    return $data.index.ui;
+};
+
 const data_mesh = (no) => {
     return $data.pack[0].mesh[no];
 };
@@ -40,11 +44,6 @@ const data_texture = (no) => {
 const data_shader = (no) => {
     return $data.pack[0].shader[no];
 };
-
 const data_stack = (id) => {
     return $data.pack[0].stack.find(obj => obj.id == id);
-};
-
-const data_ui = () => {
-    return $data.pack[0].ui;
 };
