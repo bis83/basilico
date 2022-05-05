@@ -69,10 +69,10 @@ const update_camera = () => {
 
     const dir = vec3dir($temp.pos.ha, $temp.pos.va);
     const eye = vec3world($temp.pos.x, $temp.pos.y, $temp.pos.h);
-    eye[1] += $temp.pos.eyeh;
+    eye[2] += $temp.pos.eyeh;
 
     const at = vec3add(eye, dir);
-    const up = [0, 1, 0];
+    const up = [0, 0, 1];
     const view = mat4lookat(eye, at, up);
     const proj = mat4perspective(fovy, ww/wh, zNear, zFar);
     

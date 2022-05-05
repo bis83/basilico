@@ -54,11 +54,11 @@ const vec3dir = (hang, vang) => {
     const v = deg2rad(vang);
     return [
         Math.cos(v) * Math.cos(h),
-        Math.sin(v),
-        Math.cos(v) * Math.sin(h)
+        Math.cos(v) * Math.sin(h),
+        Math.sin(v)
     ];
 };
 
 const vec3world = (x, y, h) => {
-    return [x*2, h*0.5, y*2];
+    return [x*2, y*2, h*0.5];
 };
