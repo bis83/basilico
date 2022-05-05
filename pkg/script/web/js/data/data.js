@@ -32,18 +32,18 @@ const data_loadPack = (no) => {
 };
 
 const data_ui = () => {
-    return $data.index.ui;
+    return $data.index && $data.index.ui;
 };
 
 const data_mesh = (no) => {
-    return $data.pack[0].mesh[no];
+    return $data.pack[0] && $data.pack[0].mesh[no];
 };
 const data_texture = (no) => {
-    return $data.pack[0].texture[no];
+    return $data.pack[0] && $data.pack[0].texture[no];
 };
 const data_shader = (no) => {
-    return $data.pack[0].shader[no];
+    return $data.pack[0] && $data.pack[0].shader[no];
 };
 const data_stack = (id) => {
-    return $data.pack[0].stack.find(obj => obj.id == id);
+    return $data.pack[0] && $data.pack[0].stack.find(obj => obj.id == id);
 };

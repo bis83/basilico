@@ -6,6 +6,15 @@ import (
 	project "github.com/bis83/basilico/pkg/project"
 )
 
+func toInteractNo(s string) int {
+	switch s {
+	case "button":
+		return 1
+	default:
+		return 0
+	}
+}
+
 func makeUI(prj *project.Project, ui *project.UI) (*UI, error) {
 	var u UI
 	if _, i := prj.FindMesh(ui.Mesh); i >= 0 {
@@ -20,6 +29,7 @@ func makeUI(prj *project.Project, ui *project.UI) (*UI, error) {
 	}
 	u.Width = ui.Width
 	u.Height = ui.Height
+	u.Interact = toInteractNo(ui.Interact)
 	return &u, nil
 }
 

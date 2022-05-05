@@ -24,6 +24,7 @@ var scripts = []string{
 
 	// temp
 	"web/js/temp.js",
+	"web/js/ui.js",
 
 	// main
 	"web/js/init.js",

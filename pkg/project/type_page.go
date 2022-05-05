@@ -33,10 +33,11 @@ type Stack struct {
 }
 
 type UI struct {
-	Mesh   string `toml:"mesh"`
-	Shader string `toml:"shader"`
-	Width  int    `toml:"width"`
-	Height int    `toml:"height"`
+	Mesh     string `toml:"mesh"`
+	Shader   string `toml:"shader"`
+	Width    int    `toml:"width"`
+	Height   int    `toml:"height"`
+	Interact string `toml:"interact"`
 }
 
 type Page struct {
