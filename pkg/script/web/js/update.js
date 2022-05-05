@@ -40,7 +40,7 @@ const update_pos = () => {
     $temp.pos.va = Math.max(-60, Math.min($temp.pos.va, 80));
 
     const moveSpeed = 2;    // cell/s
-    const rx = deg2rad($temp.pos.ha-90);
+    const rx = deg2rad($temp.pos.ha+90);
     const ry = deg2rad($temp.pos.ha);
     const moveX = $listen.input.moveX;
     const moveY = $listen.input.moveY;

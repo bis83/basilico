@@ -221,7 +221,7 @@ const listen_tick_gamepad = (input) => {
 const listen_tick_input = (input) => {
     const mode = input.mode;
     if(mode === GAMEPAD_MODE_GAMEPAD) {
-        input.moveX = -input.gamepad.lx;
+        input.moveX = input.gamepad.lx;
         input.moveY = -input.gamepad.ly;
         input.cameraX = input.gamepad.rx;
         input.cameraY = -input.gamepad.ry;
@@ -230,7 +230,7 @@ const listen_tick_input = (input) => {
         input.actButton = input.gamepad.b0;
         input.subButton = input.gamepad.b1;
     } else if(mode === GAMEPAD_MODE_MOUSE_KEYBOARD) {
-        input.moveX = input.keyboard.a ? +1 : input.keyboard.d ? -1 : 0;
+        input.moveX = input.keyboard.a ? -1 : input.keyboard.d ? +1 : 0;
         input.moveY = input.keyboard.w ? +1 : input.keyboard.s ? -1 : 0;
         input.cameraX = input.keyboard.right ? +1 : input.keyboard.left ? -1 : 0;
         input.cameraY = input.keyboard.up ? +1 : input.keyboard.down ? -1 : 0;
@@ -250,7 +250,7 @@ const listen_tick_input = (input) => {
         for(const touch of input.touch.values()) {
             if(touch.sx < window.innerWidth/2) {
                 // screen left
-                input.moveX = -(touch.x - touch.sx);
+                input.moveX = (touch.x - touch.sx);
                 input.moveY = -(touch.y - touch.sy);
             } else {
                 // screen right
