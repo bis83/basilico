@@ -1,5 +1,11 @@
 package project
 
+import (
+	"os"
+
+	toml "github.com/pelletier/go-toml/v2"
+)
+
 type Mesh struct {
 	Name     string    `toml:"name"`
 	Position []float32 `toml:"position"`
@@ -33,11 +39,13 @@ type Stack struct {
 }
 
 type UI struct {
+	Name     string `toml:"name"`
 	Mesh     string `toml:"mesh"`
 	Shader   string `toml:"shader"`
 	Width    int    `toml:"width"`
 	Height   int    `toml:"height"`
 	Interact string `toml:"interact"`
+	Offset   []int  `toml:"offset"`
 }
 
 type Page struct {
@@ -46,4 +54,26 @@ type Page struct {
 	Shader  []*Shader  `toml:"shader"`
 	Stack   []*Stack   `toml:"stack"`
 	UI      []*UI      `toml:"ui"`
+}
+
+func (p *Page) ReadFS(path string) error {
+	data, err := fs.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	if err := toml.Unmarshal(data, p); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *Page) ReadOS(path string) error {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	if err := toml.Unmarshal(data, p); err != nil {
+		return err
+	}
+	return nil
 }

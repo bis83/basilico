@@ -21,14 +21,11 @@ func Clean(baseDir string) error {
 func buildScript(prj *project.Project, baseDir string) error {
 	var err error
 
-	var feat *script.Feature
-	feat, err = script.MakeFeature(prj)
-	if err != nil {
-		return err
-	}
+	var feat script.Feature
+	feat.Set(prj)
 
 	var b []byte
-	b, err = script.MakeIndexHtml(feat)
+	b, err = script.MakeIndexHtml(&feat)
 	if err != nil {
 		return err
 	}
@@ -36,7 +33,7 @@ func buildScript(prj *project.Project, baseDir string) error {
 	if err != nil {
 		return err
 	}
-	b, err = script.MakeAppJs(feat)
+	b, err = script.MakeAppJs(&feat)
 	if err != nil {
 		return err
 	}

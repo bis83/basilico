@@ -3,33 +3,7 @@ package project
 import (
 	"os"
 	"path/filepath"
-
-	toml "github.com/pelletier/go-toml/v2"
 )
-
-func readSetup(path string) (*Setup, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	var s Setup
-	if err := toml.Unmarshal(data, &s); err != nil {
-		return nil, err
-	}
-	return &s, nil
-}
-
-func readCorePage() (*Page, error) {
-	data, err := fs.ReadFile("toml/core.toml")
-	if err != nil {
-		return nil, err
-	}
-	var page Page
-	if err := toml.Unmarshal(data, &page); err != nil {
-		return nil, err
-	}
-	return &page, nil
-}
 
 func listPageFiles(dir string) ([]string, error) {
 	var files []string
@@ -49,51 +23,49 @@ func listPageFiles(dir string) ([]string, error) {
 	return files, nil
 }
 
-func readPage(path string) (*Page, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	var page Page
-	if err := toml.Unmarshal(data, &page); err != nil {
-		return nil, err
-	}
-	return &page, nil
-}
-
 func listPages(baseDir string) ([]*Page, error) {
+	var pages []*Page
+
 	pageDir := filepath.Join(baseDir, "pages")
 	list, err := listPageFiles(pageDir)
 	if err != nil {
 		return nil, err
 	}
-	var pages []*Page
 	for _, file := range list {
-		page, err := readPage(file)
-		if err != nil {
+		var page Page
+		if err := page.ReadOS(file); err != nil {
 			return nil, err
 		}
-		pages = append(pages, page)
+		pages = append(pages, &page)
 	}
-	core, err2 := readCorePage()
-	if err2 != nil {
-		return nil, err2
+
+	var tomls = []string{
+		"toml/core.toml",
 	}
-	pages = append(pages, core)
+	for _, file := range tomls {
+		var page Page
+		if err := page.ReadFS(file); err != nil {
+			return nil, err
+		}
+		pages = append(pages, &page)
+	}
+
 	return pages, nil
 }
 
 func Read(baseDir string) (*Project, error) {
+	var setup Setup
 	tomlPath := filepath.Join(baseDir, "setup.toml")
-	setup, err := readSetup(tomlPath)
-	if err != nil {
+	if err := setup.Read(tomlPath); err != nil {
 		return nil, err
 	}
+
 	pages, err2 := listPages(baseDir)
 	if err2 != nil {
 		return nil, err2
 	}
+
 	var prj Project
-	prj.Set(setup, pages)
+	prj.Set(&setup, pages)
 	return &prj, nil
 }

@@ -11,9 +11,8 @@ func MakeData(prj *project.Project) ([]File, error) {
 	var err error
 	var b []byte
 
-	var i *Index
-	i, err = makeIndex(prj)
-	if err != nil {
+	var i Index
+	if err = i.Set(prj); err != nil {
 		return nil, err
 	}
 	b, err = marshalJSON(i, minify)
@@ -22,9 +21,8 @@ func MakeData(prj *project.Project) ([]File, error) {
 	}
 	fs = append(fs, File{"index.json", b})
 
-	var p *Pack
-	p, err = makePack(prj)
-	if err != nil {
+	var p Pack
+	if err = p.Set(prj); err != nil {
 		return nil, err
 	}
 	b, err = marshalJSON(p, minify)

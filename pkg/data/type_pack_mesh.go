@@ -8,47 +8,52 @@ import (
 	project "github.com/bis83/basilico/pkg/project"
 )
 
-func makeMesh(mesh *project.Mesh) (*Mesh, error) {
-	var mm Mesh
+type Mesh struct {
+	Buffer     *string `json:"b"`
+	BufferView []int   `json:"bv"`
+	Index      *string `json:"i"`
+	IndexView  []int   `json:"iv"`
+}
 
+func (p *Mesh) Set(mesh *project.Mesh) error {
 	// Buffer
 	var b bytes.Buffer
 	if len(mesh.Position) > 0 {
-		mm.BufferView = append(mm.BufferView, 0, b.Len())
+		p.BufferView = append(p.BufferView, 0, b.Len())
 		if err := binary.Write(&b, binary.LittleEndian, mesh.Position); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if len(mesh.Normal) > 0 {
-		mm.BufferView = append(mm.BufferView, 1, b.Len())
+		p.BufferView = append(p.BufferView, 1, b.Len())
 		nn := toFloat16Array(normalizeVector3(mesh.Normal))
 		if err := binary.Write(&b, binary.LittleEndian, nn); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if len(mesh.Color) > 0 {
-		mm.BufferView = append(mm.BufferView, 2, b.Len())
+		p.BufferView = append(p.BufferView, 2, b.Len())
 		if err := binary.Write(&b, binary.LittleEndian, mesh.Color); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	if len(mesh.Uv) > 0 {
-		mm.BufferView = append(mm.BufferView, 3, b.Len())
+		p.BufferView = append(p.BufferView, 3, b.Len())
 		nn := toFloat16Array(normalizeVector3(mesh.Uv))
 		if err := binary.Write(&b, binary.LittleEndian, nn); err != nil {
-			return nil, err
+			return err
 		}
 	}
 	bb := base64.StdEncoding.EncodeToString(b.Bytes())
-	mm.Buffer = &bb
+	p.Buffer = &bb
 
 	// Index
 	if len(mesh.Index) > 0 {
 		str, err := encodeUint16Array(mesh.Index)
 		if err != nil {
-			return nil, err
+			return err
 		}
-		mm.Index = &str
+		p.Index = &str
 	}
 	var mode int
 	if mesh.IsLine {
@@ -62,6 +67,6 @@ func makeMesh(mesh *project.Mesh) (*Mesh, error) {
 	} else {
 		count = len(mesh.Position) / 3
 	}
-	mm.IndexView = []int{mode, 0, count}
-	return &mm, nil
+	p.IndexView = []int{mode, 0, count}
+	return nil
 }
