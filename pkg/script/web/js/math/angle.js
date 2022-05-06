@@ -15,3 +15,7 @@ const xy_normalize = (x, y) => {
 const xy_mul = ([x, y], l) => {
     return [x*l, y*l];
 };
+
+const xy_hit_rect = ([x, y], minX, maxX,  minY, maxY) => {
+    return (minX <= x) && (x <= maxX) && (minY <= y) && (y <= maxY);
+};

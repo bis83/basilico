@@ -12,6 +12,7 @@ listen(window, "load", () => {
             update();
             draw();
         }
+        listen_flush();
         requestAnimationFrame(tick);
     };
     tick();

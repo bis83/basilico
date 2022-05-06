@@ -57,6 +57,7 @@ const listen_init = () => {
         space: false,
         lctrl: false,
     };
+    $listen.click = [];
     $listen.touch = new Map();
 
     // deprecated
@@ -106,11 +107,22 @@ const listen_init = () => {
             x: ev.clientX,
             y: ev.clientY,
             sx: ev.clientX,
-            sy: ev.clientY
+            sy: ev.clientY,
+            time: performance.now(),
         });
         $listen.mode = GAMEPAD_MODE_POINTER;
     });
     listen(document.body, "pointerup", (ev) => {
+        const touch = $listen.touch.get(ev.pointerId);
+        if(touch) {
+            if(performance.now() - touch.time < 250) {
+                LOGGING && console.log("click: [" + touch.x + "," + touch.y + "]");
+                $listen.click.push({
+                    x: touch.x,
+                    y: touch.y,
+                });
+            }
+        }
         $listen.touch.delete(ev.pointerId);
         $listen.mode = GAMEPAD_MODE_POINTER;
     });
@@ -220,4 +232,8 @@ const listen_tick = () => {
     listen_tick_timer($listen.timer);
     listen_tick_gamepad($listen.gamepad);
     listen_tick_input($listen.input);
+};
+
+const listen_flush = () => {
+    $listen.click.length = 0;
 };
