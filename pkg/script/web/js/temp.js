@@ -18,8 +18,7 @@ var $temp = {
         h: 0,
         a: [],
     },
-    ui: {
-    }
+    ui: {},
 };
 
 const temp_stack = (x, y) => {
@@ -49,4 +48,12 @@ const temp_stack_height = (x, y) => {
         h += count * data.height;
     }
     return h;
+};
+
+const temp_ui_value = (name) => {
+    const ui = $temp.ui[name];
+    if(!ui) {
+        return null;
+    }
+    return ui.value;
 };

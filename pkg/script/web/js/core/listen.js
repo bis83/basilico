@@ -1,7 +1,7 @@
 
-const GAMEPAD_MODE_GAMEPAD = 0;
-const GAMEPAD_MODE_MOUSE_KEYBOARD = 1;
-const GAMEPAD_MODE_VIRTUAL_TOUCH = 2;
+const GAMEPAD_MODE_POINTER = 0;
+const GAMEPAD_MODE_GAMEPAD = 1;
+const GAMEPAD_MODE_KEYBOARD = 2;
 
 var $listen = null;
 
@@ -27,22 +27,12 @@ const listen_init = () => {
     listen_disable_touch_action();
 
     $listen = {};
+    $listen.mode = GAMEPAD_MODE_POINTER;
     $listen.timer = {
         prevTime: performance.now(),
         deltaTime: 0,
     };
-    $listen.input = {
-        mode: GAMEPAD_MODE_GAMEPAD,
-        moveX: 0,
-        moveY: 0,
-        cameraX: 0,
-        cameraY: 0,
-        act: false,
-        sub: false,
-        actButton: false,
-        subButton: false,
-    };
-    $listen.input.gamepad = {
+    $listen.gamepad = {
         index: null,
         lx: 0,
         ly: 0,
@@ -53,7 +43,7 @@ const listen_init = () => {
         lt: false,
         rt: false,
     };
-    $listen.input.keyboard = {
+    $listen.keyboard = {
         w: false,
         a: false,
         s: false,
@@ -62,19 +52,20 @@ const listen_init = () => {
         left: false,
         down: false,
         right: false,
+        z: false,
+        x: false,
         space: false,
         lctrl: false,
     };
-    $listen.input.mouse = {
-        x: 0,
-        y: 0,
-        mx: 0,
-        my: 0,
-        lb: false,
-        rb: false,
-        mb: false,
+    $listen.touch = new Map();
+
+    // deprecated
+    $listen.input = {
+        moveX: 0,
+        moveY: 0,
+        cameraX: 0,
+        cameraY: 0,
     };
-    $listen.input.touch = new Map();
 
     listen(window, "focus", (ev) => {
     });
@@ -85,81 +76,55 @@ const listen_init = () => {
     listen(window, "gamepadconnected", (ev) => {
         LOGGING && console.log("gamepadconnected: " + ev.gamepad.index);
 
-        $listen.input.gamepad.index = ev.gamepad.index;
-        $listen.input.mode = GAMEPAD_MODE_GAMEPAD;
+        $listen.gamepad.index = ev.gamepad.index;
+        $listen.mode = GAMEPAD_MODE_GAMEPAD;
     });
     listen(window, "gamepaddisconnected", (ev) => {
         LOGGING && console.log("gamepaddisconnected: " + ev.gamepad.index);
 
-        if($listen.input.gamepad.index === ev.gamepad.index) {
-            $listen.input.gamepad.index = null;
+        if($listen.gamepad.index === ev.gamepad.index) {
+            $listen.gamepad.index = null;
         }
     });
     listen(document, "keydown", (ev) => {
-        if(listen_keyboard($listen.input.keyboard, ev.code, true)) {
-            $listen.input.mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
+        if(listen_keyboard($listen.keyboard, ev.code, true)) {
+            $listen.mode = GAMEPAD_MODE_KEYBOARD;
             ev.preventDefault();
         }
     });
     listen(document, "keyup", (ev) => {
-        if(listen_keyboard($listen.input.keyboard, ev.code, false)) {
-            $listen.input.mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
+        if(listen_keyboard($listen.keyboard, ev.code, false)) {
+            $listen.mode = GAMEPAD_MODE_KEYBOARD;
             ev.preventDefault();
         }
     });
     listen(document.body, "contextmenu", (ev) => {
         ev.preventDefault();
     });
-    listen(document.body, "mousedown", (ev) => {
-        if(listen_mouse($listen.input.mouse, ev)) {
-            $listen.input.mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
-            ev.preventDefault();        
-        }
+    listen(document.body, "pointerdown", (ev) => {
+        $listen.touch.set(ev.pointerId, {
+            x: ev.clientX,
+            y: ev.clientY,
+            sx: ev.clientX,
+            sy: ev.clientY
+        });
+        $listen.mode = GAMEPAD_MODE_POINTER;
     });
-    listen(document.body, "mouseup", (ev) => {
-        if(listen_mouse($listen.input.mouse, ev)) {
-            $listen.input.mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
-            ev.preventDefault();        
-        }
+    listen(document.body, "pointerup", (ev) => {
+        $listen.touch.delete(ev.pointerId);
+        $listen.mode = GAMEPAD_MODE_POINTER;
     });
-    listen(document.body, "mousemove", (ev) => {
-        if(listen_mouse($listen.input.mouse, ev)) {
-            $listen.input.mode = GAMEPAD_MODE_MOUSE_KEYBOARD;
-            ev.preventDefault();        
-        }
+    listen(document.body, "pointerout", (ev) => {
+        $listen.touch.delete(ev.pointerId);
+        $listen.mode = GAMEPAD_MODE_POINTER;
     });
-    listen(document.body, "touchstart", (ev) => {
-        for(const t of ev.changedTouches) {
-            $listen.input.touch.set(t.identifier, {
-                x: t.clientX,
-                y: t.clientY,
-                sx: t.clientX,
-                sy: t.clientY
-            });
+    listen(document.body, "pointermove", (ev) => {
+        const touch = $listen.touch.get(ev.pointerId);
+        if(touch) {
+            touch.x = ev.clientX;
+            touch.y = ev.clientY;
+            $listen.mode = GAMEPAD_MODE_POINTER;
         }
-        $listen.input.mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
-    });
-    listen(document.body, "touchend", (ev) => {
-        for(const t of ev.changedTouches) {
-            $listen.input.touch.delete(t.identifier);
-        }
-        $listen.input.mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
-    });
-    listen(document.body, "touchcancel", (ev) => {
-        for(const t of ev.changedTouches) {
-            $listen.input.touch.delete(t.identifier);
-        }
-        $listen.input.mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
-    });
-    listen(document.body, "touchmove", (ev) => {
-        for(const t of ev.changedTouches) {
-            const touch = $listen.input.touch.get(t.identifier);
-            if(touch) {
-                touch.x = t.clientX;
-                touch.y = t.clientY;
-            }
-        }
-        $listen.input.mode = GAMEPAD_MODE_VIRTUAL_TOUCH;
     });
 };
 
@@ -173,21 +138,12 @@ const listen_keyboard = (keyboard, code, value) => {
         case "ArrowLeft": keyboard.left = value; break;
         case "ArrowDown": keyboard.down = value; break;
         case "ArrowRight": keyboard.right = value; break;
+        case "KeyZ": keyboard.z = value; break;
+        case "KeyX": keyboard.x = value; break;
         case "Space": keyboard.space = value; break;
         case "ControlLeft": keyboard.lctrl = value; break;
         default: return false;
     }
-    return true;
-};
-
-const listen_mouse = (mouse, ev) => {
-    mouse.mx += ev.movementX || 0;
-    mouse.my += ev.movementY || 0;
-    mouse.x = ev.x;
-    mouse.y = ev.y;
-    mouse.lb = (ev.buttons & 1) !== 0;
-    mouse.rb = (ev.buttons & 2) !== 0;
-    mouse.mb = (ev.buttons & 4) !== 0;
     return true;
 };
 
@@ -197,57 +153,48 @@ const listen_tick_timer = (timer) => {
     timer.prevTime = time;
 };
 
-const listen_tick_gamepad = (input) => {
-    if(input.gamepad.index !== null) {
+const listen_tick_gamepad = (gamepad) => {
+    if(gamepad.index !== null) {
         const gamepads = navigator.getGamepads();
-        const gp = gamepads[input.gamepad.index];
-        input.gamepad.lx = Math.trunc(gp.axes[0] * 4) / 4;
-        input.gamepad.ly = Math.trunc(gp.axes[1] * 4) / 4;
-        input.gamepad.rx = Math.trunc(gp.axes[2] * 4) / 4;
-        input.gamepad.ry = Math.trunc(gp.axes[3] * 4) / 4;
-        input.gamepad.b0 = (gp.buttons[0].value >= 0.5);
-        input.gamepad.b1 = (gp.buttons[1].value >= 0.5);
-        input.gamepad.lt = (gp.buttons[6].value >= 0.5);
-        input.gamepad.rt = (gp.buttons[7].value >= 0.5);
+        const gp = gamepads[gamepad.index];
+        gamepad.lx = Math.trunc(gp.axes[0] * 4) / 4;
+        gamepad.ly = Math.trunc(gp.axes[1] * 4) / 4;
+        gamepad.rx = Math.trunc(gp.axes[2] * 4) / 4;
+        gamepad.ry = Math.trunc(gp.axes[3] * 4) / 4;
+        gamepad.b0 = (gp.buttons[0].value >= 0.5);
+        gamepad.b1 = (gp.buttons[1].value >= 0.5);
+        gamepad.lt = (gp.buttons[6].value >= 0.5);
+        gamepad.rt = (gp.buttons[7].value >= 0.5);
         const gamepadChanged =
-            (input.gamepad.lx || input.gamepad.ly || input.gamepad.rx || input.gamepad.ry ||
-             input.gamepad.b0 || input.gamepad.b1 || input.gamepad.lt || input.gamepad.rt) ? true : false;
+            (gamepad.lx || gamepad.ly || gamepad.rx || gamepad.ry ||
+             gamepad.b0 || gamepad.b1 || gamepad.lt || gamepad.rt) ? true : false;
         if(gamepadChanged) {
-            input.mode = GAMEPAD_MODE_GAMEPAD;
+            $listen.mode = GAMEPAD_MODE_GAMEPAD;
         }
     }
 }
 
+// deprecated
 const listen_tick_input = (input) => {
-    const mode = input.mode;
+    const mode = $listen.mode;
     if(mode === GAMEPAD_MODE_GAMEPAD) {
-        input.moveX = input.gamepad.lx;
-        input.moveY = -input.gamepad.ly;
-        input.cameraX = input.gamepad.rx;
-        input.cameraY = -input.gamepad.ry;
-        input.act = (!input.actButton && input.gamepad.b0);
-        input.sub = (!input.subButton && input.gamepad.b1);
-        input.actButton = input.gamepad.b0;
-        input.subButton = input.gamepad.b1;
-    } else if(mode === GAMEPAD_MODE_MOUSE_KEYBOARD) {
-        input.moveX = input.keyboard.a ? -1 : input.keyboard.d ? +1 : 0;
-        input.moveY = input.keyboard.w ? +1 : input.keyboard.s ? -1 : 0;
-        input.cameraX = input.keyboard.right ? +1 : input.keyboard.left ? -1 : 0;
-        input.cameraY = input.keyboard.up ? +1 : input.keyboard.down ? -1 : 0;
-        if(input.mouse.mb) {
-            input.cameraX = input.mouse.mx;
-            input.cameraY = -input.mouse.my;
-        }
-        input.act = (!input.actButton && input.mouse.lb);
-        input.sub = (!input.subButton && input.mouse.rb);
-        input.actButton = input.mouse.lb;
-        input.subButton = input.mouse.rb;
-    } else if(mode === GAMEPAD_MODE_VIRTUAL_TOUCH) {
+        const gamepad = $listen.gamepad;
+        input.moveX = gamepad.lx;
+        input.moveY = -gamepad.ly;
+        input.cameraX = gamepad.rx;
+        input.cameraY = -gamepad.ry;
+    } else if(mode === GAMEPAD_MODE_KEYBOARD) {
+        const keyboard = $listen.keyboard;
+        input.moveX = keyboard.a ? -1 : keyboard.d ? +1 : 0;
+        input.moveY = keyboard.w ? +1 : keyboard.s ? -1 : 0;
+        input.cameraX = keyboard.right ? +1 : keyboard.left ? -1 : 0;
+        input.cameraY = keyboard.up ? +1 : keyboard.down ? -1 : 0;
+    } else if(mode === GAMEPAD_MODE_POINTER) {
         input.moveX = 0;
         input.moveY = 0;
         input.cameraX = 0;
         input.cameraY = 0;
-        for(const touch of input.touch.values()) {
+        for(const touch of $listen.touch.values()) {
             if(touch.sx < window.innerWidth/2) {
                 // screen left
                 input.moveX = (touch.x - touch.sx);
@@ -269,15 +216,8 @@ const listen_tick_input = (input) => {
     [input.cameraX, input.cameraY] = xy_normalize(input.cameraX, input.cameraY);
 };
 
-const listen_tick_mouse = (mouse) => {
-    const halfValue = v => Math.trunc(v/2);
-    mouse.mx = halfValue(mouse.mx);
-    mouse.my = halfValue(mouse.my);
-};
-
 const listen_tick = () => {
     listen_tick_timer($listen.timer);
-    listen_tick_gamepad($listen.input);
+    listen_tick_gamepad($listen.gamepad);
     listen_tick_input($listen.input);
-    listen_tick_mouse($listen.input.mouse);
 };

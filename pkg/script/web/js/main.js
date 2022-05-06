@@ -7,7 +7,6 @@ listen(window, "load", () => {
     data_loadPack(0);
     const tick = () => {
         listen_tick();
-        ui_tick();
         if(data_loaded()) {
             init();
             update();

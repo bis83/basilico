@@ -25,14 +25,16 @@ const draw_stack = () => {
                 const shader = data_shader(data.shader);
                 if(!shader) {
                     continue;
-                }            
+                }
+                $gl.useProgram(shader.prog);
+                $gl.uniformMatrix4fv(shader.u.vp, false, $temp.cam.vp);
+
                 const mesh = data_mesh(data.mesh);
                 if(!mesh) {
                     continue;
                 }
-                $gl.useProgram(shader.prog);
-                $gl.uniformMatrix4fv(shader.u.vp, false, $temp.cam.vp);
                 $gl.bindVertexArray(mesh.vao);
+
                 for(let i=0; i<count; ++i) {
                     const pos = vec3world(x, y, h);
                     m.set(mat4translate(pos[0], pos[1], pos[2]));
@@ -47,11 +49,12 @@ const draw_stack = () => {
 };
 
 const draw_ui = () => {
-    gl_state(false, true);
     const data = data_ui()
     if(!data) {
         return;
     }
+    
+    gl_state(false, true);
     for(let u of data) {
         const ui = $temp.ui[u.name];
         if(!ui) {

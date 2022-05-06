@@ -39,13 +39,17 @@ type Stack struct {
 }
 
 type UI struct {
-	Name     string `toml:"name"`
-	Mesh     string `toml:"mesh"`
-	Shader   string `toml:"shader"`
-	Width    int    `toml:"width"`
-	Height   int    `toml:"height"`
+	Name   string `toml:"name"`
+	Mesh   string `toml:"mesh"`
+	Shader string `toml:"shader"`
+
+	Width  int   `toml:"width"`
+	Height int   `toml:"height"`
+	Offset []int `toml:"offset"`
+
 	Interact string `toml:"interact"`
-	Offset   []int  `toml:"offset"`
+	Gamepad  string `toml:"gamepad"`
+	Keyboard string `toml:"keyboard"`
 }
 
 type Page struct {

@@ -81,7 +81,7 @@ const update_camera = () => {
 };
 
 const update_creative = () => {
-    if($listen.input.act) {
+    if(temp_ui_value("button_act")) {
         const stack = temp_stack($temp.pos.x, $temp.pos.y);
         if(stack && stack.length > 0) {
             let [id, count] = stack_get(stack[stack.length-1]);
@@ -90,7 +90,7 @@ const update_creative = () => {
         }
         init_save();
     }
-    if($listen.input.sub) {
+    if(temp_ui_value("button_sub")) {
         const stack = temp_stack($temp.pos.x, $temp.pos.y);
         if(stack && stack.length > 0) {
             let [id, count] = stack_get(stack[stack.length-1]);
@@ -106,6 +106,8 @@ const update_creative = () => {
 };
 
 const update = () => {
+    ui_tick();
+    
     update_pos();
     update_camera();
     update_creative();
