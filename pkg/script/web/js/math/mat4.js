@@ -38,6 +38,12 @@ const mat4translate = (x, y, z) => {
     ];
 };
 
+const mat4translated = (m, x, y, z) => {
+    m[12] = x;
+    m[13] = y;
+    m[14] = z;
+};
+
 const mat4scale = (x, y, z) => {
     return [
         x, 0, 0, 0,

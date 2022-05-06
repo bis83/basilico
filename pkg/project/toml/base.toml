@@ -1,0 +1,12 @@
+
+[[stack]]
+id = 1
+mesh = "stack"
+shader = "mesh_pc"
+height = 1
+
+[[ui]]
+mesh = "reticle"
+shader = "mesh_pc"
+width = 8
+height = 8

@@ -18,6 +18,8 @@ var $temp = {
         h: 0,
         a: [],
     },
+    ui: {
+    }
 };
 
 const temp_stack = (x, y) => {
