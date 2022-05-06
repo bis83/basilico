@@ -34,22 +34,29 @@ const update_pos_adjust = (x, y, dx, dy) => {
 const update_pos = () => {
     const dt = $listen.timer.deltaTime;
 
-    const cameraSpeed = 90; // deg/s
-    $temp.pos.ha += cameraSpeed * dt * $listen.input.cameraX;
-    $temp.pos.va += cameraSpeed * dt * $listen.input.cameraY;
-    $temp.pos.va = Math.max(-60, Math.min($temp.pos.va, 80));
+    const cameraXY = temp_ui_value("right-stick");
+    if(cameraXY) {
+        const cameraSpeed = 90; // deg/s
+        $temp.pos.ha += cameraSpeed * dt * cameraXY[0];
+        $temp.pos.va += cameraSpeed * dt * cameraXY[1];
+        $temp.pos.va = Math.max(-60, Math.min($temp.pos.va, 80));
+    }
 
-    const moveSpeed = 2;    // cell/s
-    const rx = deg2rad($temp.pos.ha+90);
-    const ry = deg2rad($temp.pos.ha);
-    const moveX = $listen.input.moveX;
-    const moveY = $listen.input.moveY;
-    const vx = moveX * Math.cos(rx) + moveY * Math.cos(ry);
-    const vy = moveX * Math.sin(rx) + moveY * Math.sin(ry);
-
-    const dx = moveSpeed * dt * vx;
-    const dy = moveSpeed * dt * vy;
-    [$temp.pos.x, $temp.pos.y] = update_pos_adjust($temp.pos.x, $temp.pos.y, dx, dy);
+    const moveXY = temp_ui_value("left-stick");
+    if(moveXY) {
+        const moveSpeed = 2;    // cell/s
+        const rx = deg2rad($temp.pos.ha+90);
+        const ry = deg2rad($temp.pos.ha);
+        const moveX = moveXY[0];
+        const moveY = moveXY[1];
+        const vx = moveX * Math.cos(rx) + moveY * Math.cos(ry);
+        const vy = moveX * Math.sin(rx) + moveY * Math.sin(ry);
+        const dx = moveSpeed * dt * vx;
+        const dy = moveSpeed * dt * vy;
+        [$temp.pos.x, $temp.pos.y] = update_pos_adjust($temp.pos.x, $temp.pos.y, dx, dy);
+    } else {
+        [$temp.pos.x, $temp.pos.y] = update_pos_adjust($temp.pos.x, $temp.pos.y, 0, 0);
+    }
 
     const h = temp_stack_height($temp.pos.x, $temp.pos.y);
     if(Math.abs(h-$temp.pos.h) <= 2) {
@@ -81,7 +88,7 @@ const update_camera = () => {
 };
 
 const update_creative = () => {
-    if(temp_ui_value("button_act")) {
+    if(temp_ui_value("button-act")) {
         const stack = temp_stack($temp.pos.x, $temp.pos.y);
         if(stack && stack.length > 0) {
             let [id, count] = stack_get(stack[stack.length-1]);
@@ -90,7 +97,7 @@ const update_creative = () => {
         }
         init_save();
     }
-    if(temp_ui_value("button_sub")) {
+    if(temp_ui_value("button-sub")) {
         const stack = temp_stack($temp.pos.x, $temp.pos.y);
         if(stack && stack.length > 0) {
             let [id, count] = stack_get(stack[stack.length-1]);

@@ -23,6 +23,10 @@ func toInteractNo(s string) int {
 	switch s {
 	case "button":
 		return 1
+	case "left-stick":
+		return 2
+	case "right-stick":
+		return 3
 	default:
 		return 0
 	}
