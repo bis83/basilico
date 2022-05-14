@@ -95,7 +95,7 @@ const update_creative = () => {
             count += 1;
             stack[stack.length-1] = stack_set(id, count);
         }
-        init_save();
+        init_savegame();
     }
     if(temp_ui_value("button-sub")) {
         const stack = temp_stack($temp.pos.x, $temp.pos.y);
@@ -108,14 +108,34 @@ const update_creative = () => {
                 stack.pop();
             }
         }
-        init_save();
+        init_savegame();
+    }
+};
+
+const update_pause = () => {
+    if(temp_ui_value("button-newgame")) {
+        $temp.slot = "data0";
+        init_newgame();
+        $temp.pause = false;
+    }
+    if(temp_ui_value("button-loadgame")) {
+        $temp.slot = "data0";
+        init_loadgame();
+        $temp.pause = false;
     }
 };
 
 const update = () => {
+    if($temp.slot === null) {
+        $temp.pause = true;
+    }
+
     ui_tick();
-    
-    update_pos();
+    if($temp.pause) {
+        update_pause();
+    } else {
+        update_pos();
+        update_creative();
+    }
     update_camera();
-    update_creative();
 };

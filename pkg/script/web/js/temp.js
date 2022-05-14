@@ -5,6 +5,8 @@ var $temp = {
         o: new Float32Array(16),
     },
     init: false,
+    pause: false,
+    slot: null,
     pos: {
         x: 0,
         y: 0,

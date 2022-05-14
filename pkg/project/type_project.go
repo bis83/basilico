@@ -56,3 +56,12 @@ func (p *Project) FindShader(name string) (*Shader, int) {
 	}
 	return nil, -1
 }
+
+func (p *Project) FindUI(name string) (*UI, int) {
+	for i, v := range p.UI {
+		if v.Name == name {
+			return v, i
+		}
+	}
+	return nil, -1
+}

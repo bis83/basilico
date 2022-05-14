@@ -1,16 +1,5 @@
 
-const init = () => {
-    if($temp.init) {
-        return;
-    }
-
-    if(!init_load()) {
-        init_generate();
-    }
-    $temp.init = true;
-};
-
-const init_generate = () => {
+const init_newgame = () => {
     $temp.stack.w = 64;
     $temp.stack.h = 64;
     $temp.stack.a.length = 0;
@@ -25,8 +14,12 @@ const init_generate = () => {
     $temp.pos.y = 0.5;
 };
 
-const init_load = () => {
-    const data = localstorage_get("data0");
+const init_loadgame = () => {
+    if(!$temp.slot) {
+        return false;
+    }
+
+    const data = localstorage_get($temp.slot);
     if(!data) {
         return false;
     }
@@ -39,9 +32,13 @@ const init_load = () => {
     return true;
 };
 
-const init_save = () => {
+const init_savegame = () => {
+    if(!$temp.slot) {
+        return;
+    }
+
     const data = {};
     data.pos = $temp.pos;
     data.stack = $temp.stack;
-    localstorage_set("data0", data);
+    localstorage_set($temp.slot, data);
 };

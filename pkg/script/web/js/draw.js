@@ -49,32 +49,36 @@ const draw_stack = () => {
 };
 
 const draw_ui = () => {
-    const data = data_ui()
-    if(!data) {
+    const layout = data_ui_layout($temp.pause);
+    if(!layout) {
         return;
     }
     
     gl_state(false, true);
-    for(let u of data) {
-        const ui = $temp.ui[u.name];
+    for(let no of layout) {
+        const ui = data_ui(no);
         if(!ui) {
             continue;
         }
+        const tui = $temp.ui[ui.name];
+        if(!tui) {
+            continue;
+        }
 
-        const shader = data_shader(u.shader);
+        const shader = data_shader(ui.shader);
         if(!shader) {
             return;
         }
         $gl.useProgram(shader.prog);
         $gl.uniformMatrix4fv(shader.u.vp, false, $temp.cam.o);
 
-        const mesh = data_mesh(u.mesh);
+        const mesh = data_mesh(ui.mesh);
         if(!mesh) {
             return;
         }
         $gl.bindVertexArray(mesh.vao);
         
-        $gl.uniformMatrix4fv(shader.u.w, false, ui.m);
+        $gl.uniformMatrix4fv(shader.u.w, false, tui.m);
         gl_drawMesh(mesh);
     }
 };

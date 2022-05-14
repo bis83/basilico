@@ -8,7 +8,6 @@ listen(window, "load", () => {
     const tick = () => {
         listen_tick();
         if(data_loaded()) {
-            init();
             update();
             draw();
         }
