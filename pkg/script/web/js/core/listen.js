@@ -40,6 +40,8 @@ const listen_init = () => {
         ry: 0,
         b0: false,
         b1: false,
+        b8: false,
+        b9: false,
         lt: false,
         rt: false,
     };
@@ -56,6 +58,7 @@ const listen_init = () => {
         x: false,
         space: false,
         lctrl: false,
+        esc: false,
     };
     $listen.touch = new Map();
     $listen.click = [];
@@ -137,6 +140,7 @@ const listen_keyboard = (keyboard, code, value) => {
         case "KeyX": keyboard.x = value; break;
         case "Space": keyboard.space = value; break;
         case "ControlLeft": keyboard.lctrl = value; break;
+        case "Escape": keyboard.esc = value; break;
         default: return false;
     }
     return true;
@@ -171,11 +175,13 @@ const listen_tick_gamepad = (gamepad) => {
         gamepad.ry = Math.trunc(gp.axes[3] * 4) / 4;
         gamepad.b0 = (gp.buttons[0].value >= 0.5);
         gamepad.b1 = (gp.buttons[1].value >= 0.5);
+        gamepad.b8 = (gp.buttons[8].value >= 0.5);
+        gamepad.b9 = (gp.buttons[9].value >= 0.5);
         gamepad.lt = (gp.buttons[6].value >= 0.5);
         gamepad.rt = (gp.buttons[7].value >= 0.5);
         const gamepadChanged =
             (gamepad.lx || gamepad.ly || gamepad.rx || gamepad.ry ||
-             gamepad.b0 || gamepad.b1 || gamepad.lt || gamepad.rt) ? true : false;
+             gamepad.b0 || gamepad.b1 || gamepad.b8 || gamepad.b9 || gamepad.lt || gamepad.rt) ? true : false;
         if(gamepadChanged) {
             $listen.mode = GAMEPAD_MODE_GAMEPAD;
         }

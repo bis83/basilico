@@ -87,7 +87,7 @@ const update_camera = () => {
     $temp.cam.o.set(mat4ortho(ww, wh, 0, 1));
 };
 
-const update_creative = () => {
+const update_actions = () => {
     if(temp_ui_value("button-act")) {
         const stack = temp_stack($temp.pos.x, $temp.pos.y);
         if(stack && stack.length > 0) {
@@ -109,6 +109,9 @@ const update_creative = () => {
             }
         }
         init_savegame();
+    }
+    if(temp_ui_value("button-escape")) {
+        $temp.pause = true;
     }
 };
 
@@ -135,7 +138,7 @@ const update = () => {
         update_pause();
     } else {
         update_pos();
-        update_creative();
+        update_actions();
     }
     update_camera();
 };
