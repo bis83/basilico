@@ -8,9 +8,9 @@ const draw_stack = () => {
     const m = new Float32Array(16);
 
     gl_state(true, false);
-    for(let x=0; x<$temp.stack.w; ++x) {
-        for(let y=0; y<$temp.stack.h; ++y) {
-            const stack = temp_stack(x, y);
+    for(let x=0; x<$stack.w; ++x) {
+        for(let y=0; y<$stack.h; ++y) {
+            const stack = stack_value(x, y);
             if(!stack) {
                 return;
             }
@@ -60,7 +60,7 @@ const draw_ui = () => {
         if(!ui) {
             continue;
         }
-        const tui = $temp.ui[ui.name];
+        const tui = $ui[ui.name];
         if(!tui) {
             continue;
         }

@@ -6,7 +6,6 @@ var scripts = []string{
 	"web/js/math/angle.js",
 	"web/js/math/vec3.js",
 	"web/js/math/mat4.js",
-	"web/js/math/stack.js",
 
 	// core
 	"web/js/core/listen.js",
@@ -22,9 +21,11 @@ var scripts = []string{
 	"web/js/data/decode_texture.js",
 	"web/js/data/data.js",
 
-	// temp
-	"web/js/temp.js",
-	"web/js/ui.js",
+	// variable
+	"web/js/variable/temp.js",
+	"web/js/variable/ui.js",
+	"web/js/variable/stack.js",
+	"web/js/variable/pos.js",
 
 	// main
 	"web/js/init.js",

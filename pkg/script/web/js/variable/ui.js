@@ -1,4 +1,14 @@
 
+const $ui = {};
+
+const ui_value = (name) => {
+    const ui = $ui[name];
+    if(!ui) {
+        return null;
+    }
+    return ui.value;
+};
+
 const UI_STATE_RESET = 0;
 const BUTTON_STATE_RELEASED = 0;
 const BUTTON_STATE_PRESSED = 1;
@@ -116,14 +126,14 @@ const ui_tick = () => {
         if(!ui) {
             continue;
         }
-        if(!$temp.ui[ui.name]) {
-            $temp.ui[ui.name] = {
+        if(!$ui[ui.name]) {
+            $ui[ui.name] = {
                 m: new Float32Array(16),
                 value: null,
                 state: UI_STATE_RESET,
             };
         }
-        const tui = $temp.ui[ui.name];
+        const tui = $ui[ui.name];
         
         switch(ui.interact) {
             case 1: // button

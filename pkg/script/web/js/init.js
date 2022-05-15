@@ -1,17 +1,17 @@
 
 const init_newgame = () => {
-    $temp.stack.w = 64;
-    $temp.stack.h = 64;
-    $temp.stack.a.length = 0;
-    $temp.stack.a.length = $temp.stack.w * $temp.stack.h;
-    for(let i=0; i<$temp.stack.a.length; ++i) {
+    $stack.w = 64;
+    $stack.h = 64;
+    $stack.a.length = 0;
+    $stack.a.length = $stack.w * $stack.h;
+    for(let i=0; i<$stack.a.length; ++i) {
         const h = 1 + Math.floor(Math.random() * 10)
-        $temp.stack.a[i] = [];
-        $temp.stack.a[i].push(stack_set(1, h));
+        $stack.a[i] = [];
+        $stack.a[i].push(stack_set(1, h));
     }
 
-    $temp.pos.x = 0.5;
-    $temp.pos.y = 0.5;
+    $pos.x = 0.5;
+    $pos.y = 0.5;
 };
 
 const init_loadgame = () => {
@@ -24,10 +24,10 @@ const init_loadgame = () => {
         return false;
     }
     if(data.pos) {
-        $temp.pos = data.pos;
+        Object.assign($pos, data.pos);
     }
     if(data.stack) {
-        $temp.stack = data.stack;
+        Object.assign($stack, data.stack);
     }
     return true;
 };
@@ -38,7 +38,7 @@ const init_savegame = () => {
     }
 
     const data = {};
-    data.pos = $temp.pos;
-    data.stack = $temp.stack;
+    data.pos = $pos;
+    data.stack = $stack;
     localstorage_set($temp.slot, data);
 };

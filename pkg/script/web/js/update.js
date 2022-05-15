@@ -1,7 +1,7 @@
 
 const update_pos_is_wall = (x, y, dx, dy) => {
-    const h0 = temp_stack_height(x, y);
-    const h1 = temp_stack_height(x+dx, y+dy);
+    const h0 = stack_height(x, y);
+    const h1 = stack_height(x+dx, y+dy);
     if(Math.abs(h0-h1) > 1) {
         return true;
     }
@@ -34,36 +34,36 @@ const update_pos_adjust = (x, y, dx, dy) => {
 const update_pos = () => {
     const dt = $listen.timer.deltaTime;
 
-    const cameraXY = temp_ui_value("right-stick");
+    const cameraXY = ui_value("right-stick");
     if(cameraXY) {
         const cameraSpeed = 90; // deg/s
-        $temp.pos.ha += cameraSpeed * dt * cameraXY[0];
-        $temp.pos.va += cameraSpeed * dt * cameraXY[1];
-        $temp.pos.va = Math.max(-60, Math.min($temp.pos.va, 80));
+        $pos.ha += cameraSpeed * dt * cameraXY[0];
+        $pos.va += cameraSpeed * dt * cameraXY[1];
+        $pos.va = Math.max(-60, Math.min($pos.va, 80));
     }
 
-    const moveXY = temp_ui_value("left-stick");
+    const moveXY = ui_value("left-stick");
     if(moveXY) {
         const moveSpeed = 2;    // cell/s
-        const rx = deg2rad($temp.pos.ha+90);
-        const ry = deg2rad($temp.pos.ha);
+        const rx = deg2rad($pos.ha+90);
+        const ry = deg2rad($pos.ha);
         const moveX = moveXY[0];
         const moveY = moveXY[1];
         const vx = moveX * Math.cos(rx) + moveY * Math.cos(ry);
         const vy = moveX * Math.sin(rx) + moveY * Math.sin(ry);
         const dx = moveSpeed * dt * vx;
         const dy = moveSpeed * dt * vy;
-        [$temp.pos.x, $temp.pos.y] = update_pos_adjust($temp.pos.x, $temp.pos.y, dx, dy);
+        [$pos.x, $pos.y] = update_pos_adjust($pos.x, $pos.y, dx, dy);
     } else {
-        [$temp.pos.x, $temp.pos.y] = update_pos_adjust($temp.pos.x, $temp.pos.y, 0, 0);
+        [$pos.x, $pos.y] = update_pos_adjust($pos.x, $pos.y, 0, 0);
     }
 
-    const h = temp_stack_height($temp.pos.x, $temp.pos.y);
-    if(Math.abs(h-$temp.pos.h) <= 2) {
-        const vh = h - $temp.pos.h;
-        $temp.pos.h += 10 * dt * vh;
+    const h = stack_height($pos.x, $pos.y);
+    if(Math.abs(h-$pos.h) <= 2) {
+        const vh = h - $pos.h;
+        $pos.h += 10 * dt * vh;
     } else {
-        $temp.pos.h = h;
+        $pos.h = h;
     }
 };
 
@@ -74,9 +74,9 @@ const update_camera = () => {
     const zNear = 0.1;
     const zFar = 1000;
 
-    const dir = vec3dir($temp.pos.ha, $temp.pos.va);
-    const eye = vec3world($temp.pos.x, $temp.pos.y, $temp.pos.h);
-    eye[2] += $temp.pos.eyeh;
+    const dir = vec3dir($pos.ha, $pos.va);
+    const eye = vec3world($pos.x, $pos.y, $pos.h);
+    eye[2] += $pos.eyeh;
 
     const at = vec3add(eye, dir);
     const up = [0, 0, 1];
@@ -88,8 +88,8 @@ const update_camera = () => {
 };
 
 const update_actions = () => {
-    if(temp_ui_value("button-act")) {
-        const stack = temp_stack($temp.pos.x, $temp.pos.y);
+    if(ui_value("button-act")) {
+        const stack = stack_value($pos.x, $pos.y);
         if(stack && stack.length > 0) {
             let [id, count] = stack_get(stack[stack.length-1]);
             count += 1;
@@ -97,8 +97,8 @@ const update_actions = () => {
         }
         init_savegame();
     }
-    if(temp_ui_value("button-sub")) {
-        const stack = temp_stack($temp.pos.x, $temp.pos.y);
+    if(ui_value("button-sub")) {
+        const stack = stack_value($pos.x, $pos.y);
         if(stack && stack.length > 0) {
             let [id, count] = stack_get(stack[stack.length-1]);
             count -= 1;
@@ -110,18 +110,18 @@ const update_actions = () => {
         }
         init_savegame();
     }
-    if(temp_ui_value("button-escape")) {
+    if(ui_value("button-escape")) {
         $temp.pause = true;
     }
 };
 
 const update_pause = () => {
-    if(temp_ui_value("button-newgame")) {
+    if(ui_value("button-newgame")) {
         $temp.slot = "data0";
         init_newgame();
         $temp.pause = false;
     }
-    if(temp_ui_value("button-loadgame")) {
+    if(ui_value("button-loadgame")) {
         $temp.slot = "data0";
         init_loadgame();
         $temp.pause = false;
