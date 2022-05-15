@@ -85,8 +85,10 @@ const draw_ui = () => {
 
 const draw = () => {
     draw_start_frame();
-    if($temp.pause === false) {
-        draw_stack();
+    if(data_loaded()) {
+        if($temp.pause === false) {
+            draw_stack();
+        }
+        draw_ui();
     }
-    draw_ui();
 };

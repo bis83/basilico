@@ -1,4 +1,12 @@
 
+const init = () => {
+    gl_init();
+    audio_init();
+    listen_init();
+    data_loadIndex();
+    data_loadPack(0);
+};
+
 const init_newgame = () => {
     $stack.w = 64;
     $stack.h = 64;

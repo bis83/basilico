@@ -128,17 +128,20 @@ const update_pause = () => {
     }
 };
 
-const update = () => {
-    if($temp.slot === null) {
-        $temp.pause = true;
+const update = (time) => {
+    listen_tick(time);    
+    if(data_loaded()) {
+        if($temp.slot === null) {
+            $temp.pause = true;
+        }
+        ui_tick();
+        if($temp.pause) {
+            update_pause();
+        } else {
+            update_pos();
+            update_actions();
+        }
+        update_camera();
     }
-
-    ui_tick();
-    if($temp.pause) {
-        update_pause();
-    } else {
-        update_pos();
-        update_actions();
-    }
-    update_camera();
+    listen_flush();
 };

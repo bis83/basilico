@@ -159,8 +159,7 @@ const listen_click = (pointerId) => {
     }
 };
 
-const listen_tick_timer = (timer) => {  
-    const time = performance.now();
+const listen_tick_timer = (timer, time) => {  
     timer.deltaTime = (time - timer.prevTime) / 1000;
     timer.prevTime = time;
 };
@@ -188,8 +187,8 @@ const listen_tick_gamepad = (gamepad) => {
     }
 }
 
-const listen_tick = () => {
-    listen_tick_timer($listen.timer);
+const listen_tick = (time) => {
+    listen_tick_timer($listen.timer, time);
     listen_tick_gamepad($listen.gamepad);
 };
 
