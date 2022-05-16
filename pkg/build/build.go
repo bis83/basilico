@@ -33,7 +33,7 @@ func buildScript(prj *project.Project, baseDir string) error {
 	if err != nil {
 		return err
 	}
-	b, err = script.MakeAppJs(&feat)
+	b, err = script.MakeAppJs(&feat, prj.Script)
 	if err != nil {
 		return err
 	}

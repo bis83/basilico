@@ -1,5 +1,10 @@
 package project
 
+import (
+	"os"
+	"path/filepath"
+)
+
 type Project struct {
 	Setup   *Setup
 	Mesh    []*Mesh
@@ -7,9 +12,11 @@ type Project struct {
 	Shader  []*Shader
 	Stack   []*Stack
 	UI      []*UI
+
+	Script []string
 }
 
-func (p *Project) Set(setup *Setup, pages []*Page) {
+func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 	p.Setup = setup
 	for _, page := range pages {
 		for _, mesh := range page.Mesh {
@@ -28,6 +35,14 @@ func (p *Project) Set(setup *Setup, pages []*Page) {
 			p.UI = append(p.UI, ui)
 		}
 	}
+	for _, path := range p.Setup.Script {
+		data, err := os.ReadFile(filepath.Join(baseDir, path))
+		if err != nil {
+			return err
+		}
+		p.Script = append(p.Script, string(data))
+	}
+	return nil
 }
 
 func (p *Project) FindMesh(name string) (*Mesh, int) {

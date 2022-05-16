@@ -2,7 +2,7 @@ package data
 
 import (
 	"fmt"
-	
+
 	project "github.com/bis83/basilico/pkg/project"
 )
 

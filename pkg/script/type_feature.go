@@ -5,13 +5,10 @@ import (
 )
 
 type Feature struct {
-	Title      string
-	Logging    bool
-	Minify     bool
-	Assert     bool
-	HasMesh    bool
-	HasTexture bool
-	HasShader  bool
+	Title   string
+	Logging bool
+	Minify  bool
+	Assert  bool
 }
 
 func (p *Feature) Set(prj *project.Project) {

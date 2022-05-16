@@ -11,7 +11,7 @@ import (
 	esbuild "github.com/evanw/esbuild/pkg/api"
 )
 
-func executeJs(feat *Feature, wr io.Writer, path string) error {
+func executeFS(feat *Feature, wr io.Writer, path string) error {
 	js, err := fs.ReadFile(path)
 	if err != nil {
 		return err
@@ -23,10 +23,23 @@ func executeJs(feat *Feature, wr io.Writer, path string) error {
 	return nil
 }
 
-func MakeAppJs(feat *Feature) ([]byte, error) {
+func execute(feat *Feature, wr io.Writer, js string) error {
+	tpl := template.Must(template.New("js").Parse(js))
+	if err := tpl.Execute(wr, feat); err != nil {
+		return err
+	}
+	return nil
+}
+
+func MakeAppJs(feat *Feature, addons []string) ([]byte, error) {
 	var b bytes.Buffer
 	for _, path := range scripts {
-		if err := executeJs(feat, &b, path); err != nil {
+		if err := executeFS(feat, &b, path); err != nil {
+			return nil, err
+		}
+	}
+	for _, js := range addons {
+		if err := execute(feat, &b, js); err != nil {
 			return nil, err
 		}
 	}

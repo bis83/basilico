@@ -54,18 +54,20 @@ func listPages(baseDir string) ([]*Page, error) {
 }
 
 func Read(baseDir string) (*Project, error) {
+	var err error
 	var setup Setup
 	tomlPath := filepath.Join(baseDir, "setup.toml")
-	if err := setup.Read(tomlPath); err != nil {
+	if err = setup.Read(tomlPath); err != nil {
 		return nil, err
 	}
-
-	pages, err2 := listPages(baseDir)
-	if err2 != nil {
-		return nil, err2
+	var pages []*Page
+	pages, err = listPages(baseDir)
+	if err != nil {
+		return nil, err
 	}
-
 	var prj Project
-	prj.Set(&setup, pages)
+	if err = prj.Set(&setup, pages, baseDir); err != nil {
+		return nil, err
+	}
 	return &prj, nil
 }

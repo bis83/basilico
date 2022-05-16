@@ -17,6 +17,7 @@ type Setup struct {
 	Logging  bool      `toml:"logging"`
 	Assert   bool      `toml:"assert"`
 	Minify   bool      `toml:"minify"`
+	Script   []string  `toml:"script"`
 	UILayout *UILayout `toml:"ui-layout"`
 }
 
