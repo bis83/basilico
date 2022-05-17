@@ -48,14 +48,9 @@ const draw_stack = () => {
     }
 };
 
-const draw_ui = () => {
-    const layout = data_ui_layout($temp.pause);
-    if(!layout) {
-        return;
-    }
-    
+const draw_ui = (view) => {
     gl_state(false, true);
-    for(let no of layout) {
+    for(let no of view.ui) {
         const ui = data_ui(no);
         if(!ui) {
             continue;
@@ -86,9 +81,13 @@ const draw_ui = () => {
 const draw = () => {
     draw_start_frame();
     if(data_loaded()) {
-        if($temp.pause === false) {
+        const view = data_view($temp.view);
+        if(!view) {
+            return;
+        }
+        if(view.draw3d) {
             draw_stack();
         }
-        draw_ui();
+        draw_ui(view);
     }
 };

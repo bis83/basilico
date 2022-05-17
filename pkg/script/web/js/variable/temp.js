@@ -1,7 +1,6 @@
 
 const $temp = {
-    init: false,
-    pause: false,
+    view: null,
     slot: null,
     cam: {
         vp: new Float32Array(16),

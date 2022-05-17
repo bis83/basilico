@@ -6,19 +6,21 @@ import (
 	toml "github.com/pelletier/go-toml/v2"
 )
 
-type UILayout struct {
-	Pause []string `toml:"pause"`
-	Main  []string `toml:"main"`
+type View struct {
+	Name   string   `toml:"name"`
+	Draw3D bool     `toml:"draw3d"`
+	UI     []string `toml:"ui"`
 }
 
 type Setup struct {
-	Title    string    `toml:"title"`
-	Addr     string    `toml:"addr"`
-	Logging  bool      `toml:"logging"`
-	Assert   bool      `toml:"assert"`
-	Minify   bool      `toml:"minify"`
-	Script   []string  `toml:"script"`
-	UILayout *UILayout `toml:"ui-layout"`
+	Title       string   `toml:"title"`
+	Addr        string   `toml:"addr"`
+	Logging     bool     `toml:"logging"`
+	Assert      bool     `toml:"assert"`
+	Minify      bool     `toml:"minify"`
+	InitialView string   `toml:"initial-view"`
+	View        []*View  `toml:"view"`
+	Script      []string `toml:"script"`
 }
 
 func (p *Setup) Read(path string) error {

@@ -31,6 +31,10 @@ const data_loadPack = (no) => {
     });
 };
 
+const data_view = (no) => {
+    return $data.index && $data.index.view[no];
+};
+
 const data_mesh = (no) => {
     return $data.pack[0] && $data.pack[0].mesh[no];
 };
@@ -45,7 +49,4 @@ const data_stack = (id) => {
 };
 const data_ui = (no) => {
     return $data.pack[0] && $data.pack[0].ui[no];
-};
-const data_ui_layout = (pause) => {
-    return $data.index && (pause ? $data.index.ui_pause : $data.index.ui_main);
 };

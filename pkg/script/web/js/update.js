@@ -1,4 +1,14 @@
 
+const reset_view = () => {
+    if($temp.slot === null) {
+        $temp.view = $data.index.initial_view
+    }
+};
+
+const next_view = () => {
+    $temp.view += 1;
+};
+
 const update_pos_is_wall = (x, y, dx, dy) => {
     const h0 = stack_height(x, y);
     const h1 = stack_height(x+dx, y+dy);
@@ -111,7 +121,8 @@ const update_actions = () => {
         init_savegame();
     }
     if(ui_value("button-escape")) {
-        $temp.pause = true;
+        $temp.slot = null;
+        reset_view();
     }
 };
 
@@ -119,28 +130,27 @@ const update_pause = () => {
     if(ui_value("button-newgame")) {
         $temp.slot = "data0";
         init_newgame();
-        $temp.pause = false;
+        next_view();
     }
     if(ui_value("button-loadgame")) {
         $temp.slot = "data0";
         init_loadgame();
-        $temp.pause = false;
+        next_view();
     }
 };
 
 const update = (time) => {
     listen_tick(time);    
     if(data_loaded()) {
-        if($temp.slot === null) {
-            $temp.pause = true;
+        reset_view();
+        const view = data_view($temp.view);
+        if(!view) {
+            return;
         }
-        ui_tick();
-        if($temp.pause) {
-            update_pause();
-        } else {
-            update_pos();
-            update_actions();
-        }
+        ui_tick(view);
+        update_pos();
+        update_actions();
+        update_pause();
         update_camera();
     }
     listen_flush();

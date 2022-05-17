@@ -7,26 +7,22 @@ import (
 )
 
 type Index struct {
-	UIPause []int `json:"ui_pause"`
-	UIMain  []int `json:"ui_main"`
+	InitialView int     `json:"initial_view"`
+	View        []*View `json:"view"`
 }
 
 func (p *Index) Set(prj *project.Project) error {
-	if prj.Setup.UILayout != nil {
-		for _, v := range prj.Setup.UILayout.Pause {
-			if _, i := prj.FindUI(v); i >= 0 {
-				p.UIPause = append(p.UIPause, i)
-			} else {
-				return fmt.Errorf("UI Not Found: %s", v)
-			}
+	if _, i := prj.FindView(prj.Setup.InitialView); i >= 0 {
+		p.InitialView = i
+	} else {
+		return fmt.Errorf("View Not Found: %s", prj.Setup.InitialView)
+	}
+	for _, v := range prj.Setup.View {
+		var view View
+		if err := view.Set(prj, v); err != nil {
+			return err
 		}
-		for _, v := range prj.Setup.UILayout.Main {
-			if _, i := prj.FindUI(v); i >= 0 {
-				p.UIMain = append(p.UIMain, i)
-			} else {
-				return fmt.Errorf("UI Not Found: %s", v)
-			}
-		}
+		p.View = append(p.View, &view)
 	}
 	return nil
 }

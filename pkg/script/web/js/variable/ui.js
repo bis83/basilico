@@ -116,12 +116,11 @@ const ui_tick_right_stick = (tui, ui) => {
     }
 }
 
-const ui_tick = () => {
-    const layout = data_ui_layout($temp.pause);
-    if(!layout) {
-        return;
+const ui_tick = (view) => {
+    for(const key in $ui) {
+        $ui[key].value = null;
     }
-    for(let no of layout) {
+    for(let no of view.ui) {
         const ui = data_ui(no);
         if(!ui) {
             continue;

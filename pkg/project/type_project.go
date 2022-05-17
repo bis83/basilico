@@ -45,6 +45,15 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 	return nil
 }
 
+func (p *Project) FindView(name string) (*View, int) {
+	for i, v := range p.Setup.View {
+		if v.Name == name {
+			return v, i
+		}
+	}
+	return nil, -1
+}
+
 func (p *Project) FindMesh(name string) (*Mesh, int) {
 	for i, v := range p.Mesh {
 		if v.Name == name {
