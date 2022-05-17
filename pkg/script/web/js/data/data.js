@@ -43,9 +43,9 @@ const data_shader = (no) => {
 const data_stack = (id) => {
     return $data.pack[0] && $data.pack[0].stack.find(obj => obj.id == id);
 };
+const data_ui = (no) => {
+    return $data.pack[0] && $data.pack[0].ui[no];
+};
 const data_ui_layout = (pause) => {
     return $data.index && (pause ? $data.index.ui_pause : $data.index.ui_main);
-};
-const data_ui = (no) => {
-    return $data.index && $data.index.ui[no];
 };
