@@ -34,6 +34,9 @@ const data_loadPack = (no) => {
 const data_view = (no) => {
     return $data.index && $data.index.view[no];
 };
+const data_view_index = (name) => {
+    return $data.index && $data.index.view.findIndex(obj => obj.name === name);
+};
 
 const data_mesh = (no) => {
     return $data.pack[0] && $data.pack[0].mesh[no];
@@ -45,8 +48,11 @@ const data_shader = (no) => {
     return $data.pack[0] && $data.pack[0].shader[no];
 };
 const data_stack = (id) => {
-    return $data.pack[0] && $data.pack[0].stack.find(obj => obj.id == id);
+    return $data.pack[0] && $data.pack[0].stack.find(obj => obj.id === id);
 };
 const data_ui = (no) => {
     return $data.pack[0] && $data.pack[0].ui[no];
+};
+const data_event = (no) => {
+    return $data.pack[0] && $data.pack[0].event[no];
 };

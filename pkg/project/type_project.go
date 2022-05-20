@@ -12,6 +12,7 @@ type Project struct {
 	Shader  []*Shader
 	Stack   []*Stack
 	UI      []*UI
+	Event   []*Event
 
 	Script []string
 }
@@ -33,6 +34,9 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 		}
 		for _, ui := range page.UI {
 			p.UI = append(p.UI, ui)
+		}
+		for _, ev := range page.Event {
+			p.Event = append(p.Event, ev)
 		}
 	}
 	for _, path := range p.Setup.Script {
@@ -83,6 +87,15 @@ func (p *Project) FindShader(name string) (*Shader, int) {
 
 func (p *Project) FindUI(name string) (*UI, int) {
 	for i, v := range p.UI {
+		if v.Name == name {
+			return v, i
+		}
+	}
+	return nil, -1
+}
+
+func (p *Project) FindEvent(name string) (*Event, int) {
+	for i, v := range p.Event {
 		if v.Name == name {
 			return v, i
 		}

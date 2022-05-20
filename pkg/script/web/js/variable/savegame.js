@@ -1,13 +1,5 @@
 
-const init = () => {
-    gl_init();
-    audio_init();
-    listen_init();
-    data_loadIndex();
-    data_loadPack(0);
-};
-
-const init_newgame = () => {
+const newgame = () => {
     $stack.w = 64;
     $stack.h = 64;
     $stack.a.length = 0;
@@ -20,9 +12,11 @@ const init_newgame = () => {
 
     $pos.x = 0.5;
     $pos.y = 0.5;
+    $pos.ha = 0;
+    $pos.va = 0;
 };
 
-const init_loadgame = () => {
+const loadgame = () => {
     if(!$temp.slot) {
         return false;
     }
@@ -40,7 +34,7 @@ const init_loadgame = () => {
     return true;
 };
 
-const init_savegame = () => {
+const savegame = () => {
     if(!$temp.slot) {
         return;
     }

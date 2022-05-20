@@ -10,6 +10,7 @@ type Pack struct {
 	Shader  []*Shader  `json:"shader"`
 	Stack   []*Stack   `json:"stack"`
 	UI      []*UI      `json:"ui"`
+	Event   []*Event   `json:"event"`
 }
 
 func (p *Pack) Set(prj *project.Project) error {
@@ -47,6 +48,13 @@ func (p *Pack) Set(prj *project.Project) error {
 			return err
 		}
 		p.UI = append(p.UI, &ui)
+	}
+	for _, v := range prj.Event {
+		var ev Event
+		if err := ev.Set(prj, v); err != nil {
+			return err
+		}
+		p.Event = append(p.Event, &ev)
 	}
 	return nil
 }

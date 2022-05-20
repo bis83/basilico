@@ -52,12 +52,20 @@ type UI struct {
 	Keyboard string `toml:"keyboard"`
 }
 
+type Event struct {
+	Name    string     `toml:"name"`
+	Trigger string     `toml:"trigger"`
+	Target  string     `toml:"target"`
+	Action  [][]string `toml:"action"`
+}
+
 type Page struct {
 	Mesh    []*Mesh    `toml:"mesh"`
 	Texture []*Texture `toml:"texture"`
 	Shader  []*Shader  `toml:"shader"`
 	Stack   []*Stack   `toml:"stack"`
 	UI      []*UI      `toml:"ui"`
+	Event   []*Event   `toml:"event"`
 }
 
 func (p *Page) ReadFS(path string) error {
