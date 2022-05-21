@@ -44,3 +44,12 @@ const stack_height = (x, y) => {
     }
     return h;
 };
+
+const stack_is_noentry = (x, y, dx, dy) => {
+    const h0 = stack_height(x, y);
+    const h1 = stack_height(x+dx, y+dy);
+    if(Math.abs(h0-h1) > 1) {
+        return true;
+    }
+    return false;
+};

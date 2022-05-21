@@ -1,4 +1,6 @@
 
+const $action = {};
+
 const event_tick = (view) => {
     for(let no of view.event) {
         const ev = data_event(no);

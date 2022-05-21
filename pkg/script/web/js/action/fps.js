@@ -1,13 +1,4 @@
 
-const pos_is_wall = (x, y, dx, dy) => {
-    const h0 = stack_height(x, y);
-    const h1 = stack_height(x+dx, y+dy);
-    if(Math.abs(h0-h1) > 1) {
-        return true;
-    }
-    return false;
-};
-
 const pos_adjust = (x, y, dx, dy) => {
     let xx = x + dx;
     let yy = y + dy;
@@ -15,23 +6,23 @@ const pos_adjust = (x, y, dx, dy) => {
     const ix = Math.floor(x);
     const iy = Math.floor(y);
     const r = 0.25;
-    if(pos_is_wall(ix, iy, -1, 0)) {
+    if(stack_is_noentry(ix, iy, -1, 0)) {
         xx = Math.max(xx, ix+r);
     }
-    if(pos_is_wall(ix, iy, +1, 0)) {
+    if(stack_is_noentry(ix, iy, +1, 0)) {
         xx = Math.min(xx, ix-r+1);
     }
-    if(pos_is_wall(ix, iy, 0, -1)) {
+    if(stack_is_noentry(ix, iy, 0, -1)) {
         yy = Math.max(yy, iy+r);
     }
-    if(pos_is_wall(ix, iy, 0, +1)) {
+    if(stack_is_noentry(ix, iy, 0, +1)) {
         yy = Math.min(yy, iy-r+1);
     }
 
     return [xx, yy];
 };
 
-$action["playermove"] = (lstick, rstick) => {
+const pos_fps_movement = (lstick, rstick) => {
     const dt = $listen.timer.deltaTime;
 
     const cameraXY = ui_value(rstick);
@@ -67,24 +58,6 @@ $action["playermove"] = (lstick, rstick) => {
     }
 };
 
-$action["pushstack"] = () => {
-    const stack = stack_value($pos.x, $pos.y);
-    if(stack && stack.length > 0) {
-        let [id, count] = stack_get(stack[stack.length-1]);
-        count += 1;
-        stack[stack.length-1] = stack_set(id, count);
-    }
-};
-
-$action["popstack"] = () => {
-    const stack = stack_value($pos.x, $pos.y);
-    if(stack && stack.length > 0) {
-        let [id, count] = stack_get(stack[stack.length-1]);
-        count -= 1;
-        if(count > 0) { 
-            stack[stack.length-1] = stack_set(id, count);
-        } else {
-            stack.pop();
-        }
-    }
+$action["fpsmove"] = (lstick, rstick) => {
+    pos_fps_movement(lstick, rstick);
 };

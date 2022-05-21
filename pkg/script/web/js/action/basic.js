@@ -1,6 +1,4 @@
 
-const $action = {};
-
 $action["nextview"] = (view) => {
     const i = data_view_index(view);
     if(i < 0) {

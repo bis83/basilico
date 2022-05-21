@@ -28,12 +28,12 @@ var scripts = []string{
 	"web/js/variable/pos.js",
 	"web/js/variable/savegame.js",
 
-	// action
-	"web/js/action/action.js",
-	"web/js/action/action_player.js",
-	"web/js/action/event.js",
-
 	// main
 	"web/js/draw.js",
+	"web/js/event.js",
 	"web/js/main.js",
+
+	// action
+	"web/js/action/basic.js",
+	"web/js/action/fps.js",
 }
