@@ -77,17 +77,3 @@ const draw_ui = (view) => {
         gl_drawMesh(mesh);
     }
 };
-
-const draw = () => {
-    draw_start_frame();
-    if(data_loaded()) {
-        const view = data_view($temp.view);
-        if(!view) {
-            return;
-        }
-        if(view.draw3d) {
-            draw_stack();
-        }
-        draw_ui(view);
-    }
-};

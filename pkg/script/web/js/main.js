@@ -8,7 +8,7 @@ const init = () => {
 };
 
 const update = (time) => {
-    listen_tick(time);    
+    listen_tick(time);
     if(data_loaded()) {
         reset_view();
         const view = data_view($temp.view);
@@ -20,6 +20,20 @@ const update = (time) => {
     }
     update_camera();
     listen_flush();
+};
+
+const draw = () => {
+    draw_start_frame();
+    if(data_loaded()) {
+        const view = data_view($temp.view);
+        if(!view) {
+            return;
+        }
+        if(view.draw3d) {
+            draw_stack();
+        }
+        draw_ui(view);
+    }
 };
 
 listen(window, "load", () => {
