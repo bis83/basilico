@@ -4,6 +4,7 @@ const $temp = {
     slot: null,
     cam: {
         vp: new Float32Array(16),
+        ivp: new Float32Array(16),
         o: new Float32Array(16),
     },
 };
@@ -43,6 +44,8 @@ const camera_tick = () => {
     const view = mat4lookat(eye, at, up);
     const proj = mat4perspective(fovy, ww/wh, zNear, zFar);
     
-    $temp.cam.vp.set(mat4multiply(view, proj));
+    const vp = mat4multiply(view, proj);
+    $temp.cam.vp.set(vp);
+    $temp.cam.ivp.set(mat4invert(vp));
     $temp.cam.o.set(mat4ortho(ww, wh, 0, 1));
 };
