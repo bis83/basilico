@@ -1,10 +1,10 @@
 
 $action["nextview"] = (view) => {
-    const i = data_view_index(view);
-    if(i < 0) {
-        return;
-    }
-    $temp.view = i;
+    next_view(view);
+};
+
+$action["resetview"] = () => {
+    reset_view();
 };
 
 $action["newgame"] = (slot) => {
@@ -19,9 +19,4 @@ $action["loadgame"] = (slot) => {
 
 $action["savegame"] = () => {
     savegame();
-};
-
-$action["resetgame"] = () => {
-    $temp.slot = null;
-    $temp.view = null;
 };

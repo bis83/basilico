@@ -9,12 +9,25 @@ const $temp = {
 };
 
 const reset_view = () => {
-    if($temp.slot === null) {
-        $temp.view = $data.index.initial_view
+    $temp.slot = null;
+    $temp.view = $data.index.initial_view;
+};
+
+const next_view = (view) => {
+    const i = data_view_index(view);
+    if(i < 0) {
+        return;
+    }
+    $temp.view = i;
+};
+
+const view_tick = () => {
+    if($temp.view === null) {
+        reset_view();
     }
 };
 
-const update_camera = () => {
+const camera_tick = () => {
     const ww = window.innerWidth;
     const wh = window.innerHeight;
     const fovy = deg2rad(30);

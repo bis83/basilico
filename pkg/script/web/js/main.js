@@ -10,7 +10,7 @@ const init = () => {
 const update = (time) => {
     listen_tick(time);
     if(data_loaded()) {
-        reset_view();
+        view_tick();
         const view = data_view($temp.view);
         if(!view) {
             return;
@@ -18,7 +18,7 @@ const update = (time) => {
         ui_tick(view);
         event_tick(view);
     }
-    update_camera();
+    camera_tick();
     listen_flush();
 };
 
