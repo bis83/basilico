@@ -32,10 +32,10 @@ const data_loadPack = (no) => {
 };
 
 const data_view = (no) => {
-    return $data.index && $data.index.view[no];
+    return $data.pack[0] && $data.pack[0].view[no];
 };
 const data_view_index = (name) => {
-    return $data.index && $data.index.view.findIndex(obj => obj.name === name);
+    return $data.pack[0] && $data.pack[0].view.findIndex(obj => obj.name === name);
 };
 
 const data_mesh = (no) => {

@@ -6,13 +6,6 @@ import (
 	toml "github.com/pelletier/go-toml/v2"
 )
 
-type View struct {
-	Name   string   `toml:"name"`
-	Draw3D bool     `toml:"draw3d"`
-	UI     []string `toml:"ui"`
-	Event  []string `toml"event"`
-}
-
 type Setup struct {
 	Title       string   `toml:"title"`
 	Addr        string   `toml:"addr"`
@@ -20,7 +13,6 @@ type Setup struct {
 	Assert      bool     `toml:"assert"`
 	Minify      bool     `toml:"minify"`
 	InitialView string   `toml:"initial-view"`
-	View        []*View  `toml:"view"`
 	Script      []string `toml:"script"`
 }
 

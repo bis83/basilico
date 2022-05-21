@@ -7,8 +7,7 @@ import (
 )
 
 type Index struct {
-	InitialView int     `json:"initial_view"`
-	View        []*View `json:"view"`
+	InitialView int `json:"initial_view"`
 }
 
 func (p *Index) Set(prj *project.Project) error {
@@ -16,13 +15,6 @@ func (p *Index) Set(prj *project.Project) error {
 		p.InitialView = i
 	} else {
 		return fmt.Errorf("View Not Found: %s", prj.Setup.InitialView)
-	}
-	for _, v := range prj.Setup.View {
-		var view View
-		if err := view.Set(prj, v); err != nil {
-			return err
-		}
-		p.View = append(p.View, &view)
 	}
 	return nil
 }

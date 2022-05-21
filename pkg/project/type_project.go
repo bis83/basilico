@@ -13,6 +13,7 @@ type Project struct {
 	Stack   []*Stack
 	UI      []*UI
 	Event   []*Event
+	View    []*View
 
 	Script []string
 }
@@ -38,6 +39,9 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 		for _, ev := range page.Event {
 			p.Event = append(p.Event, ev)
 		}
+		for _, view := range page.View {
+			p.View = append(p.View, view)
+		}
 	}
 	for _, path := range p.Setup.Script {
 		data, err := os.ReadFile(filepath.Join(baseDir, path))
@@ -50,7 +54,7 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 }
 
 func (p *Project) FindView(name string) (*View, int) {
-	for i, v := range p.Setup.View {
+	for i, v := range p.View {
 		if v.Name == name {
 			return v, i
 		}

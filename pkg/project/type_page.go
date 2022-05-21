@@ -59,6 +59,13 @@ type Event struct {
 	Action  [][]string `toml:"action"`
 }
 
+type View struct {
+	Name   string   `toml:"name"`
+	Draw3D bool     `toml:"draw3d"`
+	UI     []string `toml:"ui"`
+	Event  []string `toml"event"`
+}
+
 type Page struct {
 	Mesh    []*Mesh    `toml:"mesh"`
 	Texture []*Texture `toml:"texture"`
@@ -66,6 +73,7 @@ type Page struct {
 	Stack   []*Stack   `toml:"stack"`
 	UI      []*UI      `toml:"ui"`
 	Event   []*Event   `toml:"event"`
+	View    []*View    `toml:"view"`
 }
 
 func (p *Page) ReadFS(path string) error {

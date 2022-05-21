@@ -11,6 +11,7 @@ type Pack struct {
 	Stack   []*Stack   `json:"stack"`
 	UI      []*UI      `json:"ui"`
 	Event   []*Event   `json:"event"`
+	View    []*View    `json:"view"`
 }
 
 func (p *Pack) Set(prj *project.Project) error {
@@ -55,6 +56,13 @@ func (p *Pack) Set(prj *project.Project) error {
 			return err
 		}
 		p.Event = append(p.Event, &ev)
+	}
+	for _, v := range prj.View {
+		var view View
+		if err := view.Set(prj, v); err != nil {
+			return err
+		}
+		p.View = append(p.View, &view)
 	}
 	return nil
 }
