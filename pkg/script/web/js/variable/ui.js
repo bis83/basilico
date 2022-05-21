@@ -16,10 +16,11 @@ const BUTTON_STATE_PRESSED = 1;
 const ui_hit_click = (ui, point) => {
     const w = window.innerWidth;
     const h = window.innerHeight;
-    const minX = w/2 + ui.offset[0] - ui.width/2;
-    const maxX = w/2 + ui.offset[0] + ui.width/2;
-    const minY = h/2 + ui.offset[1] - ui.height/2;
-    const maxY = h/2 + ui.offset[1] + ui.height/2;
+    const ratio = window.devicePixelRatio;
+    const minX = w/2 + (ui.offset[0] - ui.width/2) * ratio;
+    const maxX = w/2 + (ui.offset[0] + ui.width/2) * ratio;
+    const minY = h/2 + (ui.offset[1] - ui.height/2) * ratio;
+    const maxY = h/2 + (ui.offset[1] + ui.height/2) * ratio;
     return xy_hit_rect(point, minX, maxX, minY, maxY);
 };
 
@@ -148,8 +149,9 @@ const ui_tick = (view) => {
                 break;
         }
 
-        const m = mat4scale(ui.width/2, ui.height/2, 1);
-        mat4translated(m, ui.offset[0], -ui.offset[1], 0);
+        const ratio = window.devicePixelRatio;
+        const m = mat4scale(ui.width/2 * ratio, ui.height/2 * ratio, 1);
+        mat4translated(m, ui.offset[0] * ratio, -ui.offset[1] * ratio, 0);
         tui.m.set(m);
     }
 };
