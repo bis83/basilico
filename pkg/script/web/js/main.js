@@ -30,6 +30,7 @@ const draw = () => {
             return;
         }
         if(view.draw3d) {
+            draw_skybox();
             draw_stack();
         }
         draw_ui(view);

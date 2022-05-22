@@ -3,6 +3,7 @@ const $temp = {
     view: null,
     slot: null,
     cam: {
+        eye: [0, 0, 0],
         vp: new Float32Array(16),
         ivp: new Float32Array(16),
         o: new Float32Array(16),
@@ -48,4 +49,5 @@ const camera_tick = () => {
     $temp.cam.vp.set(vp);
     $temp.cam.ivp.set(mat4invert(vp));
     $temp.cam.o.set(mat4ortho(ww, wh, 0, 1));
+    $temp.cam.eye = eye;
 };

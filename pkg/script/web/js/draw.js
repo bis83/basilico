@@ -77,3 +77,28 @@ const draw_ui = (view) => {
         gl_drawMesh(mesh);
     }
 };
+
+const draw_skybox = () => {
+    const skybox = $data.index.skybox;
+    if(!skybox) {
+        return;
+    }
+
+    gl_state(false, false);
+    const shader = data_shader(skybox.shader);
+    if(!shader) {
+        return;
+    }
+    $gl.useProgram(shader.prog);
+    $gl.uniformMatrix4fv(shader.u.vp, false, $temp.cam.vp);
+    const m = new Float32Array(16);
+    m.set(mat4translate(...$temp.cam.eye));
+    $gl.uniformMatrix4fv(shader.u.w, false, m);
+
+    const mesh = data_mesh(skybox.mesh);
+    if(!mesh) {
+        return;
+    }
+    $gl.bindVertexArray(mesh.vao);
+    gl_drawMesh(mesh);
+};

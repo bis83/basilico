@@ -6,6 +6,11 @@ import (
 	toml "github.com/pelletier/go-toml/v2"
 )
 
+type SkyBox struct {
+	Mesh   string `toml:"mesh"`
+	Shader string `toml:"shader"`
+}
+
 type Setup struct {
 	Title       string   `toml:"title"`
 	Addr        string   `toml:"addr"`
@@ -14,6 +19,8 @@ type Setup struct {
 	Minify      bool     `toml:"minify"`
 	InitialView string   `toml:"initial-view"`
 	Script      []string `toml:"script"`
+
+	SkyBox *SkyBox `toml:"skybox"`
 }
 
 func (p *Setup) Read(path string) error {
