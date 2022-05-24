@@ -1,17 +1,10 @@
 
 const newgame = () => {
-    $stack.w = 64;
-    $stack.h = 64;
+    $stack.w = 0;
+    $stack.h = 0;
     $stack.a.length = 0;
-    $stack.a.length = $stack.w * $stack.h;
-    for(let i=0; i<$stack.a.length; ++i) {
-        const h = 1 + Math.floor(Math.random() * 10)
-        $stack.a[i] = [];
-        $stack.a[i].push(stack_set(1, h));
-    }
-
-    $pos.x = 0.5;
-    $pos.y = 0.5;
+    $pos.x = 0;
+    $pos.y = 0;
     $pos.ha = 0;
     $pos.va = 0;
 };
