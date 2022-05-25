@@ -4,6 +4,3 @@ logging = false
 assert = false
 minify = true
 initial-view = "main"
-
-[[view]]
-name = "main"

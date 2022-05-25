@@ -1,4 +1,7 @@
 
+[[view]]
+name = "main"
+
 [[stack]]
 id = 1
 mesh = "stack"
