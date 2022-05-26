@@ -8,6 +8,7 @@ type Pack struct {
 	Mesh    []*Mesh    `json:"mesh"`
 	Texture []*Texture `json:"texture"`
 	Shader  []*Shader  `json:"shader"`
+	Draw    []*Draw    `json:"draw"`
 	Stack   []*Stack   `json:"stack"`
 	UI      []*UI      `json:"ui"`
 	Event   []*Event   `json:"event"`
@@ -35,6 +36,13 @@ func (p *Pack) Set(prj *project.Project) error {
 			return err
 		}
 		p.Shader = append(p.Shader, &shader)
+	}
+	for _, v := range prj.Draw {
+		var draw Draw
+		if err := draw.Set(prj, v); err != nil {
+			return err
+		}
+		p.Draw = append(p.Draw, &draw)
 	}
 	for _, v := range prj.Stack {
 		var stack Stack

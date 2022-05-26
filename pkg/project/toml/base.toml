@@ -2,14 +2,26 @@
 [[view]]
 name = "main"
 
-[[stack]]
-id = 1
+[[draw]]
+name = "stack"
 mesh = "stack"
 shader = "mesh_pc"
+camera = "vp"
+depth = true
+
+[[draw]]
+name = "reticle"
+mesh = "reticle"
+shader = "mesh_pc"
+ortho = "vp"
+
+[[stack]]
+id = 1
+draw = "stack"
 height = 1
 
 [[ui]]
-mesh = "reticle"
-shader = "mesh_pc"
+name = "reticle"
+draw = "reticle"
 width = 8
 height = 8

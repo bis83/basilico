@@ -6,9 +6,8 @@ import (
 )
 
 type UI struct {
-	Name   string `json:"name"`
-	Mesh   int    `json:"mesh"`
-	Shader int    `json:"shader"`
+	Name string `json:"name"`
+	Draw int    `json:"draw"`
 
 	Width  int   `json:"width"`
 	Height int   `json:"height"`
@@ -34,15 +33,10 @@ func toInteractNo(s string) int {
 
 func (p *UI) Set(prj *project.Project, ui *project.UI) error {
 	p.Name = ui.Name
-	if _, i := prj.FindMesh(ui.Mesh); i >= 0 {
-		p.Mesh = i
+	if _, i := prj.FindDraw(ui.Draw); i >= 0 {
+		p.Draw = i
 	} else {
-		return fmt.Errorf("Mesh Not Found: %s", ui.Mesh)
-	}
-	if _, i := prj.FindShader(ui.Shader); i >= 0 {
-		p.Shader = i
-	} else {
-		return fmt.Errorf("Shader Not Found: %s", ui.Shader)
+		return fmt.Errorf("Draw Not Found: %s", ui.Draw)
 	}
 
 	p.Width = ui.Width

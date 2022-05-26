@@ -10,6 +10,7 @@ type Project struct {
 	Mesh    []*Mesh
 	Texture []*Texture
 	Shader  []*Shader
+	Draw    []*Draw
 	Stack   []*Stack
 	UI      []*UI
 	Event   []*Event
@@ -29,6 +30,9 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 		}
 		for _, shader := range page.Shader {
 			p.Shader = append(p.Shader, shader)
+		}
+		for _, draw := range page.Draw {
+			p.Draw = append(p.Draw, draw)
 		}
 		for _, stack := range page.Stack {
 			p.Stack = append(p.Stack, stack)
@@ -51,15 +55,6 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 		p.Script = append(p.Script, string(data))
 	}
 	return nil
-}
-
-func (p *Project) FindView(name string) (*View, int) {
-	for i, v := range p.View {
-		if v.Name == name {
-			return v, i
-		}
-	}
-	return nil, -1
 }
 
 func (p *Project) FindMesh(name string) (*Mesh, int) {
@@ -89,6 +84,15 @@ func (p *Project) FindShader(name string) (*Shader, int) {
 	return nil, -1
 }
 
+func (p *Project) FindDraw(name string) (*Draw, int) {
+	for i, v := range p.Draw {
+		if v.Name == name {
+			return v, i
+		}
+	}
+	return nil, -1
+}
+
 func (p *Project) FindUI(name string) (*UI, int) {
 	for i, v := range p.UI {
 		if v.Name == name {
@@ -100,6 +104,15 @@ func (p *Project) FindUI(name string) (*UI, int) {
 
 func (p *Project) FindEvent(name string) (*Event, int) {
 	for i, v := range p.Event {
+		if v.Name == name {
+			return v, i
+		}
+	}
+	return nil, -1
+}
+
+func (p *Project) FindView(name string) (*View, int) {
+	for i, v := range p.View {
 		if v.Name == name {
 			return v, i
 		}

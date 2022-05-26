@@ -8,22 +8,16 @@ import (
 
 type Stack struct {
 	ID     int `json:"id"`
-	Mesh   int `json:"mesh"`
-	Shader int `json:"shader"`
+	Draw   int `json:"draw"`
 	Height int `json:"height"`
 }
 
 func (p *Stack) Set(prj *project.Project, s *project.Stack) error {
 	p.ID = s.ID
-	if _, i := prj.FindMesh(s.Mesh); i >= 0 {
-		p.Mesh = i
+	if _, i := prj.FindDraw(s.Draw); i >= 0 {
+		p.Draw = i
 	} else {
-		return fmt.Errorf("Mesh Not Found: %s", s.Mesh)
-	}
-	if _, i := prj.FindShader(s.Shader); i >= 0 {
-		p.Shader = i
-	} else {
-		return fmt.Errorf("Shader Not Found: %s", s.Shader)
+		return fmt.Errorf("Draw Not Found: %s", s.Draw)
 	}
 	p.Height = s.Height
 	return nil

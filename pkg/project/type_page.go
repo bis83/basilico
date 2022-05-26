@@ -31,17 +31,25 @@ type Shader struct {
 	UniformBlock   []string `toml:"uniform_block"`
 }
 
-type Stack struct {
-	ID     int    `toml:"id"`
+type Draw struct {
+	Name   string `toml:"name"`
 	Mesh   string `toml:"mesh"`
 	Shader string `toml:"shader"`
+	Camera string `toml:"camera"`
+	Ortho  string `toml:"ortho"`
+	Depth  bool   `toml:"depth"`
+	Alpha  bool   `toml:"alpha"`
+}
+
+type Stack struct {
+	ID     int    `toml:"id"`
+	Draw   string `toml:"draw"`
 	Height int    `toml:"height"`
 }
 
 type UI struct {
-	Name   string `toml:"name"`
-	Mesh   string `toml:"mesh"`
-	Shader string `toml:"shader"`
+	Name string `toml:"name"`
+	Draw string `toml:"draw"`
 
 	Width  int   `toml:"width"`
 	Height int   `toml:"height"`
@@ -70,6 +78,7 @@ type Page struct {
 	Mesh    []*Mesh    `toml:"mesh"`
 	Texture []*Texture `toml:"texture"`
 	Shader  []*Shader  `toml:"shader"`
+	Draw    []*Draw    `toml:"draw"`
 	Stack   []*Stack   `toml:"stack"`
 	UI      []*UI      `toml:"ui"`
 	Event   []*Event   `toml:"event"`
