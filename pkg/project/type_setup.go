@@ -14,8 +14,6 @@ type Setup struct {
 	Minify      bool     `toml:"minify"`
 	InitialView string   `toml:"initial-view"`
 	Script      []string `toml:"script"`
-
-	SkyBox string `toml:"skybox"`
 }
 
 func (p *Setup) Read(path string) error {

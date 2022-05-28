@@ -38,6 +38,7 @@ const draw_call = (no, count, func) => {
 };
 
 const draw_stack = () => {
+    const m = new Float32Array(16);
     for(let x=0; x<$stack.w; ++x) {
         for(let y=0; y<$stack.h; ++y) {
             const stack = stack_value(x, y);
@@ -53,7 +54,6 @@ const draw_stack = () => {
                 }
                 draw_call(data.draw, count, (u, i) => {
                     const pos = vec3world(x, y, h);
-                    const m = new Float32Array(16);
                     m.set(mat4translate(pos[0], pos[1], pos[2]));
                     $gl.uniformMatrix4fv(u.w, false, m);
                     h += data.height;
@@ -79,8 +79,8 @@ const draw_ui = (view) => {
     }
 };
 
-const draw_skybox = () => {
-    const no = $data.index.skybox;
+const draw_skybox = (view) => {
+    const no = view.skybox;
     if(no < 0) {
         return;
     }
@@ -89,4 +89,12 @@ const draw_skybox = () => {
         m.set(mat4translate(...$temp.cam.eye));
         $gl.uniformMatrix4fv(u.w, false, m);
     });
+};
+
+const draw_view = (view) => {
+    draw_skybox(view);
+    if(view.draw3d) {
+        draw_stack();
+    }
+    draw_ui(view);
 };

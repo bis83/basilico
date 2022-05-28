@@ -8,6 +8,7 @@ import (
 
 type View struct {
 	Name   string `json:"name"`
+	SkyBox int    `json:"skybox"`
 	Draw3D bool   `json:"draw3d"`
 	UI     []int  `json:"ui"`
 	Event  []int  `json:"event"`
@@ -16,6 +17,11 @@ type View struct {
 func (p *View) Set(prj *project.Project, view *project.View) error {
 	p.Name = view.Name
 	p.Draw3D = view.Draw3D
+	if _, i := prj.FindDraw(view.SkyBox); i >= 0 {
+		p.SkyBox = i
+	} else {
+		p.SkyBox = -1
+	}
 	for _, v := range view.UI {
 		if _, i := prj.FindUI(v); i >= 0 {
 			p.UI = append(p.UI, i)

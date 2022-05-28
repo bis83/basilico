@@ -8,7 +8,6 @@ import (
 
 type Index struct {
 	InitialView int `json:"initial_view"`
-	SkyBox      int `json:"skybox"`
 }
 
 func (p *Index) Set(prj *project.Project) error {
@@ -16,11 +15,6 @@ func (p *Index) Set(prj *project.Project) error {
 		p.InitialView = i
 	} else {
 		return fmt.Errorf("View Not Found: %s", prj.Setup.InitialView)
-	}
-	if _, i := prj.FindDraw(prj.Setup.SkyBox); i >= 0 {
-		p.SkyBox = i
-	} else {
-		p.SkyBox = -1
 	}
 	return nil
 }

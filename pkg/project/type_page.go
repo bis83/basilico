@@ -70,6 +70,7 @@ type Event struct {
 type View struct {
 	Name   string   `toml:"name"`
 	Draw3D bool     `toml:"draw3d"`
+	SkyBox string   `toml:"skybox"`
 	UI     []string `toml:"ui"`
 	Event  []string `toml"event"`
 }

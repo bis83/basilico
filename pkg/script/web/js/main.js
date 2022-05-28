@@ -29,11 +29,7 @@ const draw = () => {
         if(!view) {
             return;
         }
-        if(view.draw3d) {
-            draw_skybox();
-            draw_stack();
-        }
-        draw_ui(view);
+        draw_view(view);
     }
 };
 
