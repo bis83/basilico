@@ -35,8 +35,7 @@ type Draw struct {
 	Name   string `toml:"name"`
 	Mesh   string `toml:"mesh"`
 	Shader string `toml:"shader"`
-	Camera string `toml:"camera"`
-	Ortho  string `toml:"ortho"`
+	Ortho  bool   `toml:"ortho"`
 	Depth  bool   `toml:"depth"`
 	Alpha  bool   `toml:"alpha"`
 }

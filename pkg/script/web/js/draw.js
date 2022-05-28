@@ -24,13 +24,7 @@ const draw_call = (no, count, func) => {
     }
     $gl.bindVertexArray(mesh.vao);
     
-    if(data.camera) {
-        $gl.uniformMatrix4fv(shader.u[data.camera], false, $temp.cam.vp);
-    }
-    if(data.ortho) {
-        $gl.uniformMatrix4fv(shader.u[data.ortho], false, $temp.cam.o);
-    }
-
+    $gl.uniformMatrix4fv(shader.u.vp, false, data.ortho ? $temp.cam.o : $temp.cam.vp);
     for(let i=0; i<count; ++i) {
         func(shader.u, i);
         gl_drawMesh(mesh);
