@@ -39,7 +39,7 @@ func (p *Mesh) Set(mesh *project.Mesh) error {
 	}
 	if len(mesh.Uv) > 0 {
 		p.BufferView = append(p.BufferView, 3, b.Len())
-		nn := toFloat16Array(normalizeVector3(mesh.Uv))
+		nn := toFloat16Array(mesh.Uv)
 		if err := binary.Write(&b, binary.LittleEndian, nn); err != nil {
 			return err
 		}

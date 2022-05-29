@@ -1,4 +1,9 @@
 
+const VS_LAYOUT_POSITION = 0;
+const VS_LAYOUT_NORMAL = 1;
+const VS_LAYOUT_COLOR = 2;
+const VS_LAYOUT_UV = 3;
+
 const decodeMesh = (data) => {
     data.vao = $gl.createVertexArray();
     $gl.bindVertexArray(data.vao);

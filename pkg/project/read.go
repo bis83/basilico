@@ -40,7 +40,8 @@ func listPages(baseDir string) ([]*Page, error) {
 	}
 
 	var tomls = []string{
-		"toml/core.toml",
+		"toml/core_mesh.toml",
+		"toml/core_shader.toml",
 	}
 	for _, file := range tomls {
 		var page Page

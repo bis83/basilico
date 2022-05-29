@@ -25,6 +25,12 @@ const draw_call = (no, count, func) => {
     $gl.bindVertexArray(mesh.vao);
     
     $gl.uniformMatrix4fv(shader.u.vp, false, data.ortho ? $temp.cam.o : $temp.cam.vp);
+
+    const tex = data_texture(data.texture);
+    if(tex) {
+        gl_useTexture(tex, shader.u.tex0);
+    }
+
     for(let i=0; i<count; ++i) {
         func(shader.u, i);
         gl_drawMesh(mesh);

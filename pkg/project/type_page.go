@@ -32,12 +32,13 @@ type Shader struct {
 }
 
 type Draw struct {
-	Name   string `toml:"name"`
-	Mesh   string `toml:"mesh"`
-	Shader string `toml:"shader"`
-	Ortho  bool   `toml:"ortho"`
-	Depth  bool   `toml:"depth"`
-	Alpha  bool   `toml:"alpha"`
+	Name    string `toml:"name"`
+	Mesh    string `toml:"mesh"`
+	Shader  string `toml:"shader"`
+	Texture string `toml:"texture"`
+	Ortho   bool   `toml:"ortho"`
+	Depth   bool   `toml:"depth"`
+	Alpha   bool   `toml:"alpha"`
 }
 
 type Stack struct {
