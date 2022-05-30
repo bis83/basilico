@@ -9,7 +9,7 @@ type Pack struct {
 	Texture []*Texture `json:"texture"`
 	Shader  []*Shader  `json:"shader"`
 	Draw    []*Draw    `json:"draw"`
-	Stack   []*Stack   `json:"stack"`
+	Tile    []*Tile    `json:"tile"`
 	UI      []*UI      `json:"ui"`
 	Event   []*Event   `json:"event"`
 	View    []*View    `json:"view"`
@@ -44,12 +44,12 @@ func (p *Pack) Set(prj *project.Project) error {
 		}
 		p.Draw = append(p.Draw, &draw)
 	}
-	for _, v := range prj.Stack {
-		var stack Stack
-		if err := stack.Set(prj, v); err != nil {
+	for _, v := range prj.Tile {
+		var tile Tile
+		if err := tile.Set(prj, v); err != nil {
 			return err
 		}
-		p.Stack = append(p.Stack, &stack)
+		p.Tile = append(p.Tile, &tile)
 	}
 	for _, v := range prj.UI {
 		var ui UI

@@ -24,7 +24,7 @@ var scripts = []string{
 	// variable
 	"web/js/variable/temp.js",
 	"web/js/variable/ui.js",
-	"web/js/variable/stack.js",
+	"web/js/variable/tile.js",
 	"web/js/variable/pos.js",
 	"web/js/variable/event.js",
 	"web/js/variable/savegame.js",

@@ -47,7 +47,7 @@ type Draw struct {
 	Alpha   bool   `toml:"alpha"`
 }
 
-type Stack struct {
+type Tile struct {
 	ID     int    `toml:"id"`
 	Draw   string `toml:"draw"`
 	Height int    `toml:"height"`
@@ -86,7 +86,7 @@ type Page struct {
 	Texture []*Texture `toml:"texture"`
 	Shader  []*Shader  `toml:"shader"`
 	Draw    []*Draw    `toml:"draw"`
-	Stack   []*Stack   `toml:"stack"`
+	Tile    []*Tile    `toml:"tile"`
 	UI      []*UI      `toml:"ui"`
 	Event   []*Event   `toml:"event"`
 	View    []*View    `toml:"view"`

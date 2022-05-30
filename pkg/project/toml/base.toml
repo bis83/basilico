@@ -3,21 +3,10 @@
 name = "main"
 
 [[draw]]
-name = "stack"
-mesh = "stack"
-shader = "mesh_pc"
-depth = true
-
-[[draw]]
 name = "reticle"
 mesh = "reticle"
 shader = "mesh_pc"
 ortho = true
-
-[[stack]]
-id = 1
-draw = "stack"
-height = 1
 
 [[ui]]
 name = "reticle"

@@ -6,16 +6,16 @@ const pos_adjust = (x, y, dx, dy) => {
     const ix = Math.floor(x);
     const iy = Math.floor(y);
     const r = 0.25;
-    if(stack_is_noentry(ix, iy, -1, 0)) {
+    if(tile_is_noentry(ix, iy, -1, 0)) {
         xx = Math.max(xx, ix+r);
     }
-    if(stack_is_noentry(ix, iy, +1, 0)) {
+    if(tile_is_noentry(ix, iy, +1, 0)) {
         xx = Math.min(xx, ix-r+1);
     }
-    if(stack_is_noentry(ix, iy, 0, -1)) {
+    if(tile_is_noentry(ix, iy, 0, -1)) {
         yy = Math.max(yy, iy+r);
     }
-    if(stack_is_noentry(ix, iy, 0, +1)) {
+    if(tile_is_noentry(ix, iy, 0, +1)) {
         yy = Math.min(yy, iy-r+1);
     }
 
@@ -49,7 +49,7 @@ const pos_fps_movement = (lstick, rstick) => {
         [$pos.x, $pos.y] = pos_adjust($pos.x, $pos.y, 0, 0);
     }
 
-    const h = stack_height($pos.x, $pos.y);
+    const h = tile_height($pos.x, $pos.y);
     if(Math.abs(h-$pos.h) <= 2) {
         const vh = h - $pos.h;
         $pos.h += 10 * dt * vh;

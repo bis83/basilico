@@ -50,8 +50,8 @@ const data_shader = (no) => {
 const data_draw = (no) => {
     return $data.pack[0] && $data.pack[0].draw[no];
 };
-const data_stack = (id) => {
-    return $data.pack[0] && $data.pack[0].stack.find(obj => obj.id === id);
+const data_tile = (id) => {
+    return $data.pack[0] && $data.pack[0].tile.find(obj => obj.id === id);
 };
 const data_ui = (no) => {
     return $data.pack[0] && $data.pack[0].ui[no];

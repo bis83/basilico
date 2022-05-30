@@ -37,17 +37,17 @@ const draw_call = (no, count, func) => {
     }
 };
 
-const draw_stack = () => {
-    for(let x=0; x<$stack.w; ++x) {
-        for(let y=0; y<$stack.h; ++y) {
-            const stack = stack_value(x, y);
-            if(!stack) {
+const draw_tile = () => {
+    for(let x=0; x<$tile.w; ++x) {
+        for(let y=0; y<$tile.h; ++y) {
+            const tile = tile_value(x, y);
+            if(!tile) {
                 continue;
             }
             let h=0;
-            for(const s of stack) {
-                const [id, count] = stack_get(s);
-                const data = data_stack(id);
+            for(const s of tile) {
+                const [id, count] = tile_get(s);
+                const data = data_tile(id);
                 if(!data) {
                     continue;
                 }
@@ -92,7 +92,7 @@ const draw_skybox = (view) => {
 const draw_view = (view) => {
     draw_skybox(view);
     if(view.draw3d) {
-        draw_stack();
+        draw_tile();
     }
     draw_ui(view);
 };

@@ -1,8 +1,8 @@
 package file
 
 import (
-	"os"
 	"io"
+	"os"
 )
 
 func Exists(path string) bool {
@@ -46,19 +46,19 @@ func CopyFile(src string, dst string) error {
 	s, err = os.Open(src)
 	if err != nil {
 		return err
-    }
+	}
 	defer s.Close()
-	
+
 	var d *os.File
 	d, err = os.Create(dst)
-    if err != nil {
+	if err != nil {
 		return err
-    }
+	}
 	defer d.Close()
 
 	_, err = io.Copy(d, s)
 	if err != nil {
 		return err
-    }
+	}
 	return nil
 }

@@ -6,13 +6,13 @@ import (
 	project "github.com/bis83/basilico/pkg/project"
 )
 
-type Stack struct {
+type Tile struct {
 	ID     int `json:"id"`
 	Draw   int `json:"draw"`
 	Height int `json:"height"`
 }
 
-func (p *Stack) Set(prj *project.Project, s *project.Stack) error {
+func (p *Tile) Set(prj *project.Project, s *project.Tile) error {
 	p.ID = s.ID
 	if _, i := prj.FindDraw(s.Draw); i >= 0 {
 		p.Draw = i
