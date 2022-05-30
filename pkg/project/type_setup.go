@@ -1,6 +1,7 @@
 package project
 
 import (
+	"bytes"
 	"os"
 
 	toml "github.com/pelletier/go-toml/v2"
@@ -23,7 +24,10 @@ func (p *Setup) Read(path string) error {
 	if err != nil {
 		return err
 	}
-	if err = toml.Unmarshal(data, p); err != nil {
+	r := bytes.NewReader(data)
+	d := toml.NewDecoder(r)
+	d.DisallowUnknownFields()
+	if err := d.Decode(p); err != nil {
 		return err
 	}
 	return nil
