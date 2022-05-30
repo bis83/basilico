@@ -59,6 +59,19 @@ func buildData(prj *project.Project, baseDir string) error {
 	return nil
 }
 
+func copyImage(prj *project.Project, srcDir string, dstDir string) error {
+	for _, v := range prj.Texture {
+		if len(v.Source) <= 0 {
+			continue
+		}
+		err := file.CopyFile(filepath.Join(srcDir, v.Source), filepath.Join(dstDir, v.Source))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func Build(prj *project.Project, baseDir string) error {
 	var err error
 	err = Clean(baseDir)
@@ -83,6 +96,16 @@ func Build(prj *project.Project, baseDir string) error {
 		return err
 	}
 	err = buildData(prj, path)
+	if err != nil {
+		return err
+	}
+
+	path = filepath.Join(baseDir, "dist", "img")
+	err = file.MakeDir(path)
+	if err != nil {
+		return err
+	}
+	err = copyImage(prj, filepath.Join(baseDir, "img"), filepath.Join(baseDir, "dist", "img"))
 	if err != nil {
 		return err
 	}

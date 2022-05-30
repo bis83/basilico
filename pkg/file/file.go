@@ -2,6 +2,7 @@ package file
 
 import (
 	"os"
+	"io"
 )
 
 func Exists(path string) bool {
@@ -35,5 +36,29 @@ func WriteFile(path string, data []byte) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func CopyFile(src string, dst string) error {
+	var err error
+
+	var s *os.File
+	s, err = os.Open(src)
+	if err != nil {
+		return err
+    }
+	defer s.Close()
+	
+	var d *os.File
+	d, err = os.Create(dst)
+    if err != nil {
+		return err
+    }
+	defer d.Close()
+
+	_, err = io.Copy(d, s)
+	if err != nil {
+		return err
+    }
 	return nil
 }

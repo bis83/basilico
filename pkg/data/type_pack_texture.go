@@ -4,15 +4,25 @@ import (
 	project "github.com/bis83/basilico/pkg/project"
 )
 
-type Texture struct {
+type TextureCanvas struct {
 	Text   string `json:"text"`
 	Width  int    `json:"width"`
 	Height int    `json:"height"`
 }
 
+type Texture struct {
+	Source string         `json:"src"`
+	Canvas *TextureCanvas `json:"cvs"`
+}
+
 func (p *Texture) Set(tex *project.Texture) error {
-	p.Text = tex.Text
-	p.Width = tex.Width
-	p.Height = tex.Height
+	p.Source = tex.Source
+	if tex.Canvas != nil {
+		p.Canvas = &TextureCanvas{
+			Text:   tex.Canvas.Text,
+			Width:  tex.Canvas.Width,
+			Height: tex.Canvas.Height,
+		}
+	}
 	return nil
 }

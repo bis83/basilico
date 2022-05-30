@@ -17,11 +17,16 @@ type Mesh struct {
 	IsLine   bool      `toml:"is_line"`
 }
 
-type Texture struct {
-	Name   string `toml:"name"`
+type TextureCanvas struct {
 	Text   string `toml:"text"`
 	Width  int    `toml:"width"`
 	Height int    `toml:"height"`
+}
+
+type Texture struct {
+	Name   string         `toml:"name"`
+	Source string         `toml:"src"`
+	Canvas *TextureCanvas `toml:"canvas"`
 }
 
 type Shader struct {
