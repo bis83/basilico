@@ -4,10 +4,6 @@ const $data = {
     pack: [],
 };
 
-const data_loaded = () => {
-    return ($data.index != null) && ($data.pack.length > 0);
-};
-
 const data_loadIndex = () => {
     const path = "data/index.json";
     fetch(path).then(res => res.json()).then((json) => {
@@ -58,4 +54,17 @@ const data_ui = (no) => {
 };
 const data_event = (no) => {
     return $data.pack[0] && $data.pack[0].event[no];
+};
+
+const data_loaded = () => {
+    if ($data.index === null) {
+        return false;
+    }
+    if ($data.pack.length <= 0) {
+        return false;
+    }
+    if ($imageLoading > 0) {
+        return false;
+    }
+    return true;
 };
