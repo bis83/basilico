@@ -24,10 +24,10 @@ type TextureCanvas struct {
 }
 
 type Texture struct {
-	Name          string         `toml:"name"`
-	Source        string         `toml:"src"`
-	Canvas        *TextureCanvas `toml:"canvas"`
-	PointSampling bool           `toml:"point-sampling"`
+	Name    string         `toml:"name"`
+	Source  string         `toml:"src"`
+	Canvas  *TextureCanvas `toml:"canvas"`
+	Sampler int            `toml:"sampler"`
 }
 
 type Shader struct {

@@ -11,9 +11,9 @@ type TextureCanvas struct {
 }
 
 type Texture struct {
-	Source        string         `json:"src"`
-	Canvas        *TextureCanvas `json:"cvs"`
-	PointSampling bool           `json:"ps"`
+	Source  string         `json:"src"`
+	Canvas  *TextureCanvas `json:"cvs"`
+	Sampler int            `json:"s"`
 }
 
 func (p *Texture) Set(tex *project.Texture) error {
@@ -25,6 +25,6 @@ func (p *Texture) Set(tex *project.Texture) error {
 			Height: tex.Canvas.Height,
 		}
 	}
-	p.PointSampling = tex.PointSampling
+	p.Sampler = tex.Sampler
 	return nil
 }

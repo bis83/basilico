@@ -1,11 +1,12 @@
 
-const gl_createGLTexture2D = (img, ps) => {
+const gl_createGLTexture2D = (img, sampler) => {
     let texture = $gl.createTexture();
     $gl.bindTexture($gl.TEXTURE_2D, texture);
-    if(ps) {
+    if(sampler == 0) {
         $gl.texParameteri($gl.TEXTURE_2D, $gl.TEXTURE_MAG_FILTER, $gl.NEAREST);
         $gl.texParameteri($gl.TEXTURE_2D, $gl.TEXTURE_MIN_FILTER, $gl.NEAREST);
-    } else {
+    }
+    if(sampler == 1) {
         $gl.texParameteri($gl.TEXTURE_2D, $gl.TEXTURE_MAG_FILTER, $gl.LINEAR);
         $gl.texParameteri($gl.TEXTURE_2D, $gl.TEXTURE_MIN_FILTER, $gl.LINEAR);        
     }
