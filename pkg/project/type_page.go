@@ -2,6 +2,7 @@ package project
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 
 	toml "github.com/pelletier/go-toml/v2"
@@ -102,7 +103,7 @@ func (p *Page) ReadFS(path string) error {
 	d := toml.NewDecoder(r)
 	d.DisallowUnknownFields()
 	if err := d.Decode(p); err != nil {
-		return err
+		return fmt.Errorf("decode %s: %w", path, err)
 	}
 	return nil
 }
@@ -116,7 +117,7 @@ func (p *Page) ReadOS(path string) error {
 	d := toml.NewDecoder(r)
 	d.DisallowUnknownFields()
 	if err := d.Decode(p); err != nil {
-		return err
+		return fmt.Errorf("decode %s: %w", path, err)
 	}
 	return nil
 }
