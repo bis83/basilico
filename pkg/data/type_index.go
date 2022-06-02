@@ -11,9 +11,8 @@ type Index struct {
 }
 
 func (p *Index) Set(prj *project.Project) error {
-	if _, i := prj.FindView(prj.Setup.InitialView); i >= 0 {
-		p.InitialView = i
-	} else {
+	p.InitialView = prj.FindView(prj.Setup.InitialView)
+	if p.InitialView < 0 {
 		return fmt.Errorf("View Not Found: %s", prj.Setup.InitialView)
 	}
 	return nil

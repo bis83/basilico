@@ -17,24 +17,20 @@ type View struct {
 func (p *View) Set(prj *project.Project, view *project.View) error {
 	p.Name = view.Name
 	p.Draw3D = view.Draw3D
-	if _, i := prj.FindDraw(view.SkyBox); i >= 0 {
-		p.SkyBox = i
-	} else {
-		p.SkyBox = -1
-	}
+	p.SkyBox = prj.FindDraw(view.SkyBox)
 	for _, v := range view.UI {
-		if _, i := prj.FindUI(v); i >= 0 {
-			p.UI = append(p.UI, i)
-		} else {
+		i := prj.FindUI(v)
+		if i < 0 {
 			return fmt.Errorf("UI Not Found: %s", v)
 		}
+		p.UI = append(p.UI, i)		
 	}
 	for _, v := range view.Event {
-		if _, i := prj.FindEvent(v); i >= 0 {
-			p.Event = append(p.Event, i)
-		} else {
+		i := prj.FindEvent(v)
+		if i < 0 {
 			return fmt.Errorf("Event Not Found: %s", v)
 		}
+		p.Event = append(p.Event, i)
 	}
 	return nil
 }

@@ -14,9 +14,8 @@ type Tile struct {
 
 func (p *Tile) Set(prj *project.Project, s *project.Tile) error {
 	p.ID = s.ID
-	if _, i := prj.FindDraw(s.Draw); i >= 0 {
-		p.Draw = i
-	} else {
+	p.Draw = prj.FindDraw(s.Draw)
+	if p.Draw < 0 {
 		return fmt.Errorf("Draw Not Found: %s", s.Draw)
 	}
 	p.Height = s.Height

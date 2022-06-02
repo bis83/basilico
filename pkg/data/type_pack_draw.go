@@ -16,21 +16,15 @@ type Draw struct {
 }
 
 func (p *Draw) Set(prj *project.Project, s *project.Draw) error {
-	if _, i := prj.FindMesh(s.Mesh); i >= 0 {
-		p.Mesh = i
-	} else {
+	p.Mesh = prj.FindMesh(s.Mesh)
+	if p.Mesh < 0 {
 		return fmt.Errorf("Mesh Not Found: %s", s.Mesh)
 	}
-	if _, i := prj.FindShader(s.Shader); i >= 0 {
-		p.Shader = i
-	} else {
+	p.Shader = prj.FindShader(s.Shader)
+	if p.Shader < 0 {
 		return fmt.Errorf("Shader Not Found: %s", s.Shader)
 	}
-	if _, i := prj.FindTexture(s.Texture); i >= 0 {
-		p.Texture = i
-	} else {
-		p.Texture = -1
-	}
+	p.Texture = prj.FindTexture(s.Texture)
 	p.Depth = s.Depth
 	p.Alpha = s.Alpha
 	p.Ortho = s.Ortho

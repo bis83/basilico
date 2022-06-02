@@ -33,9 +33,8 @@ func toInteractNo(s string) int {
 
 func (p *UI) Set(prj *project.Project, ui *project.UI) error {
 	p.Name = ui.Name
-	if _, i := prj.FindDraw(ui.Draw); i >= 0 {
-		p.Draw = i
-	} else {
+	p.Draw = prj.FindDraw(ui.Draw)
+	if p.Draw < 0 {
 		return fmt.Errorf("Draw Not Found: %s", ui.Draw)
 	}
 

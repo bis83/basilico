@@ -57,65 +57,65 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 	return nil
 }
 
-func (p *Project) FindMesh(name string) (*Mesh, int) {
+func (p *Project) FindMesh(name string) int {
 	for i, v := range p.Mesh {
 		if v.Name == name {
-			return v, i
+			return i
 		}
 	}
-	return nil, -1
+	return -1
 }
 
-func (p *Project) FindTexture(name string) (*Texture, int) {
+func (p *Project) FindTexture(name string) int {
 	for i, v := range p.Texture {
 		if v.Name == name {
-			return v, i
+			return i
 		}
 	}
-	return nil, -1
+	return -1
 }
 
-func (p *Project) FindShader(name string) (*Shader, int) {
+func (p *Project) FindShader(name string) int {
 	for i, v := range p.Shader {
 		if v.Name == name {
-			return v, i
+			return i
 		}
 	}
-	return nil, -1
+	return -1
 }
 
-func (p *Project) FindDraw(name string) (*Draw, int) {
+func (p *Project) FindDraw(name string) int {
 	for i, v := range p.Draw {
 		if v.Name == name {
-			return v, i
+			return i
 		}
 	}
-	return nil, -1
+	return -1
 }
 
-func (p *Project) FindUI(name string) (*UI, int) {
+func (p *Project) FindUI(name string) int {
 	for i, v := range p.UI {
 		if v.Name == name {
-			return v, i
+			return i
 		}
 	}
-	return nil, -1
+	return -1
 }
 
-func (p *Project) FindEvent(name string) (*Event, int) {
+func (p *Project) FindEvent(name string) int {
 	for i, v := range p.Event {
 		if v.Name == name {
-			return v, i
+			return i
 		}
 	}
-	return nil, -1
+	return -1
 }
 
-func (p *Project) FindView(name string) (*View, int) {
+func (p *Project) FindView(name string) int {
 	for i, v := range p.View {
 		if v.Name == name {
-			return v, i
+			return i
 		}
 	}
-	return nil, -1
+	return -1
 }
