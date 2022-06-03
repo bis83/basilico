@@ -27,7 +27,9 @@ var scripts = []string{
 	"web/js/variable/tile.js",
 	"web/js/variable/pos.js",
 	"web/js/variable/event.js",
-	"web/js/variable/savegame.js",
+
+	// savegame
+	"web/js/savegame.js",
 
 	// main
 	"web/js/draw.js",

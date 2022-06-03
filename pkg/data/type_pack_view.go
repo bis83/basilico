@@ -23,7 +23,7 @@ func (p *View) Set(prj *project.Project, view *project.View) error {
 		if i < 0 {
 			return fmt.Errorf("UI Not Found: %s", v)
 		}
-		p.UI = append(p.UI, i)		
+		p.UI = append(p.UI, i)
 	}
 	for _, v := range view.Event {
 		i := prj.FindEvent(v)
