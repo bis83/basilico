@@ -28,6 +28,7 @@ const data_loadPack = (no) => {
 };
 
 const data_view = (no) => {
+    if(no < 0) return null;
     return $data.pack[0] && $data.pack[0].view[no];
 };
 const data_view_index = (name) => {
@@ -35,25 +36,32 @@ const data_view_index = (name) => {
 };
 
 const data_mesh = (no) => {
+    if(no < 0) return null;
     return $data.pack[0] && $data.pack[0].mesh[no];
 };
 const data_texture = (no) => {
+    if(no < 0) return null;
     return $data.pack[0] && $data.pack[0].texture[no];
 };
 const data_shader = (no) => {
+    if(no < 0) return null;
     return $data.pack[0] && $data.pack[0].shader[no];
 };
 const data_draw = (no) => {
+    if(no < 0) return null;
     return $data.pack[0] && $data.pack[0].draw[no];
 };
-const data_tile = (id) => {
-    return $data.pack[0] && $data.pack[0].tile.find(obj => obj.id === id);
-};
 const data_ui = (no) => {
+    if(no < 0) return null;
     return $data.pack[0] && $data.pack[0].ui[no];
 };
 const data_event = (no) => {
+    if(no < 0) return null;
     return $data.pack[0] && $data.pack[0].event[no];
+};
+
+const data_tile_by_id = (id) => {
+    return $data.pack[0] && $data.pack[0].tile.find(obj => obj.id === id);
 };
 
 const data_loaded = () => {

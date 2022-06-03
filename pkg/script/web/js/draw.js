@@ -47,7 +47,7 @@ const draw_tile = () => {
             let h=0;
             for(const s of tile) {
                 const [id, count] = tile_get(s);
-                const data = data_tile(id);
+                const data = data_tile_by_id(id);
                 if(!data) {
                     continue;
                 }
@@ -79,11 +79,7 @@ const draw_ui = (view) => {
 };
 
 const draw_skybox = (view) => {
-    const no = view.skybox;
-    if(no < 0) {
-        return;
-    }
-    draw_call(no, 1, (u, i) => {
+    draw_call(view.skybox, 1, (u, i) => {
         $temp.m.set(mat4translate(...$temp.cam.eye));
         $gl.uniformMatrix4fv(u.w, false, $temp.m);
     });

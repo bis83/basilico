@@ -36,7 +36,7 @@ const tile_height = (x, y) => {
     let h = 0;
     for(const s of tile) {
         const [id, count] = tile_get(s);
-        const data = data_tile(id);
+        const data = data_tile_by_id(id);
         if(!data) {
             continue;
         }
