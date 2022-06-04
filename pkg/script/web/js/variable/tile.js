@@ -45,7 +45,18 @@ const tile_height = (x, y) => {
     return h;
 };
 
+const tile_is_empty = (x, y) => {
+    const tile = tile_value(x, y);
+    if(!tile) {
+        return true;
+    }
+    return tile.length === 0;
+}
+
 const tile_is_noentry = (x, y, dx, dy) => {
+    if(tile_is_empty(x+dx, y+dy)) {
+        return true;
+    }
     const h0 = tile_height(x, y);
     const h1 = tile_height(x+dx, y+dy);
     if(Math.abs(h0-h1) > 1) {
