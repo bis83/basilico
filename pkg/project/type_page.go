@@ -51,9 +51,10 @@ type Draw struct {
 
 type Tile struct {
 	Name   string `toml:"name"`
-	ID     int    `toml:"id"`
 	Draw   string `toml:"draw"`
 	Height int    `toml:"height"`
+
+	SaveID int `toml:"save-id"`
 }
 
 type UI struct {

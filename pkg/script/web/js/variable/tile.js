@@ -5,15 +5,11 @@ const $tile = {
     a: [],
 };
 
-const tile_set = (id, count) => {
-    return (id << 0) | (count << 16);
+const tile_encode = (data) => {
+    return data;
 };
-
-const tile_get = (value) => {
-    return [
-        (value >> 0) & 0xFFFF,
-        (value >> 16) & 0xFFFF
-    ];
+const tile_decode = (data) => {
+    return data;
 };
 
 const tile_value = (x, y) => {
@@ -35,12 +31,11 @@ const tile_height = (x, y) => {
     }
     let h = 0;
     for(const s of tile) {
-        const [id, count] = tile_get(s);
-        const data = data_tile_by_id(id);
+        const data = data_tile(s.no);
         if(!data) {
             continue;
         }
-        h += count * data.height;
+        h += s.count * data.height;
     }
     return h;
 };

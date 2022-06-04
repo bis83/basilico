@@ -22,7 +22,7 @@ const loadgame = () => {
         Object.assign($pos, data.pos);
     }
     if(data.tile) {
-        Object.assign($tile, data.tile);
+        Object.assign($tile, tile_decode(data.tile));
     }
     return true;
 };
@@ -34,6 +34,6 @@ const savegame = () => {
 
     const data = {};
     data.pos = $pos;
-    data.tile = $tile;
+    data.tile = tile_encode($tile);
     localstorage_set($temp.slot, data);
 };

@@ -61,6 +61,9 @@ const data_shader = (no) => {
 const data_draw = (no) => {
     return data_lookup("draw", no);
 };
+const data_tile = (no) => {
+    return data_lookup("tile", no);
+};
 const data_ui = (no) => {
     return data_lookup("ui", no);
 };
@@ -71,18 +74,11 @@ const data_event = (no) => {
 const data_view_index = (name) => {
     return $data.index.view.findIndex(o => o.n === name);
 };
+const data_tile_index = (name) => {
+    return $data.index.tile.findIndex(o => o.n === name);
+};
 const data_ui_index = (name) => {
     return $data.index.ui.findIndex(o => o.n === name);
-};
-
-const data_tile_by_id = (id) => {
-    for(const pack of $data.pack) {
-        const obj = pack.tile.find(obj => obj.id === id);
-        if(obj) {
-            return obj;
-        }
-    }
-    return null;
 };
 
 const data_loaded = () => {

@@ -46,12 +46,11 @@ const draw_tile = () => {
             }
             let h=0;
             for(const s of tile) {
-                const [id, count] = tile_get(s);
-                const data = data_tile_by_id(id);
+                const data = data_tile(s.no);
                 if(!data) {
                     continue;
                 }
-                draw_call(data.draw, count, (u, i) => {
+                draw_call(data.draw, s.count, (u, i) => {
                     const pos = vec3world(x, y, h);
                     $temp.m.set(mat4translate(pos[0], pos[1], pos[2]));
                     $gl.uniformMatrix4fv(u.w, false, $temp.m);
