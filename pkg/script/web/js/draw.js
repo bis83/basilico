@@ -68,7 +68,7 @@ const draw_ui = (view) => {
         if(!ui) {
             continue;
         }
-        const tui = $ui[ui.name];
+        const tui = $ui[no];
         if(!tui) {
             continue;
         }

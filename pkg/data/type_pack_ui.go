@@ -6,8 +6,7 @@ import (
 )
 
 type UI struct {
-	Name string `json:"name"`
-	Draw int    `json:"draw"`
+	Draw int `json:"draw"`
 
 	Width  int   `json:"width"`
 	Height int   `json:"height"`
@@ -32,7 +31,6 @@ func toInteractNo(s string) int {
 }
 
 func (p *UI) Set(prj *project.Project, ui *project.UI) error {
-	p.Name = ui.Name
 	p.Draw = prj.FindDraw(ui.Draw)
 	if p.Draw < 0 {
 		return fmt.Errorf("Draw Not Found: %s", ui.Draw)

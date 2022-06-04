@@ -7,15 +7,13 @@ import (
 )
 
 type View struct {
-	Name   string `json:"name"`
-	SkyBox int    `json:"skybox"`
-	Draw3D bool   `json:"draw3d"`
-	UI     []int  `json:"ui"`
-	Event  []int  `json:"event"`
+	SkyBox int   `json:"skybox"`
+	Draw3D bool  `json:"draw3d"`
+	UI     []int `json:"ui"`
+	Event  []int `json:"event"`
 }
 
 func (p *View) Set(prj *project.Project, view *project.View) error {
-	p.Name = view.Name
 	p.Draw3D = view.Draw3D
 	p.SkyBox = prj.FindDraw(view.SkyBox)
 	for _, v := range view.UI {

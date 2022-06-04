@@ -27,41 +27,62 @@ const data_loadPack = (no) => {
     });
 };
 
-const data_view = (no) => {
-    if(no < 0) return null;
-    return $data.pack[0] && $data.pack[0].view[no];
-};
-const data_view_index = (name) => {
-    return $data.pack[0] && $data.pack[0].view.findIndex(obj => obj.name === name);
+const data_lookup = (type, no) => {
+    if(no < 0) {
+        return null;
+    }
+    const table = $data.index[type];
+    if(!table) {
+        return null;
+    }
+    const entry = table[no];
+    if(!entry) {
+        return null;
+    }
+    const pack = $data.pack[entry.p];
+    if(!pack) {
+        return null;
+    }
+    return pack[type][entry.i];
 };
 
+const data_view = (no) => {
+    return data_lookup("view", no);
+};
 const data_mesh = (no) => {
-    if(no < 0) return null;
-    return $data.pack[0] && $data.pack[0].mesh[no];
+    return data_lookup("mesh", no);
 };
 const data_texture = (no) => {
-    if(no < 0) return null;
-    return $data.pack[0] && $data.pack[0].texture[no];
+    return data_lookup("texture", no);
 };
 const data_shader = (no) => {
-    if(no < 0) return null;
-    return $data.pack[0] && $data.pack[0].shader[no];
+    return data_lookup("shader", no);
 };
 const data_draw = (no) => {
-    if(no < 0) return null;
-    return $data.pack[0] && $data.pack[0].draw[no];
+    return data_lookup("draw", no);
 };
 const data_ui = (no) => {
-    if(no < 0) return null;
-    return $data.pack[0] && $data.pack[0].ui[no];
+    return data_lookup("ui", no);
 };
 const data_event = (no) => {
-    if(no < 0) return null;
-    return $data.pack[0] && $data.pack[0].event[no];
+    return data_lookup("event", no);
+};
+
+const data_view_index = (name) => {
+    return $data.index.view.findIndex(o => o.n === name);
+};
+const data_ui_index = (name) => {
+    return $data.index.ui.findIndex(o => o.n === name);
 };
 
 const data_tile_by_id = (id) => {
-    return $data.pack[0] && $data.pack[0].tile.find(obj => obj.id === id);
+    for(const pack of $data.pack) {
+        const obj = pack.tile.find(obj => obj.id === id);
+        if(obj) {
+            return obj;
+        }
+    }
+    return null;
 };
 
 const data_loaded = () => {

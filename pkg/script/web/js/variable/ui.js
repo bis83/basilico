@@ -1,8 +1,12 @@
 
-const $ui = {};
+const $ui = [];
 
 const ui_value = (name) => {
-    const ui = $ui[name];
+    const no = data_ui_index(name);
+    if(no < 0) {
+        return null;
+    }
+    const ui = $ui[no];
     if(!ui) {
         return null;
     }
@@ -118,22 +122,24 @@ const ui_tick_right_stick = (tui, ui) => {
 }
 
 const ui_tick = (view) => {
-    for(const key in $ui) {
-        $ui[key].value = null;
+    for(const tui of $ui) {
+        if(tui) {
+            tui.value = null;
+        }
     }
     for(let no of view.ui) {
         const ui = data_ui(no);
         if(!ui) {
             continue;
         }
-        if(!$ui[ui.name]) {
-            $ui[ui.name] = {
+        if(!$ui[no]) {
+            $ui[no] = {
                 m: new Float32Array(16),
                 value: null,
                 state: UI_STATE_RESET,
             };
         }
-        const tui = $ui[ui.name];
+        const tui = $ui[no];
         
         switch(ui.interact) {
             case 1: // button
