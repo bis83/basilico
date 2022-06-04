@@ -9,7 +9,6 @@ import (
 type Tile struct {
 	Draw   int `json:"draw"`
 	Height int `json:"height"`
-	SaveID int `json:"sid"`
 }
 
 func (p *Tile) Set(prj *project.Project, s *project.Tile) error {
@@ -18,6 +17,5 @@ func (p *Tile) Set(prj *project.Project, s *project.Tile) error {
 		return fmt.Errorf("Draw Not Found: %s", s.Draw)
 	}
 	p.Height = s.Height
-	p.SaveID = s.SaveID
 	return nil
 }

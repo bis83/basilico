@@ -7,9 +7,10 @@ import (
 )
 
 type Entry struct {
-	Name  string `json:"n"`
-	Pack  int    `json:"p"`
-	Index int    `json:"i"`
+	Name   string `json:"n"`
+	Pack   int    `json:"p"`
+	Index  int    `json:"i"`
+	SaveID int    `json:"sid,omitempty"`
 }
 
 type Index struct {
@@ -42,7 +43,7 @@ func (p *Index) Set(prj *project.Project) error {
 		p.Draw = append(p.Draw, &Entry{Name: v.Name, Pack: 0, Index: i})
 	}
 	for i, v := range prj.Tile {
-		p.Tile = append(p.Tile, &Entry{Name: v.Name, Pack: 0, Index: i})
+		p.Tile = append(p.Tile, &Entry{Name: v.Name, Pack: 0, Index: i, SaveID: v.SaveID})
 	}
 	for i, v := range prj.UI {
 		p.UI = append(p.UI, &Entry{Name: v.Name, Pack: 0, Index: i})
