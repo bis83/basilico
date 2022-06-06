@@ -3,49 +3,48 @@ const $tile = {
     w: 0,
     h: 0,
     a: [],
+    b: [],
 };
 
-const tile_encode = (data) => {
-    return data;
-};
-const tile_decode = (data) => {
-    return data;
-};
-
-const tile_value = (x, y) => {
+const tile_index = (x, y) => {
     x = Math.floor(x);
     y = Math.floor(y);
     if(x < 0 || $tile.w <= x) {
-        return null;
+        return -1;
     }
     if(y < 0 || $tile.h <= y) {
-        return null;
+        return -1;
     }
-    return $tile.a[x + y * $tile.h];
+    return x + y * $tile.h;
+};
+const tile_base = (x, y) => {
+    return $tile.a[tile_index(x, y)];
+};
+const tile_wall = (x, y) => {
+    return $tile.b[tile_index(x, y)];
 };
 
 const tile_height = (x, y) => {
-    const tile = tile_value(x, y);
-    if(!tile) {
-        return 0;
-    }
     let h = 0;
-    for(const s of tile) {
-        const data = data_tile(s.no);
-        if(!data) {
-            continue;
+    const a = tile_base(x, y);
+    if(a) {
+        const data = data_tile(a.no);
+        if(data) {
+            h += data.height * a.count;
         }
-        h += s.count * data.height;
+    }
+    const b = tile_wall(x, y);
+    if(b) {
+        const data = data_tile(b.no);
+        if(data) {
+            h += data.height;
+        }
     }
     return h;
 };
 
 const tile_is_empty = (x, y) => {
-    const tile = tile_value(x, y);
-    if(!tile) {
-        return true;
-    }
-    return tile.length === 0;
+    return tile_base(x, y) == null;
 }
 
 const tile_is_noentry = (x, y, dx, dy) => {
@@ -58,4 +57,27 @@ const tile_is_noentry = (x, y, dx, dy) => {
         return true;
     }
     return false;
+};
+
+const tile_init_empty = (w, h) => {
+    $tile.w = w;
+    $tile.h = h;
+    $tile.a = [];
+    $tile.a.length = w*h;
+    $tile.b = [];
+    $tile.b.length = w*h;
+};
+const tile_base_set = (x, y, no) => {
+    const i = tile_index(x, y);
+    if(i < 0) {
+        return;
+    }
+    $tile.a[i] = {no: no, count: 1};
+};
+
+const tile_encode = (data) => {
+    return data;
+};
+const tile_decode = (data) => {
+    return data;
 };

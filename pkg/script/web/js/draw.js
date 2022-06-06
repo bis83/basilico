@@ -38,27 +38,25 @@ const draw_call = (no, count, func) => {
 };
 
 const draw_tile = () => {
+    // base
     for(let x=0; x<$tile.w; ++x) {
         for(let y=0; y<$tile.h; ++y) {
-            const tile = tile_value(x, y);
+            const tile = tile_base(x, y);
             if(!tile) {
                 continue;
             }
-            let h=0;
-            for(const s of tile) {
-                const data = data_tile(s.no);
-                if(!data) {
-                    continue;
-                }
-                draw_call(data.draw, s.count, (u, i) => {
-                    const pos = vec3world(x, y, h);
-                    $temp.m.set(mat4translate(pos[0], pos[1], pos[2]));
-                    $gl.uniformMatrix4fv(u.w, false, $temp.m);
-                    h += data.height;
-                });
+            const data = data_tile(tile.no);
+            if(!data) {
+                continue;
             }
+            draw_call(data.draw, tile.count, (u, i) => {
+                const pos = vec3world(x, y, i*data.height);
+                $temp.m.set(mat4translate(pos[0], pos[1], pos[2]));
+                $gl.uniformMatrix4fv(u.w, false, $temp.m);
+            });
         }
     }
+    // wall
 };
 
 const draw_ui = (view) => {
