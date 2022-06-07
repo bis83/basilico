@@ -19,3 +19,14 @@ const xy_mul = ([x, y], l) => {
 const xy_hit_rect = ([x, y], minX, maxX,  minY, maxY) => {
     return (minX <= x) && (x <= maxX) && (minY <= y) && (y <= maxY);
 };
+
+const xy_bounds = ([x0, y0], r, [x1, y1]) => {
+    const [dx, dy] = [x1-x0, y1-y0];
+    const l = xy_length(dx, dy);
+    if(r <= l) {
+        return [x0, y0];
+    }
+    const [nx, ny] = xy_normalize(dx, dy);
+    const [sx, sy] = xy_mul([nx, ny], l-r);
+    return [x0+sx, y0+sy];
+};

@@ -56,7 +56,25 @@ const draw_tile = () => {
             });
         }
     }
-    // wall
+    // prop
+    for(let x=0; x<$tile.w; ++x) {
+        for(let y=0; y<$tile.h; ++y) {
+            const tile = tile_prop(x, y);
+            if(!tile) {
+                continue;
+            }
+            const data = data_tile(tile.no);
+            if(!data) {
+                continue;
+            }
+            const h = tile_base_height(x, y);
+            draw_call(data.draw, 1, (u, i) => {
+                const pos = vec3world(x, y, h);
+                $temp.m.set(mat4translate(pos[0], pos[1], pos[2]));
+                $gl.uniformMatrix4fv(u.w, false, $temp.m);
+            });
+        }
+    }
 };
 
 const draw_ui = (view) => {

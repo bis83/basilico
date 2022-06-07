@@ -1,11 +1,11 @@
 
 const pos_adjust = (x, y, dx, dy) => {
-    let xx = x + dx;
-    let yy = y + dy;
-
     const ix = Math.floor(x);
     const iy = Math.floor(y);
     const r = 0.25;
+
+    let xx = x + dx;
+    let yy = y + dy;
     if(tile_is_noentry(ix, iy, -1, 0)) {
         xx = Math.max(xx, ix+r);
     }
@@ -17,6 +17,19 @@ const pos_adjust = (x, y, dx, dy) => {
     }
     if(tile_is_noentry(ix, iy, 0, +1)) {
         yy = Math.min(yy, iy-r+1);
+    }
+    
+    if(tile_is_noentry(ix, iy, -1, -1)) {
+        [xx, yy] = xy_bounds([xx, yy], r, [ix, iy]);
+    }
+    if(tile_is_noentry(ix, iy, -1, +1)) {
+        [xx, yy] = xy_bounds([xx, yy], r, [ix, iy+1]);
+    }
+    if(tile_is_noentry(ix, iy, +1, -1)) {
+        [xx, yy] = xy_bounds([xx, yy], r, [ix+1, iy]);
+    }
+    if(tile_is_noentry(ix, iy, +1, +1)) {
+        [xx, yy] = xy_bounds([xx, yy], r, [ix+1, iy+1]);
     }
 
     return [xx, yy];

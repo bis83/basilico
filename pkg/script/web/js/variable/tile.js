@@ -20,27 +20,34 @@ const tile_index = (x, y) => {
 const tile_base = (x, y) => {
     return $tile.a[tile_index(x, y)];
 };
-const tile_wall = (x, y) => {
+const tile_prop = (x, y) => {
     return $tile.b[tile_index(x, y)];
 };
 
+const tile_base_height = (x, y) => {
+    const tile = tile_base(x, y);
+    if(!tile) {
+        return 0;
+    }
+    const data = data_tile(tile.no);
+    if(!data) {
+        return 0;
+    }
+    return data.height * tile.count;
+};
+const tile_prop_height = (x, y) => {
+    const tile = tile_prop(x, y);
+    if(!tile) {
+        return 0;
+    }
+    const data = data_tile(tile.no);
+    if(!data) {
+        return 0;
+    }
+    return data.height;
+};
 const tile_height = (x, y) => {
-    let h = 0;
-    const a = tile_base(x, y);
-    if(a) {
-        const data = data_tile(a.no);
-        if(data) {
-            h += data.height * a.count;
-        }
-    }
-    const b = tile_wall(x, y);
-    if(b) {
-        const data = data_tile(b.no);
-        if(data) {
-            h += data.height;
-        }
-    }
-    return h;
+    return tile_base_height(x, y) + tile_prop_height(x, y);
 };
 
 const tile_is_empty = (x, y) => {
@@ -73,6 +80,13 @@ const tile_base_set = (x, y, no) => {
         return;
     }
     $tile.a[i] = {no: no, count: 1};
+};
+const tile_prop_set = (x, y, no) => {
+    const i = tile_index(x, y);
+    if(i < 0) {
+        return;
+    }
+    $tile.b[i] = {no: no, dir: 0};
 };
 
 const tile_encode = (data) => {
