@@ -8,7 +8,8 @@ const init = () => {
 };
 
 const update = (time) => {
-    listen_tick(time);
+    timer_tick(time);
+    listen_tick();
     if(data_loaded()) {
         view_tick();
         const view = data_view($temp.view);

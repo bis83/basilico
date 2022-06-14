@@ -36,7 +36,7 @@ const pos_adjust = (x, y, dx, dy) => {
 };
 
 const pos_fps_movement = (lstick, rstick) => {
-    const dt = $listen.timer.deltaTime;
+    const dt = $timer.dt;
 
     const cameraXY = ui_value(rstick);
     if(cameraXY) {

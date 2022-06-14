@@ -28,11 +28,6 @@ const listen_init = () => {
 
     $listen = {};
     $listen.mode = GAMEPAD_MODE_POINTER;
-    $listen.timer = {
-        prevTime: performance.now(),
-        deltaTime: 0,
-        count: 0,
-    };
     $listen.gamepad = {
         index: null,
         lx: 0,
@@ -160,12 +155,6 @@ const listen_click = (pointerId) => {
     }
 };
 
-const listen_tick_timer = (timer, time) => {  
-    timer.deltaTime = (time - timer.prevTime) / 1000;
-    timer.prevTime = time;
-    timer.count += 1;
-};
-
 const listen_tick_gamepad = (gamepad) => {
     if(gamepad.index !== null) {
         const gamepads = navigator.getGamepads();
@@ -189,8 +178,7 @@ const listen_tick_gamepad = (gamepad) => {
     }
 }
 
-const listen_tick = (time) => {
-    listen_tick_timer($listen.timer, time);
+const listen_tick = () => {
     listen_tick_gamepad($listen.gamepad);
 };
 
