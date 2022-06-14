@@ -17,26 +17,10 @@ const gl_createGLTexture2D = (img, sampler) => {
     return texture
 };
 
-const gl_renderText = (text, width, height) => {
-    const canvas = document.createElement("canvas");
-    if(!canvas) {
-        LOGGING && console.log("FAILED: renderText");
-        return null;
-    }
-    canvas.width = width;
-    canvas.height = height;
-
-    const context = canvas.getContext('2d');
-    if(!context) {
-        LOGGING && console.log("FAILED: renderText");
-        return null;
-    }
-    context.fillStyle = "white";
-    context.textAlign = "center";
-    context.textBaseline = "middle";
-    context.font = "24px monospace";
-    context.fillText(text, canvas.width/2, canvas.height/2);
-    return canvas;
+const gl_updateGLTexture2D = (tex, img) => {
+    $gl.bindTexture($gl.TEXTURE_2D, tex);
+    $gl.texSubImage2D($gl.TEXTURE_2D, 0, 0, 0, $gl.RGBA, $gl.UNSIGNED_BYTE, img);
+    $gl.bindTexture($gl.TEXTURE_2D, null);
 };
 
 const gl_createGLShader = (type, source) => {

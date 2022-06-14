@@ -49,6 +49,14 @@ type Draw struct {
 	Alpha   bool   `toml:"alpha"`
 }
 
+type Item struct {
+	Name string `toml:"name"`
+	Desc string `toml:"desc"`
+	Icon int    `toml:"icon"`
+
+	SaveID int `toml:"save-id"`
+}
+
 type Tile struct {
 	Name   string `toml:"name"`
 	Draw   string `toml:"draw"`
@@ -90,6 +98,7 @@ type Page struct {
 	Texture []*Texture `toml:"texture"`
 	Shader  []*Shader  `toml:"shader"`
 	Draw    []*Draw    `toml:"draw"`
+	Item    []*Item    `toml:"item"`
 	Tile    []*Tile    `toml:"tile"`
 	UI      []*UI      `toml:"ui"`
 	Event   []*Event   `toml:"event"`

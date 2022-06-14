@@ -31,6 +31,7 @@ const listen_init = () => {
     $listen.timer = {
         prevTime: performance.now(),
         deltaTime: 0,
+        count: 0,
     };
     $listen.gamepad = {
         index: null,
@@ -162,6 +163,7 @@ const listen_click = (pointerId) => {
 const listen_tick_timer = (timer, time) => {  
     timer.deltaTime = (time - timer.prevTime) / 1000;
     timer.prevTime = time;
+    timer.count += 1;
 };
 
 const listen_tick_gamepad = (gamepad) => {

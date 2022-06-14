@@ -13,6 +13,7 @@ var scripts = []string{
 	"web/js/core/graphics.js",
 	"web/js/core/graphics_create.js",
 	"web/js/core/graphics_command.js",
+	"web/js/core/graphics_canvas2d.js",
 	"web/js/core/audio.js",
 
 	// data

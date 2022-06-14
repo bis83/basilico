@@ -3,13 +3,16 @@ let $imageLoading = 0;
 
 const decodeTexture = (data) => {
     if(data.cvs) {
-        data.texture = gl_createGLTexture2D(gl_renderText(data.cvs.text, data.cvs.width, data.cvs.height), data.s);
+        const cvs = cvs_create(data.cvs.width, data.cvs.height);
+        cvs_text(cvs, data.cvs.text);
+        data.cvs = cvs;
+        data.tex = gl_createGLTexture2D(data.cvs, data.s);
     } else {
-        data.texture = null;
+        data.tex = null;
 
         const img = new Image();
         img.onload = () => {
-            data.texture = gl_createGLTexture2D(img, data.s);
+            data.tex = gl_createGLTexture2D(img, data.s);
             $imageLoading -= 1;
         };
         img.src = "img/" + data.src;

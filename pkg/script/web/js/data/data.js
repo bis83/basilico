@@ -74,6 +74,9 @@ const data_event = (no) => {
 const data_view_index = (name) => {
     return $data.index.view.findIndex(o => o.n === name);
 };
+const data_texture_index = (name) => {
+    return $data.index.texture.findIndex(o => o.n === name);
+};
 const data_tile_index = (name) => {
     return $data.index.tile.findIndex(o => o.n === name);
 };
