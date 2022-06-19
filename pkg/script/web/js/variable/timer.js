@@ -1,5 +1,5 @@
 
-$timer = {
+const $timer = {
     t: performance.now(),
     dt: 0,
     n: 0,

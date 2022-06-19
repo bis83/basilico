@@ -1,6 +1,4 @@
 
-const $action = {};
-
 const event_tick = (view) => {
     for(let no of view.event) {
         const ev = data_event(no);
@@ -16,15 +14,11 @@ const event_tick = (view) => {
                 hit = ui_value(ev.target);
                 break;
         }
-        if(hit) {
-            for(const act of ev.action) {
-                const func = $action[act[0]];
-                if(!func) {
-                    continue;
-                }
-                const args = act.slice(1);
-                func(...args);
-            }
+        if(!hit) {
+            continue;
+        }
+        for(const act of ev.action) {
+            action_invoke(act);
         }
     }
 };

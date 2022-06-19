@@ -23,12 +23,14 @@ var scripts = []string{
 	"web/js/data/data.js",
 
 	// variable
+	"web/js/variable/action.js",
 	"web/js/variable/timer.js",
-	"web/js/variable/temp.js",
 	"web/js/variable/ui.js",
 	"web/js/variable/tile.js",
 	"web/js/variable/pos.js",
+	"web/js/variable/item.js",
 	"web/js/variable/event.js",
+	"web/js/variable/temp.js",
 
 	// savegame
 	"web/js/savegame.js",
