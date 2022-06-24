@@ -11,6 +11,7 @@ type Project struct {
 	Texture []*Texture
 	Shader  []*Shader
 	Draw    []*Draw
+	Item    []*Item
 	Tile    []*Tile
 	UI      []*UI
 	Event   []*Event
@@ -33,6 +34,9 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 		}
 		for _, draw := range page.Draw {
 			p.Draw = append(p.Draw, draw)
+		}
+		for _, item := range page.Item {
+			p.Item = append(p.Item, item)
 		}
 		for _, tile := range page.Tile {
 			p.Tile = append(p.Tile, tile)
