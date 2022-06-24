@@ -59,7 +59,10 @@ type Item struct {
 }
 
 type Tile struct {
-	Name   string `toml:"name"`
+	Name string `toml:"name"`
+	Text string `toml:"text"`
+	Desc string `toml:"desc"`
+
 	Draw   string `toml:"draw"`
 	Height int    `toml:"height"`
 
