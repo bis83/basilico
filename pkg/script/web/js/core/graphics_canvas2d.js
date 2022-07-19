@@ -16,10 +16,19 @@ const cvs_text = (cvs, text) => {
         LOGGING && console.log("FAILED: cvs_create");
         return null;
     }
+    
+    // clear 
     context.clearRect(0, 0, cvs.width, cvs.height);
+    context.fillStyle = "rgba(0 0 0 / 0.5)";
+    context.fillRect(0, 0, cvs.width, cvs.height);
+
+    // render text
     context.fillStyle = "white";
-    context.textAlign = "center";
-    context.textBaseline = "middle";
-    context.font = "24px monospace";
-    context.fillText(text, cvs.width/2, cvs.height/2);
+    context.textAlign = "left";
+    context.textBaseline = "top";
+    context.font = "14px monospace";
+    const lines = text.split("\n");
+    for(let i=0; i<lines.length; ++i) {
+        context.fillText(lines[i], 0, 12*i);
+    }
 };

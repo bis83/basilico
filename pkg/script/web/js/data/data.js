@@ -61,6 +61,9 @@ const data_shader = (no) => {
 const data_draw = (no) => {
     return data_lookup("draw", no);
 };
+const data_item = (no) => {
+    return data_lookup("item", no);
+};
 const data_tile = (no) => {
     return data_lookup("tile", no);
 };
