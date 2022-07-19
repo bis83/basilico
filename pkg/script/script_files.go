@@ -7,6 +7,7 @@ var scripts = []string{
 	"web/js/math/angle.js",
 	"web/js/math/vec3.js",
 	"web/js/math/mat4.js",
+	"web/js/math/coordinate.js",
 
 	// core
 	"web/js/core/listen.js",
