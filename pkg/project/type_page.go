@@ -73,9 +73,12 @@ type UI struct {
 	Name string `toml:"name"`
 	Draw string `toml:"draw"`
 
-	Width  int   `toml:"width"`
-	Height int   `toml:"height"`
-	Offset []int `toml:"offset"`
+	X       int     `toml:"x"`
+	Y       int     `toml:"y"`
+	Width   int     `toml:"width"`
+	Height  int     `toml:"height"`
+	OriginX float64 `toml:"origin_x"`
+	OriginY float64 `toml:"origin_y"`
 
 	Interact string `toml:"interact"`
 	Gamepad  string `toml:"gamepad"`

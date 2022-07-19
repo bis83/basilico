@@ -8,9 +8,12 @@ import (
 type UI struct {
 	Draw int `json:"draw"`
 
-	Width  int   `json:"width"`
-	Height int   `json:"height"`
-	Offset []int `json:"offset"`
+	X       int     `json:"x"`
+	Y       int     `json:"y"`
+	Width   int     `json:"w"`
+	Height  int     `json:"h"`
+	OriginX float64 `json:"ox"`
+	OriginY float64 `json:"oy"`
 
 	Interact int    `json:"interact"`
 	Gamepad  string `json:"gamepad"`
@@ -36,13 +39,12 @@ func (p *UI) Set(prj *project.Project, ui *project.UI) error {
 		return fmt.Errorf("Draw Not Found: %s", ui.Draw)
 	}
 
+	p.X = ui.X
+	p.Y = ui.Y
 	p.Width = ui.Width
 	p.Height = ui.Height
-	if len(ui.Offset) == 2 {
-		p.Offset = ui.Offset
-	} else {
-		p.Offset = []int{0, 0}
-	}
+	p.OriginX = ui.OriginX
+	p.OriginY = ui.OriginY
 
 	p.Interact = toInteractNo(ui.Interact)
 	p.Gamepad = ui.Gamepad

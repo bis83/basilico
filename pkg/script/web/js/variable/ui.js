@@ -21,10 +21,12 @@ const ui_hit_click = (ui, point) => {
     const w = window.innerWidth;
     const h = window.innerHeight;
     const ratio = window.devicePixelRatio;
-    const minX = w/2 + (ui.offset[0] - ui.width/2) * ratio;
-    const maxX = w/2 + (ui.offset[0] + ui.width/2) * ratio;
-    const minY = h/2 + (ui.offset[1] - ui.height/2) * ratio;
-    const maxY = h/2 + (ui.offset[1] + ui.height/2) * ratio;
+    const ox = w/2 + (w/2 * ui.ox);
+    const oy = h/2 + (h/2 * ui.oy);
+    const minX = ox + (ui.x - ui.w/2) * ratio;
+    const maxX = ox + (ui.x + ui.w/2) * ratio;
+    const minY = oy + (ui.y - ui.h/2) * ratio;
+    const maxY = oy + (ui.y + ui.h/2) * ratio;
     return xy_hit_rect(point, minX, maxX, minY, maxY);
 };
 
@@ -122,6 +124,9 @@ const ui_tick_right_stick = (tui, ui) => {
 }
 
 const ui_tick = (view) => {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
     for(const tui of $ui) {
         if(tui) {
             tui.value = null;
@@ -156,8 +161,10 @@ const ui_tick = (view) => {
         }
 
         const ratio = window.devicePixelRatio;
-        const m = mat4scale(ui.width/2 * ratio, ui.height/2 * ratio, 1);
-        mat4translated(m, ui.offset[0] * ratio, -ui.offset[1] * ratio, 0);
+        const ox = ui.ox * w/2;
+        const oy = ui.oy * h/2;
+        const m = mat4scale(ui.w/2 * ratio, ui.h/2 * ratio, 1);
+        mat4translated(m, ox + (ui.x * ratio), -(oy + (ui.y * ratio)), 0);
         tui.m.set(m);
     }
 };
