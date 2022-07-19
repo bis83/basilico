@@ -11,6 +11,16 @@ const item_null_index = () => {
     return $item.s.findIndex(o => !o);
 };
 
+const item_select = (i) => {
+    const idx = (i == null) ? $item.i : i;
+    return $item.s[idx];
+};
+
+const item_set_cursor = (offset) => {
+    const idx = mod($item.i + offset, $item.s.length);
+    $item.i = idx;
+};
+
 const item_gain = (no, num) => {
     let i = item_index(no);
     if(i < 0) {

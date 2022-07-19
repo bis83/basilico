@@ -3,6 +3,7 @@ package script
 var scripts = []string{
 	// math
 	"web/js/math/base64.js",
+	"web/js/math/integer.js",
 	"web/js/math/angle.js",
 	"web/js/math/vec3.js",
 	"web/js/math/mat4.js",
