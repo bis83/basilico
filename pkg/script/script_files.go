@@ -32,7 +32,7 @@ var scripts = []string{
 	"web/js/var/pos.js",
 	"web/js/var/item.js",
 	"web/js/var/event.js",
-	"web/js/var/temp.js",
+	"web/js/var/view.js",
 
 	// savegame
 	"web/js/savegame.js",

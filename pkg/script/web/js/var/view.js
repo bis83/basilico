@@ -1,5 +1,5 @@
 
-const $temp = {
+const $view = {
     view: null,
     slot: null,
     cam: {
@@ -11,26 +11,26 @@ const $temp = {
     m: new Float32Array(16),
 };
 
-const reset_view = () => {
-    $temp.slot = null;
-    $temp.view = $data.index.initial_view;
+const view_reset = () => {
+    $view.slot = null;
+    $view.view = $data.index.initial_view;
 };
 
-const next_view = (view) => {
+const view_next = (view) => {
     const i = data_view_index(view);
     if(i < 0) {
         return;
     }
-    $temp.view = i;
+    $view.view = i;
 };
 
-const view_tick = () => {
-    if($temp.view === null) {
-        reset_view();
+const view_tick_before = () => {
+    if($view.view === null) {
+        view_reset();
     }
 };
 
-const camera_tick = () => {
+const view_tick_after = () => {
     const ww = window.innerWidth;
     const wh = window.innerHeight;
     const fovy = deg2rad(30);
@@ -47,8 +47,8 @@ const camera_tick = () => {
     const proj = mat4perspective(fovy, ww/wh, zNear, zFar);
     
     const vp = mat4multiply(view, proj);
-    $temp.cam.vp.set(vp);
-    $temp.cam.ivp.set(mat4invert(vp));
-    $temp.cam.o.set(mat4ortho(ww, wh, 0, 1));
-    $temp.cam.eye = eye;
+    $view.cam.vp.set(vp);
+    $view.cam.ivp.set(mat4invert(vp));
+    $view.cam.o.set(mat4ortho(ww, wh, 0, 1));
+    $view.cam.eye = eye;
 };

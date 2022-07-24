@@ -1,19 +1,19 @@
 
 $action["nextview"] = (view) => {
-    next_view(view);
+    view_next(view);
 };
 
 $action["resetview"] = () => {
-    reset_view();
+    view_reset();
 };
 
 $action["newgame"] = (slot) => {
-    $temp.slot = slot;
+    $view.slot = slot;
     newgame();
 };
 
 $action["loadgame"] = (slot) => {
-    $temp.slot = slot;
+    $view.slot = slot;
     loadgame();
 };
 

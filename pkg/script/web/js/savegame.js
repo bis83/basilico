@@ -6,11 +6,11 @@ const newgame = () => {
 };
 
 const loadgame = () => {
-    if(!$temp.slot) {
+    if(!$view.slot) {
         return false;
     }
 
-    const data = localstorage_get($temp.slot);
+    const data = localstorage_get($view.slot);
     if(!data) {
         return false;
     }
@@ -27,7 +27,7 @@ const loadgame = () => {
 };
 
 const savegame = () => {
-    if(!$temp.slot) {
+    if(!$view.slot) {
         return;
     }
 
@@ -35,5 +35,5 @@ const savegame = () => {
     data.pos = $pos;
     data.item = item_encode($item);
     data.tile = tile_encode($tile);
-    localstorage_set($temp.slot, data);
+    localstorage_set($view.slot, data);
 };

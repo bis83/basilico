@@ -24,7 +24,7 @@ const draw_call = (no, count, func) => {
     }
     $gl.bindVertexArray(mesh.vao);
     
-    $gl.uniformMatrix4fv(shader.u.vp, false, data.ortho ? $temp.cam.o : $temp.cam.vp);
+    $gl.uniformMatrix4fv(shader.u.vp, false, data.ortho ? $view.cam.o : $view.cam.vp);
 
     const tex = data_texture(data.texture);
     if(tex) {
@@ -51,8 +51,8 @@ const draw_tile = () => {
             }
             draw_call(data.draw, tile.count, (u, i) => {
                 const pos = tile_to_world(x, y, i*data.height);
-                $temp.m.set(mat4translate(pos[0], pos[1], pos[2]));
-                $gl.uniformMatrix4fv(u.w, false, $temp.m);
+                $view.m.set(mat4translate(pos[0], pos[1], pos[2]));
+                $gl.uniformMatrix4fv(u.w, false, $view.m);
             });
         }
     }
@@ -70,8 +70,8 @@ const draw_tile = () => {
             const h = tile_base_height(x, y);
             draw_call(data.draw, 1, (u, i) => {
                 const pos = tile_to_world(x, y, h);
-                $temp.m.set(mat4translate(pos[0], pos[1], pos[2]));
-                $gl.uniformMatrix4fv(u.w, false, $temp.m);
+                $view.m.set(mat4translate(pos[0], pos[1], pos[2]));
+                $gl.uniformMatrix4fv(u.w, false, $view.m);
             });
         }
     }
@@ -95,8 +95,8 @@ const draw_ui = (view) => {
 
 const draw_skybox = (view) => {
     draw_call(view.skybox, 1, (u, i) => {
-        $temp.m.set(mat4translate(...$temp.cam.eye));
-        $gl.uniformMatrix4fv(u.w, false, $temp.m);
+        $view.m.set(mat4translate(...$view.cam.eye));
+        $gl.uniformMatrix4fv(u.w, false, $view.m);
     });
 };
 
