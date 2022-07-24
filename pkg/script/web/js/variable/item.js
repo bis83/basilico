@@ -47,6 +47,8 @@ const item_lose = (no, num) => {
 };
 
 const item_init_empty = (slot) => {
+    slot = slot || 0;
+
     $item.s.length = slot;
     $item.s.fill(null);
     $item.i = 0;

@@ -1,12 +1,8 @@
 
 const newgame = () => {
-    $tile.w = 0;
-    $tile.h = 0;
-    $tile.a.length = 0;
-    $pos.x = 0;
-    $pos.y = 0;
-    $pos.ha = 0;
-    $pos.va = 0;
+    pos_init();
+    tile_init_empty();
+    item_init_empty();
 };
 
 const loadgame = () => {

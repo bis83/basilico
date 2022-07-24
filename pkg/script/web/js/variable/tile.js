@@ -67,6 +67,9 @@ const tile_is_noentry = (x, y, dx, dy) => {
 };
 
 const tile_init_empty = (w, h) => {
+    w = w || 0;
+    h = h || 0;
+
     $tile.w = w;
     $tile.h = h;
     $tile.a = [];
