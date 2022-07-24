@@ -86,9 +86,10 @@ type UI struct {
 }
 
 type Event struct {
-	Name    string     `toml:"name"`
+	Name string `toml:"name"`
+	UI   string `toml:"ui"`
+
 	Trigger string     `toml:"trigger"`
-	Target  string     `toml:"target"`
 	Action  [][]string `toml:"action"`
 }
 

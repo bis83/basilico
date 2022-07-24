@@ -6,8 +6,9 @@ import (
 )
 
 type Event struct {
+	UI string `json:"ui"`
+
 	Trigger int        `json:"trigger"`
-	Target  string     `json:"target"`
 	Action  [][]string `json:"action"`
 }
 
@@ -23,8 +24,8 @@ func toTriggerNo(s string) int {
 }
 
 func (p *Event) Set(prj *project.Project, ev *project.Event) error {
+	p.UI = ev.UI
 	p.Trigger = toTriggerNo(ev.Trigger)
-	p.Target = ev.Target
 	p.Action = ev.Action
 	return nil
 }

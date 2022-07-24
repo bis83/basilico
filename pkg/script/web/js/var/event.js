@@ -11,7 +11,7 @@ const event_tick = (view) => {
                 hit = true;
                 break;
             case 1: // button
-                hit = ui_value(ev.target);
+                hit = ui_value(ev.ui);
                 break;
         }
         if(!hit) {
