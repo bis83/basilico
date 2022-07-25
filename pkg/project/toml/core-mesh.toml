@@ -81,8 +81,8 @@ index = [
 ]
 
 [[mesh]]
-name = "debug_grid"
-is_line = true
+name = "debug-grid"
+is-line = true
 position = [
   -100.0,    0.0,    0.0,
   +100.0,    0.0,    0.0,

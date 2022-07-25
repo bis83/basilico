@@ -15,7 +15,7 @@ type Mesh struct {
 	Color    []uint8   `toml:"color"`
 	Uv       []float32 `toml:"uv"`
 	Index    []uint16  `toml:"index"`
-	IsLine   bool      `toml:"is_line"`
+	IsLine   bool      `toml:"is-line"`
 }
 
 type TextureCanvas struct {
@@ -33,10 +33,10 @@ type Texture struct {
 
 type Shader struct {
 	Name           string   `toml:"name"`
-	VertexShader   string   `toml:"vertex_shader"`
-	FragmentShader string   `toml:"fragment_shader"`
+	VertexShader   string   `toml:"vertex-shader"`
+	FragmentShader string   `toml:"fragment-shader"`
 	Uniform        []string `toml:"uniform"`
-	UniformBlock   []string `toml:"uniform_block"`
+	UniformBlock   []string `toml:"uniform-block"`
 }
 
 type Draw struct {
@@ -77,8 +77,8 @@ type UI struct {
 	Y       int     `toml:"y"`
 	Width   int     `toml:"width"`
 	Height  int     `toml:"height"`
-	OriginX float64 `toml:"origin_x"`
-	OriginY float64 `toml:"origin_y"`
+	OriginX float64 `toml:"origin-x"`
+	OriginY float64 `toml:"origin-y"`
 
 	Interact string `toml:"interact"`
 	Gamepad  string `toml:"gamepad"`
@@ -98,7 +98,7 @@ type View struct {
 	Draw3D bool     `toml:"draw3d"`
 	SkyBox string   `toml:"skybox"`
 	UI     []string `toml:"ui"`
-	Event  []string `toml"event"`
+	Event  []string `toml:"event"`
 }
 
 type Page struct {

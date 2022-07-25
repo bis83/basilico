@@ -5,7 +5,7 @@ name = "main"
 [[draw]]
 name = "reticle"
 mesh = "reticle"
-shader = "mesh_pc"
+shader = "mesh-pc"
 ortho = true
 
 [[ui]]
