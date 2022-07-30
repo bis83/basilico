@@ -67,9 +67,6 @@ const data_item = (no) => {
 const data_tile = (no) => {
     return data_lookup("tile", no);
 };
-const data_ui = (no) => {
-    return data_lookup("ui", no);
-};
 const data_event = (no) => {
     return data_lookup("event", no);
 };
@@ -86,8 +83,8 @@ const data_item_index = (name) => {
 const data_tile_index = (name) => {
     return $data.index.tile.findIndex(o => o.n === name);
 };
-const data_ui_index = (name) => {
-    return $data.index.ui.findIndex(o => o.n === name);
+const data_event_index = (name) => {
+    return $data.index.event.findIndex(o => o.n === name);
 };
 
 const data_loaded = () => {

@@ -69,7 +69,7 @@ type Tile struct {
 	SaveID int `toml:"save-id"`
 }
 
-type UI struct {
+type Event struct {
 	Name string `toml:"name"`
 	Draw string `toml:"draw"`
 
@@ -83,13 +83,7 @@ type UI struct {
 	Interact string `toml:"interact"`
 	Gamepad  string `toml:"gamepad"`
 	Keyboard string `toml:"keyboard"`
-}
 
-type Event struct {
-	Name string `toml:"name"`
-	UI   string `toml:"ui"`
-
-	Trigger string     `toml:"trigger"`
 	Action  [][]string `toml:"action"`
 }
 
@@ -97,7 +91,6 @@ type View struct {
 	Name   string   `toml:"name"`
 	Draw3D bool     `toml:"draw3d"`
 	SkyBox string   `toml:"skybox"`
-	UI     []string `toml:"ui"`
 	Event  []string `toml:"event"`
 }
 
@@ -108,7 +101,6 @@ type Page struct {
 	Draw    []*Draw    `toml:"draw"`
 	Item    []*Item    `toml:"item"`
 	Tile    []*Tile    `toml:"tile"`
-	UI      []*UI      `toml:"ui"`
 	Event   []*Event   `toml:"event"`
 	View    []*View    `toml:"view"`
 }

@@ -21,7 +21,6 @@ type Index struct {
 	Draw        []*Entry `json:"draw"`
 	Item        []*Entry `json:"item"`
 	Tile        []*Entry `json:"tile"`
-	UI          []*Entry `json:"ui"`
 	Event       []*Entry `json:"event"`
 	View        []*Entry `json:"view"`
 }
@@ -48,9 +47,6 @@ func (p *Index) Set(prj *project.Project) error {
 	}
 	for i, v := range prj.Tile {
 		p.Tile = append(p.Tile, &Entry{Name: v.Name, Pack: 0, Index: i, SaveID: v.SaveID})
-	}
-	for i, v := range prj.UI {
-		p.UI = append(p.UI, &Entry{Name: v.Name, Pack: 0, Index: i})
 	}
 	for i, v := range prj.Event {
 		p.Event = append(p.Event, &Entry{Name: v.Name, Pack: 0, Index: i})

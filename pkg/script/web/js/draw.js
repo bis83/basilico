@@ -77,18 +77,22 @@ const draw_tile = () => {
     }
 };
 
-const draw_ui = (view) => {
-    for(let no of view.ui) {
-        const ui = data_ui(no);
-        if(!ui) {
+const draw_event = (view) => {
+    for(let no of view.event) {
+        const data = data_event(no);
+        if(!data) {
             continue;
         }
-        const tui = $ui[no];
-        if(!tui) {
+        if(data.draw < 0) {
             continue;
         }
-        draw_call(ui.draw, 1, (u, i) => {
-            $gl.uniformMatrix4fv(u.w, false, tui.m);
+
+        const ev = $ev[no];
+        if(!ev) {
+            continue;
+        }
+        draw_call(data.draw, 1, (u, i) => {
+            $gl.uniformMatrix4fv(u.w, false, ev.m);
         });
     }
 };
@@ -100,10 +104,14 @@ const draw_skybox = (view) => {
     });
 };
 
-const draw_view = (view) => {
+const draw_view = () => {
+    const view = data_view($view.view);
+    if(!view) {
+        return;
+    }
     draw_skybox(view);
     if(view.draw3d) {
         draw_tile();
     }
-    draw_ui(view);
+    draw_event(view);
 };

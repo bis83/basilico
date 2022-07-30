@@ -11,26 +11,15 @@ const update = (time) => {
     timer_tick(time);
     listen_tick();
     if(data_loaded()) {
-        view_tick_before();
-        const view = data_view($view.view);
-        if(!view) {
-            return;
-        }
-        ui_tick(view);
-        event_tick(view);
+        view_tick();
     }
-    view_tick_after();
     listen_flush();
 };
 
 const draw = () => {
     draw_start_frame();
     if(data_loaded()) {
-        const view = data_view($view.view);
-        if(!view) {
-            return;
-        }
-        draw_view(view);
+        draw_view();
     }
 };
 

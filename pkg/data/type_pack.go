@@ -11,7 +11,6 @@ type Pack struct {
 	Draw    []*Draw    `json:"draw"`
 	Item    []*Item    `json:"item"`
 	Tile    []*Tile    `json:"tile"`
-	UI      []*UI      `json:"ui"`
 	Event   []*Event   `json:"event"`
 	View    []*View    `json:"view"`
 }
@@ -58,13 +57,6 @@ func (p *Pack) Set(prj *project.Project) error {
 			return err
 		}
 		p.Tile = append(p.Tile, &tile)
-	}
-	for _, v := range prj.UI {
-		var ui UI
-		if err := ui.Set(prj, v); err != nil {
-			return err
-		}
-		p.UI = append(p.UI, &ui)
 	}
 	for _, v := range prj.Event {
 		var ev Event

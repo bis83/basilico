@@ -38,7 +38,7 @@ const pos_adjust = (x, y, dx, dy) => {
 const pos_fps_movement = (lstick, rstick) => {
     const dt = $timer.dt;
 
-    const cameraXY = ui_value(rstick);
+    const cameraXY = ev_value(rstick);
     if(cameraXY) {
         const cameraSpeed = 90; // deg/s
         $pos.ha += cameraSpeed * dt * cameraXY[0];
@@ -46,7 +46,7 @@ const pos_fps_movement = (lstick, rstick) => {
         $pos.va = Math.max(-60, Math.min($pos.va, 80));
     }
 
-    const moveXY = ui_value(lstick);
+    const moveXY = ev_value(lstick);
     if(moveXY) {
         const moveSpeed = 2;    // cell/s
         const rx = deg2rad($pos.ha+90);

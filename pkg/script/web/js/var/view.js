@@ -52,3 +52,13 @@ const view_tick_after = () => {
     $view.cam.o.set(mat4ortho(ww, wh, 0, 1));
     $view.cam.eye = eye;
 };
+
+const view_tick = () => {
+    view_tick_before();
+    const view = data_view($view.view);
+    if(!view) {
+        return;
+    }
+    event_tick(view);
+    view_tick_after();
+};

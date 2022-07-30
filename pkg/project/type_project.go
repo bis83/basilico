@@ -13,7 +13,6 @@ type Project struct {
 	Draw    []*Draw
 	Item    []*Item
 	Tile    []*Tile
-	UI      []*UI
 	Event   []*Event
 	View    []*View
 
@@ -40,9 +39,6 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 		}
 		for _, tile := range page.Tile {
 			p.Tile = append(p.Tile, tile)
-		}
-		for _, ui := range page.UI {
-			p.UI = append(p.UI, ui)
 		}
 		for _, ev := range page.Event {
 			p.Event = append(p.Event, ev)
@@ -90,15 +86,6 @@ func (p *Project) FindShader(name string) int {
 
 func (p *Project) FindDraw(name string) int {
 	for i, v := range p.Draw {
-		if v.Name == name {
-			return i
-		}
-	}
-	return -1
-}
-
-func (p *Project) FindUI(name string) int {
-	for i, v := range p.UI {
 		if v.Name == name {
 			return i
 		}
