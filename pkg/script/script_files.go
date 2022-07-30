@@ -17,6 +17,7 @@ var scripts = []string{
 	"web/js/core/graphics_command.js",
 	"web/js/core/graphics_canvas2d.js",
 	"web/js/core/audio.js",
+	"web/js/core/action.js",
 
 	// data
 	"web/js/data/decode_mesh.js",
@@ -25,7 +26,6 @@ var scripts = []string{
 	"web/js/data/data.js",
 
 	// var
-	"web/js/var/action.js",
 	"web/js/var/timer.js",
 	"web/js/var/tile.js",
 	"web/js/var/pos.js",
