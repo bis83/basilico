@@ -14,5 +14,6 @@ func (p *Item) Set(prj *project.Project, s *project.Item) error {
 	p.Text = s.Text
 	p.Desc = s.Desc
 	p.Icon = s.Icon
+
 	return nil
 }

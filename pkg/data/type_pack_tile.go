@@ -22,5 +22,6 @@ func (p *Tile) Set(prj *project.Project, s *project.Tile) error {
 		return fmt.Errorf("Draw Not Found: %s", s.Draw)
 	}
 	p.Height = s.Height
+
 	return nil
 }

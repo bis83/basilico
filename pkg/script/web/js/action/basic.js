@@ -1,22 +1,22 @@
 
-$action["nextview"] = (view) => {
+define_action("nextview", (view) => {
     view_next(view);
-};
+});
 
-$action["resetview"] = () => {
+define_action("resetview", () => {
     view_reset();
-};
+});
 
-$action["newgame"] = (slot) => {
+define_action("newgame", (slot) => {
     $view.slot = slot;
     newgame();
-};
+});
 
-$action["loadgame"] = (slot) => {
+define_action("loadgame", (slot) => {
     $view.slot = slot;
     loadgame();
-};
+});
 
-$action["savegame"] = () => {
+define_action("savegame", () => {
     savegame();
-};
+});

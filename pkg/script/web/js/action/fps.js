@@ -71,6 +71,6 @@ const pos_fps_movement = (lstick, rstick) => {
     }
 };
 
-$action["fpsmove"] = (lstick, rstick) => {
+define_action("fpsmove", (lstick, rstick) => {
     pos_fps_movement(lstick, rstick);
-};
+});

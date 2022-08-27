@@ -19,7 +19,7 @@ type Event struct {
 	Gamepad  string `json:"gamepad"`
 	Keyboard string `json:"keyboard"`
 
-	Action  [][]string `json:"action"`
+	Action [][]string `json:"action"`
 }
 
 func toInteractNo(s string) int {
@@ -52,5 +52,6 @@ func (p *Event) Set(prj *project.Project, ev *project.Event) error {
 	p.Keyboard = ev.Keyboard
 
 	p.Action = ev.Action
+
 	return nil
 }

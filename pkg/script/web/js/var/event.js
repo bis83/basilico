@@ -163,9 +163,7 @@ const event_tick = (view) => {
                 break;
         }
         if(ev.value && data.action) {
-            for(const act of data.action) {
-                action_invoke(act);
-            }
+            action_invoke(data.action);
         }
 
         if(data.draw >= 0) {

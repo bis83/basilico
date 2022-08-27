@@ -84,7 +84,7 @@ type Event struct {
 	Gamepad  string `toml:"gamepad"`
 	Keyboard string `toml:"keyboard"`
 
-	Action  [][]string `toml:"action"`
+	Action [][]string `toml:"action"`
 }
 
 type View struct {
