@@ -5,7 +5,7 @@ import (
 	project "github.com/bis83/basilico/pkg/project"
 )
 
-type Event struct {
+type Component struct {
 	Draw int `json:"draw"`
 
 	X       int     `json:"x"`
@@ -37,21 +37,21 @@ func toInteractNo(s string) int {
 	}
 }
 
-func (p *Event) Set(prj *project.Project, ev *project.Event) error {
-	p.Draw = prj.FindDraw(ev.Draw)
+func (p *Component) Set(prj *project.Project, c *project.Component) error {
+	p.Draw = prj.FindDraw(c.Draw)
 
-	p.X = ev.X
-	p.Y = ev.Y
-	p.Width = ev.Width
-	p.Height = ev.Height
-	p.OriginX = ev.OriginX
-	p.OriginY = ev.OriginY
+	p.X = c.X
+	p.Y = c.Y
+	p.Width = c.Width
+	p.Height = c.Height
+	p.OriginX = c.OriginX
+	p.OriginY = c.OriginY
 
-	p.Interact = toInteractNo(ev.Interact)
-	p.Gamepad = ev.Gamepad
-	p.Keyboard = ev.Keyboard
+	p.Interact = toInteractNo(c.Interact)
+	p.Gamepad = c.Gamepad
+	p.Keyboard = c.Keyboard
 
-	p.Action = ev.Action
+	p.Action = c.Action
 
 	return nil
 }

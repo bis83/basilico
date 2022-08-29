@@ -77,9 +77,9 @@ const draw_tile = () => {
     }
 };
 
-const draw_event = (view) => {
-    for(let no of view.event) {
-        const data = data_event(no);
+const draw_component = (view) => {
+    for(let no of view.component) {
+        const data = data_component(no);
         if(!data) {
             continue;
         }
@@ -87,12 +87,12 @@ const draw_event = (view) => {
             continue;
         }
 
-        const ev = $ev[no];
-        if(!ev) {
+        const co = $co[no];
+        if(!co) {
             continue;
         }
         draw_call(data.draw, 1, (u, i) => {
-            $gl.uniformMatrix4fv(u.w, false, ev.m);
+            $gl.uniformMatrix4fv(u.w, false, co.m);
         });
     }
 };
@@ -113,5 +113,5 @@ const draw_view = () => {
     if(view.draw3d) {
         draw_tile();
     }
-    draw_event(view);
+    draw_component(view);
 };

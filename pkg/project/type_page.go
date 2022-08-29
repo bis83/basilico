@@ -69,7 +69,7 @@ type Tile struct {
 	SaveID int `toml:"save-id"`
 }
 
-type Event struct {
+type Component struct {
 	Name string `toml:"name"`
 	Draw string `toml:"draw"`
 
@@ -88,21 +88,21 @@ type Event struct {
 }
 
 type View struct {
-	Name   string   `toml:"name"`
-	Draw3D bool     `toml:"draw3d"`
-	SkyBox string   `toml:"skybox"`
-	Event  []string `toml:"event"`
+	Name      string   `toml:"name"`
+	Draw3D    bool     `toml:"draw3d"`
+	SkyBox    string   `toml:"skybox"`
+	Component []string `toml:"component"`
 }
 
 type Page struct {
-	Mesh    []*Mesh    `toml:"mesh"`
-	Texture []*Texture `toml:"texture"`
-	Shader  []*Shader  `toml:"shader"`
-	Draw    []*Draw    `toml:"draw"`
-	Item    []*Item    `toml:"item"`
-	Tile    []*Tile    `toml:"tile"`
-	Event   []*Event   `toml:"event"`
-	View    []*View    `toml:"view"`
+	Mesh      []*Mesh      `toml:"mesh"`
+	Texture   []*Texture   `toml:"texture"`
+	Shader    []*Shader    `toml:"shader"`
+	Draw      []*Draw      `toml:"draw"`
+	Item      []*Item      `toml:"item"`
+	Tile      []*Tile      `toml:"tile"`
+	Component []*Component `toml:"component"`
+	View      []*View      `toml:"view"`
 }
 
 func (p *Page) ReadFS(path string) error {
