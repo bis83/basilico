@@ -93,6 +93,15 @@ func (p *Project) FindDraw(name string) int {
 	return -1
 }
 
+func (p *Project) FindItem(name string) int {
+	for i, v := range p.Item {
+		if v.Name == name {
+			return i
+		}
+	}
+	return -1
+}
+
 func (p *Project) FindComponent(name string) int {
 	for i, v := range p.Component {
 		if v.Name == name {

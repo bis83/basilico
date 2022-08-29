@@ -77,6 +77,7 @@ const tile_init_empty = (w, h) => {
     $tile.b = [];
     $tile.b.length = w*h;
 };
+
 const tile_base_set = (x, y, no) => {
     const i = tile_index(x, y);
     if(i < 0) {
@@ -92,9 +93,37 @@ const tile_prop_set = (x, y, no) => {
     $tile.b[i] = {no: no, dir: 0};
 };
 
+const tile_base_del = (x, y) => {
+    const i = tile_index(x, y);
+    if(i < 0) {
+        return;
+    }
+    $tile.a[i] = null;
+};
+const tile_prop_del = (x, y) => {
+    const i = tile_index(x, y);
+    if(i < 0) {
+        return;
+    }
+    $tile.b[i] = null;
+};
+
 const tile_encode = (data) => {
     return data;
 };
 const tile_decode = (data) => {
     return data;
+};
+
+const tile_ranges = (x, y, ha) => {
+    let ranges = [];
+
+    const h = deg2rad(ha);
+    x += Math.cos(h) * 0.8;
+    y += Math.sin(h) * 0.8;
+    x = Math.floor(x);
+    y = Math.floor(y);
+    ranges.push({x: x, y: y});
+
+    return ranges;
 };

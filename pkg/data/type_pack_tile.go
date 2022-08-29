@@ -12,6 +12,9 @@ type Tile struct {
 
 	Draw   int `json:"draw"`
 	Height int `json:"height"`
+
+	Item      int `json:"item"`
+	ItemCount int `json:"item_count"`
 }
 
 func (p *Tile) Set(prj *project.Project, s *project.Tile) error {
@@ -22,6 +25,9 @@ func (p *Tile) Set(prj *project.Project, s *project.Tile) error {
 		return fmt.Errorf("Draw Not Found: %s", s.Draw)
 	}
 	p.Height = s.Height
+
+	p.Item = prj.FindItem(s.Item)
+	p.ItemCount = s.ItemCount
 
 	return nil
 }

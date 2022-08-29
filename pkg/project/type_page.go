@@ -49,26 +49,6 @@ type Draw struct {
 	Alpha   bool   `toml:"alpha"`
 }
 
-type Item struct {
-	Name string `toml:"name"`
-	Text string `toml:"text"`
-	Desc string `toml:"desc"`
-	Icon int    `toml:"icon"`
-
-	SaveID int `toml:"save-id"`
-}
-
-type Tile struct {
-	Name string `toml:"name"`
-	Text string `toml:"text"`
-	Desc string `toml:"desc"`
-
-	Draw   string `toml:"draw"`
-	Height int    `toml:"height"`
-
-	SaveID int `toml:"save-id"`
-}
-
 type Component struct {
 	Name string `toml:"name"`
 	Draw string `toml:"draw"`
