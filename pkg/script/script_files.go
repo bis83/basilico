@@ -22,7 +22,7 @@ var scripts = []string{
 	// data
 	"web/js/data/decode_mesh.js",
 	"web/js/data/decode_shader.js",
-	"web/js/data/decode_texture.js",
+	"web/js/data/decode_image.js",
 	"web/js/data/data.js",
 
 	// var

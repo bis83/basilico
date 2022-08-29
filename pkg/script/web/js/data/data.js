@@ -17,8 +17,8 @@ const data_loadPack = (no) => {
         if(json.mesh) {
             json.mesh = json.mesh.map(data => decodeMesh(data));
         }
-        if(json.texture) {
-            json.texture = json.texture.map(data => decodeTexture(data));
+        if(json.image) {
+            json.image = json.image.map(data => decodeImage(data));
         }
         if(json.shader) {
             json.shader = json.shader.map(data => decodeShader(data));
@@ -52,8 +52,8 @@ const data_view = (no) => {
 const data_mesh = (no) => {
     return data_lookup("mesh", no);
 };
-const data_texture = (no) => {
-    return data_lookup("texture", no);
+const data_image = (no) => {
+    return data_lookup("image", no);
 };
 const data_shader = (no) => {
     return data_lookup("shader", no);
@@ -74,8 +74,8 @@ const data_component = (no) => {
 const data_view_index = (name) => {
     return $data.index.view.findIndex(o => o.n === name);
 };
-const data_texture_index = (name) => {
-    return $data.index.texture.findIndex(o => o.n === name);
+const data_image_index = (name) => {
+    return $data.index.image.findIndex(o => o.n === name);
 };
 const data_item_index = (name) => {
     return $data.index.item.findIndex(o => o.n === name);

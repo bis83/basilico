@@ -142,6 +142,8 @@ const component_tick = (view) => {
                 m: new Float32Array(16),
                 value: null,
                 state: STATE_RESET,
+                img: null,
+                cvs: null,
             };
         }
 
@@ -173,6 +175,14 @@ const component_tick = (view) => {
             const m = mat4scale(data.w/2 * ratio, data.h/2 * ratio, 1);
             mat4translated(m, ox + (data.x * ratio), -(oy + (data.y * ratio)), 0);
             co.m.set(m);
+        }
+
+        if(data.text) {
+            if(co.img === null) {
+                co.cvs = cvs_create(data.w, data.h);
+                cvs_text(co.cvs, data.text.contents);
+                co.img = gl_createGLTexture2D(co.cvs, data.text.s);
+            }
         }
     }
 };

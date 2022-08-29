@@ -18,17 +18,10 @@ type Mesh struct {
 	IsLine   bool      `toml:"is-line"`
 }
 
-type TextureCanvas struct {
-	Text   string `toml:"text"`
-	Width  int    `toml:"width"`
-	Height int    `toml:"height"`
-}
-
-type Texture struct {
-	Name    string         `toml:"name"`
-	Source  string         `toml:"src"`
-	Canvas  *TextureCanvas `toml:"canvas"`
-	Sampler int            `toml:"sampler"`
+type Image struct {
+	Name    string `toml:"name"`
+	Source  string `toml:"src"`
+	Sampler int    `toml:"sampler"`
 }
 
 type Shader struct {
@@ -40,31 +33,13 @@ type Shader struct {
 }
 
 type Draw struct {
-	Name    string `toml:"name"`
-	Mesh    string `toml:"mesh"`
-	Shader  string `toml:"shader"`
-	Texture string `toml:"texture"`
-	Ortho   bool   `toml:"ortho"`
-	Depth   bool   `toml:"depth"`
-	Alpha   bool   `toml:"alpha"`
-}
-
-type Component struct {
-	Name string `toml:"name"`
-	Draw string `toml:"draw"`
-
-	X       int     `toml:"x"`
-	Y       int     `toml:"y"`
-	Width   int     `toml:"width"`
-	Height  int     `toml:"height"`
-	OriginX float64 `toml:"origin-x"`
-	OriginY float64 `toml:"origin-y"`
-
-	Interact string `toml:"interact"`
-	Gamepad  string `toml:"gamepad"`
-	Keyboard string `toml:"keyboard"`
-
-	Action [][]string `toml:"action"`
+	Name   string `toml:"name"`
+	Mesh   string `toml:"mesh"`
+	Shader string `toml:"shader"`
+	Image  string `toml:"image"`
+	Ortho  bool   `toml:"ortho"`
+	Depth  bool   `toml:"depth"`
+	Alpha  bool   `toml:"alpha"`
 }
 
 type View struct {
@@ -76,7 +51,7 @@ type View struct {
 
 type Page struct {
 	Mesh      []*Mesh      `toml:"mesh"`
-	Texture   []*Texture   `toml:"texture"`
+	Image     []*Image     `toml:"image"`
 	Shader    []*Shader    `toml:"shader"`
 	Draw      []*Draw      `toml:"draw"`
 	Item      []*Item      `toml:"item"`

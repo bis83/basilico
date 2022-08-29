@@ -50,8 +50,8 @@ const gl_drawMesh = (mesh, no) => {
     }
 };
 
-const gl_useTexture = (texture, location) => {
+const gl_useTexture = (tex, location) => {
     $gl.activeTexture($gl.TEXTURE0);
-    $gl.bindTexture($gl.TEXTURE_2D, texture.tex);
+    $gl.bindTexture($gl.TEXTURE_2D, tex);
     $gl.uniform1i(location, 0);
 };

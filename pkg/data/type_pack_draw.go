@@ -7,12 +7,12 @@ import (
 )
 
 type Draw struct {
-	Mesh    int  `json:"mesh"`
-	Shader  int  `json:"shader"`
-	Texture int  `json:"texture"`
-	Depth   bool `json:"depth"`
-	Alpha   bool `json:"alpha"`
-	Ortho   bool `json:"ortho"`
+	Mesh   int  `json:"mesh"`
+	Shader int  `json:"shader"`
+	Image  int  `json:"image"`
+	Depth  bool `json:"depth"`
+	Alpha  bool `json:"alpha"`
+	Ortho  bool `json:"ortho"`
 }
 
 func (p *Draw) Set(prj *project.Project, s *project.Draw) error {
@@ -24,7 +24,7 @@ func (p *Draw) Set(prj *project.Project, s *project.Draw) error {
 	if p.Shader < 0 {
 		return fmt.Errorf("Shader Not Found: %s", s.Shader)
 	}
-	p.Texture = prj.FindTexture(s.Texture)
+	p.Image = prj.FindImage(s.Image)
 	p.Depth = s.Depth
 	p.Alpha = s.Alpha
 	p.Ortho = s.Ortho

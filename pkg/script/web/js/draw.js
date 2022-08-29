@@ -26,9 +26,11 @@ const draw_call = (no, count, func) => {
     
     $gl.uniformMatrix4fv(shader.u.vp, false, data.ortho ? $view.cam.o : $view.cam.vp);
 
-    const tex = data_texture(data.texture);
-    if(tex) {
-        gl_useTexture(tex, shader.u.tex0);
+    const img = data_image(data.image);
+    if(img) {
+        gl_useTexture(img.tex, shader.u.tex0);
+    } else {
+        gl_useTexture(null, shader.u.tex0);
     }
 
     for(let i=0; i<count; ++i) {
@@ -93,6 +95,9 @@ const draw_component = (view) => {
         }
         draw_call(data.draw, 1, (u, i) => {
             $gl.uniformMatrix4fv(u.w, false, co.m);
+            if(co.img) {
+                gl_useTexture(co.img, u.tex0);
+            }
         });
     }
 };

@@ -16,7 +16,7 @@ type Entry struct {
 type Index struct {
 	InitialView int      `json:"initial_view"`
 	Mesh        []*Entry `json:"mesh"`
-	Texture     []*Entry `json:"texture"`
+	Image       []*Entry `json:"image"`
 	Shader      []*Entry `json:"shader"`
 	Draw        []*Entry `json:"draw"`
 	Item        []*Entry `json:"item"`
@@ -33,8 +33,8 @@ func (p *Index) Set(prj *project.Project) error {
 	for i, v := range prj.Mesh {
 		p.Mesh = append(p.Mesh, &Entry{Name: v.Name, Pack: 0, Index: i})
 	}
-	for i, v := range prj.Texture {
-		p.Texture = append(p.Texture, &Entry{Name: v.Name, Pack: 0, Index: i})
+	for i, v := range prj.Image {
+		p.Image = append(p.Image, &Entry{Name: v.Name, Pack: 0, Index: i})
 	}
 	for i, v := range prj.Shader {
 		p.Shader = append(p.Shader, &Entry{Name: v.Name, Pack: 0, Index: i})

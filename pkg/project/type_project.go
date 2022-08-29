@@ -8,7 +8,7 @@ import (
 type Project struct {
 	Setup     *Setup
 	Mesh      []*Mesh
-	Texture   []*Texture
+	Image     []*Image
 	Shader    []*Shader
 	Draw      []*Draw
 	Item      []*Item
@@ -25,8 +25,8 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 		for _, mesh := range page.Mesh {
 			p.Mesh = append(p.Mesh, mesh)
 		}
-		for _, texture := range page.Texture {
-			p.Texture = append(p.Texture, texture)
+		for _, image := range page.Image {
+			p.Image = append(p.Image, image)
 		}
 		for _, shader := range page.Shader {
 			p.Shader = append(p.Shader, shader)
@@ -66,8 +66,8 @@ func (p *Project) FindMesh(name string) int {
 	return -1
 }
 
-func (p *Project) FindTexture(name string) int {
-	for i, v := range p.Texture {
+func (p *Project) FindImage(name string) int {
+	for i, v := range p.Image {
 		if v.Name == name {
 			return i
 		}

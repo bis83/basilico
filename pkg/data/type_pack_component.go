@@ -20,6 +20,13 @@ type Component struct {
 	Keyboard string `json:"keyboard"`
 
 	Action [][]string `json:"action"`
+
+	Text *ComponentText `json:"text,omitempty"`
+}
+
+type ComponentText struct {
+	Contents string `json:"contents"`
+	Sampler  int    `json:"s"`
 }
 
 func toInteractNo(s string) int {
@@ -52,6 +59,13 @@ func (p *Component) Set(prj *project.Project, c *project.Component) error {
 	p.Keyboard = c.Keyboard
 
 	p.Action = c.Action
+
+	if c.Text != nil {
+		var text ComponentText
+		text.Contents = c.Text.Contents
+		text.Sampler = c.Text.Sampler
+		p.Text = &text
+	}
 
 	return nil
 }

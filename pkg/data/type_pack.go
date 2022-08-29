@@ -6,7 +6,7 @@ import (
 
 type Pack struct {
 	Mesh      []*Mesh      `json:"mesh"`
-	Texture   []*Texture   `json:"texture"`
+	Image     []*Image     `json:"image"`
 	Shader    []*Shader    `json:"shader"`
 	Draw      []*Draw      `json:"draw"`
 	Item      []*Item      `json:"item"`
@@ -23,12 +23,12 @@ func (p *Pack) Set(prj *project.Project) error {
 		}
 		p.Mesh = append(p.Mesh, &mesh)
 	}
-	for _, v := range prj.Texture {
-		var tex Texture
-		if err := tex.Set(v); err != nil {
+	for _, v := range prj.Image {
+		var img Image
+		if err := img.Set(v); err != nil {
 			return err
 		}
-		p.Texture = append(p.Texture, &tex)
+		p.Image = append(p.Image, &img)
 	}
 	for _, v := range prj.Shader {
 		var shader Shader

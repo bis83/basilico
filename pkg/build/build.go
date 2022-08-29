@@ -60,7 +60,7 @@ func buildData(prj *project.Project, baseDir string) error {
 }
 
 func copyImage(prj *project.Project, srcDir string, dstDir string) error {
-	for _, v := range prj.Texture {
+	for _, v := range prj.Image {
 		if len(v.Source) <= 0 {
 			continue
 		}
