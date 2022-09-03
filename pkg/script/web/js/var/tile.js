@@ -114,16 +114,3 @@ const tile_encode = (data) => {
 const tile_decode = (data) => {
     return data;
 };
-
-const tile_ranges = (x, y, ha) => {
-    let ranges = [];
-
-    const h = deg2rad(ha);
-    x += Math.cos(h) * 0.8;
-    y += Math.sin(h) * 0.8;
-    x = Math.floor(x);
-    y = Math.floor(y);
-    ranges.push({x: x, y: y});
-
-    return ranges;
-};
