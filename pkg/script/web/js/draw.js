@@ -89,14 +89,14 @@ const draw_component = (view) => {
             continue;
         }
 
-        const co = $co[no];
-        if(!co) {
+        const com = $com[no];
+        if(!com) {
             continue;
         }
         draw_call(data.draw, 1, (u, i) => {
-            $gl.uniformMatrix4fv(u.w, false, co.m);
-            if(co.img) {
-                gl_useTexture(co.img, u.tex0);
+            $gl.uniformMatrix4fv(u.w, false, com.m);
+            if(com.img) {
+                gl_useTexture(com.img, u.tex0);
             }
         });
     }
