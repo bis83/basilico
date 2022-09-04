@@ -146,8 +146,24 @@ const component_tick = (view) => {
                 cvs: null,
             };
         }
-
         const com = $com[no];
+
+        if(data.draw >= 0) {
+            const ratio = window.devicePixelRatio;
+            const ox = data.ox * w/2;
+            const oy = data.oy * h/2;
+            const m = mat4scale(data.w/2 * ratio, data.h/2 * ratio, 1);
+            mat4translated(m, ox + (data.x * ratio), -(oy + (data.y * ratio)), 0);
+            com.m.set(m);
+        }
+        if(data.text) {
+            if(com.img === null) {
+                com.cvs = cvs_create(data.w, data.h);
+                cvs_text(com.cvs, data.text.contents);
+                com.img = gl_createGLTexture2D(com.cvs, data.text.s);
+            }
+        }
+
         switch(data.interact) {
             case 1: // always
                 com.value = true;
@@ -165,24 +181,7 @@ const component_tick = (view) => {
                 break;
         }
         if(com.value && data.action) {
-            action_invoke(data.action);
-        }
-
-        if(data.draw >= 0) {
-            const ratio = window.devicePixelRatio;
-            const ox = data.ox * w/2;
-            const oy = data.oy * h/2;
-            const m = mat4scale(data.w/2 * ratio, data.h/2 * ratio, 1);
-            mat4translated(m, ox + (data.x * ratio), -(oy + (data.y * ratio)), 0);
-            com.m.set(m);
-        }
-
-        if(data.text) {
-            if(com.img === null) {
-                com.cvs = cvs_create(data.w, data.h);
-                cvs_text(com.cvs, data.text.contents);
-                com.img = gl_createGLTexture2D(com.cvs, data.text.s);
-            }
+            action_invoke(com, data.action);
         }
     }
 };
