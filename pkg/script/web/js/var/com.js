@@ -2,7 +2,7 @@
 const $com = [];
 
 const com_value = (name) => {
-    const no = data_component_index(name);
+    const no = data_com_index(name);
     if(no < 0) {
         return null;
     }
@@ -123,7 +123,7 @@ const com_right_stick = (com, data) => {
     }
 }
 
-const component_tick = (view) => {
+const com_tick = (view) => {
     const w = window.innerWidth;
     const h = window.innerHeight;
     
@@ -132,8 +132,8 @@ const component_tick = (view) => {
             com.value = null;
         }
     }
-    for(let no of view.component) {
-        const data = data_component(no);
+    for(let no of view.com) {
+        const data = data_com(no);
         if(!data) {
             continue;
         }

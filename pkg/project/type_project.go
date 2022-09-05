@@ -6,15 +6,15 @@ import (
 )
 
 type Project struct {
-	Setup     *Setup
-	Mesh      []*Mesh
-	Image     []*Image
-	Shader    []*Shader
-	Draw      []*Draw
-	Item      []*Item
-	Tile      []*Tile
-	Component []*Component
-	View      []*View
+	Setup  *Setup
+	Mesh   []*Mesh
+	Image  []*Image
+	Shader []*Shader
+	Draw   []*Draw
+	Item   []*Item
+	Tile   []*Tile
+	Com    []*Com
+	View   []*View
 
 	Script []string
 }
@@ -40,8 +40,8 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 		for _, tile := range page.Tile {
 			p.Tile = append(p.Tile, tile)
 		}
-		for _, comp := range page.Component {
-			p.Component = append(p.Component, comp)
+		for _, com := range page.Com {
+			p.Com = append(p.Com, com)
 		}
 		for _, view := range page.View {
 			p.View = append(p.View, view)
@@ -102,8 +102,8 @@ func (p *Project) FindItem(name string) int {
 	return -1
 }
 
-func (p *Project) FindComponent(name string) int {
-	for i, v := range p.Component {
+func (p *Project) FindCom(name string) int {
+	for i, v := range p.Com {
 		if v.Name == name {
 			return i
 		}

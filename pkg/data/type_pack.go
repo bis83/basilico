@@ -5,14 +5,14 @@ import (
 )
 
 type Pack struct {
-	Mesh      []*Mesh      `json:"mesh"`
-	Image     []*Image     `json:"image"`
-	Shader    []*Shader    `json:"shader"`
-	Draw      []*Draw      `json:"draw"`
-	Item      []*Item      `json:"item"`
-	Tile      []*Tile      `json:"tile"`
-	Component []*Component `json:"component"`
-	View      []*View      `json:"view"`
+	Mesh   []*Mesh   `json:"mesh"`
+	Image  []*Image  `json:"image"`
+	Shader []*Shader `json:"shader"`
+	Draw   []*Draw   `json:"draw"`
+	Item   []*Item   `json:"item"`
+	Tile   []*Tile   `json:"tile"`
+	Com    []*Com    `json:"com"`
+	View   []*View   `json:"view"`
 }
 
 func (p *Pack) Set(prj *project.Project) error {
@@ -58,12 +58,12 @@ func (p *Pack) Set(prj *project.Project) error {
 		}
 		p.Tile = append(p.Tile, &tile)
 	}
-	for _, v := range prj.Component {
-		var c Component
+	for _, v := range prj.Com {
+		var c Com
 		if err := c.Set(prj, v); err != nil {
 			return err
 		}
-		p.Component = append(p.Component, &c)
+		p.Com = append(p.Com, &c)
 	}
 	for _, v := range prj.View {
 		var view View

@@ -1,6 +1,6 @@
 package project
 
-type Component struct {
+type Com struct {
 	Name string `toml:"name"`
 	Draw string `toml:"draw"`
 
@@ -17,10 +17,10 @@ type Component struct {
 
 	Action [][]string `toml:"action"`
 
-	Text *ComponentText `toml:"text"`
+	Text *ComText `toml:"text"`
 }
 
-type ComponentText struct {
+type ComText struct {
 	Contents string `toml:"contents"`
 	Sampler  int    `toml:"sampler"`
 }

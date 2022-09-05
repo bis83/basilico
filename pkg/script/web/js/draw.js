@@ -79,9 +79,9 @@ const draw_tile = () => {
     }
 };
 
-const draw_component = (view) => {
-    for(let no of view.component) {
-        const data = data_component(no);
+const draw_com = (view) => {
+    for(let no of view.com) {
+        const data = data_com(no);
         if(!data) {
             continue;
         }
@@ -118,5 +118,5 @@ const draw_view = () => {
     if(view.draw3d) {
         draw_tile();
     }
-    draw_component(view);
+    draw_com(view);
 };

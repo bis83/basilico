@@ -59,6 +59,6 @@ const view_tick = () => {
     if(!view) {
         return;
     }
-    component_tick(view);
+    com_tick(view);
     view_tick_after();
 };

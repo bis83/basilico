@@ -5,7 +5,7 @@ import (
 	project "github.com/bis83/basilico/pkg/project"
 )
 
-type Component struct {
+type Com struct {
 	Draw int `json:"draw"`
 
 	X       int     `json:"x"`
@@ -21,10 +21,10 @@ type Component struct {
 
 	Action [][]string `json:"action"`
 
-	Text *ComponentText `json:"text,omitempty"`
+	Text *ComText `json:"text,omitempty"`
 }
 
-type ComponentText struct {
+type ComText struct {
 	Contents string `json:"contents"`
 	Sampler  int    `json:"s"`
 }
@@ -44,7 +44,7 @@ func toInteractNo(s string) int {
 	}
 }
 
-func (p *Component) Set(prj *project.Project, c *project.Component) error {
+func (p *Com) Set(prj *project.Project, c *project.Com) error {
 	p.Draw = prj.FindDraw(c.Draw)
 
 	p.X = c.X
@@ -61,7 +61,7 @@ func (p *Component) Set(prj *project.Project, c *project.Component) error {
 	p.Action = c.Action
 
 	if c.Text != nil {
-		var text ComponentText
+		var text ComText
 		text.Contents = c.Text.Contents
 		text.Sampler = c.Text.Sampler
 		p.Text = &text

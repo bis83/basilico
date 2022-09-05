@@ -43,21 +43,21 @@ type Draw struct {
 }
 
 type View struct {
-	Name      string   `toml:"name"`
-	Draw3D    bool     `toml:"draw3d"`
-	SkyBox    string   `toml:"skybox"`
-	Component []string `toml:"component"`
+	Name   string   `toml:"name"`
+	Draw3D bool     `toml:"draw3d"`
+	SkyBox string   `toml:"skybox"`
+	Com    []string `toml:"com"`
 }
 
 type Page struct {
-	Mesh      []*Mesh      `toml:"mesh"`
-	Image     []*Image     `toml:"image"`
-	Shader    []*Shader    `toml:"shader"`
-	Draw      []*Draw      `toml:"draw"`
-	Item      []*Item      `toml:"item"`
-	Tile      []*Tile      `toml:"tile"`
-	Component []*Component `toml:"component"`
-	View      []*View      `toml:"view"`
+	Mesh   []*Mesh   `toml:"mesh"`
+	Image  []*Image  `toml:"image"`
+	Shader []*Shader `toml:"shader"`
+	Draw   []*Draw   `toml:"draw"`
+	Item   []*Item   `toml:"item"`
+	Tile   []*Tile   `toml:"tile"`
+	Com    []*Com    `toml:"com"`
+	View   []*View   `toml:"view"`
 }
 
 func (p *Page) ReadFS(path string) error {
