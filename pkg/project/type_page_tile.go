@@ -8,8 +8,12 @@ type Tile struct {
 	Draw   string `toml:"draw"`
 	Height int    `toml:"height"`
 
-	Item      string `toml:"item"`
-	ItemCount int    `toml:"item-count"`
-
 	SaveID int `toml:"save-id"`
+
+	Mine *TileMine `toml:"mine"`
+}
+
+type TileMine struct {
+	Item  string `toml:"item"`
+	Count int    `toml:"count"`
 }

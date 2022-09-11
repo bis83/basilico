@@ -13,8 +13,12 @@ type Tile struct {
 	Draw   int `json:"draw"`
 	Height int `json:"height"`
 
-	Item      int `json:"item"`
-	ItemCount int `json:"item_count"`
+	Mine *TileMine `json:"mine,omitempty"`
+}
+
+type TileMine struct {
+	Item  int `json:"item"`
+	Count int `json:"count"`
 }
 
 func (p *Tile) Set(prj *project.Project, s *project.Tile) error {
@@ -26,8 +30,12 @@ func (p *Tile) Set(prj *project.Project, s *project.Tile) error {
 	}
 	p.Height = s.Height
 
-	p.Item = prj.FindItem(s.Item)
-	p.ItemCount = s.ItemCount
+	if s.Mine != nil {
+		var m TileMine
+		m.Item = prj.FindItem(s.Mine.Item)
+		m.Count = s.Mine.Count
+		p.Mine = &m
+	}
 
 	return nil
 }
