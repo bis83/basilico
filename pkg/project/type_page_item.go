@@ -7,4 +7,10 @@ type Item struct {
 	Icon int    `toml:"icon"`
 
 	SaveID int `toml:"save-id"`
+
+	Hand *ItemHand `toml:"hand"`
+}
+
+type ItemHand struct {
+	Hit string `toml:"hit"`
 }

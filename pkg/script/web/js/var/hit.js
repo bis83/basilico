@@ -12,7 +12,10 @@ const hit_ranges = (x, y, ha) => {
     return ranges;
 };
 
-const hit_activate = (ranges) => {
+const HIT_ACTIVATE = 1;
+const HIT_MINING = 2;
+
+const hit = (hit, ranges) => {
     for(const r of ranges) {
         const tile = tile_prop(r.x, r.y);
         if(!tile) {
@@ -22,9 +25,14 @@ const hit_activate = (ranges) => {
         if(!data) {
             continue;
         }
-        if(data.mine) {
-            item_gain(data.mine.item, data.mine.count);
-            tile_prop_del(r.x, r.y);
+
+        if(hit === HIT_ACTIVATE) {
+        }
+        if(hit === HIT_MINING) {
+            if(data.mine) {
+                item_gain(data.mine.item, data.mine.count);
+                tile_prop_del(r.x, r.y);
+            }
         }
     }
 };
