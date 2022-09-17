@@ -102,21 +102,21 @@ const draw_com = (view) => {
     }
 };
 
-const draw_skybox = (view) => {
-    draw_call(view.skybox, 1, (u, i) => {
-        $view.m.set(mat4translate(...$view.cam.eye));
-        $gl.uniformMatrix4fv(u.w, false, $view.m);
-    });
-};
-
 const draw_view = () => {
-    const view = data_view($view.view);
-    if(!view) {
+    const data = data_view($view.view);
+    if(!data) {
         return;
     }
-    draw_skybox(view);
-    if(view.draw3d) {
+    if(data.draw) {
+        for(let no of data.draw) {
+            draw_call(no, 1, (u, i) => {
+                $view.m.set(mat4translate(...$view.cam.eye));
+                $gl.uniformMatrix4fv(u.w, false, $view.m);
+            });
+        }
+    }
+    if(data.draw3d) {
         draw_tile();
     }
-    draw_com(view);
+    draw_com(data);
 };
