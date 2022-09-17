@@ -10,10 +10,15 @@ type Tile struct {
 
 	SaveID int `toml:"save-id"`
 
-	Mine *TileMine `toml:"mine"`
+	Mine   *TileMine   `toml:"mine"`
+	Device *TileDevice `toml:"device"`
 }
 
 type TileMine struct {
 	Item  string `toml:"item"`
 	Count int    `toml:"count"`
+}
+
+type TileDevice struct {
+	Action [][]string `toml:"action"`
 }

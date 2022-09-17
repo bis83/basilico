@@ -27,6 +27,9 @@ const hit = (hit, ranges) => {
         }
 
         if(hit === HIT_ACTIVATE) {
+            if(data.device) {
+                action_invoke(tile, data.device.action);
+            }
         }
         if(hit === HIT_MINING) {
             if(data.mine) {

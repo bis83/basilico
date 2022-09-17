@@ -13,12 +13,17 @@ type Tile struct {
 	Draw   int `json:"draw"`
 	Height int `json:"height"`
 
-	Mine *TileMine `json:"mine,omitempty"`
+	Mine   *TileMine   `json:"mine,omitempty"`
+	Device *TileDevice `json:"device,omitempty"`
 }
 
 type TileMine struct {
 	Item  int `json:"item"`
 	Count int `json:"count"`
+}
+
+type TileDevice struct {
+	Action [][]string `json:"action"`
 }
 
 func (p *Tile) Set(prj *project.Project, s *project.Tile) error {
@@ -35,6 +40,11 @@ func (p *Tile) Set(prj *project.Project, s *project.Tile) error {
 		m.Item = prj.FindItem(s.Mine.Item)
 		m.Count = s.Mine.Count
 		p.Mine = &m
+	}
+	if s.Device != nil {
+		var m TileDevice
+		m.Action = s.Device.Action
+		p.Device = &m
 	}
 
 	return nil
