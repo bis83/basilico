@@ -82,6 +82,19 @@ const mat4translated = (m, x, y, z) => {
     m[14] = z;
 };
 
+const mat4angle = (ha, va) => {
+    const h = deg2rad(ha);
+    const sinH = Math.sin(h);
+    const cosH = Math.cos(h);
+    // const v = deg2rad(va);
+    return [
+         cosH, sinH, 0, 0,
+        -sinH, cosH, 0, 0,
+            0,    0, 1, 0,
+            0,    0, 0, 1,
+    ];
+};
+
 const mat4scale = (x, y, z) => {
     return [
         x, 0, 0, 0,

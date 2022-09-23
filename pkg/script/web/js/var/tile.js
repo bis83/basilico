@@ -85,12 +85,12 @@ const tile_base_set = (x, y, no) => {
     }
     $tile.a[i] = {no: no, count: 1};
 };
-const tile_prop_set = (x, y, no) => {
+const tile_prop_set = (x, y, no, ha) => {
     const i = tile_index(x, y);
     if(i < 0) {
         return;
     }
-    $tile.b[i] = {no: no, dir: 0};
+    $tile.b[i] = {no: no, ha: ha||0};
 };
 
 const tile_base_del = (x, y) => {
