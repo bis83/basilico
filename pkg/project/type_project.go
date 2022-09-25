@@ -102,6 +102,15 @@ func (p *Project) FindItem(name string) int {
 	return -1
 }
 
+func (p *Project) FindTile(name string) int {
+	for i, v := range p.Tile {
+		if v.Name == name {
+			return i
+		}
+	}
+	return -1
+}
+
 func (p *Project) FindCom(name string) int {
 	for i, v := range p.Com {
 		if v.Name == name {

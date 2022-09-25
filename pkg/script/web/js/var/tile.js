@@ -83,7 +83,11 @@ const tile_base_set = (x, y, no) => {
     if(i < 0) {
         return;
     }
-    $tile.a[i] = {no: no, count: 1};
+    if($tile.a[i] && $tile.a[i].no === no) {
+        $tile.a[i].count += 1;
+    } else {
+        $tile.a[i] = {no: no, count: 1};
+    }
 };
 const tile_prop_set = (x, y, no, ha) => {
     const i = tile_index(x, y);
