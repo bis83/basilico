@@ -14,7 +14,8 @@ const hit_ranges = (x, y, ha) => {
 
 const HIT_ACTIVATE = 1;
 const HIT_MINING = 2;
-const HIT_TILE_SET = 3;
+const HIT_DIG = 3;
+const HIT_TILE_SET = 4;
 
 const hit_activate = (ranges) => {
     let result = 0;
@@ -55,6 +56,18 @@ const hit_mining = (ranges) => {
     return result;
 };
 
+const hit_dig = (ranges) => {
+    let result = 0;
+    for(const r of ranges) {
+        if(tile_prop(r.x, r.y) != null) {
+            continue;
+        }
+        tile_base_del(r.x, r.y);
+        result += 1;
+    }
+    return result;
+}
+
 const hit_tile_set = (value, ranges) => {
     let result = 0;
     for(const r of ranges) {
@@ -74,8 +87,11 @@ const hit = (hit, value, ranges) => {
     if(hit === HIT_MINING) {
         return hit_mining(ranges);
     }
+    if(hit === HIT_DIG) {
+        return hit_dig(ranges);
+    }
     if(hit === HIT_TILE_SET) {
         return hit_tile_set(value, ranges);
     }
-    return result;
+    return 0;
 };
