@@ -78,7 +78,7 @@ const draw_com = (view) => {
         if(!data) {
             continue;
         }
-        if(data.draw < 0) {
+        if(data.draw <= 0) {
             continue;
         }
 

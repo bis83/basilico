@@ -61,6 +61,9 @@ func buildData(prj *project.Project, baseDir string) error {
 
 func copyImage(prj *project.Project, srcDir string, dstDir string) error {
 	for _, v := range prj.Image {
+		if v == nil {
+			continue
+		}
 		if len(v.Source) <= 0 {
 			continue
 		}

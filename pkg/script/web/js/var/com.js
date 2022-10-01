@@ -3,7 +3,7 @@ const $com = [];
 
 const com_value = (name) => {
     const no = data_com_index(name);
-    if(no < 0) {
+    if(no <= 0) {
         return null;
     }
     const com = $com[no];
@@ -147,7 +147,7 @@ const com_tick = (view) => {
         }
         const com = $com[no];
 
-        if(data.draw >= 0) {
+        if(data.draw > 0) {
             const ox = data.ox * w/2;
             const oy = data.oy * h/2;
             const m = mat4scale(data.w/2, data.h/2, 1);

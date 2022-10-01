@@ -17,11 +17,11 @@ type Draw struct {
 
 func (p *Draw) Set(prj *project.Project, s *project.Draw) error {
 	p.Mesh = prj.FindMesh(s.Mesh)
-	if p.Mesh < 0 {
+	if p.Mesh <= 0 {
 		return fmt.Errorf("Mesh Not Found: %s", s.Mesh)
 	}
 	p.Shader = prj.FindShader(s.Shader)
-	if p.Shader < 0 {
+	if p.Shader <= 0 {
 		return fmt.Errorf("Shader Not Found: %s", s.Shader)
 	}
 	p.Image = prj.FindImage(s.Image)

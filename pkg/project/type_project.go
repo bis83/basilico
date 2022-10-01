@@ -21,6 +21,14 @@ type Project struct {
 
 func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 	p.Setup = setup
+	p.Mesh = append(p.Mesh, nil)
+	p.Image = append(p.Image, nil)
+	p.Shader = append(p.Shader, nil)
+	p.Draw = append(p.Draw, nil)
+	p.Item = append(p.Item, nil)
+	p.Tile = append(p.Tile, nil)
+	p.Com = append(p.Com, nil)
+	p.View = append(p.View, nil)
 	for _, page := range pages {
 		for _, mesh := range page.Mesh {
 			p.Mesh = append(p.Mesh, mesh)
@@ -59,72 +67,96 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 
 func (p *Project) FindMesh(name string) int {
 	for i, v := range p.Mesh {
+		if v == nil {
+			continue
+		}
 		if v.Name == name {
 			return i
 		}
 	}
-	return -1
+	return 0
 }
 
 func (p *Project) FindImage(name string) int {
 	for i, v := range p.Image {
+		if v == nil {
+			continue
+		}
 		if v.Name == name {
 			return i
 		}
 	}
-	return -1
+	return 0
 }
 
 func (p *Project) FindShader(name string) int {
 	for i, v := range p.Shader {
+		if v == nil {
+			continue
+		}
 		if v.Name == name {
 			return i
 		}
 	}
-	return -1
+	return 0
 }
 
 func (p *Project) FindDraw(name string) int {
 	for i, v := range p.Draw {
+		if v == nil {
+			continue
+		}
 		if v.Name == name {
 			return i
 		}
 	}
-	return -1
+	return 0
 }
 
 func (p *Project) FindItem(name string) int {
 	for i, v := range p.Item {
+		if v == nil {
+			continue
+		}
 		if v.Name == name {
 			return i
 		}
 	}
-	return -1
+	return 0
 }
 
 func (p *Project) FindTile(name string) int {
 	for i, v := range p.Tile {
+		if v == nil {
+			continue
+		}
 		if v.Name == name {
 			return i
 		}
 	}
-	return -1
+	return 0
 }
 
 func (p *Project) FindCom(name string) int {
 	for i, v := range p.Com {
+		if v == nil {
+			continue
+		}
 		if v.Name == name {
 			return i
 		}
 	}
-	return -1
+	return 0
 }
 
 func (p *Project) FindView(name string) int {
 	for i, v := range p.View {
+		if v == nil {
+			continue
+		}
 		if v.Name == name {
 			return i
 		}
 	}
-	return -1
+	return 0
 }

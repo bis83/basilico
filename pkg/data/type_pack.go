@@ -15,57 +15,121 @@ type Pack struct {
 	View   []*View   `json:"view"`
 }
 
-func (p *Pack) Set(prj *project.Project) error {
-	for _, v := range prj.Mesh {
+func (p *Pack) Set(prj *project.Project, index *Index, pack int) error {
+	for i, v := range prj.Mesh {
+		if v == nil {
+			continue
+		}
+		if index.Mesh[i].Pack != pack {
+			continue
+		}
+		index.Mesh[i].Index = len(p.Mesh)
+
 		var mesh Mesh
 		if err := mesh.Set(v); err != nil {
 			return err
 		}
 		p.Mesh = append(p.Mesh, &mesh)
 	}
-	for _, v := range prj.Image {
+	for i, v := range prj.Image {
+		if v == nil {
+			continue
+		}
+		if index.Image[i].Pack != pack {
+			continue
+		}
+		index.Image[i].Index = len(p.Image)
+
 		var img Image
 		if err := img.Set(v); err != nil {
 			return err
 		}
 		p.Image = append(p.Image, &img)
 	}
-	for _, v := range prj.Shader {
+	for i, v := range prj.Shader {
+		if v == nil {
+			continue
+		}
+		if index.Shader[i].Pack != pack {
+			continue
+		}
+		index.Shader[i].Index = len(p.Shader)
+
 		var shader Shader
 		if err := shader.Set(v); err != nil {
 			return err
 		}
 		p.Shader = append(p.Shader, &shader)
 	}
-	for _, v := range prj.Draw {
+	for i, v := range prj.Draw {
+		if v == nil {
+			continue
+		}
+		if index.Draw[i].Pack != pack {
+			continue
+		}
+		index.Draw[i].Index = len(p.Draw)
+
 		var draw Draw
 		if err := draw.Set(prj, v); err != nil {
 			return err
 		}
 		p.Draw = append(p.Draw, &draw)
 	}
-	for _, v := range prj.Item {
+	for i, v := range prj.Item {
+		if v == nil {
+			continue
+		}
+		if index.Item[i].Pack != pack {
+			continue
+		}
+		index.Item[i].Index = len(p.Item)
+
 		var item Item
 		if err := item.Set(prj, v); err != nil {
 			return err
 		}
 		p.Item = append(p.Item, &item)
 	}
-	for _, v := range prj.Tile {
+	for i, v := range prj.Tile {
+		if v == nil {
+			continue
+		}
+		if index.Tile[i].Pack != pack {
+			continue
+		}
+		index.Tile[i].Index = len(p.Tile)
+
 		var tile Tile
 		if err := tile.Set(prj, v); err != nil {
 			return err
 		}
 		p.Tile = append(p.Tile, &tile)
 	}
-	for _, v := range prj.Com {
+	for i, v := range prj.Com {
+		if v == nil {
+			continue
+		}
+		if index.Com[i].Pack != pack {
+			continue
+		}
+		index.Com[i].Index = len(p.Com)
+
 		var c Com
 		if err := c.Set(prj, v); err != nil {
 			return err
 		}
 		p.Com = append(p.Com, &c)
 	}
-	for _, v := range prj.View {
+	for i, v := range prj.View {
+		if v == nil {
+			continue
+		}
+		if index.View[i].Pack != pack {
+			continue
+		}
+		index.View[i].Index = len(p.View)
+
 		var view View
 		if err := view.Set(prj, v); err != nil {
 			return err

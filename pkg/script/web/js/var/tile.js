@@ -16,7 +16,7 @@ const tile_init_empty = (w, h) => {
     for(let i=0; i<$tile.t.length; ++i) {
         $tile.t[i] = {
             base: [],
-            no: -1,
+            no: 0,
             ha: 0,
         };
     }
@@ -41,14 +41,14 @@ const tile_is_empty = (tile) => {
     if(!tile) {
         return true;
     }
-    return (tile.base.length <= 0) && (tile.no < 0);
+    return (tile.base.length <= 0) && (tile.no <= 0);
 };
 
 const tile_is_prop = (tile) => {
     if(!tile) {
         return false;
     }
-    return (tile.no >= 0);
+    return (tile.no > 0);
 };
 
 const tile_is_noentry = (tile, h0) => {
@@ -83,7 +83,7 @@ const tile_del = (tile) => {
     if(!tile) {
         return;
     }
-    tile.no = -1;
+    tile.no = 0;
     tile.ha = 0;
 };
 const tile_base_push = (tile, no) => {

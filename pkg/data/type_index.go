@@ -30,29 +30,61 @@ func (p *Index) Set(prj *project.Project) error {
 	if p.InitialView < 0 {
 		return fmt.Errorf("View Not Found: %s", prj.Setup.InitialView)
 	}
-	for i, v := range prj.Mesh {
-		p.Mesh = append(p.Mesh, &Entry{Name: v.Name, Pack: 0, Index: i})
+	for _, v := range prj.Mesh {
+		if v != nil {
+			p.Mesh = append(p.Mesh, &Entry{Name: v.Name, Pack: 0, Index: 0})
+		} else {
+			p.Mesh = append(p.Mesh, nil)
+		}
 	}
-	for i, v := range prj.Image {
-		p.Image = append(p.Image, &Entry{Name: v.Name, Pack: 0, Index: i})
+	for _, v := range prj.Image {
+		if v != nil {
+			p.Image = append(p.Image, &Entry{Name: v.Name, Pack: 0, Index: 0})
+		} else {
+			p.Image = append(p.Image, nil)
+		}
 	}
-	for i, v := range prj.Shader {
-		p.Shader = append(p.Shader, &Entry{Name: v.Name, Pack: 0, Index: i})
+	for _, v := range prj.Shader {
+		if v != nil {
+			p.Shader = append(p.Shader, &Entry{Name: v.Name, Pack: 0, Index: 0})
+		} else {
+			p.Shader = append(p.Shader, nil)
+		}
 	}
-	for i, v := range prj.Draw {
-		p.Draw = append(p.Draw, &Entry{Name: v.Name, Pack: 0, Index: i})
+	for _, v := range prj.Draw {
+		if v != nil {
+			p.Draw = append(p.Draw, &Entry{Name: v.Name, Pack: 0, Index: 0})
+		} else {
+			p.Draw = append(p.Draw, nil)
+		}
 	}
-	for i, v := range prj.Item {
-		p.Item = append(p.Item, &Entry{Name: v.Name, Pack: 0, Index: i, SaveID: v.SaveID})
+	for _, v := range prj.Item {
+		if v != nil {
+			p.Item = append(p.Item, &Entry{Name: v.Name, Pack: 0, Index: 0, SaveID: v.SaveID})
+		} else {
+			p.Item = append(p.Item, nil)
+		}
 	}
-	for i, v := range prj.Tile {
-		p.Tile = append(p.Tile, &Entry{Name: v.Name, Pack: 0, Index: i, SaveID: v.SaveID})
+	for _, v := range prj.Tile {
+		if v != nil {
+			p.Tile = append(p.Tile, &Entry{Name: v.Name, Pack: 0, Index: 0, SaveID: v.SaveID})
+		} else {
+			p.Tile = append(p.Tile, nil)
+		}
 	}
-	for i, v := range prj.Com {
-		p.Com = append(p.Com, &Entry{Name: v.Name, Pack: 0, Index: i})
+	for _, v := range prj.Com {
+		if v != nil {
+			p.Com = append(p.Com, &Entry{Name: v.Name, Pack: 0, Index: 0})
+		} else {
+			p.Com = append(p.Com, nil)
+		}
 	}
-	for i, v := range prj.View {
-		p.View = append(p.View, &Entry{Name: v.Name, Pack: 0, Index: i})
+	for _, v := range prj.View {
+		if v != nil {
+			p.View = append(p.View, &Entry{Name: v.Name, Pack: 0, Index: 0})
+		} else {
+			p.View = append(p.View, nil)
+		}
 	}
 	return nil
 }

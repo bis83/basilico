@@ -28,7 +28,7 @@ const data_loadPack = (no) => {
 };
 
 const data_lookup = (type, no) => {
-    if(no < 0) {
+    if(no <= 0) {
         return null;
     }
     const table = $data.index[type];
@@ -74,9 +74,13 @@ const data_com = (no) => {
 const data_lookup_index = (type, name) => {
     const table = $data.index[type];
     if(!table) {
-        return -1;
+        return 0;
     }
-    return table.findIndex(o => o.n === name);
+    const i = table.findIndex(o => o && o.n === name);
+    if(i <= 0) {
+        return 0;
+    }
+    return i;
 };
 
 const data_view_index = (name) => {
