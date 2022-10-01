@@ -5,10 +5,9 @@ type Tile struct {
 	Text string `toml:"text"`
 	Desc string `toml:"desc"`
 
-	Draw   string `toml:"draw"`
-	Height int    `toml:"height"`
-
 	SaveID int `toml:"save-id"`
+
+	Draw string `toml:"draw"`
 
 	Mine   *TileMine   `toml:"mine"`
 	Device *TileDevice `toml:"device"`

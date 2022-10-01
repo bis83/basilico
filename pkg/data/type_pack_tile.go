@@ -10,8 +10,7 @@ type Tile struct {
 	Text string `json:"text"`
 	Desc string `json:"desc"`
 
-	Draw   int `json:"draw"`
-	Height int `json:"height"`
+	Draw int `json:"draw"`
 
 	Mine   *TileMine   `json:"mine,omitempty"`
 	Device *TileDevice `json:"device,omitempty"`
@@ -33,7 +32,6 @@ func (p *Tile) Set(prj *project.Project, s *project.Tile) error {
 	if p.Draw < 0 {
 		return fmt.Errorf("Draw Not Found: %s", s.Draw)
 	}
-	p.Height = s.Height
 
 	if s.Mine != nil {
 		var m TileMine

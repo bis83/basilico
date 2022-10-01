@@ -52,7 +52,7 @@ const draw_tile = () => {
                 continue;
             }
             draw_call(data.draw, tile.count, (u, i) => {
-                const pos = tile_to_world(x, y, i*data.height);
+                const pos = tile_to_world(x, y, i);
                 $view.m.set(mat4translate(pos[0], pos[1], pos[2]));
                 $gl.uniformMatrix4fv(u.w, false, $view.m);
             });
@@ -69,7 +69,7 @@ const draw_tile = () => {
             if(!data) {
                 continue;
             }
-            const h = tile_base_height(x, y);
+            const h = tile_height(x, y);
             draw_call(data.draw, 1, (u, i) => {
                 const pos = tile_to_world(x, y, h);
                 const m = mat4angle(tile.ha||0, tile.va||0);

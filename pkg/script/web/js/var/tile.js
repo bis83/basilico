@@ -24,7 +24,7 @@ const tile_prop = (x, y) => {
     return $tile.b[tile_index(x, y)];
 };
 
-const tile_base_height = (x, y) => {
+const tile_height = (x, y) => {
     const tile = tile_base(x, y);
     if(!tile) {
         return 0;
@@ -33,21 +33,7 @@ const tile_base_height = (x, y) => {
     if(!data) {
         return 0;
     }
-    return data.height * tile.count;
-};
-const tile_prop_height = (x, y) => {
-    const tile = tile_prop(x, y);
-    if(!tile) {
-        return 0;
-    }
-    const data = data_tile(tile.no);
-    if(!data) {
-        return 0;
-    }
-    return data.height;
-};
-const tile_height = (x, y) => {
-    return tile_base_height(x, y) + tile_prop_height(x, y);
+    return tile.count;
 };
 
 const tile_is_empty = (x, y) => {
@@ -56,6 +42,9 @@ const tile_is_empty = (x, y) => {
 
 const tile_is_noentry = (x, y, dx, dy) => {
     if(tile_is_empty(x+dx, y+dy)) {
+        return true;
+    }
+    if(tile_prop(x+dx, y+dy)) {
         return true;
     }
     const h0 = tile_height(x, y);
