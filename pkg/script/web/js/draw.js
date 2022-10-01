@@ -4,7 +4,7 @@ const draw_start_frame = () => {
     gl_clear();
 };
 
-const draw_call = (no, count, func) => {
+const draw_call = (no, func) => {
     const data = data_draw(no);
     if(!data) {
         return;
@@ -33,44 +33,35 @@ const draw_call = (no, count, func) => {
         gl_useTexture(null, shader.u.tex0);
     }
 
-    for(let i=0; i<count; ++i) {
-        func(shader.u, i);
-        gl_drawMesh(mesh);
-    }
+    func(shader.u);
+    gl_drawMesh(mesh);
 };
 
 const draw_tile = () => {
-    // base
     for(let x=0; x<$tile.w; ++x) {
         for(let y=0; y<$tile.h; ++y) {
-            const tile = tile_base(x, y);
+            const tile = tile_get(x, y);
             if(!tile) {
                 continue;
             }
+            for(let i=0; i<tile.base.length; ++i) {
+                const data = data_tile(tile.base[i]);
+                if(!data) {
+                    continue;
+                }
+                draw_call(data.draw, (u) => {
+                    const pos = tile_to_world(x, y, i);
+                    $view.m.set(mat4translate(pos[0], pos[1], pos[2]));
+                    $gl.uniformMatrix4fv(u.w, false, $view.m);
+                });
+            }
+
             const data = data_tile(tile.no);
             if(!data) {
                 continue;
             }
-            draw_call(data.draw, tile.count, (u, i) => {
-                const pos = tile_to_world(x, y, i);
-                $view.m.set(mat4translate(pos[0], pos[1], pos[2]));
-                $gl.uniformMatrix4fv(u.w, false, $view.m);
-            });
-        }
-    }
-    // prop
-    for(let x=0; x<$tile.w; ++x) {
-        for(let y=0; y<$tile.h; ++y) {
-            const tile = tile_prop(x, y);
-            if(!tile) {
-                continue;
-            }
-            const data = data_tile(tile.no);
-            if(!data) {
-                continue;
-            }
-            const h = tile_height(x, y);
-            draw_call(data.draw, 1, (u, i) => {
+            const h = tile_height(tile);
+            draw_call(data.draw, (u) => {
                 const pos = tile_to_world(x, y, h);
                 const m = mat4angle(tile.ha||0, tile.va||0);
                 mat4translated(m, pos[0]+1, pos[1]+1, pos[2]);
@@ -95,7 +86,7 @@ const draw_com = (view) => {
         if(!com) {
             continue;
         }
-        draw_call(data.draw, 1, (u, i) => {
+        draw_call(data.draw, (u) => {
             $gl.uniformMatrix4fv(u.w, false, com.m);
             if(com.img) {
                 gl_useTexture(com.img, u.tex0);
@@ -111,7 +102,7 @@ const draw_view = () => {
     }
     if(data.draw) {
         for(let no of data.draw) {
-            draw_call(no, 1, (u, i) => {
+            draw_call(no, (u) => {
                 $view.m.set(mat4translate(...$view.cam.eye));
                 $gl.uniformMatrix4fv(u.w, false, $view.m);
             });

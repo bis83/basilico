@@ -29,7 +29,7 @@ func toHitNo(s string) int {
 		return 2
 	case "dig":
 		return 3
-	case "tile-set":
+	case "put":
 		return 4
 	default:
 		return 0

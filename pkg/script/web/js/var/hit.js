@@ -15,12 +15,12 @@ const hit_ranges = (x, y, ha) => {
 const HIT_ACTIVATE = 1;
 const HIT_MINING = 2;
 const HIT_DIG = 3;
-const HIT_TILE_SET = 4;
+const HIT_PUT = 4;
 
 const hit_activate = (ranges) => {
     let result = 0;
     for(const r of ranges) {
-        const tile = tile_prop(r.x, r.y);
+        const tile = tile_get(r.x, r.y);
         if(!tile) {
             continue;
         }
@@ -39,7 +39,7 @@ const hit_activate = (ranges) => {
 const hit_mining = (ranges) => {
     let result = 0;
     for(const r of ranges) {
-        const tile = tile_prop(r.x, r.y);
+        const tile = tile_get(r.x, r.y);
         if(!tile) {
             continue;
         }
@@ -49,7 +49,7 @@ const hit_mining = (ranges) => {
         }
         if(data.mine) {
             item_gain(data.mine.item, data.mine.count);
-            tile_prop_del(r.x, r.y);
+            tile_del(tile);
             result += 1;
         }
     }
@@ -59,22 +59,27 @@ const hit_mining = (ranges) => {
 const hit_dig = (ranges) => {
     let result = 0;
     for(const r of ranges) {
-        if(tile_prop(r.x, r.y) != null) {
+        const tile = tile_get(r.x, r.y);
+        if(tile_is_empty(tile)) {
             continue;
         }
-        tile_base_del(r.x, r.y);
+        if(tile_is_prop(tile)) {
+            continue;
+        }
+        tile_base_pop(tile);
         result += 1;
     }
     return result;
 }
 
-const hit_tile_set = (value, ranges) => {
+const hit_put = (value, ranges) => {
     let result = 0;
     for(const r of ranges) {
-        if(tile_prop(r.x, r.y) != null) {
+        const tile = tile_get(r.x, r.y);
+        if(tile_is_prop(tile)) {
             continue;
         }
-        tile_base_set(r.x, r.y, value);
+        tile_base_push(tile, value);
         result += 1;
     }
     return result;
@@ -90,8 +95,8 @@ const hit = (hit, value, ranges) => {
     if(hit === HIT_DIG) {
         return hit_dig(ranges);
     }
-    if(hit === HIT_TILE_SET) {
-        return hit_tile_set(value, ranges);
+    if(hit === HIT_PUT) {
+        return hit_put(value, ranges);
     }
     return 0;
 };

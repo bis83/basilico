@@ -2,8 +2,24 @@
 const $tile = {
     w: 0,
     h: 0,
-    a: [],
-    b: [],
+    t: [],
+};
+
+const tile_init_empty = (w, h) => {
+    w = w || 0;
+    h = h || 0;
+
+    $tile.w = w;
+    $tile.h = h;
+    $tile.t = [];
+    $tile.t.length = w*h;
+    for(let i=0; i<$tile.t.length; ++i) {
+        $tile.t[i] = {
+            base: [],
+            no: -1,
+            ha: 0,
+        };
+    }
 };
 
 const tile_index = (x, y) => {
@@ -17,88 +33,70 @@ const tile_index = (x, y) => {
     }
     return x + y * $tile.h;
 };
-const tile_base = (x, y) => {
-    return $tile.a[tile_index(x, y)];
-};
-const tile_prop = (x, y) => {
-    return $tile.b[tile_index(x, y)];
+const tile_get = (x, y) => {
+    return $tile.t[tile_index(x, y)];
 };
 
-const tile_height = (x, y) => {
-    const tile = tile_base(x, y);
+const tile_is_empty = (tile) => {
     if(!tile) {
-        return 0;
+        return true;
     }
-    const data = data_tile(tile.no);
-    if(!data) {
-        return 0;
-    }
-    return tile.count;
+    return (tile.base.length <= 0) && (tile.no < 0);
 };
 
-const tile_is_empty = (x, y) => {
-    return tile_base(x, y) == null;
-}
+const tile_is_prop = (tile) => {
+    if(!tile) {
+        return false;
+    }
+    return (tile.no >= 0);
+};
 
-const tile_is_noentry = (x, y, dx, dy) => {
-    if(tile_is_empty(x+dx, y+dy)) {
+const tile_is_noentry = (tile, h0) => {
+    if(tile_is_empty(tile)) {
         return true;
     }
-    if(tile_prop(x+dx, y+dy)) {
+    if(tile_is_prop(tile)) {
         return true;
     }
-    const h0 = tile_height(x, y);
-    const h1 = tile_height(x+dx, y+dy);
+    const h1 = tile_height(tile);
     if(Math.abs(h0-h1) > 1) {
         return true;
     }
     return false;
 };
 
-const tile_init_empty = (w, h) => {
-    w = w || 0;
-    h = h || 0;
-
-    $tile.w = w;
-    $tile.h = h;
-    $tile.a = [];
-    $tile.a.length = w*h;
-    $tile.b = [];
-    $tile.b.length = w*h;
+const tile_height = (tile) => {
+    if(!tile) {
+        return 0;
+    }
+    return tile.base.length;
 };
 
-const tile_base_set = (x, y, no) => {
-    const i = tile_index(x, y);
-    if(i < 0) {
+const tile_set = (tile, no, ha) => {
+    if(!tile) {
         return;
     }
-    if($tile.a[i] && $tile.a[i].no === no) {
-        $tile.a[i].count += 1;
-    } else {
-        $tile.a[i] = {no: no, count: 1};
-    }
+    tile.no = no;
+    tile.ha = ha || 0;
 };
-const tile_prop_set = (x, y, no, ha) => {
-    const i = tile_index(x, y);
-    if(i < 0) {
+const tile_del = (tile) => {
+    if(!tile) {
         return;
     }
-    $tile.b[i] = {no: no, ha: ha||0};
+    tile.no = -1;
+    tile.ha = 0;
 };
-
-const tile_base_del = (x, y) => {
-    const i = tile_index(x, y);
-    if(i < 0) {
+const tile_base_push = (tile, no) => {
+    if(!tile) {
         return;
     }
-    $tile.a[i] = null;
+    tile.base.push(no);
 };
-const tile_prop_del = (x, y) => {
-    const i = tile_index(x, y);
-    if(i < 0) {
+const tile_base_pop = (tile) => {
+    if(!tile) {
         return;
     }
-    $tile.b[i] = null;
+    tile.base.pop();
 };
 
 const tile_encode = (data) => {
