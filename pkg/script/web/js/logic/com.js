@@ -1,12 +1,10 @@
 
-const $com = [];
-
 const com_value = (name) => {
     const no = data_com_index(name);
     if(no <= 0) {
         return null;
     }
-    const com = $com[no];
+    const com = $view.com[no];
     if(!com) {
         return null;
     }
@@ -126,7 +124,7 @@ const com_tick = (view) => {
     const w = window.innerWidth;
     const h = window.innerHeight;
     
-    for(const com of $com) {
+    for(const com of $view.com) {
         if(com) {
             com.value = null;
         }
@@ -136,8 +134,8 @@ const com_tick = (view) => {
         if(!data) {
             continue;
         }
-        if(!$com[no]) {
-            $com[no] = {
+        if(!$view.com[no]) {
+            $view.com[no] = {
                 m: new Float32Array(16),
                 value: null,
                 state: STATE_RESET,
@@ -145,7 +143,7 @@ const com_tick = (view) => {
                 cvs: null,
             };
         }
-        const com = $com[no];
+        const com = $view.com[no];
 
         if(data.draw > 0) {
             const ox = data.ox * w/2;

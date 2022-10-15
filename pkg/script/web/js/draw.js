@@ -82,7 +82,7 @@ const draw_com = (view) => {
             continue;
         }
 
-        const com = $com[no];
+        const com = $view.com[no];
         if(!com) {
             continue;
         }

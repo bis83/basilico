@@ -30,9 +30,11 @@ var scripts = []string{
 	"web/js/var/tile.js",
 	"web/js/var/pos.js",
 	"web/js/var/item.js",
-	"web/js/var/hit.js",
-	"web/js/var/com.js",
 	"web/js/var/view.js",
+
+	// logic
+	"web/js/logic/hit.js",
+	"web/js/logic/com.js",
 
 	// savegame
 	"web/js/savegame.js",

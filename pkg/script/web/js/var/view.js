@@ -2,6 +2,7 @@
 const $view = {
     view: null,
     slot: null,
+    com: [],
     cam: {
         eye: [0, 0, 0],
         vp: new Float32Array(16),
