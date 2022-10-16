@@ -38,9 +38,9 @@ const draw_call = (no, func) => {
 };
 
 const draw_tile = () => {
-    for(let x=0; x<$tile.w; ++x) {
-        for(let y=0; y<$tile.h; ++y) {
-            const tile = tile_get(x, y);
+    for(let x=0; x<$grid.w; ++x) {
+        for(let y=0; y<$grid.h; ++y) {
+            const tile = grid_get(x, y);
             if(!tile) {
                 continue;
             }
@@ -50,7 +50,7 @@ const draw_tile = () => {
                     continue;
                 }
                 draw_call(data.draw, (u) => {
-                    const pos = tile_to_world(x, y, i);
+                    const pos = grid_to_world(x, y, i);
                     $view.m.set(mat4translate(pos[0], pos[1], pos[2]));
                     $gl.uniformMatrix4fv(u.w, false, $view.m);
                 });
@@ -60,9 +60,9 @@ const draw_tile = () => {
             if(!data) {
                 continue;
             }
-            const h = tile_height(tile);
+            const h = grid_height(tile);
             draw_call(data.draw, (u) => {
-                const pos = tile_to_world(x, y, h);
+                const pos = grid_to_world(x, y, h);
                 const m = mat4angle(tile.ha||0, tile.va||0);
                 mat4translated(m, pos[0]+1, pos[1]+1, pos[2]);
                 $view.m.set(m);

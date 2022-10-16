@@ -20,7 +20,7 @@ const HIT_PUT = 4;
 const hit_activate = (ranges) => {
     let result = 0;
     for(const r of ranges) {
-        const tile = tile_get(r.x, r.y);
+        const tile = grid_get(r.x, r.y);
         if(!tile) {
             continue;
         }
@@ -39,7 +39,7 @@ const hit_activate = (ranges) => {
 const hit_mining = (ranges) => {
     let result = 0;
     for(const r of ranges) {
-        const tile = tile_get(r.x, r.y);
+        const tile = grid_get(r.x, r.y);
         if(!tile) {
             continue;
         }
@@ -49,7 +49,7 @@ const hit_mining = (ranges) => {
         }
         if(data.mine) {
             item_gain(data.mine.item, data.mine.count);
-            tile_del(tile);
+            grid_del(tile);
             result += 1;
         }
     }
@@ -59,14 +59,14 @@ const hit_mining = (ranges) => {
 const hit_dig = (ranges) => {
     let result = 0;
     for(const r of ranges) {
-        const tile = tile_get(r.x, r.y);
-        if(tile_is_empty(tile)) {
+        const tile = grid_get(r.x, r.y);
+        if(grid_is_empty(tile)) {
             continue;
         }
-        if(tile_is_prop(tile)) {
+        if(grid_is_prop(tile)) {
             continue;
         }
-        tile_base_pop(tile);
+        grid_base_pop(tile);
         result += 1;
     }
     return result;
@@ -75,11 +75,11 @@ const hit_dig = (ranges) => {
 const hit_put = (value, ranges) => {
     let result = 0;
     for(const r of ranges) {
-        const tile = tile_get(r.x, r.y);
-        if(tile_is_prop(tile)) {
+        const tile = grid_get(r.x, r.y);
+        if(grid_is_prop(tile)) {
             continue;
         }
-        tile_base_push(tile, value);
+        grid_base_push(tile, value);
         result += 1;
     }
     return result;

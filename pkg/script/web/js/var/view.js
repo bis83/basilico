@@ -39,7 +39,7 @@ const view_tick_after = () => {
     const zFar = 1000;
 
     const dir = vec3dir($pos.ha, $pos.va);
-    const eye = tile_to_world($pos.x, $pos.y, $pos.h);
+    const eye = grid_to_world($pos.x, $pos.y, $pos.h);
     eye[2] += $pos_eyeh;
 
     const at = vec3add(eye, dir);

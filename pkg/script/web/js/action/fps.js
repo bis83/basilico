@@ -4,33 +4,33 @@ const pos_adjust = (x, y, dx, dy) => {
     const iy = Math.floor(y);
     const r = 0.25;
 
-    const h0 = tile_height(tile_get(ix, iy));
+    const h0 = grid_height(grid_get(ix, iy));
 
     let xx = x + dx;
     let yy = y + dy;
-    if(tile_is_noentry(tile_get(ix-1, iy), h0)) {
+    if(grid_is_noentry(grid_get(ix-1, iy), h0)) {
         xx = Math.max(xx, ix+r);
     }
-    if(tile_is_noentry(tile_get(ix+1, iy), h0)) {
+    if(grid_is_noentry(grid_get(ix+1, iy), h0)) {
         xx = Math.min(xx, ix-r+1);
     }
-    if(tile_is_noentry(tile_get(ix, iy-1), h0)) {
+    if(grid_is_noentry(grid_get(ix, iy-1), h0)) {
         yy = Math.max(yy, iy+r);
     }
-    if(tile_is_noentry(tile_get(ix, iy+1), h0)) {
+    if(grid_is_noentry(grid_get(ix, iy+1), h0)) {
         yy = Math.min(yy, iy-r+1);
     }
     
-    if(tile_is_noentry(tile_get(ix-1, iy-1), h0)) {
+    if(grid_is_noentry(grid_get(ix-1, iy-1), h0)) {
         [xx, yy] = xy_bounds([xx, yy], r, [ix, iy]);
     }
-    if(tile_is_noentry(tile_get(ix-1, iy+1), h0)) {
+    if(grid_is_noentry(grid_get(ix-1, iy+1), h0)) {
         [xx, yy] = xy_bounds([xx, yy], r, [ix, iy+1]);
     }
-    if(tile_is_noentry(tile_get(ix+1, iy-1), h0)) {
+    if(grid_is_noentry(grid_get(ix+1, iy-1), h0)) {
         [xx, yy] = xy_bounds([xx, yy], r, [ix+1, iy]);
     }
-    if(tile_is_noentry(tile_get(ix+1, iy+1), h0)) {
+    if(grid_is_noentry(grid_get(ix+1, iy+1), h0)) {
         [xx, yy] = xy_bounds([xx, yy], r, [ix+1, iy+1]);
     }
 
@@ -64,7 +64,7 @@ const pos_fps_movement = (lstick, rstick) => {
         [$pos.x, $pos.y] = pos_adjust($pos.x, $pos.y, 0, 0);
     }
 
-    const h = tile_height(tile_get($pos.x, $pos.y));
+    const h = grid_height(grid_get($pos.x, $pos.y));
     if(Math.abs(h-$pos.h) <= 2) {
         const vh = h - $pos.h;
         $pos.h += 10 * dt * vh;

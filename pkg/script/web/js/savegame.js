@@ -1,7 +1,7 @@
 
 const newgame = () => {
     pos_init();
-    tile_init_empty();
+    grid_init_empty();
     item_init_empty();
 };
 
@@ -20,8 +20,8 @@ const loadgame = () => {
     if(data.item) {
         Object.assign($item, item_decode(data.item));
     }
-    if(data.tile) {
-        Object.assign($tile, tile_decode(data.tile));
+    if(data.grid) {
+        Object.assign($grid, grid_decode(data.grid));
     }
     return true;
 };
@@ -34,6 +34,6 @@ const savegame = () => {
     const data = {};
     data.pos = $pos;
     data.item = item_encode($item);
-    data.tile = tile_encode($tile);
+    data.grid = grid_encode($grid);
     localstorage_set($view.slot, data);
 };
