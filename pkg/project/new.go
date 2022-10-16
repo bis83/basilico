@@ -24,12 +24,12 @@ func writeSetup(path string) error {
 	return nil
 }
 
-func writeBasePage(path string) error {
+func writeEmptyPage(path string) error {
 	if err := file.MakeDir(path); err != nil {
 		return err
 	}
-	emptyPath := filepath.Join(path, "base.toml")
-	data, err := fs.ReadFile("toml/base.toml")
+	emptyPath := filepath.Join(path, "empty.toml")
+	data, err := fs.ReadFile("toml/empty.toml")
 	if err != nil {
 		return err
 	}
@@ -48,7 +48,7 @@ func New(baseDir string) (*Project, error) {
 	}
 	pagePath := filepath.Join(baseDir, "pages")
 	if !file.Exists(pagePath) {
-		if err := writeBasePage(pagePath); err != nil {
+		if err := writeEmptyPage(pagePath); err != nil {
 			return nil, err
 		}
 	}

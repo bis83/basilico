@@ -129,6 +129,10 @@ const com_tick = (view) => {
             com.value = null;
         }
     }
+    
+    if(!view.com) {
+        return;
+    }
     for(let no of view.com) {
         const data = data_com(no);
         if(!data) {

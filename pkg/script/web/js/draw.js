@@ -76,6 +76,9 @@ const draw_grid = () => {
 };
 
 const draw_com = (view) => {
+    if(!view.com) {
+        return;
+    }
     for(let no of view.com) {
         const data = data_com(no);
         if(!data) {
