@@ -20,16 +20,16 @@ const HIT_PUT = 4;
 const hit_activate = (ranges) => {
     let result = 0;
     for(const r of ranges) {
-        const tile = grid_get(r.x, r.y);
-        if(!tile) {
+        const grid = grid_get(r.x, r.y);
+        if(!grid) {
             continue;
         }
-        const data = data_tile(tile.no);
+        const data = data_tile(grid.no);
         if(!data) {
             continue;
         }
         if(data.device) {
-            action_invoke(tile, data.device.action);
+            action_invoke(grid, data.device.action);
             result += 1;
         }
     }
@@ -39,17 +39,17 @@ const hit_activate = (ranges) => {
 const hit_mining = (ranges) => {
     let result = 0;
     for(const r of ranges) {
-        const tile = grid_get(r.x, r.y);
-        if(!tile) {
+        const grid = grid_get(r.x, r.y);
+        if(!grid) {
             continue;
         }
-        const data = data_tile(tile.no);
+        const data = data_tile(grid.no);
         if(!data) {
             continue;
         }
         if(data.mine) {
             item_gain(data.mine.item, data.mine.count);
-            grid_del(tile);
+            grid_del(grid);
             result += 1;
         }
     }
@@ -59,14 +59,14 @@ const hit_mining = (ranges) => {
 const hit_dig = (ranges) => {
     let result = 0;
     for(const r of ranges) {
-        const tile = grid_get(r.x, r.y);
-        if(grid_is_empty(tile)) {
+        const grid = grid_get(r.x, r.y);
+        if(grid_is_empty(grid)) {
             continue;
         }
-        if(grid_is_prop(tile)) {
+        if(grid_is_tile(grid)) {
             continue;
         }
-        grid_base_pop(tile);
+        grid_base_pop(grid);
         result += 1;
     }
     return result;
@@ -75,11 +75,11 @@ const hit_dig = (ranges) => {
 const hit_put = (value, ranges) => {
     let result = 0;
     for(const r of ranges) {
-        const tile = grid_get(r.x, r.y);
-        if(grid_is_prop(tile)) {
+        const grid = grid_get(r.x, r.y);
+        if(grid_is_tile(grid)) {
             continue;
         }
-        grid_base_push(tile, value);
+        grid_base_push(grid, value);
         result += 1;
     }
     return result;

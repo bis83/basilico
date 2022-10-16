@@ -1,11 +1,11 @@
 package project
 
 type Tile struct {
-	Name string `toml:"name"`
+	Name   string `toml:"name"`
+	SaveID int    `toml:"save-id"`
+
 	Text string `toml:"text"`
 	Desc string `toml:"desc"`
-
-	SaveID int `toml:"save-id"`
 
 	Draw string `toml:"draw"`
 

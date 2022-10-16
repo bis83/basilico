@@ -12,6 +12,7 @@ type Project struct {
 	Shader []*Shader
 	Draw   []*Draw
 	Item   []*Item
+	Base   []*Base
 	Tile   []*Tile
 	Com    []*Com
 	View   []*View
@@ -26,6 +27,7 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 	p.Shader = append(p.Shader, nil)
 	p.Draw = append(p.Draw, nil)
 	p.Item = append(p.Item, nil)
+	p.Base = append(p.Base, nil)
 	p.Tile = append(p.Tile, nil)
 	p.Com = append(p.Com, nil)
 	p.View = append(p.View, nil)
@@ -44,6 +46,9 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 		}
 		for _, item := range page.Item {
 			p.Item = append(p.Item, item)
+		}
+		for _, base := range page.Base {
+			p.Base = append(p.Base, base)
 		}
 		for _, tile := range page.Tile {
 			p.Tile = append(p.Tile, tile)
@@ -115,6 +120,18 @@ func (p *Project) FindDraw(name string) int {
 
 func (p *Project) FindItem(name string) int {
 	for i, v := range p.Item {
+		if v == nil {
+			continue
+		}
+		if v.Name == name {
+			return i
+		}
+	}
+	return 0
+}
+
+func (p *Project) FindBase(name string) int {
+	for i, v := range p.Base {
 		if v == nil {
 			continue
 		}

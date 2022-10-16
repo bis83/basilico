@@ -10,6 +10,7 @@ type Pack struct {
 	Shader []*Shader `json:"shader"`
 	Draw   []*Draw   `json:"draw"`
 	Item   []*Item   `json:"item"`
+	Base   []*Base   `json:"base"`
 	Tile   []*Tile   `json:"tile"`
 	Com    []*Com    `json:"com"`
 	View   []*View   `json:"view"`
@@ -90,6 +91,21 @@ func (p *Pack) Set(prj *project.Project, index *Index, pack int) error {
 			return err
 		}
 		p.Item = append(p.Item, &item)
+	}
+	for i, v := range prj.Base {
+		if v == nil {
+			continue
+		}
+		if index.Base[i].Pack != pack {
+			continue
+		}
+		index.Base[i].Index = len(p.Base)
+
+		var base Base
+		if err := base.Set(prj, v); err != nil {
+			return err
+		}
+		p.Base = append(p.Base, &base)
 	}
 	for i, v := range prj.Tile {
 		if v == nil {

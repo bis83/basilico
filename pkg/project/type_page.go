@@ -55,6 +55,7 @@ type Page struct {
 	Shader []*Shader `toml:"shader"`
 	Draw   []*Draw   `toml:"draw"`
 	Item   []*Item   `toml:"item"`
+	Base   []*Base   `toml:"base"`
 	Tile   []*Tile   `toml:"tile"`
 	Com    []*Com    `toml:"com"`
 	View   []*View   `toml:"view"`

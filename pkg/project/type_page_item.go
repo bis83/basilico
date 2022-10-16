@@ -1,21 +1,21 @@
 package project
 
 type Item struct {
-	Name string `toml:"name"`
+	Name   string `toml:"name"`
+	SaveID int    `toml:"save-id"`
+
 	Text string `toml:"text"`
 	Desc string `toml:"desc"`
 	Icon int    `toml:"icon"`
 
-	SaveID int `toml:"save-id"`
-
 	Hand *ItemHand `toml:"hand"`
-	Tile *ItemTile `toml:"tile"`
+	Base *ItemBase `toml:"base"`
 }
 
 type ItemHand struct {
 	Hit string `toml:"hit"`
 }
 
-type ItemTile struct {
-	Tile string `toml:"tile"`
+type ItemBase struct {
+	Base string `toml:"base"`
 }

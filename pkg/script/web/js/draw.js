@@ -37,37 +37,40 @@ const draw_call = (no, func) => {
     gl_drawMesh(mesh);
 };
 
-const draw_tile = () => {
-    for(let x=0; x<$grid.w; ++x) {
-        for(let y=0; y<$grid.h; ++y) {
-            const tile = grid_get(x, y);
-            if(!tile) {
-                continue;
-            }
-            for(let i=0; i<tile.base.length; ++i) {
-                const data = data_tile(tile.base[i]);
-                if(!data) {
-                    continue;
-                }
-                draw_call(data.draw, (u) => {
-                    const pos = grid_to_world(x, y, i);
-                    $view.m.set(mat4translate(pos[0], pos[1], pos[2]));
-                    $gl.uniformMatrix4fv(u.w, false, $view.m);
-                });
-            }
-
-            const data = data_tile(tile.no);
+const draw_grid = () => {
+    const draw_one = (x, y) => {
+        const grid = grid_get(x, y);
+        if(!grid) {
+            return;
+        }
+        for(let i=0; i<grid.base.length; ++i) {
+            const data = data_base(grid.base[i]);
             if(!data) {
                 continue;
             }
-            const h = grid_height(tile);
             draw_call(data.draw, (u) => {
-                const pos = grid_to_world(x, y, h);
-                const m = mat4angle(tile.ha||0, tile.va||0);
-                mat4translated(m, pos[0]+1, pos[1]+1, pos[2]);
-                $view.m.set(m);
+                const pos = grid_to_world(x, y, i);
+                $view.m.set(mat4translate(pos[0], pos[1], pos[2]));
                 $gl.uniformMatrix4fv(u.w, false, $view.m);
             });
+        }
+
+        const data = data_tile(grid.no);
+        if(!data) {
+            return;
+        }
+        const h = grid_height(grid);
+        draw_call(data.draw, (u) => {
+            const pos = grid_to_world(x, y, h);
+            const m = mat4angle(grid.ha||0, grid.va||0);
+            mat4translated(m, pos[0]+1, pos[1]+1, pos[2]);
+            $view.m.set(m);
+            $gl.uniformMatrix4fv(u.w, false, $view.m);
+        });
+    };
+    for(let x=0; x<$grid.w; ++x) {
+        for(let y=0; y<$grid.h; ++y) {
+            draw_one(x, y);
         }
     }
 };
@@ -109,7 +112,7 @@ const draw_view = () => {
         }
     }
     if(data.draw3d) {
-        draw_tile();
+        draw_grid();
     }
     draw_com(data);
 };

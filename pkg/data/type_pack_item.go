@@ -10,15 +10,15 @@ type Item struct {
 	Icon int    `json:"icon"`
 
 	Hand *ItemHand `json:"hand,omitempty"`
-	Tile *ItemTile `json:"tile,omitempty"`
+	Base *ItemBase `json:"base,omitempty"`
 }
 
 type ItemHand struct {
 	Hit int `json:"hit"`
 }
 
-type ItemTile struct {
-	Tile int `json:"tile"`
+type ItemBase struct {
+	Base int `json:"base"`
 }
 
 func toHitNo(s string) int {
@@ -46,10 +46,10 @@ func (p *Item) Set(prj *project.Project, s *project.Item) error {
 		h.Hit = toHitNo(s.Hand.Hit)
 		p.Hand = &h
 	}
-	if s.Tile != nil {
-		var h ItemTile
-		h.Tile = prj.FindTile(s.Tile.Tile)
-		p.Tile = &h
+	if s.Base != nil {
+		var h ItemBase
+		h.Base = prj.FindBase(s.Base.Base)
+		p.Base = &h
 	}
 
 	return nil

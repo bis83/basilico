@@ -37,66 +37,66 @@ const grid_get = (x, y) => {
     return $grid.t[grid_index(x, y)];
 };
 
-const grid_is_empty = (tile) => {
-    if(!tile) {
+const grid_is_empty = (grid) => {
+    if(!grid) {
         return true;
     }
-    return (tile.base.length <= 0) && (tile.no <= 0);
+    return (grid.base.length <= 0) && (grid.no <= 0);
 };
 
-const grid_is_prop = (tile) => {
-    if(!tile) {
+const grid_is_tile = (grid) => {
+    if(!grid) {
         return false;
     }
-    return (tile.no > 0);
+    return (grid.no > 0);
 };
 
-const grid_is_noentry = (tile, h0) => {
-    if(grid_is_empty(tile)) {
+const grid_is_noentry = (grid, h0) => {
+    if(grid_is_empty(grid)) {
         return true;
     }
-    if(grid_is_prop(tile)) {
+    if(grid_is_tile(grid)) {
         return true;
     }
-    const h1 = grid_height(tile);
+    const h1 = grid_height(grid);
     if(Math.abs(h0-h1) > 1) {
         return true;
     }
     return false;
 };
 
-const grid_height = (tile) => {
-    if(!tile) {
+const grid_height = (grid) => {
+    if(!grid) {
         return 0;
     }
-    return tile.base.length;
+    return grid.base.length;
 };
 
-const grid_set = (tile, no, ha) => {
-    if(!tile) {
+const grid_set = (grid, no, ha) => {
+    if(!grid) {
         return;
     }
-    tile.no = no;
-    tile.ha = ha || 0;
+    grid.no = no;
+    grid.ha = ha || 0;
 };
-const grid_del = (tile) => {
-    if(!tile) {
+const grid_del = (grid) => {
+    if(!grid) {
         return;
     }
-    tile.no = 0;
-    tile.ha = 0;
+    grid.no = 0;
+    grid.ha = 0;
 };
-const grid_base_push = (tile, no) => {
-    if(!tile) {
+const grid_base_push = (grid, no) => {
+    if(!grid) {
         return;
     }
-    tile.base.push(no);
+    grid.base.push(no);
 };
-const grid_base_pop = (tile) => {
-    if(!tile) {
+const grid_base_pop = (grid) => {
+    if(!grid) {
         return;
     }
-    tile.base.pop();
+    grid.base.pop();
 };
 
 const grid_encode = (data) => {

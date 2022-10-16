@@ -64,6 +64,9 @@ const data_draw = (no) => {
 const data_item = (no) => {
     return data_lookup("item", no);
 };
+const data_base = (no) => {
+    return data_lookup("base", no);
+};
 const data_tile = (no) => {
     return data_lookup("tile", no);
 };
@@ -91,6 +94,9 @@ const data_image_index = (name) => {
 };
 const data_item_index = (name) => {
     return data_lookup_index("item", name);
+};
+const data_base_index = (name) => {
+    return data_lookup_index("base", name);
 };
 const data_tile_index = (name) => {
     return data_lookup_index("tile", name);
