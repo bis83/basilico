@@ -13,7 +13,6 @@ const update = (time) => {
     if(data_loaded()) {
         view_tick();
     }
-    listen_flush();
 };
 
 const draw = () => {
