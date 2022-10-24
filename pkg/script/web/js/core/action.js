@@ -1,6 +1,9 @@
 
 const $action = {};
 const action_invoke = (self, action) => {
+    if(!action) {
+        return;
+    }
     for(const act of action) {
         const func = $action[act[0]];
         if(!func) {

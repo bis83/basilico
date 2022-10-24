@@ -84,7 +84,10 @@ const draw_com = (view) => {
         if(!data) {
             continue;
         }
-        if(data.draw <= 0) {
+        if(!data.rect) {
+            continue;
+        }
+        if(data.rect.draw <= 0) {
             continue;
         }
 
@@ -92,7 +95,7 @@ const draw_com = (view) => {
         if(!com) {
             continue;
         }
-        draw_call(data.draw, (u) => {
+        draw_call(data.rect.draw, (u) => {
             $gl.uniformMatrix4fv(u.w, false, com.m);
             if(com.img) {
                 gl_useTexture(com.img, u.tex0);

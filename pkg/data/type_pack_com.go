@@ -6,6 +6,13 @@ import (
 )
 
 type Com struct {
+	Rect  *ComRect  `json:"rect,omitempty"`
+	Text  *ComText  `json:"text,omitempty"`
+	Touch *ComTouch `json:"touch,omitempty"`
+	Tick  *ComTick  `json:"tick,omitempty"`
+}
+
+type ComRect struct {
 	Draw int `json:"draw"`
 
 	X       int     `json:"x"`
@@ -14,14 +21,6 @@ type Com struct {
 	Height  int     `json:"h"`
 	OriginX float64 `json:"ox"`
 	OriginY float64 `json:"oy"`
-
-	Interact int    `json:"interact"`
-	Gamepad  string `json:"gamepad"`
-	Keyboard string `json:"keyboard"`
-
-	Action [][]string `json:"action"`
-
-	Text *ComText `json:"text,omitempty"`
 }
 
 type ComText struct {
@@ -29,43 +28,45 @@ type ComText struct {
 	Sampler  int    `json:"s"`
 }
 
-func toInteractNo(s string) int {
-	switch s {
-	case "always":
-		return 1
-	case "button":
-		return 2
-	case "left-stick":
-		return 3
-	case "right-stick":
-		return 4
-	default:
-		return 0
-	}
+type ComTouch struct {
+	Gamepad  string     `json:"gamepad"`
+	Keyboard string     `json:"keyboard"`
+	Action   [][]string `json:"action"`
+}
+
+type ComTick struct {
+	Action [][]string `json:"action"`
 }
 
 func (p *Com) Set(prj *project.Project, c *project.Com) error {
-	p.Draw = prj.FindDraw(c.Draw)
-
-	p.X = c.X
-	p.Y = c.Y
-	p.Width = c.Width
-	p.Height = c.Height
-	p.OriginX = c.OriginX
-	p.OriginY = c.OriginY
-
-	p.Interact = toInteractNo(c.Interact)
-	p.Gamepad = c.Gamepad
-	p.Keyboard = c.Keyboard
-
-	p.Action = c.Action
-
-	if c.Text != nil {
-		var text ComText
-		text.Contents = c.Text.Contents
-		text.Sampler = c.Text.Sampler
-		p.Text = &text
+	if c.Rect != nil {
+		var a ComRect
+		a.Draw = prj.FindDraw(c.Rect.Draw)
+		a.X = c.Rect.X
+		a.Y = c.Rect.Y
+		a.Width = c.Rect.Width
+		a.Height = c.Rect.Height
+		a.OriginX = c.Rect.OriginX
+		a.OriginY = c.Rect.OriginY
+		p.Rect = &a
 	}
-
+	if c.Text != nil {
+		var a ComText
+		a.Contents = c.Text.Contents
+		a.Sampler = c.Text.Sampler
+		p.Text = &a
+	}
+	if c.Touch != nil {
+		var a ComTouch
+		a.Gamepad = c.Touch.Gamepad
+		a.Keyboard = c.Touch.Keyboard
+		a.Action = c.Touch.Action
+		p.Touch = &a
+	}
+	if c.Tick != nil {
+		var a ComTick
+		a.Action = c.Tick.Action
+		p.Tick = &a
+	}
 	return nil
 }

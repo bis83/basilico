@@ -15,45 +15,15 @@ const STATE_RESET = 0;
 const BUTTON_STATE_RELEASED = 0;
 const BUTTON_STATE_PRESSED = 1;
 
-const com_rect = (data) => {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    const ox = w/2 + (w/2 * data.ox);
-    const oy = h/2 + (h/2 * data.oy);
-    const minX = ox + (data.x - data.w/2);
-    const maxX = ox + (data.x + data.w/2);
-    const minY = oy + (data.y - data.h/2);
-    const maxY = oy + (data.y + data.h/2);
+const com_rect = (data, w, h) => {
+    const ox = w/2 + (w/2 * data.rect.ox);
+    const oy = h/2 + (h/2 * data.rect.oy);
+    const minX = ox + (data.rect.x - data.rect.w/2);
+    const maxX = ox + (data.rect.x + data.rect.w/2);
+    const minY = oy + (data.rect.y - data.rect.h/2);
+    const maxY = oy + (data.rect.y + data.rect.h/2);
     return [minX, maxX, minY, maxY];
 };
-
-const com_button = (com, data) => {
-    const rect = com_rect(data);
-    const touch = listen_touch(rect, data.keyboard, data.gamepad);
-    if(touch !== null) {
-        if(com.state !== BUTTON_STATE_PRESSED) {
-            com.value = true;
-            com.state = BUTTON_STATE_PRESSED;
-        } else {
-            com.value = false;
-        }
-    } else {
-        com.value = false;
-        com.state = BUTTON_STATE_RELEASED;
-    }
-}
-
-const com_left_stick = (com, data) => {
-    const rect = com_rect(data);
-    const touch = listen_touch(rect, "wasd", "left-stick");
-    com.value = touch || [0, 0];
-}
-
-const com_right_stick = (com, data) => {
-    const rect = com_rect(data);
-    const touch = listen_touch(rect, "arrow", "right-stick");
-    com.value = touch || [0, 0];
-}
 
 const com_tick = (view) => {
     const w = window.innerWidth;
@@ -83,40 +53,39 @@ const com_tick = (view) => {
             };
         }
         const com = $view.com[no];
-
-        if(data.draw > 0) {
-            const ox = data.ox * w/2;
-            const oy = data.oy * h/2;
-            const m = mat4scale(data.w/2, data.h/2, 1);
-            mat4translated(m, ox + data.x, -(oy + data.y), 0);
+        if(data.rect) {
+            const ox = data.rect.ox * w/2;
+            const oy = data.rect.oy * h/2;
+            const m = mat4scale(data.rect.w/2, data.rect.h/2, 1);
+            mat4translated(m, ox + data.rect.x, -(oy + data.rect.y), 0);
             com.m.set(m);
         }
         if(data.text) {
             if(com.img === null) {
-                com.cvs = cvs_create(data.w, data.h);
+                com.cvs = cvs_create(data.rect.w, data.rect.h);
                 cvs_text(com.cvs, data.text.contents);
                 com.img = gl_createGLTexture2D(com.cvs, data.text.s);
             }
         }
+        if(data.touch) {
+            const rect = com_rect(data, w, h);
+            com.value = listen_touch(rect, data.touch.keyboard, data.touch.gamepad);
 
-        switch(data.interact) {
-            case 1: // always
-                com.value = true;
-                break;
-            case 2: // button
-                com_button(com, data);
-                break;
-            case 3: // left-stick
-                com_left_stick(com, data);
-                break;
-            case 4: // right-stick
-                com_right_stick(com, data);
-                break;
-            default:
-                break;
+            let press = false;
+            if(com.value !== null) {
+                if(com.state !== BUTTON_STATE_PRESSED) {
+                    com.state = BUTTON_STATE_PRESSED;
+                    press = true;
+                }
+            } else {
+                com.state = BUTTON_STATE_RELEASED;
+            }
+            if(press) {
+                action_invoke(com, data.touch.action);
+            }
         }
-        if(com.value && data.action) {
-            action_invoke(com, data.action);
+        if(data.tick) {
+            action_invoke(com, data.tick.action);
         }
     }
 };
