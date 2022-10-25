@@ -1,5 +1,7 @@
 
 const $view = {
+    w: 0,
+    h: 0,
     view: null,
     slot: null,
     com: [],
@@ -29,11 +31,11 @@ const view_tick_before = () => {
     if($view.view === null) {
         view_reset();
     }
+    $view.w = window.innerWidth;
+    $view.h = window.innerHeight;
 };
 
 const view_tick_after = () => {
-    const ww = window.innerWidth;
-    const wh = window.innerHeight;
     const fovy = deg2rad(30);
     const zNear = 0.1;
     const zFar = 1000;
@@ -45,21 +47,37 @@ const view_tick_after = () => {
     const at = vec3add(eye, dir);
     const up = [0, 0, 1];
     const view = mat4lookat(eye, at, up);
-    const proj = mat4perspective(fovy, ww/wh, zNear, zFar);
+    const proj = mat4perspective(fovy, $view.w/$view.h, zNear, zFar);
     
     const vp = mat4multiply(view, proj);
     $view.cam.vp.set(vp);
     $view.cam.ivp.set(mat4invert(vp));
-    $view.cam.o.set(mat4ortho(ww, wh, 0, 1));
+    $view.cam.o.set(mat4ortho($view.w, $view.h, 0, 1));
     $view.cam.eye = eye;
 };
 
 const view_tick = () => {
     view_tick_before();
-    const view = data_view($view.view);
-    if(!view) {
-        return;
+    const data = data_view($view.view);
+    if(data) {
+        for(const com of $view.com) {
+            if(com) {
+                com.value = null;
+            }
+        }
+        if(data.com) {
+            for(let no of data.com) {
+                const data = data_com(no);
+                if(!data) {
+                    continue;
+                }
+                if(!$view.com[no]) {
+                    $view.com[no] = com_make();
+                }
+                const com = $view.com[no];
+                com_tick(com, data);
+            }
+        }
     }
-    com_tick(view);
     view_tick_after();
 };
