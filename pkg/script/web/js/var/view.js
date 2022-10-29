@@ -19,6 +19,17 @@ const view_reset = () => {
     $view.view = $data.index.initial_view;
 };
 
+const view_camera_mob = () => {
+    const data = data_view($view.view);
+    if(!data) {
+        return null;
+    }
+    if(data.cam <= 0) {
+        return null;
+    }
+    return grid_mob(data.cam);
+};
+
 const view_next = (view) => {
     const i = data_view_index(view);
     if(i < 0) {
@@ -40,20 +51,26 @@ const view_tick_after = () => {
     const zNear = 0.1;
     const zFar = 1000;
 
-    const dir = vec3dir($pos.ha, $pos.va);
-    const eye = grid_to_world($pos.x, $pos.y, $pos.h);
-    eye[2] += $pos_eyeh;
+    let dir = [1, 0, 0];
+    let eye = [0, 0, 0];
 
+    const mob = view_camera_mob();
+    if(mob) {
+        const EYE_HEIGHT = 1.75;
+        dir = vec3dir(mob.ha, mob.va);
+        eye = grid_to_world(mob.x, mob.y, mob.h);
+        eye[2] += EYE_HEIGHT;
+    }
+    
     const at = vec3add(eye, dir);
     const up = [0, 0, 1];
     const view = mat4lookat(eye, at, up);
     const proj = mat4perspective(fovy, $view.w/$view.h, zNear, zFar);
-    
     const vp = mat4multiply(view, proj);
     $view.cam.vp.set(vp);
     $view.cam.ivp.set(mat4invert(vp));
-    $view.cam.o.set(mat4ortho($view.w, $view.h, 0, 1));
     $view.cam.eye = eye;
+    $view.cam.o.set(mat4ortho($view.w, $view.h, 0, 1));
 };
 
 const view_tick = () => {
@@ -78,6 +95,9 @@ const view_tick = () => {
                 com_tick(com, data);
             }
         }
+    }
+    if(data.draw3d) {
+        grid_tick();
     }
     view_tick_after();
 };

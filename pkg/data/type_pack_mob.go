@@ -5,8 +5,8 @@ import (
 )
 
 type Mob struct {
-	Draw   int        `toml:"draw"`
-	Action [][]string `toml:"action"`
+	Draw   int        `json:"draw"`
+	Action [][]string `json:"action"`
 }
 
 func (p *Mob) Set(prj *project.Project, s *project.Mob) error {

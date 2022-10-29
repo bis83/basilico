@@ -8,6 +8,7 @@ type Grid struct {
 
 	Grid []*GridBase `toml:"base"`
 	Tile []*GridTile `toml:"tile"`
+	Mob  []*GridMob  `toml:"mob"`
 }
 
 type GridBase struct {
@@ -23,4 +24,12 @@ type GridTile struct {
 	X      int    `toml:"x"`
 	Y      int    `toml:"y"`
 	HAngle int    `toml:"h-angle"`
+}
+
+type GridMob struct {
+	Mob    string `toml:"mob"`
+	X      int    `toml:"x"`
+	Y      int    `toml:"y"`
+	HAngle int    `toml:"h-angle"`
+	VAngle int    `toml:"v-angle"`
 }

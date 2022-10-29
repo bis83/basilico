@@ -3,6 +3,7 @@ const $grid = {
     w: 0,
     h: 0,
     t: [],
+    m: [],
 };
 
 const grid_init_empty = (w, h) => {
@@ -16,6 +17,7 @@ const grid_init_empty = (w, h) => {
     for(let i=0; i<$grid.t.length; ++i) {
         $grid.t[i] = tile_make();
     }
+    $grid.m = [];
 };
 
 const grid_load = (no) => {
@@ -38,6 +40,11 @@ const grid_load = (no) => {
             tile_set(grid_tile(a.x, a.y), a.no, a.ha);
         }
     }
+    if(data.m) {
+        for(const a of data.m) {
+            grid_add_mob(a.no, a.x+0.5, a.y+0.5, a.ha);
+        }
+    }
 };
 
 const grid_index = (x, y) => {
@@ -54,6 +61,20 @@ const grid_index = (x, y) => {
 
 const grid_tile = (x, y) => {
     return $grid.t[grid_index(x, y)];
+};
+const grid_mob = (no) => {
+    return $grid.m.find(o => o.no === no);
+};
+
+const grid_add_mob = (no, x, y, ha) => {
+    const h = tile_height(grid_tile(x, y));
+    $grid.m.push(mob_make(no, x, y, h, ha, 0));
+};
+
+const grid_tick = () => {
+    for(const mob of $grid.m) {
+        mob_tick(mob);
+    }
 };
 
 const grid_encode = (data) => {

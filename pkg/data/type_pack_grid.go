@@ -9,6 +9,7 @@ type Grid struct {
 	Height int         `json:"h"`
 	Grid   []*GridBase `json:"b"`
 	Tile   []*GridTile `json:"t"`
+	Mob    []*GridMob  `json:"m"`
 }
 
 type GridBase struct {
@@ -24,6 +25,14 @@ type GridTile struct {
 	X      int `json:"x"`
 	Y      int `json:"y"`
 	HAngle int `json:"ha"`
+}
+
+type GridMob struct {
+	Mob    int `json:"no"`
+	X      int `json:"x"`
+	Y      int `json:"y"`
+	HAngle int `json:"ha"`
+	VAngle int `json:"va"`
 }
 
 func (p *Grid) Set(prj *project.Project, c *project.Grid) error {
@@ -45,6 +54,15 @@ func (p *Grid) Set(prj *project.Project, c *project.Grid) error {
 		m.Y = a.Y
 		m.HAngle = a.HAngle
 		p.Tile = append(p.Tile, &m)
+	}
+	for _, a := range c.Mob {
+		var m GridMob
+		m.Mob = prj.FindMob(a.Mob)
+		m.X = a.X
+		m.Y = a.Y
+		m.HAngle = a.HAngle
+		m.VAngle = a.VAngle
+		p.Mob = append(p.Mob, &m)
 	}
 	return nil
 }

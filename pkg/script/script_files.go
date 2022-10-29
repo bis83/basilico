@@ -30,7 +30,6 @@ var scripts = []string{
 
 	// var
 	"web/js/var/grid.js",
-	"web/js/var/pos.js",
 	"web/js/var/item.js",
 	"web/js/var/view.js",
 

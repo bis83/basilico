@@ -7,13 +7,16 @@ import (
 )
 
 type View struct {
-	Draw3D bool  `json:"draw3d"`
-	Draw   []int `json:"draw"`
-	Com    []int `json:"com"`
+	Com []int `json:"com"`
+
+	Draw3D    bool  `json:"draw3d"`
+	CameraMob int   `json:"cam"`
+	Draw      []int `json:"draw"`
 }
 
 func (p *View) Set(prj *project.Project, view *project.View) error {
 	p.Draw3D = view.Draw3D
+	p.CameraMob = prj.FindMob(view.CameraMob)
 	for _, v := range view.Draw {
 		i := prj.FindDraw(v)
 		if i <= 0 {

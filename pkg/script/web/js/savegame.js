@@ -1,6 +1,5 @@
 
 const newgame = () => {
-    pos_init();
     grid_init_empty();
     item_init_empty();
 };
@@ -13,9 +12,6 @@ const loadgame = () => {
     const data = localstorage_get($view.slot);
     if(!data) {
         return false;
-    }
-    if(data.pos) {
-        Object.assign($pos, data.pos);
     }
     if(data.item) {
         Object.assign($item, item_decode(data.item));
@@ -32,7 +28,6 @@ const savegame = () => {
     }
 
     const data = {};
-    data.pos = $pos;
     data.item = item_encode($item);
     data.grid = grid_encode($grid);
     localstorage_set($view.slot, data);

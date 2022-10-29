@@ -37,39 +37,39 @@ const pos_adjust = (x, y, dx, dy) => {
     return [xx, yy];
 };
 
-const pos_fps_movement = (moveXY, cameraXY) => {
+const mob_fps_movement = (mob, moveXY, cameraXY) => {
     const dt = $timer.dt;
     if(cameraXY) {
         const cameraSpeed = 90; // deg/s
-        $pos.ha += cameraSpeed * dt * cameraXY[0];
-        $pos.va += cameraSpeed * dt * cameraXY[1];
-        $pos.va = Math.max(-60, Math.min($pos.va, 80));
+        mob.ha += cameraSpeed * dt * cameraXY[0];
+        mob.va += cameraSpeed * dt * cameraXY[1];
+        mob.va = Math.max(-60, Math.min(mob.va, 80));
     }
     if(moveXY) {
         const moveSpeed = 2;    // cell/s
-        const rx = deg2rad($pos.ha+90);
-        const ry = deg2rad($pos.ha);
+        const rx = deg2rad(mob.ha+90);
+        const ry = deg2rad(mob.ha);
         const moveX = moveXY[0];
         const moveY = moveXY[1];
         const vx = moveX * Math.cos(rx) + moveY * Math.cos(ry);
         const vy = moveX * Math.sin(rx) + moveY * Math.sin(ry);
         const dx = moveSpeed * dt * vx;
         const dy = moveSpeed * dt * vy;
-        [$pos.x, $pos.y] = pos_adjust($pos.x, $pos.y, dx, dy);
+        [mob.x, mob.y] = pos_adjust(mob.x, mob.y, dx, dy);
     } else {
-        [$pos.x, $pos.y] = pos_adjust($pos.x, $pos.y, 0, 0);
+        [mob.x, mob.y] = pos_adjust(mob.x, mob.y, 0, 0);
     }
-    const h = tile_height(grid_tile($pos.x, $pos.y));
-    if(Math.abs(h-$pos.h) <= 2) {
-        const vh = h - $pos.h;
-        $pos.h += 10 * dt * vh;
+    const h = tile_height(grid_tile(mob.x, mob.y));
+    if(Math.abs(h-mob.h) <= 2) {
+        const vh = h - mob.h;
+        mob.h += 10 * dt * vh;
     } else {
-        $pos.h = h;
+        mob.h = h;
     }
 };
 
 define_action("fpsmove", (self, lstick, rstick) => {
     const moveXY = com_value(lstick);
     const cameraXY = com_value(rstick);
-    pos_fps_movement(moveXY, cameraXY);
+    mob_fps_movement(self, moveXY, cameraXY);
 });
