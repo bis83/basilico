@@ -10,6 +10,7 @@ var scripts = []string{
 	"web/js/math/coordinate.js",
 
 	// core
+	"web/js/core/timer.js",
 	"web/js/core/listen.js",
 	"web/js/core/localstorage.js",
 	"web/js/core/graphics.js",
@@ -28,16 +29,16 @@ var scripts = []string{
 	"web/js/data/data_lookup_index.js",
 
 	// var
-	"web/js/var/timer.js",
 	"web/js/var/grid.js",
 	"web/js/var/pos.js",
 	"web/js/var/item.js",
 	"web/js/var/view.js",
 
 	// logic
-	"web/js/logic/hit.js",
-	"web/js/logic/com.js",
+	"web/js/logic/tile.js",
 	"web/js/logic/mob.js",
+	"web/js/logic/com.js",
+	"web/js/logic/hit.js",
 
 	// savegame
 	"web/js/savegame.js",

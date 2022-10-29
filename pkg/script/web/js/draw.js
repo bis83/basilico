@@ -39,12 +39,12 @@ const draw_call = (no, func) => {
 
 const draw_grid = () => {
     const draw_one = (x, y) => {
-        const grid = grid_get(x, y);
-        if(!grid) {
+        const tile = grid_tile(x, y);
+        if(!tile) {
             return;
         }
-        for(let i=0; i<grid.base.length; ++i) {
-            const data = data_base(grid.base[i]);
+        for(let i=0; i<tile.base.length; ++i) {
+            const data = data_base(tile.base[i]);
             if(!data) {
                 continue;
             }
@@ -55,14 +55,14 @@ const draw_grid = () => {
             });
         }
 
-        const data = data_tile(grid.no);
+        const data = data_tile(tile.no);
         if(!data) {
             return;
         }
-        const h = grid_height(grid);
+        const h = tile_height(tile);
         draw_call(data.draw, (u) => {
             const pos = grid_to_world(x, y, h);
-            const m = mat4angle(grid.ha||0, grid.va||0);
+            const m = mat4angle(tile.ha||0, tile.va||0);
             mat4translated(m, pos[0]+1, pos[1]+1, pos[2]);
             $view.m.set(m);
             $gl.uniformMatrix4fv(u.w, false, $view.m);
