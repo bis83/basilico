@@ -20,3 +20,11 @@ define_action("loadgame", (self, slot) => {
 define_action("savegame", (self) => {
     savegame();
 });
+
+define_action("newgrid", (self, name) => {
+    const no = data_grid_index(name);
+    if(no <= 0) {
+        return;
+    }
+    grid_load(no);
+});

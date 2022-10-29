@@ -12,6 +12,8 @@ type Pack struct {
 	Item   []*Item   `json:"item"`
 	Base   []*Base   `json:"base"`
 	Tile   []*Tile   `json:"tile"`
+	Mob    []*Mob    `json:"mob"`
+	Grid   []*Grid   `json:"grid"`
 	Com    []*Com    `json:"com"`
 	View   []*View   `json:"view"`
 }
@@ -121,6 +123,36 @@ func (p *Pack) Set(prj *project.Project, index *Index, pack int) error {
 			return err
 		}
 		p.Tile = append(p.Tile, &tile)
+	}
+	for i, v := range prj.Mob {
+		if v == nil {
+			continue
+		}
+		if index.Mob[i].Pack != pack {
+			continue
+		}
+		index.Mob[i].Index = len(p.Mob)
+
+		var c Mob
+		if err := c.Set(prj, v); err != nil {
+			return err
+		}
+		p.Mob = append(p.Mob, &c)
+	}
+	for i, v := range prj.Grid {
+		if v == nil {
+			continue
+		}
+		if index.Grid[i].Pack != pack {
+			continue
+		}
+		index.Grid[i].Index = len(p.Grid)
+
+		var c Grid
+		if err := c.Set(prj, v); err != nil {
+			return err
+		}
+		p.Grid = append(p.Grid, &c)
 	}
 	for i, v := range prj.Com {
 		if v == nil {

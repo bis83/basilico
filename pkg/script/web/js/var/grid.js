@@ -18,6 +18,28 @@ const grid_init_empty = (w, h) => {
     }
 };
 
+const grid_load = (no) => {
+    const data = data_grid(no);
+    if(!data) {
+        return;
+    }
+    grid_init_empty(data.w, data.h);
+    if(data.b) {
+        for(const a of data.b) {
+            for(let x = a.x; x < a.x + a.w; ++x) {
+                for(let y = a.y; y < a.y + a.h; ++y) {
+                    tile_base_push(grid_tile(x, y), a.no);
+                }
+            }
+        }
+    }
+    if(data.t) {
+        for(const a of data.t) {
+            tile_set(grid_tile(a.x, a.y), a.no, a.ha);
+        }
+    }
+};
+
 const grid_index = (x, y) => {
     x = Math.floor(x);
     y = Math.floor(y);
