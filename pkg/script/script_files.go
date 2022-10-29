@@ -24,6 +24,8 @@ var scripts = []string{
 	"web/js/data/decode_shader.js",
 	"web/js/data/decode_image.js",
 	"web/js/data/data.js",
+	"web/js/data/data_lookup.js",
+	"web/js/data/data_lookup_index.js",
 
 	// var
 	"web/js/var/timer.js",
@@ -35,6 +37,7 @@ var scripts = []string{
 	// logic
 	"web/js/logic/hit.js",
 	"web/js/logic/com.js",
+	"web/js/logic/mob.js",
 
 	// savegame
 	"web/js/savegame.js",

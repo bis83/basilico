@@ -22,6 +22,7 @@ type Index struct {
 	Item        []*Entry `json:"item"`
 	Base        []*Entry `json:"base"`
 	Tile        []*Entry `json:"tile"`
+	Mob         []*Entry `json:"mob"`
 	Com         []*Entry `json:"com"`
 	View        []*Entry `json:"view"`
 }
@@ -78,6 +79,13 @@ func (p *Index) Set(prj *project.Project) error {
 			p.Tile = append(p.Tile, &Entry{Name: v.Name, Pack: 0, Index: 0, SaveID: v.SaveID})
 		} else {
 			p.Tile = append(p.Tile, nil)
+		}
+	}
+	for _, v := range prj.Mob {
+		if v != nil {
+			p.Mob = append(p.Mob, &Entry{Name: v.Name, Pack: 0, Index: 0, SaveID: v.SaveID})
+		} else {
+			p.Mob = append(p.Mob, nil)
 		}
 	}
 	for _, v := range prj.Com {
