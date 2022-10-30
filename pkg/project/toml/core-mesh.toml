@@ -1,6 +1,7 @@
 
 [[mesh]]
 name = "rect"
+[mesh.buffer]
 position = [
   -1.0, -1.0, 0.0,
   +1.0, -1.0, 0.0,
@@ -23,9 +24,13 @@ index = [
   0, 1, 2,
   1, 3, 2,
 ]
+view = [
+  { mode = 3, start = 0, count = 6 },
+]
 
 [[mesh]]
 name = "box"
+[mesh.buffer]
 position = [
   -1.0, -1.0, -1.0,
   +1.0, -1.0, -1.0,
@@ -60,9 +65,13 @@ index = [
   4, 5, 1,
   4, 1, 0,
 ]
+view = [
+  { mode = 3, start = 0, count = 36 },
+]
 
 [[mesh]]
 name = "reticle"
+[mesh.buffer]
 position = [
   -1.0,  0.0, 0.0,
    0.0, -1.0, 0.0,
@@ -79,10 +88,13 @@ index = [
   0, 1, 2,
   1, 3, 2,
 ]
+view = [
+  { mode = 3, start = 0, count = 6 },
+]
 
 [[mesh]]
 name = "debug-grid"
-is-line = true
+[mesh.buffer]
 position = [
   -100.0,    0.0,    0.0,
   +100.0,    0.0,    0.0,
@@ -162,4 +174,7 @@ color = [
    64,  64,  64, 255,
    64,  64,  64, 255,
    64,  64,  64, 255,
+]
+view = [
+  { mode = 2, start = 0, count = 38 },
 ]

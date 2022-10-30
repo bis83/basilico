@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/binary"
+	"fmt"
 
 	project "github.com/bis83/basilico/pkg/project"
 )
@@ -18,55 +19,52 @@ type Mesh struct {
 func (p *Mesh) Set(mesh *project.Mesh) error {
 	// Buffer
 	var b bytes.Buffer
-	if len(mesh.Position) > 0 {
+
+	var buffer *project.MeshBuffer
+	if mesh.Buffer != nil {
+		buffer = mesh.Buffer
+	}
+	if buffer == nil {
+		return fmt.Errorf("MeshBuffer Not Found: %s", mesh.Name)
+	}
+
+	if len(buffer.Position) > 0 {
 		p.BufferView = append(p.BufferView, 0, b.Len())
-		if err := binary.Write(&b, binary.LittleEndian, mesh.Position); err != nil {
+		if err := binary.Write(&b, binary.LittleEndian, buffer.Position); err != nil {
 			return err
 		}
 	}
-	if len(mesh.Normal) > 0 {
+	if len(buffer.Normal) > 0 {
 		p.BufferView = append(p.BufferView, 1, b.Len())
-		nn := toFloat16Array(normalizeVector3(mesh.Normal))
+		nn := toFloat16Array(normalizeVector3(buffer.Normal))
 		if err := binary.Write(&b, binary.LittleEndian, nn); err != nil {
 			return err
 		}
 	}
-	if len(mesh.Color) > 0 {
+	if len(buffer.Color) > 0 {
 		p.BufferView = append(p.BufferView, 2, b.Len())
-		if err := binary.Write(&b, binary.LittleEndian, mesh.Color); err != nil {
+		if err := binary.Write(&b, binary.LittleEndian, buffer.Color); err != nil {
 			return err
 		}
 	}
-	if len(mesh.Uv) > 0 {
+	if len(buffer.Uv) > 0 {
 		p.BufferView = append(p.BufferView, 3, b.Len())
-		nn := toFloat16Array(mesh.Uv)
+		nn := toFloat16Array(buffer.Uv)
 		if err := binary.Write(&b, binary.LittleEndian, nn); err != nil {
 			return err
 		}
 	}
 	bb := base64.StdEncoding.EncodeToString(b.Bytes())
 	p.Buffer = &bb
-
-	// Index
-	if len(mesh.Index) > 0 {
-		str, err := encodeUint16Array(mesh.Index)
+	if len(buffer.Index) > 0 {
+		str, err := encodeUint16Array(buffer.Index)
 		if err != nil {
 			return err
 		}
 		p.Index = &str
 	}
-	var mode int
-	if mesh.IsLine {
-		mode = 2
-	} else {
-		mode = 3
+	for _, view := range buffer.View {
+		p.IndexView = append(p.IndexView, view.Mode, view.Start, view.Count)
 	}
-	var count int
-	if len(mesh.Index) > 0 {
-		count = len(mesh.Index)
-	} else {
-		count = len(mesh.Position) / 3
-	}
-	p.IndexView = []int{mode, 0, count}
 	return nil
 }
