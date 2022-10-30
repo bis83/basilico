@@ -39,11 +39,16 @@ var scripts = []string{
 	"web/js/logic/com.js",
 	"web/js/logic/hit.js",
 
+	// draw
+	"web/js/draw/draw.js",
+	"web/js/draw/draw_grid.js",
+	"web/js/draw/draw_com.js",
+	"web/js/draw/draw_view.js",
+
 	// savegame
 	"web/js/savegame.js",
 
 	// main
-	"web/js/draw.js",
 	"web/js/main.js",
 
 	// action
