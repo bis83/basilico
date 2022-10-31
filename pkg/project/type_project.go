@@ -6,23 +6,25 @@ import (
 )
 
 type Project struct {
-	Setup  *Setup
-	Mesh   []*Mesh
-	Image  []*Image
-	Shader []*Shader
-	Draw   []*Draw
-	Item   []*Item
-	Base   []*Base
-	Tile   []*Tile
-	Mob    []*Mob
-	Grid   []*Grid
-	Com    []*Com
-	View   []*View
+	BaseDir string
+	Setup   *Setup
+	Mesh    []*Mesh
+	Image   []*Image
+	Shader  []*Shader
+	Draw    []*Draw
+	Item    []*Item
+	Base    []*Base
+	Tile    []*Tile
+	Mob     []*Mob
+	Grid    []*Grid
+	Com     []*Com
+	View    []*View
 
 	Script []string
 }
 
 func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
+	p.BaseDir = baseDir
 	p.Setup = setup
 	p.Mesh = append(p.Mesh, nil)
 	p.Image = append(p.Image, nil)

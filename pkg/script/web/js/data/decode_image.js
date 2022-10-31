@@ -9,7 +9,7 @@ const decodeImage = (data) => {
     data.tex = gl_createGLTexture2D(img, data.s);
     $imageLoading -= 1;
   };
-  img.src = "img/" + data.src;
+  img.src = "data:image/png;base64," + data.src;
   $imageLoading += 1;
 
   return data;

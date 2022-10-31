@@ -44,7 +44,7 @@ func (p *Pack) Set(prj *project.Project, index *Index, pack int) error {
 		index.Image[i].Index = len(p.Image)
 
 		var img Image
-		if err := img.Set(v); err != nil {
+		if err := img.Set(prj, v); err != nil {
 			return err
 		}
 		p.Image = append(p.Image, &img)
