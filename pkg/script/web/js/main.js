@@ -4,7 +4,6 @@ const init = () => {
   audio_init();
   listen_init();
   data_loadIndex();
-  data_loadPack(0);
 };
 
 const update = (time) => {

@@ -14,7 +14,8 @@ type Entry struct {
 }
 
 type Index struct {
-	InitialView int      `json:"initial_view"`
+	InitialView int      `json:"init"`
+	Pack        []int    `json:"pack"`
 	Mesh        []*Entry `json:"mesh"`
 	Image       []*Entry `json:"image"`
 	Shader      []*Entry `json:"shader"`
@@ -33,6 +34,7 @@ func (p *Index) Set(prj *project.Project) error {
 	if p.InitialView < 0 {
 		return fmt.Errorf("View Not Found: %s", prj.Setup.InitialView)
 	}
+	p.Pack = []int{0}
 	for _, v := range prj.Mesh {
 		if v != nil {
 			p.Mesh = append(p.Mesh, &Entry{Name: v.Name, Pack: 0, Index: 0})

@@ -16,7 +16,7 @@ const $view = {
 
 const view_reset = () => {
   $view.slot = null;
-  $view.view = $data.index.initial_view;
+  $view.view = $data.index.init;
 };
 
 const view_camera_mob = () => {

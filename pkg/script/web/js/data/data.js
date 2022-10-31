@@ -8,6 +8,9 @@ const data_loadIndex = () => {
   const path = "data/index.json";
   fetch(path).then(res => res.json()).then((json) => {
     $data.index = json;
+    for (const no of $data.index.pack) {
+      data_loadPack(no);
+    }
   });
 };
 
