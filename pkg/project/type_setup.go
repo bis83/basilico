@@ -16,6 +16,7 @@ type Setup struct {
 	Minify      bool     `toml:"minify"`
 	InitialView string   `toml:"initial-view"`
 	Script      []string `toml:"script"`
+	GLTF        []string `toml:"gltf"`
 }
 
 func (p *Setup) Read(path string) error {

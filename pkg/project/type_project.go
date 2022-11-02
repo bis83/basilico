@@ -3,6 +3,8 @@ package project
 import (
 	"os"
 	"path/filepath"
+
+	"github.com/qmuntal/gltf"
 )
 
 type Project struct {
@@ -21,6 +23,7 @@ type Project struct {
 	View    []*View
 
 	Script []string
+	GLTF   []*gltf.Document
 }
 
 func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
@@ -78,6 +81,13 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 			return err
 		}
 		p.Script = append(p.Script, string(data))
+	}
+	for _, path := range p.Setup.GLTF {
+		doc, err := gltf.Open(filepath.Join(baseDir, path))
+		if err != nil {
+			return err
+		}
+		p.GLTF = append(p.GLTF, doc)
 	}
 	return nil
 }

@@ -1,5 +1,26 @@
 
 [[shader]]
+name = "mesh-p"
+vertex-shader = """
+#version 300 es
+layout (location = 0) in vec3 p;
+uniform mat4 w;
+uniform mat4 vp;
+void main() {
+  gl_Position = vp * w * vec4(p, 1);
+}
+"""
+fragment-shader = """
+#version 300 es
+precision mediump float;
+out vec4 fc;
+void main() {
+  fc = vec4(0.8, 0.8, 0.8, 1.0);
+}
+"""
+uniform = ["w", "vp"]
+
+[[shader]]
 name = "mesh-pc"
 vertex-shader = """
 #version 300 es

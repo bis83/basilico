@@ -10,7 +10,7 @@ const draw_call = (no, func) => {
     return;
   }
 
-  gl_state(data.depth, data.alpha);
+  gl_state(data.depth, data.alpha, data.cw);
 
   const shader = data_shader(data.shader);
   if (!shader) {

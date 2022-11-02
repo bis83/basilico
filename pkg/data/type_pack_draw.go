@@ -12,6 +12,7 @@ type Draw struct {
 	Image  int  `json:"image"`
 	Depth  bool `json:"depth"`
 	Alpha  bool `json:"alpha"`
+	Cw     bool `json:"cw"`
 	Ortho  bool `json:"ortho"`
 }
 
@@ -27,6 +28,7 @@ func (p *Draw) Set(prj *project.Project, s *project.Draw) error {
 	p.Image = prj.FindImage(s.Image)
 	p.Depth = s.Depth
 	p.Alpha = s.Alpha
+	p.Cw = s.Cw
 	p.Ortho = s.Ortho
 	return nil
 }

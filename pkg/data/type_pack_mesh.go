@@ -16,11 +16,14 @@ type Mesh struct {
 	IndexView  []int   `json:"iv"`
 }
 
-func (p *Mesh) Set(mesh *project.Mesh) error {
-	// Buffer
+func (p *Mesh) Set(prj *project.Project, mesh *project.Mesh) error {
 	var b bytes.Buffer
+	var err error
 
 	var buffer *project.MeshBuffer
+	if buffer, err = findMeshFromGLTF(prj, mesh.Source); err != nil {
+		return err
+	}
 	if mesh.Buffer != nil {
 		buffer = mesh.Buffer
 	}

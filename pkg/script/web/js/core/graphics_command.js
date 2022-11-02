@@ -17,10 +17,11 @@ const gl_clear = () => {
   $gl.clear($gl.COLOR_BUFFER_BIT | $gl.DEPTH_BUFFER_BIT);
 };
 
-const gl_state = (depth, alpha) => {
+const gl_state = (depth, alpha, cw) => {
+  // $gl.disable($gl.CULL_FACE);
+  // $gl.cullFace($gl.BACK);
   $gl.enable($gl.CULL_FACE);
-  // gl.cullFace(gl.BACK);
-  // gl.frontFace(gl.CCW);
+  $gl.frontFace(cw ? $gl.CW : $gl.CCW);
   if (depth) {
     $gl.enable($gl.DEPTH_TEST);
     $gl.depthFunc($gl.LEQUAL);

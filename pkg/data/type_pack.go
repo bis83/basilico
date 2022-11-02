@@ -29,7 +29,7 @@ func (p *Pack) Set(prj *project.Project, index *Index, pack int) error {
 		index.Mesh[i].Index = len(p.Mesh)
 
 		var mesh Mesh
-		if err := mesh.Set(v); err != nil {
+		if err := mesh.Set(prj, v); err != nil {
 			return err
 		}
 		p.Mesh = append(p.Mesh, &mesh)
