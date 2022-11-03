@@ -16,6 +16,18 @@ type Pack struct {
 	Grid   []*Grid   `json:"grid"`
 	Com    []*Com    `json:"com"`
 	View   []*View   `json:"view"`
+	Base64 []string  `json:"base64"`
+}
+
+func (p *Pack) AppendBase64(buf string) int {
+	for i, v := range p.Base64 {
+		if v == buf {
+			return i
+		}
+	}
+	i := len(p.Base64)
+	p.Base64 = append(p.Base64, buf)
+	return i
 }
 
 func (p *Pack) Set(prj *project.Project, index *Index, pack int) error {
@@ -29,7 +41,7 @@ func (p *Pack) Set(prj *project.Project, index *Index, pack int) error {
 		index.Mesh[i].Index = len(p.Mesh)
 
 		var mesh Mesh
-		if err := mesh.Set(prj, v); err != nil {
+		if err := mesh.Set(p, prj, v); err != nil {
 			return err
 		}
 		p.Mesh = append(p.Mesh, &mesh)
@@ -44,7 +56,7 @@ func (p *Pack) Set(prj *project.Project, index *Index, pack int) error {
 		index.Image[i].Index = len(p.Image)
 
 		var img Image
-		if err := img.Set(prj, v); err != nil {
+		if err := img.Set(p, prj, v); err != nil {
 			return err
 		}
 		p.Image = append(p.Image, &img)

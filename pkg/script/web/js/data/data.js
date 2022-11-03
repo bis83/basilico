@@ -18,10 +18,10 @@ const data_loadPack = (no) => {
   const path = "data/pack" + no + ".json";
   fetch(path).then(res => res.json()).then((json) => {
     if (json.mesh) {
-      json.mesh = json.mesh.map(data => decodeMesh(data));
+      json.mesh = json.mesh.map(data => decodeMesh(data, json.base64));
     }
     if (json.image) {
-      json.image = json.image.map(data => decodeImage(data));
+      json.image = json.image.map(data => decodeImage(data, json.base64));
     }
     if (json.shader) {
       json.shader = json.shader.map(data => decodeShader(data));

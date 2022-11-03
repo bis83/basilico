@@ -4,11 +4,11 @@ const VS_LAYOUT_NORMAL = 1;
 const VS_LAYOUT_COLOR = 2;
 const VS_LAYOUT_UV = 3;
 
-const decodeMesh = (data) => {
+const decodeMesh = (data, base64) => {
   data.vao = $gl.createVertexArray();
   $gl.bindVertexArray(data.vao);
-  if (data.b) {
-    data.b = gl_staticBuffer($gl.ARRAY_BUFFER, base64ToArrayBuffer(data.b));
+  if (data.b >= 0) {
+    data.b = gl_staticBuffer($gl.ARRAY_BUFFER, base64ToArrayBuffer(base64[data.b]));
     if (data.bv) {
       for (let i = 0; i < data.bv.length; i += 2) {
         switch (data.bv[i]) {
@@ -28,8 +28,8 @@ const decodeMesh = (data) => {
       }
     }
   }
-  if (data.i) {
-    data.i = gl_staticBuffer($gl.ELEMENT_ARRAY_BUFFER, base64ToArrayBuffer(data.i));
+  if (data.i >= 0) {
+    data.i = gl_staticBuffer($gl.ELEMENT_ARRAY_BUFFER, base64ToArrayBuffer(base64[data.i]));
   }
   $gl.bindVertexArray(null);
   return data;

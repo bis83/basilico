@@ -10,13 +10,13 @@ import (
 )
 
 type Mesh struct {
-	Buffer     *string `json:"b"`
-	BufferView []int   `json:"bv"`
-	Index      *string `json:"i"`
-	IndexView  []int   `json:"iv"`
+	Buffer     int   `json:"b"`
+	BufferView []int `json:"bv"`
+	Index      int   `json:"i"`
+	IndexView  []int `json:"iv"`
 }
 
-func (p *Mesh) Set(prj *project.Project, mesh *project.Mesh) error {
+func (p *Mesh) Set(pack *Pack, prj *project.Project, mesh *project.Mesh) error {
 	var b bytes.Buffer
 	var err error
 
@@ -57,14 +57,15 @@ func (p *Mesh) Set(prj *project.Project, mesh *project.Mesh) error {
 			return err
 		}
 	}
-	bb := base64.StdEncoding.EncodeToString(b.Bytes())
-	p.Buffer = &bb
+	p.Buffer = pack.AppendBase64(base64.StdEncoding.EncodeToString(b.Bytes()))
 	if len(buffer.Index) > 0 {
 		str, err := encodeUint16Array(buffer.Index)
 		if err != nil {
 			return err
 		}
-		p.Index = &str
+		p.Index = pack.AppendBase64(str)
+	} else {
+		p.Index = -1
 	}
 	for _, view := range buffer.View {
 		p.IndexView = append(p.IndexView, view.Mode, view.Start, view.Count)
