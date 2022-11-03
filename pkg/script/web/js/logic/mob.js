@@ -18,12 +18,23 @@ const mob_tick = (mob) => {
   if (data.action) {
     action_invoke(mob, data.action);
   }
+  mob_fall(mob);
 };
 
-const mob_adjust_position = (x, y, dx, dy) => {
+const mob_fall = (mob) => {
+  const h = tile_height(grid_tile(mob.x, mob.y));
+  if (Math.abs(h - mob.h) <= 2) {
+    const dt = $timer.dt;
+    const vh = h - mob.h;
+    mob.h += 10 * dt * vh;
+  } else {
+    mob.h = h;
+  }
+};
+
+const mob_adjust_position = (r, x, y, dx, dy) => {
   const ix = Math.floor(x);
   const iy = Math.floor(y);
-  const r = 0.25;
 
   const h0 = tile_height(grid_tile(ix, iy));
 
@@ -59,6 +70,11 @@ const mob_adjust_position = (x, y, dx, dy) => {
 };
 
 const mob_fps_movement = (mob, moveXY, cameraXY) => {
+  const data = data_mob(mob.no);
+  if (!data) {
+    return;
+  }
+
   const dt = $timer.dt;
   if (cameraXY) {
     const cameraSpeed = 90; // deg/s
@@ -76,15 +92,37 @@ const mob_fps_movement = (mob, moveXY, cameraXY) => {
     const vy = moveX * Math.sin(rx) + moveY * Math.sin(ry);
     const dx = moveSpeed * dt * vx;
     const dy = moveSpeed * dt * vy;
-    [mob.x, mob.y] = mob_adjust_position(mob.x, mob.y, dx, dy);
+    [mob.x, mob.y] = mob_adjust_position(data.r, mob.x, mob.y, dx, dy);
   } else {
-    [mob.x, mob.y] = mob_adjust_position(mob.x, mob.y, 0, 0);
+    [mob.x, mob.y] = mob_adjust_position(data.r, mob.x, mob.y, 0, 0);
   }
-  const h = tile_height(grid_tile(mob.x, mob.y));
-  if (Math.abs(h - mob.h) <= 2) {
-    const vh = h - mob.h;
-    mob.h += 10 * dt * vh;
-  } else {
-    mob.h = h;
+};
+
+const mob_resolve_overlaps = (mobs) => {
+  for (let i = 0; i < mobs.length; ++i) {
+    for (let j = i + 1; j < mobs.length; ++j) {
+      const a = mobs[i];
+      const b = mobs[j];
+      const adata = data_mob(a.no);
+      if (!adata) {
+        continue;
+      }
+      const bdata = data_mob(b.no);
+      if (!bdata) {
+        continue;
+      }
+      const [dx, dy] = [b.x - a.x, b.y - a.y];
+      const l = xy_length(dx, dy);
+      const d = (adata.r + bdata.r) - l;
+      if (d <= 0) {
+        continue;
+      }
+      const ab = xy_normalize(dx, dy);
+      const ba = xy_reverse(ab);
+      const wa = (adata.w == 0 && bdata.w == 0) ? 0.5 : (adata.w / (adata.w + bdata.w));
+      const wb = 1 - wa;
+      [a.x, a.y] = mob_adjust_position(adata.r, a.x, a.y, ba[0] * wa * d, ba[1] * wa * d);
+      [b.x, b.y] = mob_adjust_position(bdata.r, b.x, b.y, ab[0] * wb * d, ab[1] * wb * d);
+    }
   }
 };

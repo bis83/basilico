@@ -44,7 +44,7 @@ const draw_mob = (mob) => {
   draw_call(data.draw, (u) => {
     const pos = grid_to_world(mob.x, mob.y, mob.h);
     const m = mat4angle(mob.ha || 0, mob.va || 0);
-    mat4translated(m, pos[0] + 1, pos[1] + 1, pos[2]);
+    mat4translated(m, pos[0], pos[1], pos[2]);
     $view.m.set(m);
     $gl.uniformMatrix4fv(u.w, false, $view.m);
   });

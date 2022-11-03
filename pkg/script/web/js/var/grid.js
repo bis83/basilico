@@ -75,6 +75,7 @@ const grid_tick = () => {
   for (const mob of $grid.m) {
     mob_tick(mob);
   }
+  mob_resolve_overlaps($grid.m);
 };
 
 const grid_encode = (data) => {
