@@ -119,7 +119,7 @@ const mob_resolve_overlaps = (mobs) => {
       }
       const ab = xy_normalize(dx, dy);
       const ba = xy_reverse(ab);
-      const wa = (adata.w == 0 && bdata.w == 0) ? 0.5 : (adata.w / (adata.w + bdata.w));
+      const wa = (adata.m == 0 && bdata.m == 0) ? 0.5 : (adata.m / (adata.m + bdata.m));
       const wb = 1 - wa;
       [a.x, a.y] = mob_adjust_position(adata.r, a.x, a.y, ba[0] * wa * d, ba[1] * wa * d);
       [b.x, b.y] = mob_adjust_position(bdata.r, b.x, b.y, ab[0] * wb * d, ab[1] * wb * d);

@@ -6,8 +6,8 @@ type Mob struct {
 
 	Draw string `toml:"draw"`
 
-	Radius float32 `toml:"radius"`
-	Weight float32 `toml:"weight"`
+	Radius float32  `toml:"radius"`
+	Mass   *float32 `toml:"mass"`
 
 	Action [][]string `toml:"action"`
 }
