@@ -1,13 +1,14 @@
 package data
 
 import (
+	file "github.com/bis83/basilico/pkg/file"
 	project "github.com/bis83/basilico/pkg/project"
 )
 
-func MakeData(prj *project.Project) ([]File, error) {
+func Make(prj *project.Project) ([]file.File, error) {
 	minify := prj.Setup.Minify
 
-	var fs []File
+	var fs []file.File
 	var err error
 	var b []byte
 
@@ -25,13 +26,13 @@ func MakeData(prj *project.Project) ([]File, error) {
 	if err != nil {
 		return nil, err
 	}
-	fs = append(fs, File{"index.json", b})
+	fs = append(fs, file.File{"index.json", b})
 
 	b, err = marshalJSON(p, minify)
 	if err != nil {
 		return nil, err
 	}
-	fs = append(fs, File{"pack0.json", b})
+	fs = append(fs, file.File{"pack0.json", b})
 
 	return fs, nil
 }

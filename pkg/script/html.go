@@ -18,7 +18,7 @@ func executeHtml(feat *Feature, wr io.Writer) error {
 	return nil
 }
 
-func MakeIndexHtml(feat *Feature) ([]byte, error) {
+func makeIndexHtml(feat *Feature) ([]byte, error) {
 	var b bytes.Buffer
 	if err := executeHtml(feat, &b); err != nil {
 		return nil, err

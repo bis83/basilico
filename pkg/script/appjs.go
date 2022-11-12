@@ -31,7 +31,7 @@ func execute(feat *Feature, wr io.Writer, js string) error {
 	return nil
 }
 
-func MakeAppJs(feat *Feature, addons []string) ([]byte, error) {
+func makeAppJs(feat *Feature, addons []string) ([]byte, error) {
 	var b bytes.Buffer
 	for _, path := range scripts {
 		if err := executeFS(feat, &b, path); err != nil {

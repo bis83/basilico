@@ -19,40 +19,31 @@ func Clean(baseDir string) error {
 }
 
 func buildScript(prj *project.Project, baseDir string) error {
-	var err error
-
-	var feat script.Feature
-	feat.Set(prj)
-
-	var b []byte
-	b, err = script.MakeIndexHtml(&feat)
-	if err != nil {
+	if err := file.MakeDir(baseDir); err != nil {
 		return err
 	}
-	err = file.WriteFile(filepath.Join(baseDir, "index.html"), b)
-	if err != nil {
-		return err
-	}
-	b, err = script.MakeAppJs(&feat, prj.Script)
-	if err != nil {
-		return err
-	}
-	err = file.WriteFile(filepath.Join(baseDir, "app.js"), b)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func buildData(prj *project.Project, baseDir string) error {
-	fs, err := data.MakeData(prj)
+	fs, err := script.Make(prj)
 	if err != nil {
 		return err
 	}
 	for _, f := range fs {
-		err = file.WriteFile(filepath.Join(baseDir, f.Name), f.Data)
-		if err != nil {
+		if err := f.Write(baseDir); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func buildData(prj *project.Project, baseDir string) error {
+	if err := file.MakeDir(baseDir); err != nil {
+		return err
+	}
+	fs, err := data.Make(prj)
+	if err != nil {
+		return err
+	}
+	for _, f := range fs {
+		if err := f.Write(baseDir); err != nil {
 			return err
 		}
 	}
@@ -60,32 +51,14 @@ func buildData(prj *project.Project, baseDir string) error {
 }
 
 func Build(prj *project.Project, baseDir string) error {
-	var err error
-	err = Clean(baseDir)
-	if err != nil {
+	if err := Clean(baseDir); err != nil {
 		return err
 	}
-
-	var path string
-	path = filepath.Join(baseDir, "dist")
-	err = file.MakeDir(path)
-	if err != nil {
+	if err := buildScript(prj, filepath.Join(baseDir, "dist")); err != nil {
 		return err
 	}
-	err = buildScript(prj, path)
-	if err != nil {
+	if err := buildData(prj, filepath.Join(baseDir, "dist", "data")); err != nil {
 		return err
 	}
-
-	path = filepath.Join(baseDir, "dist", "data")
-	err = file.MakeDir(path)
-	if err != nil {
-		return err
-	}
-	err = buildData(prj, path)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }

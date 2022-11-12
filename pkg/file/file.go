@@ -3,7 +3,17 @@ package file
 import (
 	"io"
 	"os"
+	"path/filepath"
 )
+
+type File struct {
+	Name string
+	Data []byte
+}
+
+func (f *File) Write(baseDir string) error {
+	return WriteFile(filepath.Join(baseDir, f.Name), f.Data)
+}
 
 func Exists(path string) bool {
 	_, err := os.Stat(path)
