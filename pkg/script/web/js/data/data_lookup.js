@@ -42,6 +42,9 @@ const data_tile = (no) => {
 const data_mob = (no) => {
   return data_lookup("mob", no);
 };
+const data_hit = (no) => {
+  return data_lookup("hit", no);
+};
 const data_grid = (no) => {
   return data_lookup("grid", no);
 };

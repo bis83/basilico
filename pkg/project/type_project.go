@@ -18,6 +18,7 @@ type Project struct {
 	Base    []*Base
 	Tile    []*Tile
 	Mob     []*Mob
+	Hit     []*Hit
 	Grid    []*Grid
 	Com     []*Com
 	View    []*View
@@ -37,6 +38,7 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 	p.Base = append(p.Base, nil)
 	p.Tile = append(p.Tile, nil)
 	p.Mob = append(p.Mob, nil)
+	p.Hit = append(p.Hit, nil)
 	p.Grid = append(p.Grid, nil)
 	p.Com = append(p.Com, nil)
 	p.View = append(p.View, nil)
@@ -64,6 +66,9 @@ func (p *Project) Set(setup *Setup, pages []*Page, baseDir string) error {
 		}
 		for _, mob := range page.Mob {
 			p.Mob = append(p.Mob, mob)
+		}
+		for _, hit := range page.Hit {
+			p.Hit = append(p.Hit, hit)
 		}
 		for _, grid := range page.Grid {
 			p.Grid = append(p.Grid, grid)
@@ -178,6 +183,18 @@ func (p *Project) FindTile(name string) int {
 
 func (p *Project) FindMob(name string) int {
 	for i, v := range p.Mob {
+		if v == nil {
+			continue
+		}
+		if v.Name == name {
+			return i
+		}
+	}
+	return 0
+}
+
+func (p *Project) FindHit(name string) int {
+	for i, v := range p.Hit {
 		if v == nil {
 			continue
 		}

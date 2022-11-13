@@ -8,14 +8,6 @@ type Item struct {
 	Desc string `toml:"desc"`
 	Icon int    `toml:"icon"`
 
-	Hand *ItemHand `toml:"hand"`
-	Base *ItemBase `toml:"base"`
-}
-
-type ItemHand struct {
-	Hit string `toml:"hit"`
-}
-
-type ItemBase struct {
-	Base string `toml:"base"`
+	Hit     string `toml:"hit"`
+	Consume bool   `toml:"consume"`
 }

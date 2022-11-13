@@ -44,7 +44,7 @@ const com_rect = (data, w, h) => {
   return [minX, maxX, minY, maxY];
 };
 
-com_tick = (com, data) => {
+const com_tick = (com, data) => {
   if (data.rect) {
     com.m.set(com_matrix(data, $view.w, $view.h));
     com.rect = com_rect(data, $view.w, $view.h);

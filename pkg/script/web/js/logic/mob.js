@@ -7,10 +7,11 @@ const mob_make = (no, x, y, h, ha, va) => {
     h: h,
     ha: ha || 0,
     va: va || 0,
+    hit: null,
   };
 };
 
-const mob_tick = (mob) => {
+const mob_tick_before = (mob) => {
   const data = data_mob(mob.no);
   if (!data) {
     return;
@@ -19,6 +20,19 @@ const mob_tick = (mob) => {
     action_invoke(mob, data.action);
   }
   mob_fall(mob);
+};
+
+const mob_tick_after = (mob) => {
+  if (mob.hit) {
+    const data = data_hit(mob.hit.no);
+    if (!data) {
+      return;
+    }
+    if (data.action) {
+      action_invoke(mob, data.action);
+    }
+    mob.hit = null;
+  }
 };
 
 const mob_fall = (mob) => {
@@ -125,4 +139,8 @@ const mob_resolve_overlaps = (mobs) => {
       [b.x, b.y] = mob_adjust_position(bdata.r, b.x, b.y, ab[0] * wb * d, ab[1] * wb * d);
     }
   }
+};
+
+const mob_set_hit = (mob, no, item) => {
+  mob.hit = hit_make(no, item);
 };

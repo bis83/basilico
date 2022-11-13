@@ -2,8 +2,8 @@
 const $grid = {
   w: 0,
   h: 0,
-  t: [],
-  m: [],
+  t: [],  // tile
+  m: [],  // mob
 };
 
 const grid_init_empty = (w, h) => {
@@ -73,9 +73,12 @@ const grid_add_mob = (no, x, y, ha) => {
 
 const grid_tick = () => {
   for (const mob of $grid.m) {
-    mob_tick(mob);
+    mob_tick_before(mob);
   }
   mob_resolve_overlaps($grid.m);
+  for (const mob of $grid.m) {
+    mob_tick_after(mob);
+  }
 };
 
 const grid_encode = (data) => {

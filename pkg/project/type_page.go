@@ -16,8 +16,8 @@ type Page struct {
 	Item   []*Item   `toml:"item"`
 	Base   []*Base   `toml:"base"`
 	Tile   []*Tile   `toml:"tile"`
-	Hit    []*Hit    `toml:"hit"`
 	Mob    []*Mob    `toml:"mob"`
+	Hit    []*Hit    `toml:"hit"`
 	Grid   []*Grid   `toml:"grid"`
 	Com    []*Com    `toml:"com"`
 	View   []*View   `toml:"view"`

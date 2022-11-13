@@ -35,6 +35,9 @@ const data_tile_index = (name) => {
 const data_mob_index = (name) => {
   return data_lookup_index("mob", name);
 };
+const data_hit_index = (name) => {
+  return data_lookup_index("hit", name);
+};
 const data_grid_index = (name) => {
   return data_lookup_index("grid", name);
 };
