@@ -9,5 +9,7 @@ type Mob struct {
 	Radius float32  `toml:"radius"`
 	Mass   *float32 `toml:"mass"`
 
+	Hp int `toml:"hp"`
+
 	Action [][]string `toml:"action"`
 }

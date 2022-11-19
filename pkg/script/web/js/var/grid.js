@@ -62,8 +62,22 @@ const grid_index = (x, y) => {
 const grid_tile = (x, y) => {
   return $grid.t[grid_index(x, y)];
 };
+
 const grid_mob = (no) => {
   return $grid.m.find(o => o.no === no);
+};
+
+const grid_mob_ranges = (ranges) => {
+  return $grid.m.filter(mob => {
+    const x = Math.floor(mob.x);
+    const y = Math.floor(mob.y);
+    for (const r of ranges) {
+      if ((r.x === x) && (r.y === y)) {
+        return true;
+      }
+    }
+    return false;
+  });
 };
 
 const grid_add_mob = (no, x, y, ha) => {
@@ -79,6 +93,7 @@ const grid_tick = () => {
   for (const mob of $grid.m) {
     mob_tick_after(mob);
   }
+  $grid.m = $grid.m.filter(mob => mob_is_alive(mob));
 };
 
 const grid_encode = (data) => {

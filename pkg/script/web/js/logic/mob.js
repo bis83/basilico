@@ -8,6 +8,7 @@ const mob_make = (no, x, y, h, ha, va) => {
     ha: ha || 0,
     va: va || 0,
     hit: null,
+    dmg: 0,
   };
 };
 
@@ -143,4 +144,16 @@ const mob_resolve_overlaps = (mobs) => {
 
 const mob_set_hit = (mob, no, item) => {
   mob.hit = hit_make(no, item);
+};
+
+const mob_is_alive = (mob) => {
+  const data = data_mob(mob.no);
+  if (!data) {
+    return false;
+  }
+  return (data.hp == 0) || (mob.dmg < data.hp);
+};
+
+const mob_damage = (mob, value) => {
+  mob.dmg += value;
 };

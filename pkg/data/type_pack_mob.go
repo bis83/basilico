@@ -8,6 +8,7 @@ type Mob struct {
 	Draw   int        `json:"draw"`
 	Radius float32    `json:"r"`
 	Mass   float32    `json:"m"`
+	Hp     int        `json:"hp"`
 	Action [][]string `json:"action"`
 }
 
@@ -19,6 +20,7 @@ func (p *Mob) Set(prj *project.Project, s *project.Mob) error {
 	} else {
 		p.Mass = 1.0
 	}
+	p.Hp = s.Hp
 	p.Action = s.Action
 	return nil
 }
