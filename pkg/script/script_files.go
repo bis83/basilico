@@ -28,16 +28,14 @@ var scripts = []string{
 	"web/js/data/data_lookup.js",
 	"web/js/data/data_lookup_index.js",
 
-	// var
-	"web/js/var/grid.js",
-	"web/js/var/view.js",
-
-	// logic
-	"web/js/logic/tile.js",
-	"web/js/logic/item.js",
-	"web/js/logic/mob.js",
-	"web/js/logic/com.js",
-	"web/js/logic/hit.js",
+	// game
+	"web/js/game/tile.js",
+	"web/js/game/item.js",
+	"web/js/game/mob.js",
+	"web/js/game/com.js",
+	"web/js/game/hit.js",
+	"web/js/game/grid.js",
+	"web/js/game/view.js",
 
 	// draw
 	"web/js/draw/draw.js",
