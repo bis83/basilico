@@ -30,11 +30,11 @@ var scripts = []string{
 
 	// var
 	"web/js/var/grid.js",
-	"web/js/var/item.js",
 	"web/js/var/view.js",
 
 	// logic
 	"web/js/logic/tile.js",
+	"web/js/logic/item.js",
 	"web/js/logic/mob.js",
 	"web/js/logic/com.js",
 	"web/js/logic/hit.js",
@@ -46,7 +46,8 @@ var scripts = []string{
 	"web/js/draw/draw_view.js",
 
 	// savegame
-	"web/js/savegame.js",
+	"web/js/savegame/encode_grid.js",
+	"web/js/savegame/savegame.js",
 
 	// main
 	"web/js/main.js",

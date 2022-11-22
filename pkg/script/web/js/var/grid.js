@@ -95,10 +95,3 @@ const grid_tick = () => {
   }
   $grid.m = $grid.m.filter(mob => mob_is_alive(mob));
 };
-
-const grid_encode = (data) => {
-  return data;
-};
-const grid_decode = (data) => {
-  return data;
-};

@@ -9,6 +9,7 @@ const mob_make = (no, x, y, h, ha, va) => {
     va: va || 0,
     hit: null,
     dmg: 0,
+    item: item_make(8), // fixme:
   };
 };
 

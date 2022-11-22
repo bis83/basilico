@@ -9,7 +9,12 @@ type Mob struct {
 	Radius float32  `toml:"radius"`
 	Mass   *float32 `toml:"mass"`
 
-	Hp int `toml:"hp"`
-
+	Hp     int        `toml:"hp"`
+	Item   []*MobItem `toml:"item"`
 	Action [][]string `toml:"action"`
+}
+
+type MobItem struct {
+	Item  string `toml:"item"`
+	Count int    `toml:"count"`
 }
