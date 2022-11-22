@@ -8,6 +8,16 @@ type Item struct {
 	Desc string `toml:"desc"`
 	Icon int    `toml:"icon"`
 
+	Usable *ItemUsable  `toml:"usable"`
+	Trait  []*ItemTrait `toml:"trait"`
+}
+
+type ItemUsable struct {
 	Hit     string `toml:"hit"`
 	Consume bool   `toml:"consume"`
+}
+
+type ItemTrait struct {
+	Type  string `toml:"type"`
+	Value int    `toml:"value"`
 }
