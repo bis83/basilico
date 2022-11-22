@@ -1,6 +1,6 @@
 
 const mob_make = (no, x, y, h, ha, va) => {
-  return {
+  const mob = {
     no: no,
     x: x,
     y: y,
@@ -11,6 +11,16 @@ const mob_make = (no, x, y, h, ha, va) => {
     dmg: 0,
     item: item_make(8), // fixme:
   };
+  const data = data_mob(no);
+  if (!data) {
+    return null;
+  }
+  if (data.item) {
+    for (const item of data.item) {
+      item_gain(mob.item, item.no, item.n);
+    }
+  }
+  return mob;
 };
 
 const mob_tick_before = (mob) => {
