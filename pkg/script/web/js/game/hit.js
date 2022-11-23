@@ -1,8 +1,9 @@
 
-const hit_make = (no, item) => {
+const hit_make = () => {
   return {
-    no: no || 0,
-    item: item || 0,
+    no: 0,
+    item: 0,
+    act: false,
   };
 };
 
@@ -20,4 +21,34 @@ const hit_ranges = (x, y, ha) => {
   }
 
   return ranges;
+};
+
+const hit_from_item = (hit, item) => {
+  const slot = item_select(item);
+  if (!slot) {
+    return;
+  }
+  const data = data_item(slot.no);
+  if (!data) {
+    return;
+  }
+  if (!data.usable) {
+    return;
+  }
+  hit.no = data.usable.hit;
+  hit.item = item.no;
+};
+
+const hit_tick = (hit, mob) => {
+  hit_from_item(hit, mob.item);
+  if (hit.no > 0 && hit.act) {
+    const data = data_hit(hit.no);
+    if (!data) {
+      return;
+    }
+    if (data.action) {
+      action_invoke(mob, data.action);
+    }
+    hit.act = false;
+  }
 };
