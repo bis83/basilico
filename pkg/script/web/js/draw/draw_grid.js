@@ -12,7 +12,7 @@ const draw_tile = (x, y) => {
       continue;
     }
     draw_call(data.draw, (u) => {
-      const pos = grid_to_world(x, y, i);
+      const pos = grid_index_to_world(x, y, i);
       $view.m.set(mat4translate(pos[0], pos[1], pos[2]));
       $gl.uniformMatrix4fv(u.w, false, $view.m);
     });
@@ -25,9 +25,9 @@ const draw_tile = (x, y) => {
   }
   const h = tile_height(tile);
   draw_call(data.draw, (u) => {
-    const pos = grid_to_world(x, y, h);
+    const pos = grid_index_to_world(x, y, h);
     const m = mat4angle(tile.ha || 0, tile.va || 0);
-    mat4translated(m, pos[0] + 1, pos[1] + 1, pos[2]);
+    mat4translated(m, pos[0], pos[1], pos[2]);
     $view.m.set(m);
     $gl.uniformMatrix4fv(u.w, false, $view.m);
   });
@@ -42,7 +42,7 @@ const draw_mob = (mob) => {
     return;
   }
   draw_call(data.draw, (u) => {
-    const pos = grid_to_world(mob.x, mob.y, mob.h);
+    const pos = grid_coord_to_world(mob.x, mob.y, mob.h);
     const m = mat4angle(mob.ha || 0, mob.va || 0);
     mat4translated(m, pos[0], pos[1], pos[2]);
     $view.m.set(m);
@@ -63,8 +63,8 @@ const draw_hit = (mob) => {
     }
     const h = tile_height(tile);
     draw_call(data.draw, (u) => {
-      const pos = grid_to_world(r.x, r.y, h);
-      $view.m.set(mat4translate(pos[0] + 1, pos[1] + 1, pos[2]));
+      const pos = grid_index_to_world(r.x, r.y, h);
+      $view.m.set(mat4translate(pos[0], pos[1], pos[2]));
       $gl.uniformMatrix4fv(u.w, false, $view.m);
     });
   }

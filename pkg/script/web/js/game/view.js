@@ -58,7 +58,7 @@ const view_tick_after = () => {
   if (mob) {
     const EYE_HEIGHT = 1.75;
     dir = vec3dir(mob.ha, mob.va);
-    eye = grid_to_world(mob.x, mob.y, mob.h);
+    eye = grid_coord_to_world(mob.x, mob.y, mob.h);
     eye[2] += EYE_HEIGHT;
   }
 
