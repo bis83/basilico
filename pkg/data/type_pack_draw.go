@@ -7,13 +7,17 @@ import (
 )
 
 type Draw struct {
-	Mesh   int  `json:"mesh"`
-	Shader int  `json:"shader"`
-	Image  int  `json:"image"`
-	Depth  bool `json:"depth"`
-	Alpha  bool `json:"alpha"`
-	Cw     bool `json:"cw"`
-	Ortho  bool `json:"ortho"`
+	Mesh   int        `json:"mesh"`
+	Shader int        `json:"shader"`
+	Image  int        `json:"image"`
+	Ortho  bool       `json:"ortho"`
+	State  *DrawState `json:"state"`
+}
+
+type DrawState struct {
+	Depth bool `json:"d"`
+	Alpha bool `json:"a"`
+	Cw    bool `json:"cw"`
 }
 
 func (p *Draw) Set(prj *project.Project, s *project.Draw) error {
@@ -26,9 +30,15 @@ func (p *Draw) Set(prj *project.Project, s *project.Draw) error {
 		return fmt.Errorf("Shader Not Found: %s", s.Shader)
 	}
 	p.Image = prj.FindImage(s.Image)
-	p.Depth = s.Depth
-	p.Alpha = s.Alpha
-	p.Cw = s.Cw
 	p.Ortho = s.Ortho
+
+	var state DrawState
+	if s.State != nil {
+		state.Depth = s.State.Depth
+		state.Alpha = s.State.Alpha
+		state.Cw = s.State.Cw
+	}
+	p.State = &state
+
 	return nil
 }

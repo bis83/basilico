@@ -17,18 +17,23 @@ const gl_clear = () => {
   $gl.clear($gl.COLOR_BUFFER_BIT | $gl.DEPTH_BUFFER_BIT);
 };
 
-const gl_state = (depth, alpha, cw) => {
+const gl_state = (state) => {
   // $gl.disable($gl.CULL_FACE);
   // $gl.cullFace($gl.BACK);
-  $gl.enable($gl.CULL_FACE);
-  $gl.frontFace(cw ? $gl.CW : $gl.CCW);
-  if (depth) {
+  if (state.cw) {
+    $gl.enable($gl.CULL_FACE);
+    $gl.frontFace($gl.CW);
+  } else {
+    $gl.enable($gl.CULL_FACE);
+    $gl.frontFace($gl.CCW);
+  }
+  if (state.d) {
     $gl.enable($gl.DEPTH_TEST);
     $gl.depthFunc($gl.LEQUAL);
   } else {
     $gl.disable($gl.DEPTH_TEST);
   }
-  if (alpha) {
+  if (state.a) {
     $gl.enable($gl.BLEND);
     $gl.blendFunc($gl.SRC_ALPHA, $gl.ONE_MINUS_SRC_ALPHA);
   } else {
