@@ -24,10 +24,13 @@ const view_camera_mob = () => {
   if (!data) {
     return null;
   }
-  if (data.cam <= 0) {
+  if (!data.grid) {
     return null;
   }
-  return grid_mob(data.cam);
+  if (data.grid.cam <= 0) {
+    return null;
+  }
+  return grid_mob(data.grid.cam);
 };
 
 const view_next = (view) => {
@@ -96,7 +99,7 @@ const view_tick = () => {
       }
     }
   }
-  if (data.draw3d) {
+  if (data.grid) {
     grid_tick();
   }
   view_tick_after();

@@ -4,15 +4,15 @@ const draw_view = () => {
   if (!data) {
     return;
   }
-  if (data.draw) {
-    for (let no of data.draw) {
-      draw_call(no, (u) => {
-        $view.m.set(mat4translate(...$view.cam.eye));
-        $gl.uniformMatrix4fv(u.w, false, $view.m);
-      });
+  if (data.grid) {
+    if (data.grid.draw) {
+      for (let no of data.grid.draw) {
+        draw_call(no, (u) => {
+          $view.m.set(mat4translate(...$view.cam.eye));
+          $gl.uniformMatrix4fv(u.w, false, $view.m);
+        });
+      }
     }
-  }
-  if (data.draw3d) {
     draw_grid();
   }
   if (data.com) {

@@ -1,10 +1,12 @@
 package project
 
 type View struct {
-	Name string   `toml:"name"`
-	Com  []string `toml:"com"`
+	Name string    `toml:"name"`
+	Com  []string  `toml:"com"`
+	Grid *ViewGrid `toml:"grid"`
+}
 
-	Draw3D    bool     `toml:"draw3d"`
+type ViewGrid struct {
 	CameraMob string   `toml:"camera-mob"`
 	Draw      []string `toml:"draw"`
 }
