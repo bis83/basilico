@@ -98,9 +98,9 @@ const view_tick = () => {
         com_tick(com, data);
       }
     }
-  }
-  if (data.grid) {
-    grid_tick();
+    if (data.grid) {
+      grid_tick();
+    }
   }
   view_tick_after();
 };
