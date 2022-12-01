@@ -18,7 +18,7 @@ func (p *Image) Set(pack *Pack, prj *project.Project, img *project.Image) error 
 	if err != nil {
 		return err
 	}
-	p.Buffer = pack.AppendBase64(base64.StdEncoding.EncodeToString(b))
+	p.Buffer = pack.AppendContent(base64.StdEncoding.EncodeToString(b))
 	p.Sampler = img.Sampler
 	return nil
 }

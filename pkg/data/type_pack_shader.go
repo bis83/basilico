@@ -5,15 +5,15 @@ import (
 )
 
 type Shader struct {
-	VertexShader   string   `json:"vs"`
-	FragmentShader string   `json:"fs"`
+	VertexShader   int      `json:"vs"`
+	FragmentShader int      `json:"fs"`
 	Uniform        []string `json:"u"`
 	UniformBlock   []string `json:"ub"`
 }
 
-func (p *Shader) Set(s *project.Shader) error {
-	p.VertexShader = s.VertexShader
-	p.FragmentShader = s.FragmentShader
+func (p *Shader) Set(pack *Pack, s *project.Shader) error {
+	p.VertexShader = pack.AppendContent(s.VertexShader)
+	p.FragmentShader = pack.AppendContent(s.FragmentShader)
 	p.Uniform = s.Uniform
 	p.UniformBlock = s.UniformBlock
 	return nil

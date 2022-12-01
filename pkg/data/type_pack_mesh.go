@@ -57,13 +57,13 @@ func (p *Mesh) Set(pack *Pack, prj *project.Project, mesh *project.Mesh) error {
 			return err
 		}
 	}
-	p.Buffer = pack.AppendBase64(base64.StdEncoding.EncodeToString(b.Bytes()))
+	p.Buffer = pack.AppendContent(base64.StdEncoding.EncodeToString(b.Bytes()))
 	if len(buffer.Index) > 0 {
 		str, err := encodeUint16Array(buffer.Index)
 		if err != nil {
 			return err
 		}
-		p.Index = pack.AppendBase64(str)
+		p.Index = pack.AppendContent(str)
 	} else {
 		p.Index = -1
 	}

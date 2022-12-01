@@ -1,7 +1,7 @@
 
-const decodeShader = (data) => {
-  data.vs = gl_createGLShader($gl.VERTEX_SHADER, data.vs);
-  data.fs = gl_createGLShader($gl.FRAGMENT_SHADER, data.fs);
+const decodeShader = (data, content) => {
+  data.vs = gl_createGLShader($gl.VERTEX_SHADER, content[data.vs]);
+  data.fs = gl_createGLShader($gl.FRAGMENT_SHADER, content[data.fs]);
   data.prog = gl_createGLProgram(data.vs, data.fs);
 
   if (data.u) {

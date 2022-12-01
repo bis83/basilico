@@ -5,29 +5,29 @@ import (
 )
 
 type Pack struct {
-	Mesh   []*Mesh   `json:"mesh"`
-	Image  []*Image  `json:"image"`
-	Shader []*Shader `json:"shader"`
-	Draw   []*Draw   `json:"draw"`
-	Item   []*Item   `json:"item"`
-	Base   []*Base   `json:"base"`
-	Tile   []*Tile   `json:"tile"`
-	Mob    []*Mob    `json:"mob"`
-	Hit    []*Hit    `json:"hit"`
-	Grid   []*Grid   `json:"grid"`
-	Com    []*Com    `json:"com"`
-	View   []*View   `json:"view"`
-	Base64 []string  `json:"base64"`
+	Mesh    []*Mesh   `json:"mesh"`
+	Image   []*Image  `json:"image"`
+	Shader  []*Shader `json:"shader"`
+	Draw    []*Draw   `json:"draw"`
+	Item    []*Item   `json:"item"`
+	Base    []*Base   `json:"base"`
+	Tile    []*Tile   `json:"tile"`
+	Mob     []*Mob    `json:"mob"`
+	Hit     []*Hit    `json:"hit"`
+	Grid    []*Grid   `json:"grid"`
+	Com     []*Com    `json:"com"`
+	View    []*View   `json:"view"`
+	Content []string  `json:"content"`
 }
 
-func (p *Pack) AppendBase64(buf string) int {
-	for i, v := range p.Base64 {
+func (p *Pack) AppendContent(buf string) int {
+	for i, v := range p.Content {
 		if v == buf {
 			return i
 		}
 	}
-	i := len(p.Base64)
-	p.Base64 = append(p.Base64, buf)
+	i := len(p.Content)
+	p.Content = append(p.Content, buf)
 	return i
 }
 
@@ -72,7 +72,7 @@ func (p *Pack) Set(prj *project.Project, index *Index, pack int) error {
 		index.Shader[i].Index = len(p.Shader)
 
 		var shader Shader
-		if err := shader.Set(v); err != nil {
+		if err := shader.Set(p, v); err != nil {
 			return err
 		}
 		p.Shader = append(p.Shader, &shader)
