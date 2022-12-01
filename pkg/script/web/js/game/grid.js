@@ -42,7 +42,7 @@ const grid_load = (no) => {
   }
   if (data.m) {
     for (const a of data.m) {
-      grid_spawn_mob(a.no, a.x + 0.5, a.y + 0.5, a.ha);
+      grid_spawn_mob(a.no, a.x + 0.5, a.y + 0.5, a.ha, a.va);
     }
   }
 };
@@ -80,9 +80,9 @@ const grid_mob_ranges = (ranges) => {
   });
 };
 
-const grid_spawn_mob = (no, x, y, ha) => {
+const grid_spawn_mob = (no, x, y, ha, va) => {
   const h = tile_height(grid_tile(x, y));
-  $grid.m.push(mob_make(no, x, y, h, ha, 0));
+  $grid.m.push(mob_make(no, x, y, h, ha, va));
 };
 
 const grid_tick = () => {
