@@ -27,3 +27,18 @@ const savegame = () => {
   data.grid = grid_encode($grid);
   localstorage_set($view.slot, data);
 };
+
+const loadsystem = () => {
+  const data = localstorage_get("system");
+  if (!data) {
+    return false;
+  }
+  // TODO:
+  return true;
+};
+
+const savesystem = () => {
+  const data = {};
+  // TODO:
+  localstorage_set("system", data);
+};
