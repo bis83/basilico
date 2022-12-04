@@ -3,7 +3,7 @@ const $view = {
   w: 0,
   h: 0,
   view: null,
-  slot: null,
+  slot: 0,
   com: [],
   cam: {
     eye: [0, 0, 0],
@@ -15,8 +15,8 @@ const $view = {
 };
 
 const view_reset = () => {
-  $view.slot = null;
   $view.view = $data.index.init;
+  $view.slot = 0;
 };
 
 const view_camera_mob = () => {

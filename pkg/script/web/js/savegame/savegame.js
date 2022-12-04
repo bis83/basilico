@@ -4,11 +4,7 @@ const newgame = () => {
 };
 
 const loadgame = () => {
-  if (!$view.slot) {
-    return false;
-  }
-
-  const data = localstorage_get($view.slot);
+  const data = localstorage_get(`data${$view.slot}`);
   if (!data) {
     return false;
   }
@@ -19,13 +15,9 @@ const loadgame = () => {
 };
 
 const savegame = () => {
-  if (!$view.slot) {
-    return;
-  }
-
   const data = {};
   data.grid = grid_encode($grid);
-  localstorage_set($view.slot, data);
+  localstorage_set(`data${$view.slot}`, data);
 };
 
 const loadsystem = () => {

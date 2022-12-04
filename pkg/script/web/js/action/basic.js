@@ -7,13 +7,11 @@ define_action("resetview", (self) => {
   view_reset();
 });
 
-define_action("newgame", (self, slot) => {
-  $view.slot = slot;
+define_action("newgame", (self) => {
   newgame();
 });
 
-define_action("loadgame", (self, slot) => {
-  $view.slot = slot;
+define_action("loadgame", (self) => {
   loadgame();
 });
 

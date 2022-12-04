@@ -15,6 +15,7 @@ const item_make = (slot) => {
 const item_index = (item, no) => {
   return item.s.findIndex(o => o && o.no === no);
 };
+
 const item_null_index = (item) => {
   return item.s.findIndex(o => !o);
 };
