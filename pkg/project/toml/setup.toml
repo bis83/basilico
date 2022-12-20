@@ -1,6 +1,4 @@
 title = "YourProject"
 addr = ":8080"
-logging = false
-assert = false
 minify = true
 initial-view = "main"

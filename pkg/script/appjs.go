@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"io"
-	"strconv"
 	"strings"
 	"text/template"
 
@@ -43,16 +42,11 @@ func makeAppJs(feat *Feature, addons []string) ([]byte, error) {
 			return nil, err
 		}
 	}
-	defines := map[string]string{
-		"LOGGING": strconv.FormatBool(feat.Logging),
-		"ASSERT":  strconv.FormatBool(feat.Assert),
-	}
 	result := esbuild.Transform(string(b.Bytes()), esbuild.TransformOptions{
 		MinifyWhitespace:  feat.Minify,
 		MinifyIdentifiers: feat.Minify,
 		MinifySyntax:      feat.Minify,
 		Format:            esbuild.FormatIIFE,
-		Define:            defines,
 	})
 	if len(result.Errors) > 0 || len(result.Warnings) > 0 {
 		e := esbuild.FormatMessages(result.Errors, esbuild.FormatMessagesOptions{})

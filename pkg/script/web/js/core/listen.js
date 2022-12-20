@@ -64,11 +64,9 @@ const listen_init = () => {
   listen(window, "resize", (ev) => {
   });
   listen(window, "gamepadconnected", (ev) => {
-    LOGGING && console.log("gamepadconnected: " + ev.gamepad.index);
     $listen.gamepad.index = ev.gamepad.index;
   });
   listen(window, "gamepaddisconnected", (ev) => {
-    LOGGING && console.log("gamepaddisconnected: " + ev.gamepad.index);
     if ($listen.gamepad.index === ev.gamepad.index) {
       $listen.gamepad.index = null;
     }

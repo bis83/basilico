@@ -29,7 +29,6 @@ const gl_createGLShader = (type, source) => {
   $gl.compileShader(shader);
   const success = $gl.getShaderParameter(shader, $gl.COMPILE_STATUS);
   if (!success) {
-    LOGGING && console.log($gl.getShaderInfoLog(shader));
     $gl.deleteShader(shader);
     return null;
   }
@@ -43,7 +42,6 @@ const gl_createGLProgram = (vs, fs) => {
   $gl.linkProgram(prog);
   const success = $gl.getProgramParameter(prog, $gl.LINK_STATUS);
   if (!success) {
-    LOGGING && console.log($gl.getProgramInfoLog(prog));
     $gl.deleteProgram(prog);
     return null;
   }

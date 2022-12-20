@@ -5,15 +5,11 @@ import (
 )
 
 type Feature struct {
-	Title   string
-	Logging bool
-	Minify  bool
-	Assert  bool
+	Title  string
+	Minify bool
 }
 
 func (p *Feature) Set(prj *project.Project) {
 	p.Title = prj.Setup.Title
-	p.Logging = prj.Setup.Logging
-	p.Assert = prj.Setup.Assert
 	p.Minify = prj.Setup.Minify
 }
