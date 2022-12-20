@@ -49,8 +49,4 @@ var scripts = []string{
 
 	// main
 	"web/js/main.js",
-
-	// action
-	"web/js/action/basic.js",
-	"web/js/action/fps.js",
 }
