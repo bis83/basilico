@@ -1,4 +1,0 @@
-title = "YourProject"
-addr = ":8080"
-minify = true
-initial-view = "main"

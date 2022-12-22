@@ -5,18 +5,25 @@ import (
 	"net/http"
 	"path/filepath"
 
-	project "github.com/bis83/basilico/pkg/project"
+	basil "github.com/bis83/basilico/pkg/basil"
 )
 
-func Serve(setup *project.Setup, baseDir string) error {
-	if len(setup.Addr) == 0 {
-		return nil
-	}
-	absPath, err := filepath.Abs(filepath.Join(baseDir, "dist"))
+type Serve struct {
+	RootDir string
+	Addr    string
+}
+
+func (p *Serve) Set(bsl *basil.Basil) {
+	p.RootDir = bsl.DistDir()
+	p.Addr = bsl.Addr()
+}
+
+func (p *Serve) Start() error {
+	absPath, err := filepath.Abs(p.RootDir)
 	if err != nil {
 		return err
 	}
-	log.Printf("basilico start. addr=%v, dir=%v", setup.Addr, absPath)
+	log.Printf("basilico start. addr=%v, dir=%v", p.Addr, absPath)
 	http.Handle("/", http.FileServer(http.Dir(absPath)))
-	return http.ListenAndServe(setup.Addr, nil)
+	return http.ListenAndServe(p.Addr, nil)
 }
