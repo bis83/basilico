@@ -1,11 +1,12 @@
 package pack
 
 import (
+	basil "github.com/bis83/basilico/pkg/basil"
 	file "github.com/bis83/basilico/pkg/file"
 	pages "github.com/bis83/basilico/pkg/pages"
 )
 
-func MakePack(baseDir string, minify bool) ([]*file.File, error) {
+func makePack(baseDir string, minify bool) ([]*file.File, error) {
 	var fs []*file.File
 	var err error
 	var b []byte
@@ -38,4 +39,16 @@ func MakePack(baseDir string, minify bool) ([]*file.File, error) {
 	fs = append(fs, &file.File{"pack0.json", b})
 
 	return fs, nil
+}
+
+func Build(bsl *basil.Basil) error {
+	if err := writePageScript(&bsl.Script); err != nil {
+		return err
+	}
+	files, err := makePack(bsl.BaseDir, bsl.Setup.Minify)
+	if err != nil {
+		return err
+	}
+	bsl.Dist = append(bsl.Dist, files...)
+	return nil
 }

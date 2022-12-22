@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	basil "github.com/bis83/basilico/pkg/basil"
+	pack "github.com/bis83/basilico/pkg/pack"
 	serve "github.com/bis83/basilico/pkg/serve"
 
 	toml "github.com/pelletier/go-toml/v2"
@@ -27,6 +28,11 @@ func steps() error {
 		}
 	}
 	if args.doBuild {
+		if bsl.Setup.Pages {
+			if err := pack.Build(&bsl); err != nil {
+				return err
+			}
+		}
 		if err := bsl.Build(); err != nil {
 			return err
 		}

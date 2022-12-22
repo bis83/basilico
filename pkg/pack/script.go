@@ -4,7 +4,7 @@ import (
 	"io"
 )
 
-func WritePageScript(wr io.Writer) error {
+func writePageScript(wr io.Writer) error {
 	for _, path := range scripts {
 		js, err := fs.ReadFile(path)
 		if err != nil {

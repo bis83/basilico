@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	file "github.com/bis83/basilico/pkg/file"
-	pack "github.com/bis83/basilico/pkg/pack"
 )
 
 type Basil struct {
@@ -35,17 +34,6 @@ func (p *Basil) Clean() error {
 }
 
 func (p *Basil) Build() error {
-	if p.Setup.Pages {
-		if err := pack.WritePageScript(&p.Script); err != nil {
-			return err
-		}
-		files, err := pack.MakePack(p.BaseDir, p.Setup.Minify)
-		if err != nil {
-			return err
-		}
-		p.Dist = append(p.Dist, files...)
-	}
-
 	// build core
 	if err := p.loadScript(); err != nil {
 		return err
