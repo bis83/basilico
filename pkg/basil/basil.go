@@ -35,10 +35,6 @@ func (p *Basil) Clean() error {
 }
 
 func (p *Basil) Build() error {
-	if err := file.MakeDir(p.DistDir()); err != nil {
-		return err
-	}
-
 	if p.Setup.Pages {
 		if err := pack.WritePageScript(&p.Script); err != nil {
 			return err
@@ -50,21 +46,21 @@ func (p *Basil) Build() error {
 		p.Dist = append(p.Dist, files...)
 	}
 
-	for _, path := range p.Setup.Script {
-		data, err := os.ReadFile(filepath.Join(p.BaseDir, path))
-		if err != nil {
-			return err
-		}
-		p.Script.Write(data)
-	}
-	if err := p.MakeAppJs(); err != nil {
+	// build core
+	if err := p.loadScript(); err != nil {
 		return err
 	}
-	if err := p.MakeIndexHtml(); err != nil {
+	if err := p.makeAppJs(); err != nil {
+		return err
+	}
+	if err := p.makeIndexHtml(); err != nil {
 		return err
 	}
 
 	// write dist files
+	if err := file.MakeDir(p.DistDir()); err != nil {
+		return err
+	}
 	for _, file := range p.Dist {
 		if err := file.Write(p.DistDir()); err != nil {
 			return err

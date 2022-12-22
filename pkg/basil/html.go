@@ -7,7 +7,7 @@ import (
 	file "github.com/bis83/basilico/pkg/file"
 )
 
-func (p *Basil) MakeIndexHtml() error {
+func (p *Basil) makeIndexHtml() error {
 	var b bytes.Buffer
 
 	fr, err := fs.ReadFile("web/index.html")

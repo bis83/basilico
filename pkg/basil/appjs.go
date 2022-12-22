@@ -2,6 +2,8 @@ package basil
 
 import (
 	"errors"
+	"os"
+	"path/filepath"
 	"strings"
 
 	esbuild "github.com/evanw/esbuild/pkg/api"
@@ -9,7 +11,18 @@ import (
 	file "github.com/bis83/basilico/pkg/file"
 )
 
-func (p *Basil) MakeAppJs() error {
+func (p *Basil) loadScript() error {
+	for _, path := range p.Setup.Script {
+		data, err := os.ReadFile(filepath.Join(p.BaseDir, path))
+		if err != nil {
+			return err
+		}
+		p.Script.Write(data)
+	}
+	return nil
+}
+
+func (p *Basil) makeAppJs() error {
 	// esbuild
 	result := esbuild.Transform(string(p.Script.Bytes()), esbuild.TransformOptions{
 		MinifyWhitespace:  p.Setup.Minify,
