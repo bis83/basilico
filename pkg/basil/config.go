@@ -8,7 +8,7 @@ import (
 	toml "github.com/pelletier/go-toml/v2"
 )
 
-type Setup struct {
+type Config struct {
 	Title    string   `toml:"title"`
 	Minify   bool     `toml:"minify"`
 	Pages    bool     `toml:"pages"`
@@ -16,7 +16,7 @@ type Setup struct {
 	Resource []string `toml:"resource"`
 }
 
-func (p *Setup) Read(path string) error {
+func (p *Config) Read(path string) error {
 	var err error
 	var data []byte
 	data, err = os.ReadFile(path)

@@ -28,7 +28,7 @@ func steps() error {
 		}
 	}
 	if args.doBuild {
-		if bsl.Setup.Pages {
+		if bsl.Config.Pages {
 			if err := pack.Build(&bsl); err != nil {
 				return err
 			}

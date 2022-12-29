@@ -15,7 +15,7 @@ func (p *Basil) makeIndexHtml() error {
 		return err
 	}
 	tpl := template.Must(template.New("index").Parse(string(fr)))
-	if err := tpl.Execute(&b, p.Setup); err != nil {
+	if err := tpl.Execute(&b, p.Config); err != nil {
 		return err
 	}
 

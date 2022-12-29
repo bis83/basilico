@@ -12,7 +12,7 @@ import (
 )
 
 func (p *Basil) loadScript() error {
-	for _, path := range p.Setup.Script {
+	for _, path := range p.Config.Script {
 		data, err := os.ReadFile(filepath.Join(p.BaseDir, path))
 		if err != nil {
 			return err
@@ -25,9 +25,9 @@ func (p *Basil) loadScript() error {
 func (p *Basil) makeAppJs() error {
 	// esbuild
 	result := esbuild.Transform(string(p.Script.Bytes()), esbuild.TransformOptions{
-		MinifyWhitespace:  p.Setup.Minify,
-		MinifyIdentifiers: p.Setup.Minify,
-		MinifySyntax:      p.Setup.Minify,
+		MinifyWhitespace:  p.Config.Minify,
+		MinifyIdentifiers: p.Config.Minify,
+		MinifySyntax:      p.Config.Minify,
 		Format:            esbuild.FormatIIFE,
 	})
 	if len(result.Errors) > 0 || len(result.Warnings) > 0 {

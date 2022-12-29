@@ -10,7 +10,7 @@ import (
 
 type Basil struct {
 	BaseDir string
-	Setup   Setup
+	Config  Config
 
 	Script bytes.Buffer
 	Dist   []*file.File
@@ -18,7 +18,7 @@ type Basil struct {
 
 func (p *Basil) Read(baseDir string) error {
 	p.BaseDir = baseDir
-	if err := p.Setup.Read(p.SetupToml()); err != nil {
+	if err := p.Config.Read(p.ConfigToml()); err != nil {
 		return err
 	}
 	return nil
@@ -57,8 +57,8 @@ func (p *Basil) Build() error {
 	return nil
 }
 
-func (p *Basil) SetupToml() string {
-	return filepath.Join(p.BaseDir, "setup.toml")
+func (p *Basil) ConfigToml() string {
+	return filepath.Join(p.BaseDir, "config.toml")
 }
 
 func (p *Basil) DistDir() string {

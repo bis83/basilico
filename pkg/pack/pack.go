@@ -45,7 +45,7 @@ func Build(bsl *basil.Basil) error {
 	if err := writePageScript(&bsl.Script); err != nil {
 		return err
 	}
-	files, err := makePack(bsl.BaseDir, bsl.Setup.Minify)
+	files, err := makePack(bsl.BaseDir, bsl.Config.Minify)
 	if err != nil {
 		return err
 	}
