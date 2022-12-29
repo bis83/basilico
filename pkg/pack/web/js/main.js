@@ -10,6 +10,7 @@ const update = (time) => {
   timer_tick(time);
   listen_tick();
   if (data_loaded()) {
+    hide_message();
     view_tick();
   }
 };

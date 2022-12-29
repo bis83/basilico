@@ -10,6 +10,7 @@ import (
 
 type Config struct {
 	Title    string   `toml:"title"`
+	Message  string   `toml:"message"`
 	Minify   bool     `toml:"minify"`
 	Pages    bool     `toml:"pages"`
 	Script   []string `toml:"script"`
