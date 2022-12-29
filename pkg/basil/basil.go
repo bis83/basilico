@@ -66,5 +66,5 @@ func (p *Basil) DistDir() string {
 }
 
 func (p *Basil) Addr() string {
-	return p.Setup.Addr
+	return ":8080"
 }

@@ -10,7 +10,6 @@ import (
 
 type Setup struct {
 	Title    string   `toml:"title"`
-	Addr     string   `toml:"addr"`
 	Minify   bool     `toml:"minify"`
 	Pages    bool     `toml:"pages"`
 	Script   []string `toml:"script"`
