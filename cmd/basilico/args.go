@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	file "github.com/bis83/basilico/pkg/file"
+	basil "github.com/bis83/basilico/pkg/basil"
 )
 
 type cmdArgs struct {
@@ -19,14 +19,14 @@ func (p *cmdArgs) parse() error {
 	// baseDir
 	if len(os.Args) >= 2 {
 		path := os.Args[1]
-		if file.Exists(path) {
-			if file.IsDir(path) {
+		if basil.Exists(path) {
+			if basil.IsDir(path) {
 				p.baseDir = filepath.Clean(path)
 			} else {
 				p.baseDir = filepath.Clean(filepath.Dir(path))
 			}
 		} else {
-			if err := file.MakeDir(path); err != nil {
+			if err := basil.MakeDir(path); err != nil {
 				return err
 			}
 			p.baseDir = filepath.Clean(path)

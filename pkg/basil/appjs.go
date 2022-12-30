@@ -7,8 +7,6 @@ import (
 	"strings"
 
 	esbuild "github.com/evanw/esbuild/pkg/api"
-
-	file "github.com/bis83/basilico/pkg/file"
 )
 
 func (p *Basil) loadScript() error {
@@ -36,7 +34,7 @@ func (p *Basil) makeAppJs() error {
 		return errors.New(strings.Join(append(e, w...), "\n"))
 	}
 
-	var file file.File
+	var file File
 	file.Name = "app.js"
 	file.Data = result.Code
 	p.Dist = append(p.Dist, &file)

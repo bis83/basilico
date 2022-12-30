@@ -2,12 +2,11 @@ package pack
 
 import (
 	basil "github.com/bis83/basilico/pkg/basil"
-	file "github.com/bis83/basilico/pkg/file"
 	pages "github.com/bis83/basilico/pkg/pages"
 )
 
-func makePack(baseDir string, minify bool) ([]*file.File, error) {
-	var fs []*file.File
+func makePack(baseDir string, minify bool) ([]*basil.File, error) {
+	var fs []*basil.File
 	var err error
 	var b []byte
 
@@ -30,13 +29,13 @@ func makePack(baseDir string, minify bool) ([]*file.File, error) {
 	if err != nil {
 		return nil, err
 	}
-	fs = append(fs, &file.File{"index.json", b})
+	fs = append(fs, &basil.File{"index.json", b})
 
 	b, err = marshalJSON(p, minify)
 	if err != nil {
 		return nil, err
 	}
-	fs = append(fs, &file.File{"pack0.json", b})
+	fs = append(fs, &basil.File{"pack0.json", b})
 
 	return fs, nil
 }

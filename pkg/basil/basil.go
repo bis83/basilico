@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
-
-	file "github.com/bis83/basilico/pkg/file"
 )
 
 type Basil struct {
@@ -13,7 +11,7 @@ type Basil struct {
 	Config  Config
 
 	Script bytes.Buffer
-	Dist   []*file.File
+	Dist   []*File
 }
 
 func (p *Basil) Read(baseDir string) error {
@@ -29,7 +27,7 @@ func (p *Basil) Clean() error {
 		return err
 	}
 	p.Script.Reset()
-	p.Dist = make([]*file.File, 0)
+	p.Dist = make([]*File, 0)
 	return nil
 }
 
@@ -52,7 +50,7 @@ func (p *Basil) Build(middleware []Middleware) error {
 	}
 
 	// write dist files
-	if err := file.MakeDir(p.DistDir()); err != nil {
+	if err := MakeDir(p.DistDir()); err != nil {
 		return err
 	}
 	for _, file := range p.Dist {

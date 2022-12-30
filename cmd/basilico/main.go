@@ -14,7 +14,7 @@ import (
 func getMiddlewares(middlewares []string) []basil.Middleware {
 	var mdls []basil.Middleware
 	for _, m := range middlewares {
-		switch(m) {
+		switch m {
 		case "pages":
 			mdls = append(mdls, pack.Middleware{})
 		default:
