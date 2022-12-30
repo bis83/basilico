@@ -33,7 +33,13 @@ func (p *Basil) Clean() error {
 	return nil
 }
 
-func (p *Basil) Build() error {
+func (p *Basil) Build(middleware []Middleware) error {
+	for _, mdl := range middleware {
+		if err := mdl.PreBuild(p); err != nil {
+			return err
+		}
+	}
+
 	// build core
 	if err := p.loadScript(); err != nil {
 		return err

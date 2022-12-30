@@ -9,12 +9,12 @@ import (
 )
 
 type Config struct {
-	Title    string   `toml:"title"`
-	Message  string   `toml:"message"`
-	Minify   bool     `toml:"minify"`
-	Pages    bool     `toml:"pages"`
-	Script   []string `toml:"script"`
-	Resource []string `toml:"resource"`
+	Title      string   `toml:"title"`
+	Message    string   `toml:"message"`
+	Minify     bool     `toml:"minify"`
+	Middleware []string `toml:"middleware"`
+	Script     []string `toml:"script"`
+	Resource   []string `toml:"resource"`
 }
 
 func (p *Config) Read(path string) error {

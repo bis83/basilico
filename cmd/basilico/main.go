@@ -11,6 +11,18 @@ import (
 	toml "github.com/pelletier/go-toml/v2"
 )
 
+func getMiddlewares(middlewares []string) []basil.Middleware {
+	var mdls []basil.Middleware
+	for _, m := range middlewares {
+		switch(m) {
+		case "pages":
+			mdls = append(mdls, pack.Middleware{})
+		default:
+		}
+	}
+	return mdls
+}
+
 func steps() error {
 	var args cmdArgs
 	if err := args.parse(); err != nil {
@@ -28,12 +40,8 @@ func steps() error {
 		}
 	}
 	if args.doBuild {
-		if bsl.Config.Pages {
-			if err := pack.Build(&bsl); err != nil {
-				return err
-			}
-		}
-		if err := bsl.Build(); err != nil {
+		mdls := getMiddlewares(bsl.Config.Middleware)
+		if err := bsl.Build(mdls); err != nil {
 			return err
 		}
 	}

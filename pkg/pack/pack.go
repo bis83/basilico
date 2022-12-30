@@ -41,7 +41,10 @@ func makePack(baseDir string, minify bool) ([]*file.File, error) {
 	return fs, nil
 }
 
-func Build(bsl *basil.Basil) error {
+type Middleware struct {
+}
+
+func (p Middleware) PreBuild(bsl *basil.Basil) error {
 	if err := writePageScript(&bsl.Script); err != nil {
 		return err
 	}
