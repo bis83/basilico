@@ -6,7 +6,6 @@ import (
 
 	basil "github.com/bis83/basilico/pkg/basil"
 	pack "github.com/bis83/basilico/pkg/pack"
-	serve "github.com/bis83/basilico/pkg/serve"
 
 	toml "github.com/pelletier/go-toml/v2"
 )
@@ -46,9 +45,9 @@ func steps() error {
 		}
 	}
 	if args.doServe {
-		var srv serve.Serve
-		srv.Set(&bsl)
-		srv.Start()
+		if err := bsl.Serve(); err != nil {
+			return err
+		}
 	}
 	return nil
 }

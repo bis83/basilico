@@ -68,7 +68,3 @@ func (p *Basil) ConfigToml() string {
 func (p *Basil) DistDir() string {
 	return filepath.Join(p.BaseDir, "dist")
 }
-
-func (p *Basil) Addr() string {
-	return ":8080"
-}
