@@ -12,7 +12,14 @@ type File struct {
 }
 
 func (f *File) Write(baseDir string) error {
-	return WriteFile(filepath.Join(baseDir, f.Name), f.Data)
+	path := filepath.Join(baseDir, f.Name)
+	if err := MakeDir(filepath.Dir(path)); err != nil {
+		return err
+	}
+	if err := WriteFile(path, f.Data); err != nil {
+		return err
+	}
+	return nil
 }
 
 func Exists(path string) bool {

@@ -48,6 +48,9 @@ func (p *Basil) Build(middleware []Middleware) error {
 	if err := p.makeIndexHtml(); err != nil {
 		return err
 	}
+	if err := p.makeResource(); err != nil {
+		return err
+	}
 
 	// write dist files
 	if err := MakeDir(p.DistDir()); err != nil {

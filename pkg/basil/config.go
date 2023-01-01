@@ -9,9 +9,11 @@ import (
 )
 
 type Config struct {
-	Title      string   `toml:"title"`
-	Message    string   `toml:"message"`
-	Minify     bool     `toml:"minify"`
+	Title        string   `toml:"title"`
+	Message      string   `toml:"message"`
+	ExternScript []string `toml:"extern-script"`
+	Minify       bool     `toml:"minify"`
+
 	Middleware []string `toml:"middleware"`
 	Script     []string `toml:"script"`
 	Resource   []string `toml:"resource"`
