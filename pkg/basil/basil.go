@@ -32,16 +32,18 @@ func (p *Basil) Clean() error {
 }
 
 func (p *Basil) Build(middleware []Middleware) error {
+	if err := p.loadCoreScript(); err != nil {
+		return err
+	}
 	for _, mdl := range middleware {
 		if err := mdl.PreBuild(p); err != nil {
 			return err
 		}
 	}
-
-	// build core
-	if err := p.loadScript(); err != nil {
+	if err := p.loadAppScript(); err != nil {
 		return err
 	}
+
 	if err := p.makeAppJs(); err != nil {
 		return err
 	}

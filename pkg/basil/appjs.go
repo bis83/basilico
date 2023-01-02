@@ -9,7 +9,18 @@ import (
 	esbuild "github.com/evanw/esbuild/pkg/api"
 )
 
-func (p *Basil) loadScript() error {
+func (p *Basil) loadCoreScript() error {
+	for _, path := range scripts {
+		data, err := fs.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		p.Script.Write(data)
+	}
+	return nil
+}
+
+func (p *Basil) loadAppScript() error {
 	for _, path := range p.Config.Script {
 		data, err := os.ReadFile(filepath.Join(p.BaseDir, path))
 		if err != nil {
