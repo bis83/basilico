@@ -5,7 +5,7 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	pages "github.com/bis83/basilico/pkg/pages"
+	pages "github.com/bis83/basilico/pkg/pack/pages"
 	"github.com/qmuntal/gltf"
 )
 

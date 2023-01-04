@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	pages "github.com/bis83/basilico/pkg/pages"
+	pages "github.com/bis83/basilico/pkg/pack/pages"
 )
 
 type Image struct {

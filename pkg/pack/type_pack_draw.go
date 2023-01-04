@@ -3,7 +3,7 @@ package pack
 import (
 	"fmt"
 
-	pages "github.com/bis83/basilico/pkg/pages"
+	pages "github.com/bis83/basilico/pkg/pack/pages"
 )
 
 type Draw struct {
