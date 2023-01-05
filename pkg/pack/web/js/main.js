@@ -22,7 +22,7 @@ const draw = () => {
   }
 };
 
-listen(window, "load", () => {
+html_listen(window, "load", () => {
   init();
   const tick = (time) => {
     update(time);

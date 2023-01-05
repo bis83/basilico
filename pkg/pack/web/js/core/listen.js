@@ -1,10 +1,6 @@
 
 var $listen = null;
 
-const listen = (target, key, func) => {
-  target.addEventListener(key, func);
-};
-
 const listen_disable_user_select = () => {
   const body = document.body;
   body.style.userSelect = 'none';
@@ -57,34 +53,34 @@ const listen_init = () => {
   };
   $listen.touch = new Map();
 
-  listen(window, "focus", (ev) => {
+  html_listen(window, "focus", (ev) => {
   });
-  listen(window, "blur", (ev) => {
+  html_listen(window, "blur", (ev) => {
   });
-  listen(window, "resize", (ev) => {
+  html_listen(window, "resize", (ev) => {
   });
-  listen(window, "gamepadconnected", (ev) => {
+  html_listen(window, "gamepadconnected", (ev) => {
     $listen.gamepad.index = ev.gamepad.index;
   });
-  listen(window, "gamepaddisconnected", (ev) => {
+  html_listen(window, "gamepaddisconnected", (ev) => {
     if ($listen.gamepad.index === ev.gamepad.index) {
       $listen.gamepad.index = null;
     }
   });
-  listen(document, "keydown", (ev) => {
+  html_listen(document, "keydown", (ev) => {
     if (listen_keyboard($listen.keyboard, ev.code, true)) {
       ev.preventDefault();
     }
   });
-  listen(document, "keyup", (ev) => {
+  html_listen(document, "keyup", (ev) => {
     if (listen_keyboard($listen.keyboard, ev.code, false)) {
       ev.preventDefault();
     }
   });
-  listen(document.body, "contextmenu", (ev) => {
+  html_listen(document.body, "contextmenu", (ev) => {
     ev.preventDefault();
   });
-  listen(document.body, "pointerdown", (ev) => {
+  html_listen(document.body, "pointerdown", (ev) => {
     $listen.touch.set(ev.pointerId, {
       x: ev.clientX,
       y: ev.clientY,
@@ -93,13 +89,13 @@ const listen_init = () => {
       time: performance.now(),
     });
   });
-  listen(document.body, "pointerup", (ev) => {
+  html_listen(document.body, "pointerup", (ev) => {
     $listen.touch.delete(ev.pointerId);
   });
-  listen(document.body, "pointerout", (ev) => {
+  html_listen(document.body, "pointerout", (ev) => {
     $listen.touch.delete(ev.pointerId);
   });
-  listen(document.body, "pointermove", (ev) => {
+  html_listen(document.body, "pointermove", (ev) => {
     const touch = $listen.touch.get(ev.pointerId);
     if (touch) {
       touch.x = ev.clientX;
