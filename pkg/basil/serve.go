@@ -6,11 +6,6 @@ import (
 	"path/filepath"
 )
 
-type Serve struct {
-	RootDir string
-	Addr    string
-}
-
 func (p *Basil) Serve() error {
 	absPath, err := filepath.Abs(p.DistDir())
 	if err != nil {
