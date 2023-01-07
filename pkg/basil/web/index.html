@@ -9,7 +9,8 @@
   <title>{{.Title}}</title>
 </head>
 
-<body style="margin: 0%; padding: 0%; overflow: hidden; background-color: black;">
+<body
+  style="margin: 0%; padding: 0%; overflow: hidden; background-color: black; user-select: none; touch-action: none;">
   {{range $v := .ExternScript}}
   <script src="{{$v}}"></script>{{end}}
   <script src="app.js"></script>

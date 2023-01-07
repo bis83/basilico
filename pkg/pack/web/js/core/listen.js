@@ -1,23 +1,7 @@
 
 var $listen = null;
 
-const listen_disable_user_select = () => {
-  const body = document.body;
-  body.style.userSelect = 'none';
-  body.style.webkitUserSelect = 'none';
-  body.style.msUserSelect = 'none';
-  body.style.mozUserSelect = 'none';
-};
-
-const listen_disable_touch_action = () => {
-  const body = document.body;
-  body.style.touchAction = 'none';
-};
-
 const listen_init = () => {
-  listen_disable_user_select();
-  listen_disable_touch_action();
-
   $listen = {};
   $listen.gamepad = {
     index: null,
