@@ -12,7 +12,6 @@ var scripts = []string{
 	// core
 	"web/js/core/timer.js",
 	"web/js/core/listen.js",
-	"web/js/core/localstorage.js",
 	"web/js/core/graphics.js",
 	"web/js/core/graphics_create.js",
 	"web/js/core/graphics_command.js",

@@ -8,5 +8,6 @@ import (
 var fs embed.FS
 
 var scripts = []string{
-	"web/js/core.js",
+	"web/js/html.js",
+	"web/js/localstorage.js",
 }

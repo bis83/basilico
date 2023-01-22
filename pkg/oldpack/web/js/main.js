@@ -1,9 +1,17 @@
 
 const init = () => {
+  html_hide_message();
   gl_init();
   audio_init();
   listen_init();
   data_loadIndex();
+
+  const tick = (time) => {
+    update(time);
+    draw();
+    requestAnimationFrame(tick);
+  };
+  tick();
 };
 
 const update = (time) => {
@@ -23,11 +31,5 @@ const draw = () => {
 };
 
 html_listen(window, "load", () => {
-  init();
-  const tick = (time) => {
-    update(time);
-    draw();
-    requestAnimationFrame(tick);
-  };
-  tick();
+  html_listen(html_message(), "click", init);
 });
