@@ -5,21 +5,22 @@ import (
 	"fmt"
 
 	basil "github.com/bis83/basilico/pkg/basil"
-	pack "github.com/bis83/basilico/pkg/pack"
+	oldpack "github.com/bis83/basilico/pkg/oldpack"
 
 	toml "github.com/pelletier/go-toml/v2"
 )
 
-func getMiddlewares(middlewares []string) []basil.Middleware {
+func getMiddlewares(middlewares []string) ([]basil.Middleware, error) {
 	var mdls []basil.Middleware
 	for _, m := range middlewares {
 		switch m {
-		case "pages":
-			mdls = append(mdls, pack.Middleware{})
+		case "oldpack":
+			mdls = append(mdls, oldpack.Middleware{})
 		default:
+			return nil, fmt.Errorf("UnsupportMiddleware: %v", m)
 		}
 	}
-	return mdls
+	return mdls, nil
 }
 
 func steps() error {
@@ -39,7 +40,10 @@ func steps() error {
 		}
 	}
 	if args.doBuild {
-		mdls := getMiddlewares(bsl.Config.Middleware)
+		mdls, err := getMiddlewares(bsl.Config.Middleware)
+		if err != nil {
+			return err
+		}
 		if err := bsl.Build(mdls); err != nil {
 			return err
 		}

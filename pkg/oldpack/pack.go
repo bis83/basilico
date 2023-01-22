@@ -2,7 +2,7 @@ package pack
 
 import (
 	basil "github.com/bis83/basilico/pkg/basil"
-	pages "github.com/bis83/basilico/pkg/pack/pages"
+	pages "github.com/bis83/basilico/pkg/oldpack/pages"
 )
 
 func makePack(baseDir string, minify bool) ([]*basil.File, error) {

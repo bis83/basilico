@@ -6,7 +6,7 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	pages "github.com/bis83/basilico/pkg/pack/pages"
+	pages "github.com/bis83/basilico/pkg/oldpack/pages"
 )
 
 type Mesh struct {

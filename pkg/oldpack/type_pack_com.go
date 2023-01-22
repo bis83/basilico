@@ -1,7 +1,7 @@
 package pack
 
 import (
-	pages "github.com/bis83/basilico/pkg/pack/pages"
+	pages "github.com/bis83/basilico/pkg/oldpack/pages"
 )
 
 type Com struct {
