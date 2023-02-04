@@ -6,12 +6,24 @@ import (
 	"path/filepath"
 )
 
+type Middleware interface {
+	PreBuild(bsl *Basil) error
+}
+
 type Basil struct {
 	BaseDir string
 	Config  Config
 
 	Script bytes.Buffer
 	Dist   []*File
+}
+
+func (p *Basil) ConfigToml() string {
+	return filepath.Join(p.BaseDir, "config.toml")
+}
+
+func (p *Basil) DistDir() string {
+	return filepath.Join(p.BaseDir, "dist")
 }
 
 func (p *Basil) Read(baseDir string) error {
@@ -43,7 +55,6 @@ func (p *Basil) Build(middleware []Middleware) error {
 	if err := p.loadAppScript(); err != nil {
 		return err
 	}
-
 	if err := p.makeAppJs(); err != nil {
 		return err
 	}
@@ -53,8 +64,6 @@ func (p *Basil) Build(middleware []Middleware) error {
 	if err := p.makeResource(); err != nil {
 		return err
 	}
-
-	// write dist files
 	if err := MakeDir(p.DistDir()); err != nil {
 		return err
 	}
@@ -64,12 +73,4 @@ func (p *Basil) Build(middleware []Middleware) error {
 		}
 	}
 	return nil
-}
-
-func (p *Basil) ConfigToml() string {
-	return filepath.Join(p.BaseDir, "config.toml")
-}
-
-func (p *Basil) DistDir() string {
-	return filepath.Join(p.BaseDir, "dist")
 }
