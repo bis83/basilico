@@ -8,4 +8,5 @@ import (
 var fs embed.FS
 
 var scripts = []string{
+	"web/js/pack.js",
 }
