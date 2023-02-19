@@ -15,28 +15,28 @@ func (p *Basil) loadCoreScript() error {
 		if err != nil {
 			return err
 		}
-		p.Script.Write(data)
+		p.AddScript(data)
 	}
 	return nil
 }
 
 func (p *Basil) loadAppScript() error {
-	for _, path := range p.Config.Script {
-		data, err := os.ReadFile(filepath.Join(p.BaseDir, path))
+	for _, path := range p.config.Script {
+		data, err := os.ReadFile(filepath.Join(p.baseDir, path))
 		if err != nil {
 			return err
 		}
-		p.Script.Write(data)
+		p.AddScript(data)
 	}
 	return nil
 }
 
 func (p *Basil) makeAppJs() error {
 	// esbuild
-	result := esbuild.Transform(string(p.Script.Bytes()), esbuild.TransformOptions{
-		MinifyWhitespace:  p.Config.Minify,
-		MinifyIdentifiers: p.Config.Minify,
-		MinifySyntax:      p.Config.Minify,
+	result := esbuild.Transform(string(p.script.Bytes()), esbuild.TransformOptions{
+		MinifyWhitespace:  p.config.Minify,
+		MinifyIdentifiers: p.config.Minify,
+		MinifySyntax:      p.config.Minify,
 		Format:            esbuild.FormatIIFE,
 	})
 	if len(result.Errors) > 0 || len(result.Warnings) > 0 {
@@ -44,10 +44,7 @@ func (p *Basil) makeAppJs() error {
 		w := esbuild.FormatMessages(result.Warnings, esbuild.FormatMessagesOptions{})
 		return errors.New(strings.Join(append(e, w...), "\n"))
 	}
+	p.AddFile("app.js", result.Code)
 
-	var file File
-	file.Name = "app.js"
-	file.Data = result.Code
-	p.Dist = append(p.Dist, &file)
 	return nil
 }

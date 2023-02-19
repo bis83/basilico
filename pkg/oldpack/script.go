@@ -1,16 +1,16 @@
 package pack
 
 import (
-	"io"
+	basil "github.com/bis83/basilico/pkg/basil"
 )
 
-func writePageScript(wr io.Writer) error {
+func writePageScript(bsl *basil.Basil) error {
 	for _, path := range scripts {
 		js, err := fs.ReadFile(path)
 		if err != nil {
 			return err
 		}
-		wr.Write(js)
+		bsl.AddScript(js)
 	}
 	return nil
 }

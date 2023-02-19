@@ -43,7 +43,7 @@ func steps() error {
 		}
 	}
 	if args.doBuild {
-		mdls, err := getMiddlewares(bsl.Config.Middleware)
+		mdls, err := getMiddlewares(bsl.Middlewares())
 		if err != nil {
 			return err
 		}

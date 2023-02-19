@@ -13,13 +13,10 @@ func (p *Basil) makeIndexHtml() error {
 		return err
 	}
 	tpl := template.Must(template.New("index").Parse(string(fr)))
-	if err := tpl.Execute(&b, p.Config); err != nil {
+	if err := tpl.Execute(&b, p.config); err != nil {
 		return err
 	}
+	p.AddFile("index.html", b.Bytes())
 
-	var file File
-	file.Name = "index.html"
-	file.Data = b.Bytes()
-	p.Dist = append(p.Dist, &file)
 	return nil
 }
