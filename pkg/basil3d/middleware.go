@@ -35,12 +35,10 @@ func addPack(bsl *basil.Basil) error {
 	if err := src.read(bsl.BaseDir()); err != nil {
 		return err
 	}
-
 	packs, err := buildPack(&src)
 	if err != nil {
 		return err
 	}
-
 	for i, p := range packs {
 		path := fmt.Sprintf("pack%v.json", i)
 		data, err := marshalJSON(p, bsl.Minify())
