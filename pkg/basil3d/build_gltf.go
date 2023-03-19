@@ -59,38 +59,50 @@ func (p *Builder) importGLTF(pack *Pack) error {
 				pack.Draw.VAO = append(pack.Draw.VAO, &packVAO)
 				packMesh.VAO = len(pack.Draw.VAO) - 1
 				var vb bytes.Buffer
-				for attr, attrIndex := range prim.Attributes {
-					buf, err := toFloat32Array(getBytes(doc, attrIndex))
+				if attr, ok := prim.Attributes["POSITION"]; ok {
+					packMesh.Hint |= HasPosition
+					packVAO.Position = []int{0, vb.Len()}
+					buf, err := toFloat32Array(getBytes(doc, attr))
 					if err != nil {
 						return err
 					}
-					switch attr {
-					case "POSITION":
-						packMesh.Hint |= HasPosition
-						packVAO.Position = []int{0, vb.Len()}
-						if err := binary.Write(&vb, binary.LittleEndian, buf); err != nil {
-							return err
-						}
-					case "TEXCOORD_0":
-						packMesh.Hint |= HasTexcoord0
-						packVAO.Texcoord0 = []int{0, vb.Len()}
-						buf2 := toFloat16Array(buf)
-						if err := binary.Write(&vb, binary.LittleEndian, buf2); err != nil {
-							return err
-						}
-					case "NORMAL":
-						packMesh.Hint |= HasNormal
-						packVAO.Normal = []int{0, vb.Len()}
-						buf2 := toFloat16Array(normalizeVector3(buf))
-						if err := binary.Write(&vb, binary.LittleEndian, buf2); err != nil {
-							return err
-						}
+					if err := binary.Write(&vb, binary.LittleEndian, buf); err != nil {
+						return err
 					}
 				}
-				packVAO.VertexBuffer = pack.AddContent(base64.StdEncoding.EncodeToString(vb.Bytes()))
+				if attr, ok := prim.Attributes["NORMAL"]; ok {
+					packMesh.Hint |= HasNormal
+					packVAO.Normal = []int{0, vb.Len()}
+					buf, err := toFloat32Array(getBytes(doc, attr))
+					if err != nil {
+						return err
+					}
+					buf2 := toFloat16Array(normalizeVector3(buf))
+					if err := binary.Write(&vb, binary.LittleEndian, buf2); err != nil {
+						return err
+					}
+				}
+				if attr, ok := prim.Attributes["TEXCOORD_0"]; ok {
+					packMesh.Hint |= HasTexcoord0
+					packVAO.Texcoord0 = []int{0, vb.Len()}
+					buf, err := toFloat32Array(getBytes(doc, attr))
+					if err != nil {
+						return err
+					}
+					buf2 := toFloat16Array(buf)
+					if err := binary.Write(&vb, binary.LittleEndian, buf2); err != nil {
+						return err
+					}
+				}
+				vbuf := pack.AddContent(base64.StdEncoding.EncodeToString(vb.Bytes()))
+				pack.Draw.VertexBuffer = append(pack.Draw.VertexBuffer, vbuf)
+				packVAO.VertexBuffer = len(pack.Draw.VertexBuffer) - 1
 				if prim.Indices != nil {
 					ib := getBytes(doc, *prim.Indices)
-					packVAO.IndexBuffer = pack.AddContent(base64.StdEncoding.EncodeToString(ib))
+					ibuf := pack.AddContent(base64.StdEncoding.EncodeToString(ib))
+					pack.Draw.IndexBuffer = append(pack.Draw.IndexBuffer, ibuf)
+					packVAO.IndexBuffer = len(pack.Draw.IndexBuffer) - 1
+
 					packMesh.Mode = 3
 					packMesh.First = 0
 					packMesh.Count = len(ib) / 2
