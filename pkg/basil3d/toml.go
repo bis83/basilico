@@ -9,14 +9,6 @@ import (
 )
 
 type TomlDoc struct {
-	Shader []struct {
-		Name string `toml:"name"`
-		Type string `toml:"type"`
-		Src  string `toml:"src"`
-	}
-	Mesh []struct {
-		Name string `toml:"name"`
-	} `toml:"mesh"`
 }
 
 func openTomlDoc(path string) (*TomlDoc, error) {

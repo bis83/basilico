@@ -8,12 +8,12 @@ import (
 	"github.com/qmuntal/gltf"
 )
 
-type source struct {
+type Builder struct {
 	GLTF []*gltf.Document
 	TOML []*TomlDoc
 }
 
-func (p *source) readGLTF(baseDir string) error {
+func (p *Builder) readGLTF(baseDir string) error {
 	err := filepath.Walk(filepath.Join(baseDir, "gltf"), func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -40,7 +40,7 @@ func (p *source) readGLTF(baseDir string) error {
 	return nil
 }
 
-func (p *source) readTOML(baseDir string) error {
+func (p *Builder) readTOML(baseDir string) error {
 	err := filepath.Walk(filepath.Join(baseDir, "toml"), func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -67,7 +67,7 @@ func (p *source) readTOML(baseDir string) error {
 	return nil
 }
 
-func (p *source) read(baseDir string) error {
+func (p *Builder) read(baseDir string) error {
 	if err := p.readGLTF(baseDir); err != nil {
 		return err
 	}
@@ -75,4 +75,12 @@ func (p *source) read(baseDir string) error {
 		return err
 	}
 	return nil
+}
+
+func (p *Builder) build() ([]*Pack, error) {
+	var pack Pack
+	if err := p.importGLTF(&pack); err != nil {
+		return nil, err
+	}
+	return []*Pack{&pack}, nil
 }

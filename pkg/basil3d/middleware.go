@@ -31,11 +31,11 @@ func addScript(bsl *basil.Basil) error {
 }
 
 func addPack(bsl *basil.Basil) error {
-	var src source
-	if err := src.read(bsl.BaseDir()); err != nil {
+	var builder Builder
+	if err := builder.read(bsl.BaseDir()); err != nil {
 		return err
 	}
-	packs, err := buildPack(&src)
+	packs, err := builder.build()
 	if err != nil {
 		return err
 	}
@@ -48,12 +48,4 @@ func addPack(bsl *basil.Basil) error {
 		bsl.AddFile(path, data)
 	}
 	return nil
-}
-
-func buildPack(src *source) ([]*Pack, error) {
-	var doc Pack
-	if err := doc.importShader(src); err != nil {
-		return nil, err
-	}
-	return []*Pack{&doc}, nil
 }

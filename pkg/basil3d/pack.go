@@ -1,59 +1,65 @@
 package basil3d
 
 type Pack struct {
-	Content []string `json:"content"`
-	Mesh    PackMesh `json:"mesh,omitempty"`
+	Content []string  `json:"content"`
+	Draw    PackDraw  `json:"draw"`
+	Audio   PackAudio `json:"audio"`
 }
-type PackMesh struct {
-	VertexBuffer []int                     `json:"vertex_buffer,omitempty"`
-	IndexBuffer  []int                     `json:"index_buffer,omitempty"`
-	Texture      []*PackMeshTexture        `json:"texture,omitempty"`
-	Shader       []*PackMeshShader         `json:"shader,omitempty"`
-	Program      []*PackMeshProgram        `json:"program,omitempty"`
-	VAO          []*PackMeshVAO            `json:"vao,omitempty"`
-	Pipeline     []*PackMeshPipeline       `json:"pipeline,omitempty"`
-	Primitive    []*PackMeshPrimitive      `json:"primitive,omitempty"`
-	Key          map[string]*PackMeshEntry `json:"key,omitempty"`
+
+const (
+	HasPosition int = 1 << iota
+	HasNormal
+	HasTangent
+	HasTexcoord0
+	HasBlendWeight0
+	HasWeightIndices0
+	HasTexture0
+	HasTexture1
+	HasTexture2
+	HasDoubleSided
+	HasAlphaBlend
+)
+
+type PackDraw struct {
+	VertexBuffer []int              `json:"vertex_buffer,omitempty"`
+	IndexBuffer  []int              `json:"index_buffer,omitempty"`
+	Texture      []*PackDrawTexture `json:"texture,omitempty"`
+	VAO          []*PackDrawVAO     `json:"vao,omitempty"`
+	Mesh         []*PackDrawMesh    `json:"mesh,omitempty"`
+	Index        []*PackDrawIndex   `json:"index,omitempty"`
 }
-type PackMeshTexture struct {
+type PackDrawTexture struct {
 	Content int `json:"content"`
 	Sampler int `json:"sampler"`
 }
-type PackMeshShader struct {
-	Content int `json:"content"`
-	Type    int `json:"type"`
+type PackDrawVAO struct {
+	VertexBuffer   int   `json:"vb"`
+	IndexBuffer    int   `json:"ib"`
+	Position       []int `json:"position,omitempty"`       // [stride, offset]
+	Normal         []int `json:"normal,omitempty"`         // [stride, offset]
+	Tangent        []int `json:"tangent,omitempty"`        // [stride, offset]
+	Texcoord0      []int `json:"texcoord0,omitempty"`      // [stride, offset]
+	BlendWeight0   []int `json:"blendweight0,omitempty"`   // [stride, offset]
+	WeightIndices0 []int `json:"weightindices0,omitempty"` // [stride, offset]
 }
-type PackMeshProgram struct {
-	VertexShader   int `json:"vertex_shader"`
-	FragmentShader int `json:"fragment_shader"`
+type PackDrawMesh struct {
+	Hint     int       `json:"hint"`
+	VAO      int       `json:"vao"`
+	Mode     int       `json:"mode"`
+	First    int       `json:"first"`
+	Count    int       `json:"count"`
+	Factor0  []float64 `json:"factor0,omitempty"`  // [Color.r, Color.g, Color.b, Color.a]
+	Factor1  []float64 `json:"factor1,omitempty"`  // [Occlusion, Metallic, Roughness, unused]
+	Texture0 int       `json:"texture0,omitempty"` // BaseColorTexture
+	Texture1 int       `json:"texture1,omitempty"` // ParameterTexture(OcclusionMetallicRoughness)
+	Texture2 int       `json:"texture2,omitempty"` // NormalTexture
 }
-type PackMeshVAO struct {
-	VertexBuffer int `json:"vertex_buffer"`
-	IndexBuffer  int `json:"index_buffer"`
-	Position     int `json:"position"`
-	Normal       int `json:"normal"`
-	UV0          int `json:"uv0"`
+type PackDrawIndex struct {
+	Name string `json:"name"`
+	Mesh []int  `json:"mesh"`
 }
-type PackMeshPipeline struct {
-	Program int  `json:"program"`
-	VAO     int  `json:"vao"`
-	Cull    bool `json:"cull"`
-	Depth   bool `json:"depth"`
-	Alpha   bool `json:"alpha"`
-}
-type PackMeshPrimitive struct {
-	Pipeline                 int       `json:"pipeline"`
-	Mode                     int       `json:"mode"`
-	First                    int       `json:"first"`
-	Count                    int       `json:"count"`
-	BaseColorFactor          []float64 `json:"base_color_factor"`
-	MetallicFactor           float64   `json:"metallic_factor"`
-	RoughnessFactor          float64   `json:"roughness_factor"`
-	BaseColorTexture         int       `json:"base_color_texture"`
-	MetallicRoughnessTexture int       `json:"metallic_roughness_texture"`
-}
-type PackMeshEntry struct {
-	Primitives []int `json:"primitives"`
+
+type PackAudio struct {
 }
 
 func (p *Pack) AddContent(buf string) int {

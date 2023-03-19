@@ -8,6 +8,7 @@ import (
 var fs embed.FS
 
 var scripts = []string{
+	"web/js/glsl.js",
 	"web/js/pack.js",
 	"web/js/basil3d.js",
 }
