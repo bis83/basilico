@@ -12,18 +12,26 @@ const basil3d_start = async () => {
   });
 
   const frame = () => {
+    // resize canvas
+    if (canvas.width !== window.innerWidth) {
+      canvas.width = window.innerWidth;
+    }
+    if (canvas.height !== window.innerHeight) {
+      canvas.height = window.innerHeight;
+    }
+
     // start command encoder
     const ce = device.createCommandEncoder();
 
     // main pass
     const view = context.getCurrentTexture().createView();
     const renderPassDesc = {
-      colorAttachments: {
+      colorAttachments: [{
         view: view,
-        clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
+        clearValue: { r: 0.2, g: 0.2, b: 0.2, a: 1.0 },
         loadOp: "clear",
         storeOp: "store",
-      },
+      }],
     };
     const pass = ce.beginRenderPass(renderPassDesc);
     pass.end();
