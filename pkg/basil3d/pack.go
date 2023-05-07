@@ -2,7 +2,7 @@ package basil3d
 
 type Pack struct {
 	Content []string  `json:"content"`
-	Draw    PackDraw  `json:"draw"`
+	GPU     PackGPU   `json:"gpu"`
 	Audio   PackAudio `json:"audio"`
 }
 
@@ -20,41 +20,41 @@ const (
 	HasAlphaBlend
 )
 
-type PackDraw struct {
-	VertexBuffer []int              `json:"vertex_buffer,omitempty"`
-	IndexBuffer  []int              `json:"index_buffer,omitempty"`
-	Texture      []*PackDrawTexture `json:"texture,omitempty"`
-	VAO          []*PackDrawVAO     `json:"vao,omitempty"`
-	Mesh         []*PackDrawMesh    `json:"mesh,omitempty"`
-	Index        []*PackDrawIndex   `json:"index,omitempty"`
+type PackGPU struct {
+	Buffer  []*PackGPUBuffer  `json:"buffer,omitempty"`
+	Texture []*PackGPUTexture `json:"texture,omitempty"`
+	Mesh    []*PackGPUMesh    `json:"mesh,omitempty"`
+	Label   []*PackGPULabel   `json:"label,omitempty"`
 }
-type PackDrawTexture struct {
+type PackGPUBuffer struct {
 	Content int `json:"content"`
-	Sampler int `json:"sampler"`
 }
-type PackDrawVAO struct {
-	VertexBuffer   int   `json:"vb"`
-	IndexBuffer    int   `json:"ib"`
-	Position       []int `json:"position,omitempty"`       // [stride, offset]
-	Normal         []int `json:"normal,omitempty"`         // [stride, offset]
-	Tangent        []int `json:"tangent,omitempty"`        // [stride, offset]
-	Texcoord0      []int `json:"texcoord0,omitempty"`      // [stride, offset]
-	BlendWeight0   []int `json:"blendweight0,omitempty"`   // [stride, offset]
-	WeightIndices0 []int `json:"weightindices0,omitempty"` // [stride, offset]
+type PackGPUTexture struct {
+	Content int `json:"content"`
 }
-type PackDrawMesh struct {
-	Hint     int       `json:"hint"`
-	VAO      int       `json:"vao"`
-	Mode     int       `json:"mode"`
-	First    int       `json:"first"`
-	Count    int       `json:"count"`
+type PackGPUMesh struct {
+	Hint int `json:"hint"`
+
+	// Input
+	VertexBuffer0 []int `json:"vb0,omitempty"` // [buffer, offset], slot: 0, shaderLocation: 0, format: float32x3
+	VertexBuffer1 []int `json:"vb1,omitempty"` // [buffer, offset], slot: 1, shaderLocation: 1, format: float16x2
+	VertexBuffer2 []int `json:"vb2,omitempty"` // [buffer, offset], slot: 2, shaderLocation: 2
+	VertexBuffer3 []int `json:"vb3,omitempty"` // [buffer, offset], slot: 3, shaderLocation: 3, format: float16x2
+	VertexBuffer4 []int `json:"vb4,omitempty"` // [buffer, offset], slot: 4, shaderLocation: 4
+	VertexBuffer5 []int `json:"vb5,omitempty"` // [buffer, offset], slot: 5, shaderLocation: 5
+	IndexBuffer   []int `json:"ib,omitempty"`  // [buffer, offset], format: uint16
+
+	// Uniform
 	Factor0  []float64 `json:"factor0,omitempty"`  // [Color.r, Color.g, Color.b, Color.a]
 	Factor1  []float64 `json:"factor1,omitempty"`  // [Occlusion, Metallic, Roughness, unused]
 	Texture0 int       `json:"texture0,omitempty"` // BaseColorTexture
 	Texture1 int       `json:"texture1,omitempty"` // ParameterTexture(OcclusionMetallicRoughness)
 	Texture2 int       `json:"texture2,omitempty"` // NormalTexture
+
+	First int `json:"first"`
+	Count int `json:"count"`
 }
-type PackDrawIndex struct {
+type PackGPULabel struct {
 	Name string `json:"name"`
 	Mesh []int  `json:"mesh"`
 }

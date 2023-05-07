@@ -46,22 +46,25 @@ func toFloat16Array(data []float32) []uint16 {
 func (p *Builder) importGLTF(pack *Pack) error {
 	for _, doc := range p.GLTF {
 		for _, mesh := range doc.Meshes {
-			var packIndex PackDrawIndex
-			pack.Draw.Index = append(pack.Draw.Index, &packIndex)
-			packIndex.Name = mesh.Name
+			var packLabel PackGPULabel
+			pack.GPU.Label = append(pack.GPU.Label, &packLabel)
+			packLabel.Name = mesh.Name
 			for _, prim := range mesh.Primitives {
-				var packMesh PackDrawMesh
-				pack.Draw.Mesh = append(pack.Draw.Mesh, &packMesh)
-				packIndex.Mesh = append(packIndex.Mesh, len(pack.Draw.Mesh)-1)
+				// mesh
+				var packMesh PackGPUMesh
+				pack.GPU.Mesh = append(pack.GPU.Mesh, &packMesh)
+				packLabel.Mesh = append(packLabel.Mesh, len(pack.GPU.Mesh)-1)
 
-				// VAO
-				var packVAO PackDrawVAO
-				pack.Draw.VAO = append(pack.Draw.VAO, &packVAO)
-				packMesh.VAO = len(pack.Draw.VAO) - 1
+				// buffer
+				var packBuffer PackGPUBuffer
+				pack.GPU.Buffer = append(pack.GPU.Buffer, &packBuffer)
+				bufferIndex := len(pack.GPU.Buffer) - 1
+
+				// convert vertex
 				var vb bytes.Buffer
 				if attr, ok := prim.Attributes["POSITION"]; ok {
 					packMesh.Hint |= HasPosition
-					packVAO.Position = []int{0, vb.Len()}
+					packMesh.VertexBuffer0 = []int{bufferIndex, vb.Len()}
 					buf, err := toFloat32Array(getBytes(doc, attr))
 					if err != nil {
 						return err
@@ -72,7 +75,7 @@ func (p *Builder) importGLTF(pack *Pack) error {
 				}
 				if attr, ok := prim.Attributes["NORMAL"]; ok {
 					packMesh.Hint |= HasNormal
-					packVAO.Normal = []int{0, vb.Len()}
+					packMesh.VertexBuffer1 = []int{bufferIndex, vb.Len()}
 					buf, err := toFloat32Array(getBytes(doc, attr))
 					if err != nil {
 						return err
@@ -84,7 +87,7 @@ func (p *Builder) importGLTF(pack *Pack) error {
 				}
 				if attr, ok := prim.Attributes["TEXCOORD_0"]; ok {
 					packMesh.Hint |= HasTexcoord0
-					packVAO.Texcoord0 = []int{0, vb.Len()}
+					packMesh.VertexBuffer3 = []int{bufferIndex, vb.Len()}
 					buf, err := toFloat32Array(getBytes(doc, attr))
 					if err != nil {
 						return err
@@ -94,19 +97,16 @@ func (p *Builder) importGLTF(pack *Pack) error {
 						return err
 					}
 				}
-				vbuf := pack.AddContent(base64.StdEncoding.EncodeToString(vb.Bytes()))
-				pack.Draw.VertexBuffer = append(pack.Draw.VertexBuffer, vbuf)
-				packVAO.VertexBuffer = len(pack.Draw.VertexBuffer) - 1
 				if prim.Indices != nil {
+					packMesh.IndexBuffer = []int{bufferIndex, vb.Len()}
 					ib := getBytes(doc, *prim.Indices)
-					ibuf := pack.AddContent(base64.StdEncoding.EncodeToString(ib))
-					pack.Draw.IndexBuffer = append(pack.Draw.IndexBuffer, ibuf)
-					packVAO.IndexBuffer = len(pack.Draw.IndexBuffer) - 1
-
-					packMesh.Mode = 3
+					if err := binary.Write(&vb, binary.LittleEndian, ib); err != nil {
+						return err
+					}
 					packMesh.First = 0
 					packMesh.Count = len(ib) / 2
 				}
+				packBuffer.Content = pack.AddContent(base64.StdEncoding.EncodeToString(vb.Bytes()))
 
 				// Material
 				material := doc.Materials[*prim.Material]
@@ -123,25 +123,6 @@ func (p *Builder) importGLTF(pack *Pack) error {
 					0,
 				}
 			}
-
-			/*
-				for _, prim := range mesh.Primitives {
-					for attr, attrIndex := prim.Attributes {
-						ac := doc.Accessors[attrIndex]
-						bv := doc.BufferViews[*ac.BufferView]
-						buf := doc.Buffers[bv.Buffer].Data[bv.ByteOffset : bv.ByteOffset + bv.ByteLength]
-						r := bytes.NewReader(b)
-
-						switch(attr) {
-						case "POSITION":
-						case "TEXCOORD_0":
-						case "NORMAL":
-						}
-					}
-					indices := prim.Indices
-					material := prim.Material
-				}
-			*/
 		}
 	}
 	return nil
