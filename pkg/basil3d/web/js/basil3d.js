@@ -2,12 +2,16 @@
 const basil3d_start = async () => {
   const adapter = await navigator.gpu.requestAdapter();
   const device = await adapter.requestDevice();
+  const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
+
+  const gpu = basil3d_gpu_create(device, canvasFormat);
+  const scene = basil3d_scene_create();
 
   const canvas = html_canvas();
   const context = canvas.getContext("webgpu");
   context.configure({
     device: device,
-    format: navigator.gpu.getPreferredCanvasFormat(),
+    format: canvasFormat,
     alphaMode: "opaque",
   });
 
@@ -19,6 +23,8 @@ const basil3d_start = async () => {
     if (canvas.height !== window.innerHeight) {
       canvas.height = window.innerHeight;
     }
+
+    // update buffers
 
     // start command encoder
     const ce = device.createCommandEncoder();
@@ -34,6 +40,7 @@ const basil3d_start = async () => {
       }],
     };
     const pass = ce.beginRenderPass(renderPassDesc);
+    basil3d_scene_render(scene, gpu, pass);
     pass.end();
 
     // submit
