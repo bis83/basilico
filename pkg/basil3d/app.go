@@ -1,9 +1,9 @@
 package basil3d
 
-type Pack struct {
-	Content []string  `json:"content"`
-	GPU     PackGPU   `json:"gpu"`
-	Audio   PackAudio `json:"audio"`
+type App struct {
+	Embed []string `json:"embed"`
+	GPU   AppGPU   `json:"gpu"`
+	Audio AppAudio `json:"audio"`
 }
 
 const (
@@ -20,19 +20,19 @@ const (
 	HasAlphaBlend
 )
 
-type PackGPU struct {
-	Buffer  []*PackGPUBuffer  `json:"buffer,omitempty"`
-	Texture []*PackGPUTexture `json:"texture,omitempty"`
-	Mesh    []*PackGPUMesh    `json:"mesh,omitempty"`
-	Label   []*PackGPULabel   `json:"label,omitempty"`
+type AppGPU struct {
+	Buffer  []*AppGPUBuffer  `json:"buffer,omitempty"`
+	Texture []*AppGPUTexture `json:"texture,omitempty"`
+	Mesh    []*AppGPUMesh    `json:"mesh,omitempty"`
+	Label   []*AppGPULabel   `json:"label,omitempty"`
 }
-type PackGPUBuffer struct {
-	Content int `json:"content"`
+type AppGPUBuffer struct {
+	Embed int `json:"embed,omitempty"`
 }
-type PackGPUTexture struct {
-	Content int `json:"content"`
+type AppGPUTexture struct {
+	Embed int `json:"embed,omitempty"`
 }
-type PackGPUMesh struct {
+type AppGPUMesh struct {
 	Hint int `json:"hint"`
 
 	// Input
@@ -54,21 +54,21 @@ type PackGPUMesh struct {
 	First int `json:"first"`
 	Count int `json:"count"`
 }
-type PackGPULabel struct {
+type AppGPULabel struct {
 	Name string `json:"name"`
 	Mesh []int  `json:"mesh"`
 }
 
-type PackAudio struct {
+type AppAudio struct {
 }
 
-func (p *Pack) AddContent(buf string) int {
-	for i, v := range p.Content {
+func (p *App) AddEmbed(buf string) int {
+	for i, v := range p.Embed {
 		if v == buf {
 			return i
 		}
 	}
-	i := len(p.Content)
-	p.Content = append(p.Content, buf)
+	i := len(p.Embed)
+	p.Embed = append(p.Embed, buf)
 	return i
 }

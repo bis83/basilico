@@ -77,10 +77,10 @@ func (p *Builder) read(baseDir string) error {
 	return nil
 }
 
-func (p *Builder) build() ([]*Pack, error) {
-	var pack Pack
-	if err := p.importGLTF(&pack); err != nil {
+func (p *Builder) build() (*App, error) {
+	var app App
+	if err := p.importGLTF(&app); err != nil {
 		return nil, err
 	}
-	return []*Pack{&pack}, nil
+	return &app, nil
 }

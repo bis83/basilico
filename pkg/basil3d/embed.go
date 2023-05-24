@@ -10,6 +10,6 @@ var fs embed.FS
 var scripts = []string{
 	"web/js/gpu.js",
 	"web/js/scene.js",
-	"web/js/pack.js",
+	"web/js/app.js",
 	"web/js/basil3d.js",
 }

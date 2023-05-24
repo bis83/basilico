@@ -43,28 +43,28 @@ func toFloat16Array(data []float32) []uint16 {
 	return data2
 }
 
-func (p *Builder) importGLTF(pack *Pack) error {
+func (p *Builder) importGLTF(app *App) error {
 	for _, doc := range p.GLTF {
 		for _, mesh := range doc.Meshes {
-			var packLabel PackGPULabel
-			pack.GPU.Label = append(pack.GPU.Label, &packLabel)
-			packLabel.Name = mesh.Name
+			var appLabel AppGPULabel
+			app.GPU.Label = append(app.GPU.Label, &appLabel)
+			appLabel.Name = mesh.Name
 			for _, prim := range mesh.Primitives {
 				// mesh
-				var packMesh PackGPUMesh
-				pack.GPU.Mesh = append(pack.GPU.Mesh, &packMesh)
-				packLabel.Mesh = append(packLabel.Mesh, len(pack.GPU.Mesh)-1)
+				var appMesh AppGPUMesh
+				app.GPU.Mesh = append(app.GPU.Mesh, &appMesh)
+				appLabel.Mesh = append(appLabel.Mesh, len(app.GPU.Mesh)-1)
 
 				// buffer
-				var packBuffer PackGPUBuffer
-				pack.GPU.Buffer = append(pack.GPU.Buffer, &packBuffer)
-				bufferIndex := len(pack.GPU.Buffer) - 1
+				var appBuffer AppGPUBuffer
+				app.GPU.Buffer = append(app.GPU.Buffer, &appBuffer)
+				bufferIndex := len(app.GPU.Buffer) - 1
 
 				// convert vertex
 				var vb bytes.Buffer
 				if attr, ok := prim.Attributes["POSITION"]; ok {
-					packMesh.Hint |= HasPosition
-					packMesh.VertexBuffer0 = []int{bufferIndex, vb.Len()}
+					appMesh.Hint |= HasPosition
+					appMesh.VertexBuffer0 = []int{bufferIndex, vb.Len()}
 					buf, err := toFloat32Array(getBytes(doc, attr))
 					if err != nil {
 						return err
@@ -74,8 +74,8 @@ func (p *Builder) importGLTF(pack *Pack) error {
 					}
 				}
 				if attr, ok := prim.Attributes["NORMAL"]; ok {
-					packMesh.Hint |= HasNormal
-					packMesh.VertexBuffer1 = []int{bufferIndex, vb.Len()}
+					appMesh.Hint |= HasNormal
+					appMesh.VertexBuffer1 = []int{bufferIndex, vb.Len()}
 					buf, err := toFloat32Array(getBytes(doc, attr))
 					if err != nil {
 						return err
@@ -86,8 +86,8 @@ func (p *Builder) importGLTF(pack *Pack) error {
 					}
 				}
 				if attr, ok := prim.Attributes["TEXCOORD_0"]; ok {
-					packMesh.Hint |= HasTexcoord0
-					packMesh.VertexBuffer3 = []int{bufferIndex, vb.Len()}
+					appMesh.Hint |= HasTexcoord0
+					appMesh.VertexBuffer3 = []int{bufferIndex, vb.Len()}
 					buf, err := toFloat32Array(getBytes(doc, attr))
 					if err != nil {
 						return err
@@ -98,25 +98,25 @@ func (p *Builder) importGLTF(pack *Pack) error {
 					}
 				}
 				if prim.Indices != nil {
-					packMesh.IndexBuffer = []int{bufferIndex, vb.Len()}
+					appMesh.IndexBuffer = []int{bufferIndex, vb.Len()}
 					ib := getBytes(doc, *prim.Indices)
 					if err := binary.Write(&vb, binary.LittleEndian, ib); err != nil {
 						return err
 					}
-					packMesh.First = 0
-					packMesh.Count = len(ib) / 2
+					appMesh.First = 0
+					appMesh.Count = len(ib) / 2
 				}
-				packBuffer.Content = pack.AddContent(base64.StdEncoding.EncodeToString(vb.Bytes()))
+				appBuffer.Embed = app.AddEmbed(base64.StdEncoding.EncodeToString(vb.Bytes()))
 
 				// Material
 				material := doc.Materials[*prim.Material]
-				packMesh.Factor0 = []float64{
+				appMesh.Factor0 = []float64{
 					float64(material.PBRMetallicRoughness.BaseColorFactor[0]),
 					float64(material.PBRMetallicRoughness.BaseColorFactor[1]),
 					float64(material.PBRMetallicRoughness.BaseColorFactor[2]),
 					float64(material.PBRMetallicRoughness.BaseColorFactor[3]),
 				}
-				packMesh.Factor1 = []float64{
+				appMesh.Factor1 = []float64{
 					float64(0),
 					float64(*material.PBRMetallicRoughness.MetallicFactor),
 					float64(*material.PBRMetallicRoughness.RoughnessFactor),

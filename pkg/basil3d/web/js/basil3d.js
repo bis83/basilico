@@ -5,6 +5,7 @@ const basil3d_start = async () => {
   const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
 
   const gpu = basil3d_gpu_create(device, canvasFormat);
+  const app = basil3d_app_load(device);
   const scene = basil3d_scene_create();
 
   const canvas = html_canvas();

@@ -1,8 +1,6 @@
 package basil3d
 
 import (
-	"fmt"
-
 	basil "github.com/bis83/basilico/pkg/basil"
 )
 
@@ -13,7 +11,7 @@ func (p Middleware) PreBuild(bsl *basil.Basil) error {
 	if err := addScript(bsl); err != nil {
 		return err
 	}
-	if err := addPack(bsl); err != nil {
+	if err := addAppJson(bsl); err != nil {
 		return err
 	}
 	return nil
@@ -30,22 +28,20 @@ func addScript(bsl *basil.Basil) error {
 	return nil
 }
 
-func addPack(bsl *basil.Basil) error {
+func addAppJson(bsl *basil.Basil) error {
 	var builder Builder
 	if err := builder.read(bsl.BaseDir()); err != nil {
 		return err
 	}
-	packs, err := builder.build()
+	app, err := builder.build()
 	if err != nil {
 		return err
 	}
-	for i, p := range packs {
-		path := fmt.Sprintf("pack%v.json", i)
-		data, err := marshalJSON(p, bsl.Minify())
-		if err != nil {
-			return err
-		}
-		bsl.AddFile(path, data)
+	path := "app.json"
+	data, err := marshalJSON(app, bsl.Minify())
+	if err != nil {
+		return err
 	}
+	bsl.AddFile(path, data)
 	return nil
 }
