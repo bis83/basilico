@@ -41,7 +41,7 @@ const basil3d_start = async () => {
       }],
     };
     const pass = ce.beginRenderPass(renderPassDesc);
-    basil3d_scene_render(scene, gpu, pass);
+    basil3d_scene_render(scene, app, gpu, pass);
     pass.end();
 
     // submit

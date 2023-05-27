@@ -63,8 +63,7 @@ func (p *Builder) importGLTF(app *App) error {
 				// convert vertex
 				var vb bytes.Buffer
 				if attr, ok := prim.Attributes["POSITION"]; ok {
-					appMesh.Hint |= HasPosition
-					appMesh.VertexBuffer0 = []int{bufferIndex, vb.Len()}
+					offset := vb.Len()
 					buf, err := toFloat32Array(getBytes(doc, attr))
 					if err != nil {
 						return err
@@ -72,10 +71,12 @@ func (p *Builder) importGLTF(app *App) error {
 					if err := binary.Write(&vb, binary.LittleEndian, buf); err != nil {
 						return err
 					}
+					size := vb.Len() - offset
+					appMesh.Hint |= HasPosition
+					appMesh.VertexBuffer0 = []int{bufferIndex, offset, size}
 				}
 				if attr, ok := prim.Attributes["NORMAL"]; ok {
-					appMesh.Hint |= HasNormal
-					appMesh.VertexBuffer1 = []int{bufferIndex, vb.Len()}
+					offset := vb.Len()
 					buf, err := toFloat32Array(getBytes(doc, attr))
 					if err != nil {
 						return err
@@ -84,10 +85,12 @@ func (p *Builder) importGLTF(app *App) error {
 					if err := binary.Write(&vb, binary.LittleEndian, buf2); err != nil {
 						return err
 					}
+					size := vb.Len() - offset
+					appMesh.Hint |= HasNormal
+					appMesh.VertexBuffer1 = []int{bufferIndex, offset, size}
 				}
 				if attr, ok := prim.Attributes["TEXCOORD_0"]; ok {
-					appMesh.Hint |= HasTexcoord0
-					appMesh.VertexBuffer3 = []int{bufferIndex, vb.Len()}
+					offset := vb.Len()
 					buf, err := toFloat32Array(getBytes(doc, attr))
 					if err != nil {
 						return err
@@ -96,14 +99,18 @@ func (p *Builder) importGLTF(app *App) error {
 					if err := binary.Write(&vb, binary.LittleEndian, buf2); err != nil {
 						return err
 					}
+					size := vb.Len() - offset
+					appMesh.Hint |= HasTexcoord0
+					appMesh.VertexBuffer3 = []int{bufferIndex, offset, size}
 				}
 				if prim.Indices != nil {
-					appMesh.IndexBuffer = []int{bufferIndex, vb.Len()}
+					offset := vb.Len()
 					ib := getBytes(doc, *prim.Indices)
 					if err := binary.Write(&vb, binary.LittleEndian, ib); err != nil {
 						return err
 					}
-					appMesh.First = 0
+					size := vb.Len() - offset
+					appMesh.IndexBuffer = []int{bufferIndex, offset, size}
 					appMesh.Count = len(ib) / 2
 				}
 				appBuffer.Embed = app.AddEmbed(base64.StdEncoding.EncodeToString(vb.Bytes()))

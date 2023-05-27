@@ -3,8 +3,9 @@ const basil3d_scene_create = () => {
   return {};
 };
 
-const basil3d_scene_render = (scene, gpu, pass) => {
-  pass.setPipeline(gpu.pipeline[0]);
-  pass.setVertexBuffer(0, gpu.buffer[0]);
-  pass.draw(3, 1, 0, 0);
+const basil3d_scene_render = (scene, app, gpu, pass) => {
+  if (basil3d_app_is_loading(app)) {
+    return;
+  }
+  basil3d_app_gpu_draw(app, "tr_01", gpu, pass);
 };
