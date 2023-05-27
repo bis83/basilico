@@ -79,6 +79,8 @@ func (p *Builder) read(baseDir string) error {
 
 func (p *Builder) build() (*App, error) {
 	var app App
+	app.Embed = append(app.Embed, nil)
+
 	if err := p.importGLTF(&app); err != nil {
 		return nil, err
 	}

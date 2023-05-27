@@ -1,9 +1,9 @@
 package basil3d
 
 type App struct {
-	Embed []string `json:"embed"`
-	GPU   AppGPU   `json:"gpu"`
-	Audio AppAudio `json:"audio"`
+	Embed []*string `json:"embed"`
+	GPU   AppGPU    `json:"gpu"`
+	Audio AppAudio  `json:"audio"`
 }
 
 const (
@@ -64,11 +64,11 @@ type AppAudio struct {
 
 func (p *App) AddEmbed(buf string) int {
 	for i, v := range p.Embed {
-		if v == buf {
+		if v != nil && *v == buf {
 			return i
 		}
 	}
 	i := len(p.Embed)
-	p.Embed = append(p.Embed, buf)
+	p.Embed = append(p.Embed, &buf)
 	return i
 }
