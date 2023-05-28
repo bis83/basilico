@@ -11,9 +11,10 @@ const basil3d_gpu_create = (device, canvasFormat) => {
 
   obj.shaderModule.push(device.createShaderModule({
     code: `
+    @binding(0) @group(0) var<uniform> viewProj : mat4x4<f32>;
     @vertex
     fn mainVertex(@location(0) position: vec3<f32>) -> @builtin(position) vec4<f32> {
-      return vec4(position, 1.0);
+      return viewProj * vec4(position, 1.0);
     }
     @fragment
     fn mainFragment() -> @location(0) vec4<f32> {
@@ -22,29 +23,16 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     `,
   }));
 
-  obj.bindGroupLayout.push(device.createBindGroupLayout({ // PerScene
+  obj.bindGroupLayout.push(device.createBindGroupLayout({
     entries: [
+      { binding: 0, visibility: GPUShaderStage.VERTEX, buffer: {} },
     ],
   }));
-  obj.bindGroupLayout.push(device.createBindGroupLayout({ // PerMaterial
-    entries: [
-    ],
-  }));
-  obj.bindGroupLayout.push(device.createBindGroupLayout({ // PerInstance
-    entries: [
-    ],
-  }));
-
   obj.pipelineLayout.push(device.createPipelineLayout({
     bindGroupLayouts: [
-      /*
       obj.bindGroupLayout[0],
-      obj.bindGroupLayout[1],
-      obj.bindGroupLayout[2],
-      */
     ],
   }));
-
   obj.pipeline.push(device.createRenderPipeline({
     layout: obj.pipelineLayout[0],
     vertex: {
@@ -73,16 +61,15 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   }));
 
   obj.buffer.push(device.createBuffer({
-    size: 3 * 4 * 3,
-    usage: GPUBufferUsage.VERTEX,
-    mappedAtCreation: true,
+    size: 4 * 4 * 4,
+    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   }));
-  new Float32Array(obj.buffer[0].getMappedRange()).set([
-    +1, -1, 0,
-    -1, -1, 0,
-    +0, +1, 0,
-  ]);
-  obj.buffer[0].unmap();
+  obj.bindGroup.push(device.createBindGroup({
+    layout: obj.bindGroupLayout[0],
+    entries: [
+      { binding: 0, resource: { buffer: obj.buffer[0] }, },
+    ],
+  }));
 
   return obj;
 };

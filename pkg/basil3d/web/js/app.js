@@ -56,6 +56,7 @@ const basil3d_app_gpu_draw = (app, label, gpu, pass) => {
   for (const i of obj.mesh) {
     const mesh = app.gpu.mesh[i];
     pass.setPipeline(gpu.pipeline[0]);
+    pass.setBindGroup(0, gpu.bindGroup[0]);
     if (mesh.vb0) {
       const [index, offset, size] = mesh.vb0;
       pass.setVertexBuffer(0, app.gpu.buffer[index], offset, size);

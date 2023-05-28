@@ -8,6 +8,7 @@ import (
 var fs embed.FS
 
 var scripts = []string{
+	"web/js/math.js",
 	"web/js/gpu.js",
 	"web/js/scene.js",
 	"web/js/app.js",

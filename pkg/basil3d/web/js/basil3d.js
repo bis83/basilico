@@ -25,27 +25,22 @@ const basil3d_start = async () => {
       canvas.height = window.innerHeight;
     }
 
-    // update buffers
+    basil3d_scene_write_buffers(scene, app, gpu, canvas, device);
 
-    // start command encoder
     const ce = device.createCommandEncoder();
-
-    // main pass
-    const view = context.getCurrentTexture().createView();
     const renderPassDesc = {
       colorAttachments: [{
-        view: view,
+        view: context.getCurrentTexture().createView(),
         clearValue: { r: 0.2, g: 0.2, b: 0.2, a: 1.0 },
         loadOp: "clear",
         storeOp: "store",
       }],
     };
     const pass = ce.beginRenderPass(renderPassDesc);
-    basil3d_scene_render(scene, app, gpu, pass);
+    basil3d_scene_render_pass(scene, app, gpu, pass);
     pass.end();
-
-    // submit
     device.queue.submit([ce.finish()]);
+
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
