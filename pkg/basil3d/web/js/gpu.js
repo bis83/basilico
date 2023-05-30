@@ -12,9 +12,10 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   obj.shaderModule.push(device.createShaderModule({
     code: `
     @binding(0) @group(0) var<uniform> viewProj : mat4x4<f32>;
+    @binding(1) @group(0) var<uniform> world : mat4x4<f32>;
     @vertex
     fn mainVertex(@location(0) position: vec3<f32>) -> @builtin(position) vec4<f32> {
-      return viewProj * vec4(position, 1.0);
+      return viewProj * world * vec4(position, 1.0);
     }
     @fragment
     fn mainFragment() -> @location(0) vec4<f32> {
@@ -26,6 +27,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   obj.bindGroupLayout.push(device.createBindGroupLayout({
     entries: [
       { binding: 0, visibility: GPUShaderStage.VERTEX, buffer: {} },
+      { binding: 1, visibility: GPUShaderStage.VERTEX, buffer: { hasDynamicOffset: true } },
     ],
   }));
   obj.pipelineLayout.push(device.createPipelineLayout({
@@ -46,6 +48,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
         { arrayStride: 4, attributes: [{ format: "float16x2", offset: 0, shaderLocation: 3 }] }, // texcoord0
         { arrayStride: 8, attributes: [{ format: "uint16x4", offset: 0, shaderLocation: 4 }] }, // joints0
         { arrayStride: 8, attributes: [{ format: "float16x4", offset: 0, shaderLocation: 5 }] }, // weights0
+        { arrayStride: 4, attributes: [{ format: "uint32", offset: 0, shaderLocation: 6 }], stepMode: "instance" }, // instance
         */
       ],
     },
@@ -61,13 +64,18 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   }));
 
   obj.buffer.push(device.createBuffer({
-    size: 4 * 4 * 4,
+    size: 64 * 1,
+    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+  }));
+  obj.buffer.push(device.createBuffer({
+    size: 256 * 1024,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   }));
   obj.bindGroup.push(device.createBindGroup({
     layout: obj.bindGroupLayout[0],
     entries: [
       { binding: 0, resource: { buffer: obj.buffer[0] }, },
+      { binding: 1, resource: { buffer: obj.buffer[1], size: 256, offset: 0 }, },
     ],
   }));
 

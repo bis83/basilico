@@ -1,6 +1,9 @@
 
 const basil3d_scene_create = () => {
-  return {};
+  return {
+    camera: {},
+    objects: [],
+  };
 };
 
 const basil3d_scene_write_buffers = (scene, app, gpu, canvas, device) => {
@@ -17,11 +20,17 @@ const basil3d_scene_write_buffers = (scene, app, gpu, canvas, device) => {
   const vp = mat4multiply(view, proj);
   const mat = new Float32Array(vp);
   device.queue.writeBuffer(gpu.buffer[0], 0, mat);
+
+  mat.set(mat4translate(-2, 0, 0));
+  device.queue.writeBuffer(gpu.buffer[1], 256 * 0, mat);
+  mat.set(mat4translate(2, 0, 0));
+  device.queue.writeBuffer(gpu.buffer[1], 256 * 1, mat);
 };
 
 const basil3d_scene_render_pass = (scene, app, gpu, pass) => {
   if (basil3d_app_is_loading(app)) {
     return;
   }
-  basil3d_app_gpu_draw(app, "tr_01", gpu, pass);
+  basil3d_app_gpu_draw(app, "tr_01", gpu, pass, 256 * 0);
+  basil3d_app_gpu_draw(app, "tr_01", gpu, pass, 256 * 1);
 };
