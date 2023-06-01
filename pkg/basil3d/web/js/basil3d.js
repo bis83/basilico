@@ -1,5 +1,5 @@
 
-const basil3d_start = async () => {
+const basil3d_start = async (setup) => {
   const adapter = await navigator.gpu.requestAdapter();
   const device = await adapter.requestDevice();
   const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
@@ -17,29 +17,44 @@ const basil3d_start = async () => {
   });
 
   const frame = () => {
-    // resize canvas
-    if (canvas.width !== window.innerWidth) {
-      canvas.width = window.innerWidth;
-    }
-    if (canvas.height !== window.innerHeight) {
-      canvas.height = window.innerHeight;
-    }
+    basil3d_update_canvas(gpu, canvas);
 
-    basil3d_scene_write_buffers(scene, app, gpu, canvas, device);
+    if (basil3d_app_is_loading(app)) {
+      // loading
+      const ce = device.createCommandEncoder();
+      const renderPassDesc = {
+        colorAttachments: [{
+          view: context.getCurrentTexture().createView(),
+          clearValue: { r: 0.2, g: 0.2, b: 0.2, a: 1.0 },
+          loadOp: "clear",
+          storeOp: "store",
+        }],
+      };
+      const pass = ce.beginRenderPass(renderPassDesc);
+      pass.end();
+      device.queue.submit([ce.finish()]);
+    } else {
+      if (setup) {
+        setup(scene);
+        setup = null;
+      }
 
-    const ce = device.createCommandEncoder();
-    const renderPassDesc = {
-      colorAttachments: [{
-        view: context.getCurrentTexture().createView(),
-        clearValue: { r: 0.2, g: 0.2, b: 0.2, a: 1.0 },
-        loadOp: "clear",
-        storeOp: "store",
-      }],
-    };
-    const pass = ce.beginRenderPass(renderPassDesc);
-    basil3d_scene_render_pass(scene, app, gpu, pass);
-    pass.end();
-    device.queue.submit([ce.finish()]);
+      // scene render
+      basil3d_scene_write_buffers(scene, app, gpu, canvas, device);
+      const ce = device.createCommandEncoder();
+      const renderPassDesc = {
+        colorAttachments: [{
+          view: context.getCurrentTexture().createView(),
+          clearValue: { r: 0.2, g: 0.2, b: 0.2, a: 1.0 },
+          loadOp: "clear",
+          storeOp: "store",
+        }],
+      };
+      const pass = ce.beginRenderPass(renderPassDesc);
+      basil3d_scene_render_pass(scene, app, gpu, pass);
+      pass.end();
+      device.queue.submit([ce.finish()]);
+    }
 
     requestAnimationFrame(frame);
   };

@@ -1,36 +1,23 @@
 
 const basil3d_scene_create = () => {
   return {
-    camera: {},
-    objects: [],
+    camera: {
+      aspect: 1,
+      fovy: deg2rad(30),
+      zNear: 0.1,
+      zFar: 1000,
+      dir: [0, 0, 1],
+      eye: [0, 0, 0],
+      up: [0, 1, 0],
+    },
+    object: [],
   };
 };
 
-const basil3d_scene_write_buffers = (scene, app, gpu, canvas, device) => {
-  const aspect = canvas.width / canvas.height;
-  const fovy = deg2rad(30);
-  const zNear = 0.1;
-  const zFar = 1000;
-  let dir = [0, 0, 1];
-  let eye = [0, 1.5, -5];
-  const at = vec3add(eye, dir);
-  const up = [0, 1, 0];
-  const view = mat4lookat(eye, at, up);
-  const proj = mat4perspective(fovy, aspect, zNear, zFar);
-  const vp = mat4multiply(view, proj);
-  const mat = new Float32Array(vp);
-  device.queue.writeBuffer(gpu.buffer[0], 0, mat);
-
-  mat.set(mat4translate(-2, 0, 0));
-  device.queue.writeBuffer(gpu.buffer[1], 256 * 0, mat);
-  mat.set(mat4translate(2, 0, 0));
-  device.queue.writeBuffer(gpu.buffer[1], 256 * 1, mat);
-};
-
-const basil3d_scene_render_pass = (scene, app, gpu, pass) => {
-  if (basil3d_app_is_loading(app)) {
-    return;
-  }
-  basil3d_app_gpu_draw(app, "tr_01", gpu, pass, 256 * 0);
-  basil3d_app_gpu_draw(app, "tr_01", gpu, pass, 256 * 1);
+const basil3d_scene_add_object = (scene, label, matrix) => {
+  scene.object.push({
+    label: label,
+    matrix: matrix,
+    offset: 0,
+  });
 };

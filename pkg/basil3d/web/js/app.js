@@ -5,7 +5,6 @@ const basil3d_app_load = (device) => {
     audio: {},
     loading: 0,
   };
-
   const path = "app.json";
   fetch(path).then(res => res.json()).then((json) => {
     if (json.gpu) {
