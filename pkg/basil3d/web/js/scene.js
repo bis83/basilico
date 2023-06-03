@@ -10,14 +10,18 @@ const basil3d_scene_create = () => {
       eye: [0, 0, 0],
       up: [0, 1, 0],
     },
-    object: [],
+    entity: [],
   };
 };
 
-const basil3d_scene_add_object = (scene, label, matrix) => {
-  scene.object.push({
-    label: label,
+const basil3d_scene_add_entity = (scene, app, label, matrix) => {
+  const id = basil3d_app_gpu_label_index(app, label);
+  if (id < 0) {
+    return;
+  }
+
+  scene.entity.push({
+    id: id,
     matrix: matrix,
-    offset: 0,
   });
 };

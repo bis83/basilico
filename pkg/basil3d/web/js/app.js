@@ -38,32 +38,11 @@ const basil3d_app_is_loading = (app) => {
   return app.loading > 0;
 };
 
-const basil3d_app_gpu_label = (app, label) => {
-  for (const obj of app.gpu.label) {
-    if (obj.name === label) {
-      return obj;
+const basil3d_app_gpu_label_index = (app, name) => {
+  for (let i = 0; i < app.gpu.label.length; ++i) {
+    if (app.gpu.label[i].name === name) {
+      return i;
     }
   }
-  return null;
-};
-
-const basil3d_app_gpu_draw = (app, label, gpu, pass, offset) => {
-  const obj = basil3d_app_gpu_label(app, label);
-  if (!obj) {
-    return;
-  }
-  for (const i of obj.mesh) {
-    const mesh = app.gpu.mesh[i];
-    pass.setPipeline(gpu.pipeline[0]);
-    pass.setBindGroup(0, gpu.bindGroup[0], [offset]);
-    if (mesh.vb0) {
-      const [index, offset, size] = mesh.vb0;
-      pass.setVertexBuffer(0, app.gpu.buffer[index], offset, size);
-    }
-    if (mesh.ib) {
-      const [index, offset, size] = mesh.ib;
-      pass.setIndexBuffer(app.gpu.buffer[index], "uint16", offset, size);
-    }
-    pass.drawIndexed(mesh.count);
-  }
+  return -1;
 };

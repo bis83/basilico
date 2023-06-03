@@ -35,12 +35,12 @@ const basil3d_start = async (setup) => {
       device.queue.submit([ce.finish()]);
     } else {
       if (setup) {
-        setup(scene);
+        setup(app, scene);
         setup = null;
       }
 
       // scene render
-      basil3d_scene_write_buffers(scene, app, gpu, canvas, device);
+      const batch = basil3d_scene_write_buffers(scene, app, gpu, canvas, device);
       const ce = device.createCommandEncoder();
       const renderPassDesc = {
         colorAttachments: [{
@@ -51,7 +51,7 @@ const basil3d_start = async (setup) => {
         }],
       };
       const pass = ce.beginRenderPass(renderPassDesc);
-      basil3d_scene_render_pass(scene, app, gpu, pass);
+      basil3d_scene_render_pass(batch, app, gpu, pass);
       pass.end();
       device.queue.submit([ce.finish()]);
     }
