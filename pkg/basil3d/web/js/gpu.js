@@ -81,12 +81,3 @@ const basil3d_gpu_create = (device, canvasFormat) => {
 
   return obj;
 };
-
-const basil3d_update_canvas = (gpu, canvas) => {
-  if (canvas.width !== window.innerWidth) {
-    canvas.width = window.innerWidth;
-  }
-  if (canvas.height !== window.innerHeight) {
-    canvas.height = window.innerHeight;
-  }
-};

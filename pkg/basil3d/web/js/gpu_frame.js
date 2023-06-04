@@ -1,5 +1,29 @@
 
-const basil3d_scene_write_buffers = (scene, app, gpu, canvas, device) => {
+const basil3d_gpu_on_frame_start = (gpu, canvas) => {
+  if (canvas.width !== window.innerWidth) {
+    canvas.width = window.innerWidth;
+  }
+  if (canvas.height !== window.innerHeight) {
+    canvas.height = window.innerHeight;
+  }
+};
+
+const basil3d_gpu_on_frame_loading = (gpu, device, context) => {
+  const ce = device.createCommandEncoder();
+  const renderPassDesc = {
+    colorAttachments: [{
+      view: context.getCurrentTexture().createView(),
+      clearValue: { r: 0.2, g: 0.2, b: 0.2, a: 1.0 },
+      loadOp: "clear",
+      storeOp: "store",
+    }],
+  };
+  const pass = ce.beginRenderPass(renderPassDesc);
+  pass.end();
+  device.queue.submit([ce.finish()]);
+};
+
+const basil3d_gpu_on_frame_scene = (gpu, device, context, canvas, scene, app) => {
   const mat = new Float32Array(16);
   {
     scene.camera.aspect = canvas.width / canvas.height;
@@ -25,16 +49,22 @@ const basil3d_scene_write_buffers = (scene, app, gpu, canvas, device) => {
     device.queue.writeBuffer(gpu.buffer[1], offset, mat);
     offset += 256;
   }
-  return batch;
-};
 
-const basil3d_scene_render_pass = (batch, app, gpu, pass) => {
+  const ce = device.createCommandEncoder();
+  const renderPassDesc = {
+    colorAttachments: [{
+      view: context.getCurrentTexture().createView(),
+      clearValue: { r: 0.2, g: 0.2, b: 0.2, a: 1.0 },
+      loadOp: "clear",
+      storeOp: "store",
+    }],
+  };
+  const pass = ce.beginRenderPass(renderPassDesc);
   for (let i = 0; i < batch.length; ++i) {
     if (batch[i].length <= 0) {
       continue;
     }
 
-    // set pipeline
     const mesh = app.gpu.mesh[i];
     pass.setPipeline(gpu.pipeline[0]);
     if (mesh.vb0) {
@@ -46,10 +76,13 @@ const basil3d_scene_render_pass = (batch, app, gpu, pass) => {
       pass.setIndexBuffer(app.gpu.buffer[index], "uint16", offset, size);
     }
 
-    // render per instance
     for (const offset of batch[i]) {
       pass.setBindGroup(0, gpu.bindGroup[0], [offset]);
       pass.drawIndexed(mesh.count);
     }
   }
+  pass.end();
+  device.queue.submit([ce.finish()]);
+
+
 };

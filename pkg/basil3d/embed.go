@@ -12,6 +12,6 @@ var scripts = []string{
 	"web/js/gpu.js",
 	"web/js/app.js",
 	"web/js/scene.js",
-	"web/js/scene_render.js",
+	"web/js/gpu_frame.js",
 	"web/js/basil3d.js",
 }

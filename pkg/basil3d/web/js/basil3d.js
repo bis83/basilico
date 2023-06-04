@@ -17,45 +17,16 @@ const basil3d_start = async (setup) => {
   });
 
   const frame = () => {
-    basil3d_update_canvas(gpu, canvas);
-
+    basil3d_gpu_on_frame_start(gpu, canvas);
     if (basil3d_app_is_loading(app)) {
-      // loading
-      const ce = device.createCommandEncoder();
-      const renderPassDesc = {
-        colorAttachments: [{
-          view: context.getCurrentTexture().createView(),
-          clearValue: { r: 0.2, g: 0.2, b: 0.2, a: 1.0 },
-          loadOp: "clear",
-          storeOp: "store",
-        }],
-      };
-      const pass = ce.beginRenderPass(renderPassDesc);
-      pass.end();
-      device.queue.submit([ce.finish()]);
+      basil3d_gpu_on_frame_loading(gpu, device, context);
     } else {
       if (setup) {
         setup(app, scene);
         setup = null;
       }
-
-      // scene render
-      const batch = basil3d_scene_write_buffers(scene, app, gpu, canvas, device);
-      const ce = device.createCommandEncoder();
-      const renderPassDesc = {
-        colorAttachments: [{
-          view: context.getCurrentTexture().createView(),
-          clearValue: { r: 0.2, g: 0.2, b: 0.2, a: 1.0 },
-          loadOp: "clear",
-          storeOp: "store",
-        }],
-      };
-      const pass = ce.beginRenderPass(renderPassDesc);
-      basil3d_scene_render_pass(batch, app, gpu, pass);
-      pass.end();
-      device.queue.submit([ce.finish()]);
+      basil3d_gpu_on_frame_scene(gpu, device, context, canvas, scene, app);
     }
-
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
