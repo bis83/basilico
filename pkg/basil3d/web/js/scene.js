@@ -14,14 +14,20 @@ const basil3d_scene_create = () => {
   };
 };
 
-const basil3d_scene_add_entity = (scene, app, label, matrix) => {
-  const id = basil3d_app_gpu_id(app, label);
-  if (id < 0) {
-    return;
+const basil3d_scene_setup = (scene, app, desc) => {
+  if (desc.camera) {
+    Object.assign(scene.camera, desc.camera)
   }
-
-  scene.entity.push({
-    id: id,
-    matrix: matrix,
-  });
+  if (desc.entity) {
+    for (const e of desc.entity) {
+      const id = basil3d_app_gpu_id(app, e.name);
+      if (id < 0) {
+        continue;
+      }
+      scene.entity.push({
+        id: id,
+        matrix: e.matrix,
+      });
+    }
+  }
 };
