@@ -24,7 +24,7 @@ type AppGPU struct {
 	Buffer  []*AppGPUBuffer  `json:"buffer,omitempty"`
 	Texture []*AppGPUTexture `json:"texture,omitempty"`
 	Mesh    []*AppGPUMesh    `json:"mesh,omitempty"`
-	Label   []*AppGPULabel   `json:"label,omitempty"`
+	ID      []*AppGPUID      `json:"id,omitempty"`
 }
 type AppGPUBuffer struct {
 	Embed int `json:"embed,omitempty"`
@@ -53,7 +53,7 @@ type AppGPUMesh struct {
 
 	Count int `json:"count"`
 }
-type AppGPULabel struct {
+type AppGPUID struct {
 	Name string `json:"name"`
 	Mesh []int  `json:"mesh"`
 }

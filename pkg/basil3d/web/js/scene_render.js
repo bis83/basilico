@@ -18,7 +18,7 @@ const basil3d_scene_write_buffers = (scene, app, gpu, canvas, device) => {
   }
   let offset = 0;
   for (const e of scene.entity) {
-    for (const i of app.gpu.label[e.id].mesh) {
+    for (const i of app.gpu.id[e.id].mesh) {
       batch[i].push(offset);
     }
     mat.set(e.matrix);

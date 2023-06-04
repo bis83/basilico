@@ -46,14 +46,14 @@ func toFloat16Array(data []float32) []uint16 {
 func (p *Builder) importGLTF(app *App) error {
 	for _, doc := range p.GLTF {
 		for _, mesh := range doc.Meshes {
-			var appLabel AppGPULabel
-			app.GPU.Label = append(app.GPU.Label, &appLabel)
-			appLabel.Name = mesh.Name
+			var appID AppGPUID
+			app.GPU.ID = append(app.GPU.ID, &appID)
+			appID.Name = mesh.Name
 			for _, prim := range mesh.Primitives {
 				// mesh
 				var appMesh AppGPUMesh
 				app.GPU.Mesh = append(app.GPU.Mesh, &appMesh)
-				appLabel.Mesh = append(appLabel.Mesh, len(app.GPU.Mesh)-1)
+				appID.Mesh = append(appID.Mesh, len(app.GPU.Mesh)-1)
 
 				// buffer
 				var appBuffer AppGPUBuffer

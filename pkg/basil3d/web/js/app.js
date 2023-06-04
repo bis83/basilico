@@ -38,9 +38,9 @@ const basil3d_app_is_loading = (app) => {
   return app.loading > 0;
 };
 
-const basil3d_app_gpu_label_index = (app, name) => {
-  for (let i = 0; i < app.gpu.label.length; ++i) {
-    if (app.gpu.label[i].name === name) {
+const basil3d_app_gpu_id = (app, name) => {
+  for (let i = 0; i < app.gpu.id.length; ++i) {
+    if (app.gpu.id[i].name === name) {
       return i;
     }
   }

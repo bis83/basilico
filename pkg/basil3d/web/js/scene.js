@@ -15,7 +15,7 @@ const basil3d_scene_create = () => {
 };
 
 const basil3d_scene_add_entity = (scene, app, label, matrix) => {
-  const id = basil3d_app_gpu_label_index(app, label);
+  const id = basil3d_app_gpu_id(app, label);
   if (id < 0) {
     return;
   }
