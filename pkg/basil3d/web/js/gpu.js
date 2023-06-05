@@ -6,6 +6,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     shaderModule: [],
     pipeline: [],
     buffer: [],
+    texture: [],
     bindGroup: [],
   };
 
@@ -59,8 +60,11 @@ const basil3d_gpu_create = (device, canvasFormat) => {
         { format: canvasFormat }
       ],
     },
-    // primitive
-    // depthStencil
+    depthStencil: {
+      depthWriteEnabled: true,
+      depthCompare: "less",
+      format: "depth24plus",
+    },
   }));
 
   obj.buffer.push(device.createBuffer({

@@ -17,7 +17,7 @@ const basil3d_start = async (setup) => {
   });
 
   const frame = () => {
-    basil3d_gpu_on_frame_start(gpu, canvas);
+    basil3d_gpu_on_frame_start(gpu, device, canvas);
     if (basil3d_app_is_loading(app)) {
       basil3d_gpu_on_frame_loading(gpu, device, context);
     } else {

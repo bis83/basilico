@@ -1,10 +1,21 @@
 
-const basil3d_gpu_on_frame_start = (gpu, canvas) => {
-  if (canvas.width !== window.innerWidth) {
+const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
+  // resize canvas and destroy render targets
+  if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
     canvas.width = window.innerWidth;
-  }
-  if (canvas.height !== window.innerHeight) {
     canvas.height = window.innerHeight;
+    if (gpu.texture[0]) {
+      gpu.texture[0].destroy();
+      gpu.texture[0] = null;
+    }
+  }
+  // create render targets
+  if (!gpu.texture[0]) {
+    gpu.texture[0] = device.createTexture({
+      size: [canvas.width, canvas.height],
+      format: "depth24plus",
+      usage: GPUTextureUsage.RENDER_ATTACHMENT,
+    });
   }
 };
 
@@ -58,6 +69,12 @@ const basil3d_gpu_on_frame_scene = (gpu, device, context, canvas, scene, app) =>
       loadOp: "clear",
       storeOp: "store",
     }],
+    depthStencilAttachment: {
+      view: gpu.texture[0].createView(),
+      depthClearValue: 1.0,
+      depthLoadOp: "clear",
+      depthStoreOp: "store",
+    },
   };
   const pass = ce.beginRenderPass(renderPassDesc);
   for (let i = 0; i < batch.length; ++i) {
