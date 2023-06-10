@@ -4,13 +4,13 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
   if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    if (gpu.texture[0]) {
+    if (gpu.texture[0] !== undefined) {
       gpu.texture[0].destroy();
-      gpu.texture[0] = null;
+      delete gpu.texture[0];
     }
   }
   // create render targets
-  if (!gpu.texture[0]) {
+  if (gpu.texture[0] === undefined) {
     gpu.texture[0] = device.createTexture({
       size: [canvas.width, canvas.height],
       format: "depth24plus",
