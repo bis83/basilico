@@ -40,6 +40,23 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     }
     `,
   });
+  obj.shaderModule[1] = device.createShaderModule({
+    code: `
+    @vertex
+    fn mainVertex(@builtin(vertex_index) id : u32) -> @builtin(position) vec4<f32> {
+      return vec4(2.0f * f32((1 & id) << 1) - 1.0f, -2.0f * f32(2 & id) + 1.0f, 0.0, 1.0);
+    }
+    `,
+  });
+  obj.shaderModule[2] = device.createShaderModule({
+    code: `
+    @group(0) @binding(0) var gbuffer0 : texture_2d<f32>;
+    @fragment
+    fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
+      return textureLoad(gbuffer0, vec2<i32>(floor(coord.xy)), 0);
+    }
+    `,
+  });
 
   obj.bindGroupLayout[0] = device.createBindGroupLayout({
     entries: [
@@ -47,11 +64,23 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       { binding: 1, visibility: GPUShaderStage.VERTEX, buffer: { hasDynamicOffset: true } },
     ],
   });
+  obj.bindGroupLayout[1] = device.createBindGroupLayout({
+    entries: [
+      { binding: 0, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'unfilterable-float', } },
+    ],
+  });
+
   obj.pipelineLayout[0] = device.createPipelineLayout({
     bindGroupLayouts: [
       obj.bindGroupLayout[0],
     ],
   });
+  obj.pipelineLayout[1] = device.createPipelineLayout({
+    bindGroupLayouts: [
+      obj.bindGroupLayout[1],
+    ],
+  });
+
   obj.pipeline[0] = device.createRenderPipeline({
     layout: obj.pipelineLayout[0],
     vertex: {
@@ -73,13 +102,28 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       module: obj.shaderModule[0],
       entryPoint: "mainFragment",
       targets: [
-        { format: canvasFormat }
+        { format: "rgb10a2unorm" },
       ],
     },
     depthStencil: {
       depthWriteEnabled: true,
       depthCompare: "less",
       format: "depth24plus",
+    },
+  });
+  obj.pipeline[1] = device.createRenderPipeline({
+    layout: obj.pipelineLayout[1],
+    vertex: {
+      module: obj.shaderModule[1],
+      entryPoint: "mainVertex",
+      buffers: [],
+    },
+    fragment: {
+      module: obj.shaderModule[2],
+      entryPoint: "mainFragment",
+      targets: [
+        { format: canvasFormat },
+      ],
     },
   });
 
