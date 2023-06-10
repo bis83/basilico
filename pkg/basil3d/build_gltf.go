@@ -81,8 +81,7 @@ func (p *Builder) importGLTF(app *App) error {
 					if err != nil {
 						return err
 					}
-					buf2 := toFloat16Array(normalizeVector3(buf))
-					if err := binary.Write(&vb, binary.LittleEndian, buf2); err != nil {
+					if err := binary.Write(&vb, binary.LittleEndian, buf); err != nil {
 						return err
 					}
 					size := vb.Len() - offset

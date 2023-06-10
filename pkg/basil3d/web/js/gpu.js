@@ -14,13 +14,29 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     code: `
     @binding(0) @group(0) var<uniform> viewProj : mat4x4<f32>;
     @binding(1) @group(0) var<uniform> world : mat4x4<f32>;
+    struct VertexInput {
+      @location(0) position: vec3<f32>,
+      @location(1) normal : vec3<f32>,
+    };
+    struct VertexOutput {
+      @builtin(position) position : vec4<f32>,
+      @location(0) normal : vec3<f32>,
+    };
+    struct FragmentOutput {
+      @location(0) normal : vec4<f32>,
+    };
     @vertex
-    fn mainVertex(@location(0) position: vec3<f32>) -> @builtin(position) vec4<f32> {
-      return viewProj * world * vec4(position, 1.0);
+    fn mainVertex(input : VertexInput) -> VertexOutput {
+      var output : VertexOutput;
+      output.position = (viewProj * world * vec4(input.position, 1.0));
+      output.normal = normalize((world * vec4(input.normal, 1.0)).xyz);
+      return output;
     }
     @fragment
-    fn mainFragment() -> @location(0) vec4<f32> {
-      return vec4(1.0, 1.0, 1.0, 1.0);
+    fn mainFragment(input : VertexOutput) -> FragmentOutput {
+      var output : FragmentOutput;
+      output.normal = vec4(input.normal * 0.5 + 0.5, 0);
+      return output;
     }
     `,
   }));
@@ -43,8 +59,8 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       entryPoint: "mainVertex",
       buffers: [
         { arrayStride: 12, attributes: [{ format: "float32x3", offset: 0, shaderLocation: 0 }] }, // position
+        { arrayStride: 12, attributes: [{ format: "float32x3", offset: 0, shaderLocation: 1 }] }, // normal
         /*
-        { arrayStride: 4, attributes: [{ format: "float16x2", offset: 0, shaderLocation: 1 }] }, // normal
         { arrayStride: 4, attributes: [{ format: "float16x2", offset: 0, shaderLocation: 2 }] }, // tangent
         { arrayStride: 4, attributes: [{ format: "float16x2", offset: 0, shaderLocation: 3 }] }, // texcoord0
         { arrayStride: 8, attributes: [{ format: "uint16x4", offset: 0, shaderLocation: 4 }] }, // joints0

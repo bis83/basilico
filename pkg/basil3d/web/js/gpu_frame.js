@@ -88,6 +88,10 @@ const basil3d_gpu_on_frame_scene = (gpu, device, context, canvas, scene, app) =>
       const [index, offset, size] = mesh.vb0;
       pass.setVertexBuffer(0, app.gpu.buffer[index], offset, size);
     }
+    if (mesh.vb1) {
+      const [index, offset, size] = mesh.vb1;
+      pass.setVertexBuffer(1, app.gpu.buffer[index], offset, size);
+    }
     if (mesh.ib) {
       const [index, offset, size] = mesh.ib;
       pass.setIndexBuffer(app.gpu.buffer[index], "uint16", offset, size);
