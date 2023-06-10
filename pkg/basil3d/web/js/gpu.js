@@ -1,6 +1,6 @@
 
 const basil3d_gpu_create = (device, canvasFormat) => {
-  const obj = {
+  const gpu = {
     bindGroupLayout: [],
     pipelineLayout: [],
     shaderModule: [],
@@ -10,7 +10,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     bindGroup: [],
   };
 
-  obj.shaderModule[0] = device.createShaderModule({
+  gpu.shaderModule[0] = device.createShaderModule({
     code: `
     @binding(0) @group(0) var<uniform> viewProj : mat4x4<f32>;
     @binding(1) @group(0) var<uniform> world : mat4x4<f32>;
@@ -40,7 +40,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     }
     `,
   });
-  obj.shaderModule[1] = device.createShaderModule({
+  gpu.shaderModule[1] = device.createShaderModule({
     code: `
     @vertex
     fn mainVertex(@builtin(vertex_index) id : u32) -> @builtin(position) vec4<f32> {
@@ -48,7 +48,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     }
     `,
   });
-  obj.shaderModule[2] = device.createShaderModule({
+  gpu.shaderModule[2] = device.createShaderModule({
     code: `
     @group(0) @binding(0) var gbuffer0 : texture_2d<f32>;
     @fragment
@@ -58,33 +58,33 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     `,
   });
 
-  obj.bindGroupLayout[0] = device.createBindGroupLayout({
+  gpu.bindGroupLayout[0] = device.createBindGroupLayout({
     entries: [
       { binding: 0, visibility: GPUShaderStage.VERTEX, buffer: {} },
       { binding: 1, visibility: GPUShaderStage.VERTEX, buffer: { hasDynamicOffset: true } },
     ],
   });
-  obj.bindGroupLayout[1] = device.createBindGroupLayout({
+  gpu.bindGroupLayout[1] = device.createBindGroupLayout({
     entries: [
       { binding: 0, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'unfilterable-float', } },
     ],
   });
 
-  obj.pipelineLayout[0] = device.createPipelineLayout({
+  gpu.pipelineLayout[0] = device.createPipelineLayout({
     bindGroupLayouts: [
-      obj.bindGroupLayout[0],
+      gpu.bindGroupLayout[0],
     ],
   });
-  obj.pipelineLayout[1] = device.createPipelineLayout({
+  gpu.pipelineLayout[1] = device.createPipelineLayout({
     bindGroupLayouts: [
-      obj.bindGroupLayout[1],
+      gpu.bindGroupLayout[1],
     ],
   });
 
-  obj.pipeline[0] = device.createRenderPipeline({
-    layout: obj.pipelineLayout[0],
+  gpu.pipeline[0] = device.createRenderPipeline({
+    layout: gpu.pipelineLayout[0],
     vertex: {
-      module: obj.shaderModule[0],
+      module: gpu.shaderModule[0],
       entryPoint: "mainVertex",
       buffers: [
         { arrayStride: 12, attributes: [{ format: "float32x3", offset: 0, shaderLocation: 0 }] }, // position
@@ -99,7 +99,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       ],
     },
     fragment: {
-      module: obj.shaderModule[0],
+      module: gpu.shaderModule[0],
       entryPoint: "mainFragment",
       targets: [
         { format: "rgb10a2unorm" },
@@ -111,15 +111,15 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       format: "depth24plus",
     },
   });
-  obj.pipeline[1] = device.createRenderPipeline({
-    layout: obj.pipelineLayout[1],
+  gpu.pipeline[1] = device.createRenderPipeline({
+    layout: gpu.pipelineLayout[1],
     vertex: {
-      module: obj.shaderModule[1],
+      module: gpu.shaderModule[1],
       entryPoint: "mainVertex",
       buffers: [],
     },
     fragment: {
-      module: obj.shaderModule[2],
+      module: gpu.shaderModule[2],
       entryPoint: "mainFragment",
       targets: [
         { format: canvasFormat },
@@ -127,21 +127,21 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     },
   });
 
-  obj.buffer[0] = device.createBuffer({
+  gpu.buffer[0] = device.createBuffer({
     size: 64 * 1,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   });
-  obj.buffer[1] = device.createBuffer({
+  gpu.buffer[1] = device.createBuffer({
     size: 256 * 1024,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   });
-  obj.bindGroup[0] = device.createBindGroup({
-    layout: obj.bindGroupLayout[0],
+  gpu.bindGroup[0] = device.createBindGroup({
+    layout: gpu.bindGroupLayout[0],
     entries: [
-      { binding: 0, resource: { buffer: obj.buffer[0] }, },
-      { binding: 1, resource: { buffer: obj.buffer[1], size: 256, offset: 0 }, },
+      { binding: 0, resource: { buffer: gpu.buffer[0] }, },
+      { binding: 1, resource: { buffer: gpu.buffer[1], size: 256, offset: 0 }, },
     ],
   });
 
-  return obj;
+  return gpu;
 };

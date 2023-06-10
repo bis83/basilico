@@ -31,12 +31,14 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
     });
   }
-  gpu.bindGroup[1] = device.createBindGroup({
-    layout: gpu.bindGroupLayout[1],
-    entries: [
-      { binding: 0, resource: gpu.texture[1].createView(), },
-    ],
-  });
+  if (gpu.bindGroup[1] === undefined) {
+    gpu.bindGroup[1] = device.createBindGroup({
+      layout: gpu.bindGroupLayout[1],
+      entries: [
+        { binding: 0, resource: gpu.texture[1].createView(), },
+      ],
+    });
+  }
 };
 
 const basil3d_gpu_on_frame_loading = (gpu, device, context) => {
@@ -54,31 +56,32 @@ const basil3d_gpu_on_frame_loading = (gpu, device, context) => {
 };
 
 const basil3d_gpu_on_frame_scene = (gpu, device, context, canvas, scene, app) => {
-  const mat = new Float32Array(16);
-  {
-    scene.camera.aspect = canvas.width / canvas.height;
-    const at = vec3add(scene.camera.eye, scene.camera.dir);
-    const view = mat4lookat(scene.camera.eye, at, scene.camera.up);
-    const proj = mat4perspective(scene.camera.fovy, scene.camera.aspect, scene.camera.zNear, scene.camera.zFar);
-    const vp = mat4multiply(view, proj);
-    mat.set(vp);
-    device.queue.writeBuffer(gpu.buffer[0], 0, mat);
-  }
   const batch = [];
-  batch.length = app.gpu.mesh.length;
-  for (let i = 0; i < batch.length; ++i) {
-    batch[i] = [];
-  }
-  let offset = 0;
-  for (const e of scene.entity) {
-    for (const i of app.gpu.id[e.id].mesh) {
-      batch[i].push(offset);
+  { // Upload Buffers
+    const mat = new Float32Array(16);
+    {
+      scene.camera.aspect = canvas.width / canvas.height;
+      const at = vec3add(scene.camera.eye, scene.camera.dir);
+      const view = mat4lookat(scene.camera.eye, at, scene.camera.up);
+      const proj = mat4perspective(scene.camera.fovy, scene.camera.aspect, scene.camera.zNear, scene.camera.zFar);
+      const vp = mat4multiply(view, proj);
+      mat.set(vp);
+      device.queue.writeBuffer(gpu.buffer[0], 0, mat);
     }
-    mat.set(e.matrix);
-    device.queue.writeBuffer(gpu.buffer[1], offset, mat);
-    offset += 256;
+    batch.length = app.gpu.mesh.length;
+    for (let i = 0; i < batch.length; ++i) {
+      batch[i] = [];
+    }
+    let offset = 0;
+    for (const e of scene.entity) {
+      for (const i of app.gpu.id[e.id].mesh) {
+        batch[i].push(offset);
+      }
+      mat.set(e.matrix);
+      device.queue.writeBuffer(gpu.buffer[1], offset, mat);
+      offset += 256;
+    }
   }
-
   const ce = device.createCommandEncoder();
   { // Write G-Buffer
     const pass = ce.beginRenderPass({
