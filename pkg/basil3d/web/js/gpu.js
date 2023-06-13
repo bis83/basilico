@@ -62,6 +62,15 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     `,
   });
   gpu.shaderModule[3] = device.createShaderModule({
+    code: `
+    @fragment
+    fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
+      var C_A = vec3<f32>(0.1, 0.1, 0.12);
+      return vec4(C_A, 1.0);
+    }
+    `,
+  });
+  gpu.shaderModule[4] = device.createShaderModule({
     // tonemapping: https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
     code: `
     @group(0) @binding(0) var lbuffer0 : texture_2d<f32>;
@@ -163,6 +172,26 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     },
     fragment: {
       module: gpu.shaderModule[3],
+      entryPoint: "mainFragment",
+      targets: [
+        { format: "rgba16float" },
+      ],
+    },
+    depthStencil: {
+      depthWriteEnabled: false,
+      depthCompare: "equal",
+      format: "depth24plus",
+    },
+  });
+  gpu.pipeline[3] = device.createRenderPipeline({
+    layout: gpu.pipelineLayout[1],
+    vertex: {
+      module: gpu.shaderModule[1],
+      entryPoint: "mainVertex",
+      buffers: [],
+    },
+    fragment: {
+      module: gpu.shaderModule[4],
       entryPoint: "mainFragment",
       targets: [
         { format: canvasFormat },
