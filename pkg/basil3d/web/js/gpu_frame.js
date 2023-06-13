@@ -12,8 +12,15 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
       gpu.texture[1].destroy();
       delete gpu.texture[1];
     }
+    if (gpu.texture[2] !== undefined) {
+      gpu.texture[2].destroy();
+      delete gpu.texture[2];
+    }
     if (gpu.bindGroup[1] !== undefined) {
       delete gpu.bindGroup[1];
+    }
+    if (gpu.bindGroup[2] !== undefined) {
+      delete gpu.bindGroup[2];
     }
   }
   // create render targets
@@ -31,11 +38,28 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
     });
   }
+  if (gpu.texture[2] === undefined) {
+    gpu.texture[2] = device.createTexture({
+      size: [canvas.width, canvas.height],
+      format: "rgba16float",
+      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
+    });
+  }
+  // create Light-Pass BindGroup
   if (gpu.bindGroup[1] === undefined) {
     gpu.bindGroup[1] = device.createBindGroup({
       layout: gpu.bindGroupLayout[1],
       entries: [
         { binding: 0, resource: gpu.texture[1].createView(), },
+      ],
+    });
+  }
+  // create Post-Process-Pass BindGroup
+  if (gpu.bindGroup[2] === undefined) {
+    gpu.bindGroup[2] = device.createBindGroup({
+      layout: gpu.bindGroupLayout[1],
+      entries: [
+        { binding: 0, resource: gpu.texture[2].createView(), },
       ],
     });
   }
@@ -125,6 +149,24 @@ const basil3d_gpu_on_frame_scene = (gpu, device, context, canvas, scene, app) =>
     }
     pass.end();
   }
+  { // Lighting
+    const pass = ce.beginRenderPass({
+      depthStencilAttachment: {
+        view: gpu.texture[0].createView(),
+        depthReadOnly: true,
+      },
+      colorAttachments: [{
+        view: gpu.texture[2].createView(),
+        clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+        loadOp: "clear",
+        storeOp: "store",
+      }],
+    });
+    pass.setPipeline(gpu.pipeline[1]);
+    pass.setBindGroup(0, gpu.bindGroup[1]);
+    pass.draw(4);
+    pass.end();
+  }
   { // Post-Process
     const pass = ce.beginRenderPass({
       colorAttachments: [{
@@ -134,8 +176,8 @@ const basil3d_gpu_on_frame_scene = (gpu, device, context, canvas, scene, app) =>
         storeOp: "store",
       }],
     });
-    pass.setPipeline(gpu.pipeline[1]);
-    pass.setBindGroup(0, gpu.bindGroup[1]);
+    pass.setPipeline(gpu.pipeline[2]);
+    pass.setBindGroup(0, gpu.bindGroup[2]);
     pass.draw(4);
     pass.end();
   }

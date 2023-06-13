@@ -44,7 +44,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     code: `
     @vertex
     fn mainVertex(@builtin(vertex_index) id : u32) -> @builtin(position) vec4<f32> {
-      return vec4(2.0f * f32((1 & id) << 1) - 1.0f, -2.0f * f32(2 & id) + 1.0f, 0.0, 1.0);
+      return vec4(2.0f * f32((1 & id) << 1) - 1.0f, -2.0f * f32(2 & id) + 1.0f, 1.0, 1.0);
     }
     `,
   });
@@ -53,7 +53,30 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     @group(0) @binding(0) var gbuffer0 : texture_2d<f32>;
     @fragment
     fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
-      return textureLoad(gbuffer0, vec2<i32>(floor(coord.xy)), 0);
+      var N = normalize(textureLoad(gbuffer0, vec2<i32>(floor(coord.xy)), 0).xyz * 2.0 - 1.0);
+      var L = normalize(vec3<f32>(0.0, 1.0, 0.0));
+      var C_L = vec3<f32>(1.0, 1.0, 1.0);
+      var C_A = vec3<f32>(1.0, 1.0, 1.0);
+      return vec4(C_L * max(dot(N, L), 0) + C_A, 1.0);
+    }
+    `,
+  });
+  gpu.shaderModule[3] = device.createShaderModule({
+    // tonemapping: https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
+    code: `
+    @group(0) @binding(0) var lbuffer0 : texture_2d<f32>;
+    fn toneMapping(x : vec3<f32>) -> vec3<f32> {
+      var a = 2.51f;
+      var b = 0.03f;
+      var c = 2.43f;
+      var d = 0.59f;
+      var e = 0.14f;
+      return saturate((x * (a * x + b)) / (x * (c * x + d) + e));
+    }
+    @fragment
+    fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
+      var color = textureLoad(lbuffer0, vec2<i32>(floor(coord.xy)), 0).rgb;
+      return vec4<f32>(toneMapping(color), 1);
     }
     `,
   });
@@ -120,6 +143,26 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     },
     fragment: {
       module: gpu.shaderModule[2],
+      entryPoint: "mainFragment",
+      targets: [
+        { format: "rgba16float" },
+      ],
+    },
+    depthStencil: {
+      depthWriteEnabled: false,
+      depthCompare: "not-equal",
+      format: "depth24plus",
+    },
+  });
+  gpu.pipeline[2] = device.createRenderPipeline({
+    layout: gpu.pipelineLayout[1],
+    vertex: {
+      module: gpu.shaderModule[1],
+      entryPoint: "mainVertex",
+      buffers: [],
+    },
+    fragment: {
+      module: gpu.shaderModule[3],
       entryPoint: "mainFragment",
       targets: [
         { format: canvasFormat },

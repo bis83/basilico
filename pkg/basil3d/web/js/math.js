@@ -62,8 +62,8 @@ const vec3dir = (hang, vang) => {
   const v = deg2rad(vang);
   return [
     Math.cos(v) * Math.cos(h),
+    Math.sin(v),
     Math.cos(v) * Math.sin(h),
-    Math.sin(v)
   ];
 };
 
