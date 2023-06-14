@@ -89,10 +89,10 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       return pow(a.x * a.y * 15.0, 0.25);
     }
     fn chromaticAberration(uv : vec2<f32>) -> vec3<f32> {
-      var redOffset = 0.0002;
-      var greenOffset = 0.00001;
-      var blueOffset = -0.00001;
-      var dir = vec2<f32>(1.0, 1.0);
+      var redOffset = 0.002;
+      var greenOffset = 0.0001;
+      var blueOffset = -0.0001;
+      var dir = uv - vec2<f32>(0.5, 0.5);
       var r = textureSample(lbuffer0, sampler0, uv + dir * redOffset).r;
       var g = textureSample(lbuffer0, sampler0, uv + dir * greenOffset).g;
       var b = textureSample(lbuffer0, sampler0, uv + dir * blueOffset).b;
