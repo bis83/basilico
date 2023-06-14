@@ -82,9 +82,15 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       var e = 0.14f;
       return saturate((x * (a * x + b)) / (x * (c * x + d) + e));
     }
+    fn vignette(coord : vec2<f32>) -> f32 {
+      var uv = coord.xy / vec2<f32>(textureDimensions(lbuffer0, 0).xy);
+      uv *= 1.0 - uv.yx;
+      return pow(uv.x * uv.y * 15.0, 0.25);
+    }
     @fragment
     fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
       var color = textureLoad(lbuffer0, vec2<i32>(floor(coord.xy)), 0).rgb;
+      color *= vignette(coord.xy);
       return vec4<f32>(toneMapping(color), 1);
     }
     `,
