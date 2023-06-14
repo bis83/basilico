@@ -7,6 +7,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     pipeline: [],
     buffer: [],
     texture: [],
+    sampler: [],
     bindGroup: [],
   };
 
@@ -65,7 +66,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     code: `
     @fragment
     fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
-      var C_A = vec3<f32>(0.1, 0.1, 0.12);
+      var C_A = vec3<f32>(0.1, 0.1, 0.1);
       return vec4(C_A, 1.0);
     }
     `,
@@ -74,6 +75,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     // tonemapping: https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
     code: `
     @group(0) @binding(0) var lbuffer0 : texture_2d<f32>;
+    @group(0) @binding(1) var sampler0 : sampler;
     fn toneMapping(x : vec3<f32>) -> vec3<f32> {
       var a = 2.51f;
       var b = 0.03f;
@@ -82,15 +84,25 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       var e = 0.14f;
       return saturate((x * (a * x + b)) / (x * (c * x + d) + e));
     }
-    fn vignette(coord : vec2<f32>) -> f32 {
-      var uv = coord.xy / vec2<f32>(textureDimensions(lbuffer0, 0).xy);
-      uv *= 1.0 - uv.yx;
-      return pow(uv.x * uv.y * 15.0, 0.25);
+    fn vignette(uv : vec2<f32>) -> f32 {
+      var a = uv * (1.0 - uv.yx);
+      return pow(a.x * a.y * 15.0, 0.25);
+    }
+    fn chromaticAberration(uv : vec2<f32>) -> vec3<f32> {
+      var redOffset = 0.0002;
+      var greenOffset = 0.00001;
+      var blueOffset = -0.00001;
+      var dir = vec2<f32>(1.0, 1.0);
+      var r = textureSample(lbuffer0, sampler0, uv + dir * redOffset).r;
+      var g = textureSample(lbuffer0, sampler0, uv + dir * greenOffset).g;
+      var b = textureSample(lbuffer0, sampler0, uv + dir * blueOffset).b;
+      return vec3<f32>(r, g, b);
     }
     @fragment
     fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
-      var color = textureLoad(lbuffer0, vec2<i32>(floor(coord.xy)), 0).rgb;
-      color *= vignette(coord.xy);
+      var uv = coord.xy / vec2<f32>(textureDimensions(lbuffer0, 0).xy);
+      var color = chromaticAberration(uv);
+      color *= vignette(uv);
       return vec4<f32>(toneMapping(color), 1);
     }
     `,
@@ -104,7 +116,8 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   });
   gpu.bindGroupLayout[1] = device.createBindGroupLayout({
     entries: [
-      { binding: 0, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: 'unfilterable-float', } },
+      { binding: 0, visibility: GPUShaderStage.FRAGMENT, texture: {} },
+      { binding: 1, visibility: GPUShaderStage.FRAGMENT, sampler: {} },
     ],
   });
 
@@ -213,6 +226,13 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     size: 256 * 1024,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   });
+
+  gpu.sampler[0] = device.createSampler({
+    magFilter: 'linear',
+    minFilter: 'linear',
+    mipmapFilter: 'linear',
+  });
+
   gpu.bindGroup[0] = device.createBindGroup({
     layout: gpu.bindGroupLayout[0],
     entries: [

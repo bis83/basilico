@@ -49,6 +49,7 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
       layout: gpu.bindGroupLayout[1],
       entries: [
         { binding: 0, resource: gpu.texture[1].createView(), },
+        { binding: 1, resource: gpu.sampler[0] },
       ],
     });
   }
@@ -57,6 +58,7 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
       layout: gpu.bindGroupLayout[1],
       entries: [
         { binding: 0, resource: gpu.texture[2].createView(), },
+        { binding: 1, resource: gpu.sampler[0] },
       ],
     });
   }
