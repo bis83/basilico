@@ -10,7 +10,6 @@ import (
 
 type Config struct {
 	Title        string   `toml:"title"`
-	Message      string   `toml:"message"`
 	ExternScript []string `toml:"extern-script"`
 	Minify       bool     `toml:"minify"`
 

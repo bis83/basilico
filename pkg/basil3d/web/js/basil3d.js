@@ -1,5 +1,10 @@
 
 const basil3d_start = async (setup) => {
+  if (!navigator.gpu) {
+    html_show_message("ERROR: WebGPU not supported.")
+    return;
+  }
+
   const adapter = await navigator.gpu.requestAdapter();
   const device = await adapter.requestDevice();
   const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
