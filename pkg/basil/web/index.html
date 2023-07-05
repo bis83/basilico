@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="width: 100%; height: 100%; margin: 0%; padding: 0%;">
 
 <head>
   <meta charset="utf-8">
@@ -10,11 +10,11 @@
 </head>
 
 <body
-  style="margin: 0%; padding: 0%; overflow: hidden; background-color: black; user-select: none; touch-action: none;">
+  style="width: 100%; height: 100%; margin: 0%; padding: 0%; overflow: hidden; background-color: black; user-select: none; touch-action: none;">
   {{range $v := .ExternScript}}
   <script src="{{$v}}"></script>{{end}}
   <script src="app.js"></script>
-  <canvas id="main" style="width: 100%; height: 100%;"></canvas>
+  <canvas id="main" style="width: 100%; height: 100%; margin: 0%; padding: 0%; display: block;"></canvas>
   <div id="message"
     style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: white; font-size: 4vw;">
   </div>

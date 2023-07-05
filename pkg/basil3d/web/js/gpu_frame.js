@@ -1,9 +1,9 @@
 
 const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
   // resize canvas and destroy render targets
-  if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
 
     const deleteTexture = (no) => {
       if (gpu.texture[no] !== undefined) {
