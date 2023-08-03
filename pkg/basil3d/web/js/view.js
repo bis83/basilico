@@ -1,22 +1,23 @@
 
-const basil3d_scene_create = () => {
+const basil3d_view_create = () => {
   return {
     camera: {
       aspect: 1,
       fovy: deg2rad(30),
       zNear: 0.1,
       zFar: 1000,
-      dir: [0, 0, 1],
       eye: [0, 0, 0],
+      ha: 0,
+      va: 0,
       up: [0, 1, 0],
     },
     entity: [],
   };
 };
 
-const basil3d_scene_setup = (scene, app, desc) => {
+const basil3d_view_setup = (view, app, desc) => {
   if (desc.camera) {
-    Object.assign(scene.camera, desc.camera)
+    Object.assign(view.camera, desc.camera)
   }
   if (desc.entity) {
     for (const e of desc.entity) {
@@ -24,7 +25,7 @@ const basil3d_scene_setup = (scene, app, desc) => {
       if (id < 0) {
         continue;
       }
-      scene.entity.push({
+      view.entity.push({
         id: id,
         matrix: e.matrix,
       });

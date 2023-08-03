@@ -1,5 +1,5 @@
 
-const basil3d_start = async (setup) => {
+const basil3d_start = async (setup, update) => {
   if (!navigator.gpu) {
     html_show_message("ERROR: WebGPU not supported.")
     return;
@@ -9,10 +9,6 @@ const basil3d_start = async (setup) => {
   const device = await adapter.requestDevice();
   const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
 
-  const gpu = basil3d_gpu_create(device, canvasFormat);
-  const app = basil3d_app_load(device);
-  const scene = basil3d_scene_create();
-
   const canvas = html_canvas();
   const context = canvas.getContext("webgpu");
   context.configure({
@@ -21,16 +17,25 @@ const basil3d_start = async (setup) => {
     alphaMode: "opaque",
   });
 
-  const frame = () => {
+  const gpu = basil3d_gpu_create(device, canvasFormat);
+  const listen = basil3d_listen_create();
+  const app = basil3d_app_load(device);
+  const view = basil3d_view_create();
+
+  const frame = (time) => {
+    basil3d_listen_tick(listen, time);
     basil3d_gpu_on_frame_start(gpu, device, canvas);
     if (basil3d_app_is_loading(app)) {
       basil3d_gpu_on_frame_loading(gpu, device, context);
     } else {
       if (setup) {
-        setup(app, scene);
+        setup(app, view);
         setup = null;
       }
-      basil3d_gpu_on_frame_scene(gpu, device, context, canvas, scene, app);
+      if (update) {
+        update(app, view, listen);
+      }
+      basil3d_gpu_on_frame_view(gpu, device, context, canvas, app, view);
     }
     requestAnimationFrame(frame);
   };
