@@ -4,10 +4,15 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/binary"
+	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/qmuntal/gltf"
 	"github.com/x448/float16"
+
+	basil "github.com/bis83/basilico/pkg/basil"
 )
 
 func getBytes(doc *gltf.Document, index uint32) []byte {
@@ -41,6 +46,37 @@ func toFloat16Array(data []float32) []uint16 {
 		data2 = append(data2, float16.Fromfloat32(v).Bits())
 	}
 	return data2
+}
+
+func (p *Builder) readGLTF(baseDir string) error {
+	dir := filepath.Join(baseDir, "gltf")
+	if !basil.Exists(dir) {
+		return nil
+	}
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() {
+			return nil
+		}
+		if filepath.Ext(path) != ".gltf" {
+			return nil
+		}
+
+		doc, err := gltf.Open(path)
+		if err != nil {
+			return err
+		}
+		p.GLTF = append(p.GLTF, doc)
+		fmt.Printf("GLTF: %v\n", path)
+
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (p *Builder) importGLTF(app *App) error {

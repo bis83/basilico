@@ -25,9 +25,13 @@ const basil3d_view_setup = (view, app, desc) => {
       if (id < 0) {
         continue;
       }
+      const x = e.x || 0;
+      const y = e.y || 0;
+      const z = e.z || 0;
+      const m = mat4translate(x, y, z);
       view.entity.push({
         id: id,
-        matrix: e.matrix,
+        matrix: m,
       });
     }
   }

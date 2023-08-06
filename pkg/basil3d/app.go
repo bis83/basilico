@@ -1,9 +1,10 @@
 package basil3d
 
 type App struct {
-	Embed []*string `json:"embed"`
-	GPU   AppGPU    `json:"gpu"`
-	Audio AppAudio  `json:"audio"`
+	Embed []*string               `json:"embed"`
+	GPU   AppGPU                  `json:"gpu"`
+	Audio AppAudio                `json:"audio"`
+	JSON  map[string]*interface{} `json:"json"`
 }
 
 const (

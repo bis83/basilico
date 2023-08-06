@@ -1,8 +1,9 @@
 
 const basil3d_app_load = (device) => {
-  const obj = {
+  const app = {
     gpu: {},
     audio: {},
+    json: {},
     loading: 0,
   };
   const path = "app.json";
@@ -22,16 +23,19 @@ const basil3d_app_load = (device) => {
         buffer.unmap();
         return buffer;
       });
-      obj.gpu = json.gpu;
+      app.gpu = json.gpu;
     }
     if (json.audio) {
-      obj.audio = json.audio;
+      app.audio = json.audio;
     }
-    obj.loading -= 1;
+    if (json.json) {
+      app.json = json.json;
+    }
+    app.loading -= 1;
   })
-  obj.loading += 1;
+  app.loading += 1;
 
-  return obj;
+  return app;
 };
 
 const basil3d_app_is_loading = (app) => {
@@ -45,4 +49,8 @@ const basil3d_app_gpu_id = (app, name) => {
     }
   }
   return -1;
+};
+
+const basil3d_app_json = (app, name) => {
+  return app.json[name];
 };
