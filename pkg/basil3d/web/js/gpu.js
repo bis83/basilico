@@ -14,7 +14,11 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   gpu.shaderModule[0] = device.createShaderModule({
     code: `
     @binding(0) @group(0) var<uniform> viewProj : mat4x4<f32>;
-    @binding(1) @group(0) var<uniform> world : mat4x4<f32>;
+    struct InstanceInput {
+      world : mat4x4<f32>,
+      albedo : vec4<f32>,
+    }
+    @binding(1) @group(0) var<uniform> inst : InstanceInput;
     struct VertexInput {
       @location(0) position: vec3<f32>,
       @location(1) normal : vec3<f32>,
@@ -30,15 +34,15 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     @vertex
     fn mainVertex(input : VertexInput) -> VertexOutput {
       var output : VertexOutput;
-      output.position = (viewProj * world * vec4(input.position, 1.0));
-      output.normal = normalize((world * vec4(input.normal, 1.0)).xyz);
+      output.position = (viewProj * inst.world * vec4(input.position, 1.0));
+      output.normal = normalize((inst.world * vec4(input.normal, 1.0)).xyz);
       return output;
     }
     @fragment
     fn mainFragment(input : VertexOutput) -> FragmentOutput {
       var output : FragmentOutput;
       output.normal = vec4(input.normal * 0.5 + 0.5, 0);
-      output.albedo = vec4(1.0, 1.0, 1.0, 1.0);
+      output.albedo = inst.albedo.rgba;
       return output;
     }
     `,
@@ -116,7 +120,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   gpu.bindGroupLayout[0] = device.createBindGroupLayout({
     entries: [
       { binding: 0, visibility: GPUShaderStage.VERTEX, buffer: {} },
-      { binding: 1, visibility: GPUShaderStage.VERTEX, buffer: { hasDynamicOffset: true } },
+      { binding: 1, visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT, buffer: { hasDynamicOffset: true } },
     ],
   });
   gpu.bindGroupLayout[1] = device.createBindGroupLayout({

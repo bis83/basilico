@@ -90,30 +90,33 @@ const basil3d_gpu_on_frame_loading = (gpu, device, context) => {
 
 const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
   const batch = [];
-  { // Upload Buffers
+  // Upload Buffers
+  {
     const mat = new Float32Array(16);
-    {
-      const camera = view.camera;
-      camera.aspect = canvas.width / canvas.height;
-      const dir = vec3dir(camera.ha, camera.va);
-      const at = vec3add(camera.eye, dir);
-      const look = mat4lookat(camera.eye, at, camera.up);
-      const proj = mat4perspective(camera.fovy, camera.aspect, camera.zNear, camera.zFar);
-      const vp = mat4multiply(look, proj);
-      mat.set(vp);
-      device.queue.writeBuffer(gpu.buffer[0], 0, mat);
-    }
+    const camera = view.camera;
+    camera.aspect = canvas.width / canvas.height;
+    const dir = vec3dir(camera.ha, camera.va);
+    const at = vec3add(camera.eye, dir);
+    const look = mat4lookat(camera.eye, at, camera.up);
+    const proj = mat4perspective(camera.fovy, camera.aspect, camera.zNear, camera.zFar);
+    const vp = mat4multiply(look, proj);
+    mat.set(vp);
+    device.queue.writeBuffer(gpu.buffer[0], 0, mat);
+  }
+  {
     batch.length = app.gpu.mesh.length;
     for (let i = 0; i < batch.length; ++i) {
       batch[i] = [];
     }
     let offset = 0;
+    const buf = new Float32Array(20);
     for (const e of view.entity) {
       for (const i of app.gpu.id[e.id].mesh) {
         batch[i].push(offset);
       }
-      mat.set(e.matrix);
-      device.queue.writeBuffer(gpu.buffer[1], offset, mat);
+      buf.set(e.matrix);
+      buf.set(e.albedo, 16);
+      device.queue.writeBuffer(gpu.buffer[1], offset, buf);
       offset += 256;
     }
   }
