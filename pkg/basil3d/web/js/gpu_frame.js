@@ -14,6 +14,7 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
     deleteTexture(0);
     deleteTexture(1);
     deleteTexture(2);
+    deleteTexture(3);
 
     const deleteBindGroup = (no) => {
       if (gpu.bindGroup[no] !== undefined) {
@@ -40,6 +41,13 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
   if (gpu.texture[2] === undefined) {
     gpu.texture[2] = device.createTexture({
       size: [canvas.width, canvas.height],
+      format: "rgba8unorm",
+      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
+    });
+  }
+  if (gpu.texture[3] === undefined) {
+    gpu.texture[3] = device.createTexture({
+      size: [canvas.width, canvas.height],
       format: "rgba16float",
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
     });
@@ -49,7 +57,8 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
       layout: gpu.bindGroupLayout[1],
       entries: [
         { binding: 0, resource: gpu.texture[1].createView(), },
-        { binding: 1, resource: gpu.sampler[0] },
+        { binding: 1, resource: gpu.texture[2].createView(), },
+        { binding: 2, resource: gpu.sampler[0] },
       ],
     });
   }
@@ -57,8 +66,9 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
     gpu.bindGroup[2] = device.createBindGroup({
       layout: gpu.bindGroupLayout[1],
       entries: [
-        { binding: 0, resource: gpu.texture[2].createView(), },
-        { binding: 1, resource: gpu.sampler[0] },
+        { binding: 0, resource: gpu.texture[3].createView(), },
+        { binding: 1, resource: gpu.texture[3].createView(), },
+        { binding: 2, resource: gpu.sampler[0] },
       ],
     });
   }
@@ -116,12 +126,20 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
         depthLoadOp: "clear",
         depthStoreOp: "store",
       },
-      colorAttachments: [{
-        view: gpu.texture[1].createView(),
-        clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
-        loadOp: "clear",
-        storeOp: "store",
-      }],
+      colorAttachments: [
+        {
+          view: gpu.texture[1].createView(),
+          clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+          loadOp: "clear",
+          storeOp: "store",
+        },
+        {
+          view: gpu.texture[2].createView(),
+          clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+          loadOp: "clear",
+          storeOp: "store",
+        }
+      ],
     });
     for (let i = 0; i < batch.length; ++i) {
       if (batch[i].length <= 0) {
@@ -157,7 +175,7 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
         depthReadOnly: true,
       },
       colorAttachments: [{
-        view: gpu.texture[2].createView(),
+        view: gpu.texture[3].createView(),
         clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
         loadOp: "clear",
         storeOp: "store",
