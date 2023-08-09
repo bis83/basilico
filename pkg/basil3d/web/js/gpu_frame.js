@@ -6,15 +6,16 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
     canvas.height = canvas.clientHeight;
 
     const deleteTexture = (no) => {
-      if (gpu.texture[no] !== undefined) {
-        gpu.texture[no].destroy();
-        delete gpu.texture[no];
+      if (gpu.gbuffer[no] !== undefined) {
+        gpu.gbuffer[no].destroy();
+        delete gpu.gbuffer[no];
       }
     };
     deleteTexture(0);
     deleteTexture(1);
     deleteTexture(2);
     deleteTexture(3);
+    deleteTexture(4);
 
     const deleteBindGroup = (no) => {
       if (gpu.bindGroup[no] !== undefined) {
@@ -24,29 +25,36 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
     deleteBindGroup(1);
     deleteBindGroup(2);
   }
-  if (gpu.texture[0] === undefined) {
-    gpu.texture[0] = device.createTexture({
+  if (gpu.gbuffer[0] === undefined) {
+    gpu.gbuffer[0] = device.createTexture({
       size: [canvas.width, canvas.height],
       format: "depth24plus",
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
     });
   }
-  if (gpu.texture[1] === undefined) {
-    gpu.texture[1] = device.createTexture({
+  if (gpu.gbuffer[1] === undefined) {
+    gpu.gbuffer[1] = device.createTexture({
       size: [canvas.width, canvas.height],
       format: "rgb10a2unorm",
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
     });
   }
-  if (gpu.texture[2] === undefined) {
-    gpu.texture[2] = device.createTexture({
+  if (gpu.gbuffer[2] === undefined) {
+    gpu.gbuffer[2] = device.createTexture({
       size: [canvas.width, canvas.height],
       format: "rgba8unorm",
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
     });
   }
-  if (gpu.texture[3] === undefined) {
-    gpu.texture[3] = device.createTexture({
+  if (gpu.gbuffer[3] === undefined) {
+    gpu.gbuffer[3] = device.createTexture({
+      size: [canvas.width, canvas.height],
+      format: "rgba8unorm",
+      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
+    });
+  }
+  if (gpu.gbuffer[4] === undefined) {
+    gpu.gbuffer[4] = device.createTexture({
       size: [canvas.width, canvas.height],
       format: "rgba16float",
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
@@ -56,9 +64,11 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
     gpu.bindGroup[1] = device.createBindGroup({
       layout: gpu.bindGroupLayout[1],
       entries: [
-        { binding: 0, resource: gpu.texture[1].createView(), },
-        { binding: 1, resource: gpu.texture[2].createView(), },
-        { binding: 2, resource: gpu.sampler[0] },
+        { binding: 0, resource: gpu.gbuffer[0].createView(), },
+        { binding: 1, resource: gpu.gbuffer[1].createView(), },
+        { binding: 2, resource: gpu.gbuffer[2].createView(), },
+        { binding: 3, resource: gpu.gbuffer[3].createView(), },
+        { binding: 4, resource: gpu.sampler[0] },
       ],
     });
   }
@@ -66,9 +76,11 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
     gpu.bindGroup[2] = device.createBindGroup({
       layout: gpu.bindGroupLayout[1],
       entries: [
-        { binding: 0, resource: gpu.texture[3].createView(), },
-        { binding: 1, resource: gpu.texture[3].createView(), },
-        { binding: 2, resource: gpu.sampler[0] },
+        { binding: 0, resource: gpu.gbuffer[0].createView(), },
+        { binding: 1, resource: gpu.gbuffer[4].createView(), },
+        { binding: 2, resource: gpu.gbuffer[4].createView(), },
+        { binding: 3, resource: gpu.gbuffer[4].createView(), },
+        { binding: 4, resource: gpu.sampler[0] },
       ],
     });
   }
@@ -124,20 +136,26 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
   { // Write G-Buffer
     const pass = ce.beginRenderPass({
       depthStencilAttachment: {
-        view: gpu.texture[0].createView(),
+        view: gpu.gbuffer[0].createView(),
         depthClearValue: 1.0,
         depthLoadOp: "clear",
         depthStoreOp: "store",
       },
       colorAttachments: [
         {
-          view: gpu.texture[1].createView(),
+          view: gpu.gbuffer[1].createView(),
           clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
           loadOp: "clear",
           storeOp: "store",
         },
         {
-          view: gpu.texture[2].createView(),
+          view: gpu.gbuffer[2].createView(),
+          clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+          loadOp: "clear",
+          storeOp: "store",
+        },
+        {
+          view: gpu.gbuffer[3].createView(),
           clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
           loadOp: "clear",
           storeOp: "store",
@@ -174,11 +192,11 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
   { // HDR Color-Space
     const pass = ce.beginRenderPass({
       depthStencilAttachment: {
-        view: gpu.texture[0].createView(),
+        view: gpu.gbuffer[0].createView(),
         depthReadOnly: true,
       },
       colorAttachments: [{
-        view: gpu.texture[3].createView(),
+        view: gpu.gbuffer[4].createView(),
         clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
         loadOp: "clear",
         storeOp: "store",

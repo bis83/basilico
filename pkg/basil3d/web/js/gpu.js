@@ -6,9 +6,9 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     shaderModule: [],
     pipeline: [],
     buffer: [],
-    texture: [],
     sampler: [],
     bindGroup: [],
+    gbuffer: [],
   };
 
   gpu.shaderModule[0] = device.createShaderModule({
@@ -28,8 +28,9 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       @location(0) normal : vec3<f32>,
     };
     struct FragmentOutput {
-      @location(0) normal : vec4<f32>,
-      @location(1) albedo : vec4<f32>,
+      @location(0) gbuffer0 : vec4<f32>,
+      @location(1) gbuffer1 : vec4<f32>,
+      @location(2) gbuffer2 : vec4<f32>,
     };
     @vertex
     fn mainVertex(input : VertexInput) -> VertexOutput {
@@ -41,8 +42,9 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     @fragment
     fn mainFragment(input : VertexOutput) -> FragmentOutput {
       var output : FragmentOutput;
-      output.normal = vec4(input.normal * 0.5 + 0.5, 0);
-      output.albedo = inst.albedo.rgba;
+      output.gbuffer0 = vec4(input.normal * 0.5 + 0.5, 0);
+      output.gbuffer1 = inst.albedo.rgba;
+      output.gbuffer2 = vec4(0.0, 0.0, 0.0, 0.0);
       return output;
     }
     `,
@@ -57,8 +59,9 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   });
   gpu.shaderModule[2] = device.createShaderModule({
     code: `
-    @group(0) @binding(0) var gbuffer0 : texture_2d<f32>;
-    @group(0) @binding(1) var gbuffer1 : texture_2d<f32>;
+    @group(0) @binding(1) var gbuffer0 : texture_2d<f32>;
+    @group(0) @binding(2) var gbuffer1 : texture_2d<f32>;
+    @group(0) @binding(3) var gbuffer2 : texture_2d<f32>;
     @fragment
     fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
       var N = normalize(textureLoad(gbuffer0, vec2<i32>(floor(coord.xy)), 0).xyz * 2.0 - 1.0);
@@ -83,8 +86,8 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   gpu.shaderModule[4] = device.createShaderModule({
     // tonemapping: https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
     code: `
-    @group(0) @binding(0) var lbuffer0 : texture_2d<f32>;
-    @group(0) @binding(2) var sampler0 : sampler;
+    @group(0) @binding(1) var lbuffer0 : texture_2d<f32>;
+    @group(0) @binding(4) var sampler0 : sampler;
     fn toneMapping(x : vec3<f32>) -> vec3<f32> {
       var a = 2.51f;
       var b = 0.03f;
@@ -125,9 +128,11 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   });
   gpu.bindGroupLayout[1] = device.createBindGroupLayout({
     entries: [
-      { binding: 0, visibility: GPUShaderStage.FRAGMENT, texture: {} },
+      { binding: 0, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: "depth" } },
       { binding: 1, visibility: GPUShaderStage.FRAGMENT, texture: {} },
-      { binding: 2, visibility: GPUShaderStage.FRAGMENT, sampler: {} },
+      { binding: 2, visibility: GPUShaderStage.FRAGMENT, texture: {} },
+      { binding: 3, visibility: GPUShaderStage.FRAGMENT, texture: {} },
+      { binding: 4, visibility: GPUShaderStage.FRAGMENT, sampler: {} },
     ],
   });
 
@@ -164,6 +169,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       entryPoint: "mainFragment",
       targets: [
         { format: "rgb10a2unorm" },
+        { format: "rgba8unorm" },
         { format: "rgba8unorm" },
       ],
     },
