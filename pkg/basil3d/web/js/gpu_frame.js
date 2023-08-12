@@ -64,11 +64,12 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
     gpu.bindGroup[1] = device.createBindGroup({
       layout: gpu.bindGroupLayout[1],
       entries: [
-        { binding: 0, resource: gpu.gbuffer[0].createView(), },
-        { binding: 1, resource: gpu.gbuffer[1].createView(), },
-        { binding: 2, resource: gpu.gbuffer[2].createView(), },
-        { binding: 3, resource: gpu.gbuffer[3].createView(), },
-        { binding: 4, resource: gpu.sampler[0] },
+        { binding: 0, resource: { buffer: gpu.buffer[0] }, },
+        { binding: 1, resource: gpu.gbuffer[0].createView(), },
+        { binding: 2, resource: gpu.gbuffer[1].createView(), },
+        { binding: 3, resource: gpu.gbuffer[2].createView(), },
+        { binding: 4, resource: gpu.gbuffer[3].createView(), },
+        { binding: 5, resource: gpu.sampler[0] },
       ],
     });
   }
@@ -76,11 +77,12 @@ const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
     gpu.bindGroup[2] = device.createBindGroup({
       layout: gpu.bindGroupLayout[1],
       entries: [
-        { binding: 0, resource: gpu.gbuffer[0].createView(), },
-        { binding: 1, resource: gpu.gbuffer[4].createView(), },
+        { binding: 0, resource: { buffer: gpu.buffer[0] }, },
+        { binding: 1, resource: gpu.gbuffer[0].createView(), },
         { binding: 2, resource: gpu.gbuffer[4].createView(), },
         { binding: 3, resource: gpu.gbuffer[4].createView(), },
-        { binding: 4, resource: gpu.sampler[0] },
+        { binding: 4, resource: gpu.gbuffer[4].createView(), },
+        { binding: 5, resource: gpu.sampler[0] },
       ],
     });
   }
@@ -104,7 +106,7 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
   const batch = [];
   // Upload Buffers
   {
-    const mat = new Float32Array(16);
+    const mat = new Float32Array(36);
     const camera = view.camera;
     camera.aspect = canvas.width / canvas.height;
     const dir = vec3dir(camera.ha, camera.va);
@@ -112,7 +114,10 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
     const look = mat4lookat(camera.eye, at, camera.up);
     const proj = mat4perspective(camera.fovy, camera.aspect, camera.zNear, camera.zFar);
     const vp = mat4multiply(look, proj);
-    mat.set(vp);
+    const ivp = mat4invert(vp);
+    mat.set(vp, 0);
+    mat.set(ivp, 16);
+    mat.set(camera.eye, 32);
     device.queue.writeBuffer(gpu.buffer[0], 0, mat);
   }
   {
@@ -121,13 +126,14 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
       batch[i] = [];
     }
     let offset = 0;
-    const buf = new Float32Array(20);
+    const buf = new Float32Array(24);
     for (const e of view.entity) {
       for (const i of app.gpu.id[e.id].mesh) {
         batch[i].push(offset);
       }
-      buf.set(e.matrix);
+      buf.set(e.matrix, 0);
       buf.set(e.albedo, 16);
+      buf.set([1, 0.4, 0.4, 1], 20);
       device.queue.writeBuffer(gpu.buffer[1], offset, buf);
       offset += 256;
     }

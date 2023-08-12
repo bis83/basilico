@@ -159,10 +159,10 @@ func (p *Builder) importGLTF(app *App) error {
 					float64(material.PBRMetallicRoughness.BaseColorFactor[3]),
 				}
 				appMesh.Factor1 = []float64{
-					float64(0),
+					float64(1),
 					float64(*material.PBRMetallicRoughness.MetallicFactor),
 					float64(*material.PBRMetallicRoughness.RoughnessFactor),
-					0,
+					float64(1),
 				}
 			}
 		}
