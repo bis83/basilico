@@ -71,7 +71,10 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     struct ViewInput {
       viewProj : mat4x4<f32>,
       invViewProj : mat4x4<f32>,
-      eye : vec4<f32>,
+      eyePosition : vec4<f32>,
+      lightDir : vec4<f32>,
+      lightColor : vec4<f32>,
+      ambientColor : vec4<f32>,
     }
     @group(0) @binding(0) var<uniform> view : ViewInput;
     @group(0) @binding(1) var zbuffer : texture_depth_2d;
@@ -135,11 +138,11 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       var F1 = textureLoad(gbuffer2, xy, 0);
       var N = decodeNormal(xy);
       var P = decodeWorldPosition(xy);
-      var V = normalize(view.eye.xyz - P);
+      var V = normalize(view.eyePosition.xyz - P);
 
-      var L = vec3<f32>(0.0, 1.0, 0.0);
-      var C_L = vec3<f32>(1.0, 1.0, 1.0) * BRDF(N, L, V, F0.rgb, F1.y, F1.z);
-      var C_A = vec3<f32>(0.5, 0.5, 0.5) * (F1.x * F0.rgb);
+      var L = view.lightDir.xyz;
+      var C_L = view.lightColor.rgb * BRDF(N, L, V, F0.rgb, F1.y, F1.z);
+      var C_A = view.ambientColor.rgb * (F1.x * F0.rgb);
       return vec4(C_L + C_A, 1.0);
     }
     `,

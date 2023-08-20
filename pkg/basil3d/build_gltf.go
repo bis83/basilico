@@ -162,7 +162,7 @@ func (p *Builder) importGLTF(app *App) error {
 					float64(1),
 					float64(*material.PBRMetallicRoughness.MetallicFactor),
 					float64(*material.PBRMetallicRoughness.RoughnessFactor),
-					float64(1),
+					float64(0),
 				}
 			}
 		}

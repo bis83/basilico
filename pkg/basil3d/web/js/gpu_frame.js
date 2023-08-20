@@ -106,7 +106,7 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
   const batch = [];
   // Upload Buffers
   {
-    const mat = new Float32Array(36);
+    const buf = new Float32Array(48);
     const camera = view.camera;
     camera.aspect = canvas.width / canvas.height;
     const dir = vec3dir(camera.ha, camera.va);
@@ -115,10 +115,16 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
     const proj = mat4perspective(camera.fovy, camera.aspect, camera.zNear, camera.zFar);
     const vp = mat4multiply(look, proj);
     const ivp = mat4invert(vp);
-    mat.set(vp, 0);
-    mat.set(ivp, 16);
-    mat.set(camera.eye, 32);
-    device.queue.writeBuffer(gpu.buffer[0], 0, mat);
+    buf.set(vp, 0);
+    buf.set(ivp, 16);
+    buf.set(camera.eye, 32);
+
+    const light = view.light;
+    const ldir = vec3dir(light.ha, light.va);
+    buf.set(ldir, 36);
+    buf.set(light.color, 40);
+    buf.set(light.ambient, 44);
+    device.queue.writeBuffer(gpu.buffer[0], 0, buf);
   }
   {
     batch.length = app.gpu.mesh.length;
@@ -132,8 +138,8 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
         batch[i].push(offset);
       }
       buf.set(e.matrix, 0);
-      buf.set(e.albedo, 16);
-      buf.set([1, 0.4, 0.4, 1], 20);
+      buf.set(e.factor0, 16);
+      buf.set(e.factor1, 20);
       device.queue.writeBuffer(gpu.buffer[1], offset, buf);
       offset += 256;
     }
