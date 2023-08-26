@@ -36,11 +36,13 @@ const basil3d_view_setup = (view, app, desc) => {
       view.light.color[0] = desc.light.color.r !== undefined ? desc.light.color.r : 0.0;
       view.light.color[1] = desc.light.color.g !== undefined ? desc.light.color.g : 0.0;
       view.light.color[2] = desc.light.color.b !== undefined ? desc.light.color.b : 0.0;
+      view.light.color[3] = desc.light.color.a !== undefined ? desc.light.color.a : 0.0;
     }
     if (desc.light.ambient) {
       view.light.ambient[0] = desc.light.ambient.r !== undefined ? desc.light.ambient.r : 0.0;
       view.light.ambient[1] = desc.light.ambient.g !== undefined ? desc.light.ambient.g : 0.0;
       view.light.ambient[2] = desc.light.ambient.b !== undefined ? desc.light.ambient.b : 0.0;
+      view.light.ambient[3] = desc.light.ambient.a !== undefined ? desc.light.ambient.a : 0.0;
     }
   }
   if (desc.entity) {
