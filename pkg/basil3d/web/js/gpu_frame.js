@@ -106,7 +106,7 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
   const batch = [];
   // Upload Buffers
   {
-    const buf = new Float32Array(48);
+    const buf = new Float32Array(52);
     const camera = view.camera;
     camera.aspect = canvas.width / canvas.height;
     const dir = vec3dir(camera.ha, camera.va);
@@ -124,6 +124,7 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
     buf.set(ldir, 36);
     buf.set(light.color, 40);
     buf.set(light.ambient, 44);
+    buf.set(light.background, 48);
     device.queue.writeBuffer(gpu.buffer[0], 0, buf);
   }
   {

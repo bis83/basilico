@@ -11,6 +11,17 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     gbuffer: [],
   };
 
+  const buffer0struct = `
+  struct ViewInput {
+    viewProj : mat4x4<f32>,
+    invViewProj : mat4x4<f32>,
+    eyePosition : vec4<f32>,
+    lightDir : vec4<f32>,
+    lightColor : vec4<f32>,
+    ambientColor : vec4<f32>,
+    backgroundColor : vec4<f32>,
+  }
+  `;
   gpu.buffer[0] = device.createBuffer({
     size: 256 * 1,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
@@ -27,10 +38,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   });
 
   gpu.shaderModule[0] = device.createShaderModule({
-    code: `
-    struct ViewInput {
-      viewProj : mat4x4<f32>,
-    }
+    code: buffer0struct + `
     @group(0) @binding(0) var<uniform> view : ViewInput;
 
     struct InstanceInput {
@@ -79,18 +87,10 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     `,
   });
   gpu.shaderModule[2] = device.createShaderModule({
-    code: `
+    code: buffer0struct + `
     const EPSILON = 0.0001;
     const M_PI = 3.141592653589793;
 
-    struct ViewInput {
-      viewProj : mat4x4<f32>,
-      invViewProj : mat4x4<f32>,
-      eyePosition : vec4<f32>,
-      lightDir : vec4<f32>,
-      lightColor : vec4<f32>,
-      ambientColor : vec4<f32>,
-    }
     @group(0) @binding(0) var<uniform> view : ViewInput;
     @group(0) @binding(1) var zbuffer : texture_depth_2d;
     @group(0) @binding(2) var gbuffer0 : texture_2d<f32>;
@@ -164,10 +164,12 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     `,
   });
   gpu.shaderModule[3] = device.createShaderModule({
-    code: `
+    code: buffer0struct + `
+    @group(0) @binding(0) var<uniform> view : ViewInput;
+    
     @fragment
     fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
-      var C_A = vec3<f32>(0.1, 0.1, 0.1);
+      var C_A = (view.backgroundColor.rgb * view.backgroundColor.a);
       return vec4(C_A, 1.0);
     }
     `,
