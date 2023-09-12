@@ -1,4 +1,8 @@
 
+const div = (v, n) => {
+  return Math.floor(v / n);
+};
+
 const mod = (v, n) => {
   return ((v % n) + n) % n;
 };

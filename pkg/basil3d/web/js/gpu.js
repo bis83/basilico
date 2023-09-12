@@ -337,3 +337,121 @@ const basil3d_gpu_create = (device, canvasFormat) => {
 
   return gpu;
 };
+
+const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
+  basil3d_gpu_gbuffer(gpu, device, canvas);
+};
+
+const basil3d_gpu_on_frame_loading = (gpu, device, context) => {
+  const ce = device.createCommandEncoder();
+  const pass = ce.beginRenderPass({
+    colorAttachments: [{
+      view: context.getCurrentTexture().createView(),
+      clearValue: { r: 0.2, g: 0.2, b: 0.2, a: 1.0 },
+      loadOp: "clear",
+      storeOp: "store",
+    }],
+  });
+  pass.end();
+  device.queue.submit([ce.finish()]);
+};
+
+const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
+  // Upload Buffers
+  basil3d_gpu_upload_view_input(gpu, device, canvas, view);
+  const batch = basil3d_gpu_upload_instance_input(gpu, device, app, view);
+
+  // Create CommandBuffer
+  const ce = device.createCommandEncoder();
+  { // Write G-Buffer
+    const pass = ce.beginRenderPass({
+      depthStencilAttachment: {
+        view: gpu.gbuffer[0].createView(),
+        depthClearValue: 1.0,
+        depthLoadOp: "clear",
+        depthStoreOp: "store",
+      },
+      colorAttachments: [
+        {
+          view: gpu.gbuffer[1].createView(),
+          clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+          loadOp: "clear",
+          storeOp: "store",
+        },
+        {
+          view: gpu.gbuffer[2].createView(),
+          clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+          loadOp: "clear",
+          storeOp: "store",
+        },
+        {
+          view: gpu.gbuffer[3].createView(),
+          clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+          loadOp: "clear",
+          storeOp: "store",
+        }
+      ],
+    });
+    for (let i = 0; i < batch.length; ++i) {
+      if (batch[i].length <= 0) {
+        continue;
+      }
+
+      const mesh = app.gpu.mesh[i];
+      pass.setPipeline(gpu.pipeline[0]);
+      if (mesh.vb0) {
+        const [index, offset, size] = mesh.vb0;
+        pass.setVertexBuffer(0, app.gpu.buffer[index], offset, size);
+      }
+      if (mesh.vb1) {
+        const [index, offset, size] = mesh.vb1;
+        pass.setVertexBuffer(1, app.gpu.buffer[index], offset, size);
+      }
+      if (mesh.ib) {
+        const [index, offset, size] = mesh.ib;
+        pass.setIndexBuffer(app.gpu.buffer[index], "uint16", offset, size);
+      }
+
+      for (const offset of batch[i]) {
+        pass.setBindGroup(0, gpu.bindGroup[0], [offset]);
+        pass.drawIndexed(mesh.count);
+      }
+    }
+    pass.end();
+  }
+  { // HDR Color-Space
+    const pass = ce.beginRenderPass({
+      depthStencilAttachment: {
+        view: gpu.gbuffer[0].createView(),
+        depthReadOnly: true,
+      },
+      colorAttachments: [{
+        view: gpu.gbuffer[4].createView(),
+        clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+        loadOp: "clear",
+        storeOp: "store",
+      }],
+    });
+    pass.setPipeline(gpu.pipeline[1]);
+    pass.setBindGroup(0, gpu.bindGroup[1]);
+    pass.draw(4);
+    pass.setPipeline(gpu.pipeline[2]);
+    pass.draw(4);
+    pass.end();
+  }
+  { // LDR Color-Space
+    const pass = ce.beginRenderPass({
+      colorAttachments: [{
+        view: context.getCurrentTexture().createView(),
+        clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+        loadOp: "clear",
+        storeOp: "store",
+      }],
+    });
+    pass.setPipeline(gpu.pipeline[3]);
+    pass.setBindGroup(0, gpu.bindGroup[2]);
+    pass.draw(4);
+    pass.end();
+  }
+  device.queue.submit([ce.finish()]);
+};
