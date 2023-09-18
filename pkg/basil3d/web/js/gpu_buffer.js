@@ -38,8 +38,8 @@ const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
         continue;
       }
 
-      const dx = mod(i, room.size[0]);
-      const dz = div(i, room.size[0]);
+      const dx = mod(i, room.divisor);
+      const dz = div(i, room.divisor);
       for (const mesh of node.mesh) {
         const id = basil3d_app_gpu_id(app, mesh.name);
         if (id < 0) {
