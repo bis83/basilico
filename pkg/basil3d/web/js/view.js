@@ -14,9 +14,9 @@ const basil3d_view_create = () => {
     light: {
       ha: 0,
       va: 0,
-      color: [0, 0, 0],
-      ambient: [0, 0, 0],
-      background: [0, 0, 0],
+      color: [0, 0, 0, 0],
+      ambient0: [0, 0, 0, 0],
+      ambient1: [0, 0, 0, 0],
     },
     room: [],
   };

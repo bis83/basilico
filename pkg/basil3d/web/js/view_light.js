@@ -13,17 +13,17 @@ const basil3d_view_light = (view, desc) => {
       view.light.color[2] = desc.light.color.b !== undefined ? desc.light.color.b : 0.0;
       view.light.color[3] = desc.light.color.a !== undefined ? desc.light.color.a : 0.0;
     }
-    if (desc.light.ambient) {
-      view.light.ambient[0] = desc.light.ambient.r !== undefined ? desc.light.ambient.r : 0.0;
-      view.light.ambient[1] = desc.light.ambient.g !== undefined ? desc.light.ambient.g : 0.0;
-      view.light.ambient[2] = desc.light.ambient.b !== undefined ? desc.light.ambient.b : 0.0;
-      view.light.ambient[3] = desc.light.ambient.a !== undefined ? desc.light.ambient.a : 0.0;
+    if (desc.light.ambient0) {
+      view.light.ambient0[0] = desc.light.ambient0.r !== undefined ? desc.light.ambient0.r : 0.0;
+      view.light.ambient0[1] = desc.light.ambient0.g !== undefined ? desc.light.ambient0.g : 0.0;
+      view.light.ambient0[2] = desc.light.ambient0.b !== undefined ? desc.light.ambient0.b : 0.0;
+      view.light.ambient0[3] = desc.light.ambient0.a !== undefined ? desc.light.ambient0.a : 0.0;
     }
-    if (desc.light.background) {
-      view.light.background[0] = desc.light.background.r !== undefined ? desc.light.background.r : 0.0;
-      view.light.background[1] = desc.light.background.g !== undefined ? desc.light.background.g : 0.0;
-      view.light.background[2] = desc.light.background.b !== undefined ? desc.light.background.b : 0.0;
-      view.light.background[3] = desc.light.background.a !== undefined ? desc.light.background.a : 0.0;
+    if (desc.light.ambient1) {
+      view.light.ambient1[0] = desc.light.ambient1.r !== undefined ? desc.light.ambient1.r : 0.0;
+      view.light.ambient1[1] = desc.light.ambient1.g !== undefined ? desc.light.ambient1.g : 0.0;
+      view.light.ambient1[2] = desc.light.ambient1.b !== undefined ? desc.light.ambient1.b : 0.0;
+      view.light.ambient1[3] = desc.light.ambient1.a !== undefined ? desc.light.ambient1.a : 0.0;
     }
   }
 };

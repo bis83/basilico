@@ -17,8 +17,8 @@ const basil3d_gpu_upload_view_input = (gpu, device, canvas, view) => {
   const ldir = vec3dir(light.ha, light.va);
   buf.set(ldir, 36);
   buf.set(light.color, 40);
-  buf.set(light.ambient, 44);
-  buf.set(light.background, 48);
+  buf.set(light.ambient0, 44);
+  buf.set(light.ambient1, 48);
   device.queue.writeBuffer(gpu.buffer[0], 0, buf);
 };
 

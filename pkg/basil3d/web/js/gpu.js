@@ -18,8 +18,8 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     eyePosition : vec4<f32>,
     lightDir : vec4<f32>,
     lightColor : vec4<f32>,
-    ambientColor : vec4<f32>,
-    backgroundColor : vec4<f32>,
+    ambientColor0 : vec4<f32>,
+    ambientColor1 : vec4<f32>,
   }
   `;
   gpu.buffer[0] = device.createBuffer({
@@ -63,15 +63,17 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     };
     @vertex
     fn mainVertex(input : VertexInput) -> VertexOutput {
+      var nWorld = mat3x3<f32>(inst.world[0].xyz, inst.world[1].xyz, inst.world[2].xyz);
+
       var output : VertexOutput;
       output.position = (view.viewProj * inst.world * vec4(input.position, 1.0));
-      output.normal = normalize((inst.world * vec4(input.normal, 1.0)).xyz);
+      output.normal = normalize(nWorld * input.normal);
       return output;
     }
     @fragment
     fn mainFragment(input : VertexOutput) -> FragmentOutput {
       var output : FragmentOutput;
-      output.gbuffer0 = vec4(input.normal * 0.5 + 0.5, 0);
+      output.gbuffer0 = vec4(normalize(input.normal) * 0.5 + 0.5, 0);
       output.gbuffer1 = inst.factor0.xyzw;
       output.gbuffer2 = inst.factor1.xyzw;
       return output;
@@ -155,9 +157,9 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       var P = decodeWorldPosition(xy);
       var V = normalize(view.eyePosition.xyz - P);
 
-      var L = view.lightDir.xyz;
+      var L = normalize(view.lightDir.xyz);
       var C_L = (view.lightColor.rgb * view.lightColor.a) * BRDF(N, L, V, F0.rgb, F1.y, F1.z);
-      var C_A = (view.ambientColor.rgb * view.ambientColor.a) * (F1.x * F0.rgb);
+      var C_A = mix(view.ambientColor0.rgb * view.ambientColor0.a, view.ambientColor1.rgb * view.ambientColor1.a, -dot(N, vec3<f32>(0, 1, 0)) * 0.5 + 0.5) * (F1.x * F0.rgb);
       var C_E = F0.rgb * F1.w;
       return vec4(C_L + C_A + C_E, 1.0);
     }
@@ -166,10 +168,24 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   gpu.shaderModule[3] = device.createShaderModule({
     code: buffer0struct + `
     @group(0) @binding(0) var<uniform> view : ViewInput;
-    
+    @group(0) @binding(1) var zbuffer : texture_depth_2d;
+
+    fn decodeWorldPosition(xy : vec2<i32>) -> vec3<f32> {
+      var d = textureLoad(zbuffer, xy, 0);
+      var uv = vec2<f32>(xy) / vec2<f32>(textureDimensions(zbuffer, 0).xy);
+      var posClip = vec4<f32>(uv * vec2(2.0, -2.0) + vec2(-1.0, 1.0), d, 1);
+      var posWorldW = view.invViewProj * posClip;
+      var posWorld = posWorldW.xyz / posWorldW.www;
+      return posWorld;
+    }
+
     @fragment
     fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
-      var C_A = (view.backgroundColor.rgb * view.backgroundColor.a);
+      var xy = vec2<i32>(floor(coord.xy));
+      var P = decodeWorldPosition(xy);
+      var V = normalize(view.eyePosition.xyz - P);
+
+      var C_A = mix(view.ambientColor0.rgb * view.ambientColor0.a, view.ambientColor1.rgb * view.ambientColor1.a, dot(V, vec3<f32>(0, 1, 0)) * 0.5 + 0.5);
       return vec4(C_A, 1.0);
     }
     `,
