@@ -70,6 +70,9 @@ func (p *Basil) Build(middleware []Middleware) error {
 	if err := p.makeAppJs(); err != nil {
 		return err
 	}
+	if err := p.makeStyleCss(); err != nil {
+		return err
+	}
 	if err := p.makeIndexHtml(); err != nil {
 		return err
 	}
