@@ -30,7 +30,8 @@ const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
   }
 
   const buf = new Float32Array(24);
-  let offset = 0;
+  const stride = (4 * 24);
+  let index = 0;
   for (const room of view.room) {
     for (let i = 0; i < room.indices.length; ++i) {
       const node = room.node[room.indices[i]];
@@ -46,7 +47,7 @@ const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
           continue;
         }
         for (const n of app.gpu.id[id].mesh) {
-          batch[n].push(offset);
+          batch[n].push(index);
         }
 
         let x = dx * room.unit;
@@ -88,11 +89,24 @@ const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
         buf.set(matrix, 0);
         buf.set(factor0, 16);
         buf.set(factor1, 20);
-        device.queue.writeBuffer(gpu.buffer[1], offset, buf);
-        offset += 256;
+        device.queue.writeBuffer(gpu.buffer[1], index * stride, buf);
+        index += 1;
       }
     }
   }
 
-  return batch;
+  const range = [];
+  range.length = batch.length;
+  let start = 0;
+  for (let i = 0; i < batch.length; ++i) {
+    if (batch[i].length <= 0) {
+      continue;
+    }
+
+    const count = batch[i].length;
+    device.queue.writeBuffer(gpu.buffer[2], start * 4, new Uint32Array(batch[i]));
+    range[i] = [start, count];
+    start += count;
+  }
+  return range;
 };

@@ -20,15 +20,24 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     lightColor : vec4<f32>,
     ambientColor0 : vec4<f32>,
     ambientColor1 : vec4<f32>,
-  }
-  `;
+  }`;
   gpu.buffer[0] = device.createBuffer({
     size: 256 * 1,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   });
+  const buffer1struct = `
+  struct InstanceInput {
+    world : mat4x4<f32>,
+    factor0 : vec4<f32>,
+    factor1 : vec4<f32>,
+  }`;
   gpu.buffer[1] = device.createBuffer({
     size: 256 * 1024,
-    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+  });
+  gpu.buffer[2] = device.createBuffer({
+    size: 4 * 1024,
+    usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
   });
 
   gpu.sampler[0] = device.createSampler({
@@ -38,23 +47,19 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   });
 
   gpu.shaderModule[0] = device.createShaderModule({
-    code: buffer0struct + `
+    code: buffer0struct + buffer1struct + `
     @group(0) @binding(0) var<uniform> view : ViewInput;
-
-    struct InstanceInput {
-      world : mat4x4<f32>,
-      factor0 : vec4<f32>,
-      factor1 : vec4<f32>,
-    }
-    @group(0) @binding(1) var<uniform> inst : InstanceInput;
+    @group(0) @binding(1) var<storage, read> inst : array<InstanceInput>;
 
     struct VertexInput {
-      @location(0) position: vec3<f32>,
-      @location(1) normal : vec3<f32>,
+      @location(0) id: u32,
+      @location(1) position: vec3<f32>,
+      @location(2) normal : vec3<f32>,
     };
     struct VertexOutput {
       @builtin(position) position : vec4<f32>,
       @location(0) normal : vec3<f32>,
+      @location(1) @interpolate(flat) id : u32,
     };
     struct FragmentOutput {
       @location(0) gbuffer0 : vec4<f32>,
@@ -63,19 +68,21 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     };
     @vertex
     fn mainVertex(input : VertexInput) -> VertexOutput {
-      var nWorld = mat3x3<f32>(inst.world[0].xyz, inst.world[1].xyz, inst.world[2].xyz);
+      var world = inst[input.id].world;
+      var nWorld = mat3x3<f32>(world[0].xyz, world[1].xyz, world[2].xyz);
 
       var output : VertexOutput;
-      output.position = (view.viewProj * inst.world * vec4(input.position, 1.0));
+      output.position = (view.viewProj * world * vec4(input.position, 1.0));
       output.normal = normalize(nWorld * input.normal);
+      output.id = input.id;
       return output;
     }
     @fragment
     fn mainFragment(input : VertexOutput) -> FragmentOutput {
       var output : FragmentOutput;
       output.gbuffer0 = vec4(normalize(input.normal) * 0.5 + 0.5, 0);
-      output.gbuffer1 = inst.factor0.xyzw;
-      output.gbuffer2 = inst.factor1.xyzw;
+      output.gbuffer1 = inst[input.id].factor0.xyzw;
+      output.gbuffer2 = inst[input.id].factor1.xyzw;
       return output;
     }
     `,
@@ -230,7 +237,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   gpu.bindGroupLayout[0] = device.createBindGroupLayout({
     entries: [
       { binding: 0, visibility: GPUShaderStage.VERTEX, buffer: {} },
-      { binding: 1, visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT, buffer: { hasDynamicOffset: true } },
+      { binding: 1, visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT, buffer: { type: "read-only-storage" } },
     ],
   });
   gpu.bindGroupLayout[1] = device.createBindGroupLayout({
@@ -248,7 +255,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     layout: gpu.bindGroupLayout[0],
     entries: [
       { binding: 0, resource: { buffer: gpu.buffer[0] }, },
-      { binding: 1, resource: { buffer: gpu.buffer[1], size: 256, offset: 0 }, },
+      { binding: 1, resource: { buffer: gpu.buffer[1] }, },
     ],
   });
 
@@ -269,14 +276,14 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       module: gpu.shaderModule[0],
       entryPoint: "mainVertex",
       buffers: [
-        { arrayStride: 12, attributes: [{ format: "float32x3", offset: 0, shaderLocation: 0 }] }, // position
-        { arrayStride: 12, attributes: [{ format: "float32x3", offset: 0, shaderLocation: 1 }] }, // normal
+        { arrayStride: 4, attributes: [{ format: "uint32", offset: 0, shaderLocation: 0 }], stepMode: "instance" }, // instance
+        { arrayStride: 12, attributes: [{ format: "float32x3", offset: 0, shaderLocation: 1 }] }, // position
+        { arrayStride: 12, attributes: [{ format: "float32x3", offset: 0, shaderLocation: 2 }] }, // normal
         /*
         { arrayStride: 4, attributes: [{ format: "float16x2", offset: 0, shaderLocation: 2 }] }, // tangent
         { arrayStride: 4, attributes: [{ format: "float16x2", offset: 0, shaderLocation: 3 }] }, // texcoord0
         { arrayStride: 8, attributes: [{ format: "uint16x4", offset: 0, shaderLocation: 4 }] }, // joints0
         { arrayStride: 8, attributes: [{ format: "float16x4", offset: 0, shaderLocation: 5 }] }, // weights0
-        { arrayStride: 4, attributes: [{ format: "uint32", offset: 0, shaderLocation: 6 }], stepMode: "instance" }, // instance
         */
       ],
     },
@@ -375,7 +382,7 @@ const basil3d_gpu_on_frame_loading = (gpu, device, context) => {
 const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
   // Upload Buffers
   basil3d_gpu_upload_view_input(gpu, device, canvas, view);
-  const batch = basil3d_gpu_upload_instance_input(gpu, device, app, view);
+  const range = basil3d_gpu_upload_instance_input(gpu, device, app, view);
 
   // Create CommandBuffer
   const ce = device.createCommandEncoder();
@@ -408,30 +415,32 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
         }
       ],
     });
-    for (let i = 0; i < batch.length; ++i) {
-      if (batch[i].length <= 0) {
+    for (let i = 0; i < range.length; ++i) {
+      if (!range[i]) {
         continue;
       }
 
       const mesh = app.gpu.mesh[i];
       pass.setPipeline(gpu.pipeline[0]);
+      pass.setBindGroup(0, gpu.bindGroup[0]);
+
+      pass.setVertexBuffer(0, gpu.buffer[2]);
       if (mesh.vb0) {
         const [index, offset, size] = mesh.vb0;
-        pass.setVertexBuffer(0, app.gpu.buffer[index], offset, size);
+        pass.setVertexBuffer(1, app.gpu.buffer[index], offset, size);
       }
       if (mesh.vb1) {
         const [index, offset, size] = mesh.vb1;
-        pass.setVertexBuffer(1, app.gpu.buffer[index], offset, size);
+        pass.setVertexBuffer(2, app.gpu.buffer[index], offset, size);
       }
       if (mesh.ib) {
         const [index, offset, size] = mesh.ib;
         pass.setIndexBuffer(app.gpu.buffer[index], "uint16", offset, size);
       }
 
-      for (const offset of batch[i]) {
-        pass.setBindGroup(0, gpu.bindGroup[0], [offset]);
-        pass.drawIndexed(mesh.count);
-      }
+      const start = range[i][0];
+      const count = range[i][1];
+      pass.drawIndexed(mesh.count, count, 0, 0, start);
     }
     pass.end();
   }
