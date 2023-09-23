@@ -52,12 +52,17 @@ const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
         let x = dx * room.unit;
         let y = 0;
         let z = dz * room.unit;
+        let ha = 0;
+        let va = 0;
         if (mesh.transform) {
           x += mesh.transform.x || 0;
           y += mesh.transform.y || 0;
           z += mesh.transform.z || 0;
+          ha = mesh.transform.ha || 0;
+          va = mesh.transform.va || 0;
         }
-        const matrix = mat4translate(x, y, z);
+        const matrix = mat4angle(ha, va);
+        mat4translated(matrix, x, y, z);
 
         const factor0 = [1.0, 1.0, 1.0, 1.0];
         if (mesh.albedo) {

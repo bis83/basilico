@@ -192,9 +192,9 @@ const mat4angle = (ha, va) => {
   const cosH = Math.cos(h);
   // const v = deg2rad(va);
   return [
-    cosH, sinH, 0, 0,
-    -sinH, cosH, 0, 0,
-    0, 0, 1, 0,
+    cosH, 0, sinH, 0,
+    0, 1, 0, 0,
+    -sinH, 0, cosH, 0,
     0, 0, 0, 1,
   ];
 };
