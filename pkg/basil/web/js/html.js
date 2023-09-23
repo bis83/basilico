@@ -4,7 +4,7 @@ const html_listen = (target, key, func) => {
 };
 
 const html_canvas = () => {
-  return document.getElementById("main");
+  return document.getElementById("canvas");
 };
 
 const html_message = () => {
