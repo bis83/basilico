@@ -43,6 +43,14 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     size: 20 * (2 * 1024),
     usage: GPUBufferUsage.INDIRECT | GPUBufferUsage.COPY_DST,
   });
+  gpu.buffer[4] = device.createBuffer({
+    size: 12 * (4 * 1024),
+    usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+  });
+  gpu.buffer[5] = device.createBuffer({
+    size: 4 * (4 * 1024),
+    usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+  });
 
   gpu.sampler[0] = device.createSampler({
     magFilter: 'linear',
@@ -237,6 +245,31 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     }
     `,
   });
+  gpu.shaderModule[5] = device.createShaderModule({
+    code: buffer0struct + `
+    @group(0) @binding(0) var<uniform> view : ViewInput;
+
+    struct VertexInput {
+      @location(0) position: vec3<f32>,
+      @location(1) color : vec4<f32>,
+    };
+    struct VertexOutput {
+      @builtin(position) position : vec4<f32>,
+      @location(0) color : vec4<f32>,
+    };
+    @vertex
+    fn mainVertex(input : VertexInput) -> VertexOutput {
+      var output : VertexOutput;
+      output.position = view.viewProj * vec4<f32>(input.position, 1.0);
+      output.color = input.color;
+      return output;
+    }
+    @fragment
+    fn mainFragment(input : VertexOutput) -> @location(0) vec4<f32> {
+      return input.color;
+    }
+    `,
+  });
 
   gpu.bindGroupLayout[0] = device.createBindGroupLayout({
     entries: [
@@ -305,6 +338,10 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       depthCompare: "less",
       format: "depth24plus",
     },
+    primitive: {
+      cullMode: "back",
+      frontFace: "cw",
+    },
   });
   gpu.pipeline[1] = device.createRenderPipeline({
     layout: gpu.pipelineLayout[1],
@@ -360,6 +397,37 @@ const basil3d_gpu_create = (device, canvasFormat) => {
         { format: canvasFormat },
       ],
     },
+    depthStencil: {
+      depthWriteEnabled: false,
+      depthCompare: "always",
+      format: "depth24plus",
+    },
+  });
+  gpu.pipeline[4] = device.createRenderPipeline({
+    layout: gpu.pipelineLayout[0],
+    vertex: {
+      module: gpu.shaderModule[5],
+      entryPoint: "mainVertex",
+      buffers: [
+        { arrayStride: 12, attributes: [{ format: "float32x3", offset: 0, shaderLocation: 0 }] }, // position
+        { arrayStride: 4, attributes: [{ format: "unorm8x4", offset: 0, shaderLocation: 1 }] }, // color
+      ],
+    },
+    fragment: {
+      module: gpu.shaderModule[5],
+      entryPoint: "mainFragment",
+      targets: [
+        { format: canvasFormat },
+      ],
+    },
+    depthStencil: {
+      depthWriteEnabled: false,
+      depthCompare: "less",
+      format: "depth24plus",
+    },
+    primitive: {
+      topology: "line-list",
+    },
   });
 
   return gpu;
@@ -386,6 +454,7 @@ const basil3d_gpu_on_frame_loading = (gpu, device, context) => {
 const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
   // Upload Buffers
   basil3d_gpu_upload_view_input(gpu, device, canvas, view);
+  basil3d_gpu_upload_lines(gpu, device, view);
   const batch = basil3d_gpu_upload_instance_input(gpu, device, app, view);
 
   // Create CommandBuffer
@@ -464,6 +533,10 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
   }
   { // LDR Color-Space
     const pass = ce.beginRenderPass({
+      depthStencilAttachment: {
+        view: gpu.gbuffer[0].createView(),
+        depthReadOnly: true,
+      },
       colorAttachments: [{
         view: context.getCurrentTexture().createView(),
         clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
@@ -474,6 +547,13 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
     pass.setPipeline(gpu.pipeline[3]);
     pass.setBindGroup(0, gpu.bindGroup[2]);
     pass.draw(4);
+    if (view.lines.length > 0) {
+      pass.setPipeline(gpu.pipeline[4]);
+      pass.setBindGroup(0, gpu.bindGroup[0]);
+      pass.setVertexBuffer(0, gpu.buffer[4]);
+      pass.setVertexBuffer(1, gpu.buffer[5]);
+      pass.draw(view.lines.length);
+    }
     pass.end();
   }
   device.queue.submit([ce.finish()]);

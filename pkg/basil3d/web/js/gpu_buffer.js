@@ -22,6 +22,27 @@ const basil3d_gpu_upload_view_input = (gpu, device, canvas, view) => {
   device.queue.writeBuffer(gpu.buffer[0], 0, buf);
 };
 
+const basil3d_gpu_upload_lines = (gpu, device, view) => {
+  if (view.lines.length <= 0) {
+    return;
+  }
+
+  const position = new Float32Array(view.lines.length * 3);
+  const color = new Uint8Array(view.lines.length * 4);
+  for (let i = 0; i < view.lines.length; ++i) {
+    const line = view.lines[i];
+    position[i * 3 + 0] = line.pos[0];
+    position[i * 3 + 1] = line.pos[1];
+    position[i * 3 + 2] = line.pos[2];
+    color[i * 4 + 0] = line.color[0];
+    color[i * 4 + 1] = line.color[1];
+    color[i * 4 + 2] = line.color[2];
+    color[i * 4 + 3] = line.color[3];
+  }
+  device.queue.writeBuffer(gpu.buffer[4], 0, position);
+  device.queue.writeBuffer(gpu.buffer[5], 0, color);
+};
+
 const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
   const instance = [];
   instance.length = app.gpu.mesh.length;

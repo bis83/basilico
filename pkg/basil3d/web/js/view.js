@@ -26,10 +26,12 @@ const basil3d_view_reset = (view) => {
   view.room = [];
   view.celeste = [];
   view.mob = [];
+  view.lines = [];
 };
 
 const basil3d_view_open = (view, app, desc) => {
   basil3d_view_camera(view, desc);
   basil3d_view_light(view, desc);
   basil3d_view_room(view, app, desc);
+  basil3d_view_lines(view, desc);
 };
