@@ -1,17 +1,22 @@
 
 const basil3d_gpu_upload_view_input = (gpu, device, canvas, view) => {
-  const buf = new Float32Array(52);
   const camera = view.camera;
-  camera.aspect = canvas.width / canvas.height;
+
+  const buf = new Float32Array(52);
+
+  const aspect = canvas.width / canvas.height;
+  const fovy = deg2rad(camera.fov);
   const dir = vec3dir(camera.ha, camera.va);
-  const at = vec3add(camera.eye, dir);
-  const look = mat4lookat(camera.eye, at, camera.up);
-  const proj = mat4perspective(camera.fovy, camera.aspect, camera.zNear, camera.zFar);
+  const eye = camera.eye;
+  const at = vec3add(eye, dir);
+  const up = [0, 1, 0];
+  const look = mat4lookat(eye, at, up);
+  const proj = mat4perspective(fovy, aspect, camera.near, camera.far);
   const vp = mat4multiply(look, proj);
   const ivp = mat4invert(vp);
   buf.set(vp, 0);
   buf.set(ivp, 16);
-  buf.set(camera.eye, 32);
+  buf.set(eye, 32);
 
   const light = view.light;
   const ldir = vec3dir(light.ha, light.va);

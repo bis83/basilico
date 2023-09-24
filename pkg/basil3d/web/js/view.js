@@ -7,14 +7,12 @@ const basil3d_view_create = () => {
 
 const basil3d_view_reset = (view) => {
   view.camera = {
-    aspect: 1,
-    fovy: deg2rad(30),
-    zNear: 0.1,
-    zFar: 1000,
     eye: [0, 0, 0],
     ha: 0,
     va: 0,
-    up: [0, 1, 0],
+    fov: 30,
+    near: 0.1,
+    far: 1000,
   };
   view.light = {
     ha: 0,
