@@ -32,12 +32,16 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     factor1 : vec4<f32>,
   }`;
   gpu.buffer[1] = device.createBuffer({
-    size: 256 * 1024,
+    size: 96 * (2 * 1024),
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
   });
   gpu.buffer[2] = device.createBuffer({
-    size: 4 * 1024,
+    size: 4 * (16 * 1024),
     usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+  });
+  gpu.buffer[3] = device.createBuffer({
+    size: 20 * (2 * 1024),
+    usage: GPUBufferUsage.INDIRECT | GPUBufferUsage.COPY_DST,
   });
 
   gpu.sampler[0] = device.createSampler({
@@ -382,7 +386,7 @@ const basil3d_gpu_on_frame_loading = (gpu, device, context) => {
 const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
   // Upload Buffers
   basil3d_gpu_upload_view_input(gpu, device, canvas, view);
-  const range = basil3d_gpu_upload_instance_input(gpu, device, app, view);
+  const batch = basil3d_gpu_upload_instance_input(gpu, device, app, view);
 
   // Create CommandBuffer
   const ce = device.createCommandEncoder();
@@ -415,16 +419,12 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
         }
       ],
     });
-    for (let i = 0; i < range.length; ++i) {
-      if (!range[i]) {
-        continue;
-      }
-
-      const mesh = app.gpu.mesh[i];
+    for (const b of batch) {
       pass.setPipeline(gpu.pipeline[0]);
       pass.setBindGroup(0, gpu.bindGroup[0]);
+      pass.setVertexBuffer(0, gpu.buffer[2], b.first * 4);
 
-      pass.setVertexBuffer(0, gpu.buffer[2]);
+      const mesh = app.gpu.mesh[b.id];
       if (mesh.vb0) {
         const [index, offset, size] = mesh.vb0;
         pass.setVertexBuffer(1, app.gpu.buffer[index], offset, size);
@@ -438,9 +438,7 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
         pass.setIndexBuffer(app.gpu.buffer[index], "uint16", offset, size);
       }
 
-      const start = range[i][0];
-      const count = range[i][1];
-      pass.drawIndexed(mesh.count, count, 0, 0, start);
+      pass.drawIndexedIndirect(gpu.buffer[3], b.offset);
     }
     pass.end();
   }

@@ -23,10 +23,10 @@ const basil3d_gpu_upload_view_input = (gpu, device, canvas, view) => {
 };
 
 const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
-  const batch = [];
-  batch.length = app.gpu.mesh.length;
-  for (let i = 0; i < batch.length; ++i) {
-    batch[i] = [];
+  const instance = [];
+  instance.length = app.gpu.mesh.length;
+  for (let i = 0; i < instance.length; ++i) {
+    instance[i] = [];
   }
 
   const buf = new Float32Array(24);
@@ -47,7 +47,7 @@ const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
           continue;
         }
         for (const n of app.gpu.id[id].mesh) {
-          batch[n].push(index);
+          instance[n].push(index);
         }
 
         let x = dx * room.unit;
@@ -95,18 +95,35 @@ const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
     }
   }
 
-  const range = [];
-  range.length = batch.length;
-  let start = 0;
-  for (let i = 0; i < batch.length; ++i) {
-    if (batch[i].length <= 0) {
+  const batch = [];
+  let first = 0;
+  let offset = 0;
+  const args = new Uint32Array(5);
+  for (let i = 0; i < instance.length; ++i) {
+    if (instance[i].length <= 0) {
       continue;
     }
+    const mesh = app.gpu.mesh[i];
 
-    const count = batch[i].length;
-    device.queue.writeBuffer(gpu.buffer[2], start * 4, new Uint32Array(batch[i]));
-    range[i] = [start, count];
-    start += count;
+    const count = instance[i].length;
+    device.queue.writeBuffer(gpu.buffer[2], first * 4, new Uint32Array(instance[i]));
+
+    args[0] = mesh.count; // indexCount
+    args[1] = count;      // instanceCount
+    args[2] = 0;          // firstIndex
+    args[3] = 0;          // baseVertex
+    args[4] = 0;          // firstInstance, need "indirect-first-instance"
+    device.queue.writeBuffer(gpu.buffer[3], offset, args);
+
+    batch.push({
+      id: i,
+      first: first,
+      offset: offset,
+    });
+
+    first += count;
+    offset += 20;
   }
-  return range;
+
+  return batch;
 };
