@@ -9,7 +9,7 @@ func (p *Basil) makeStyleCss() error {
 	fr, err := fs.ReadFile("web/style.css")
 	if err != nil {
 		return err
-	}	
+	}
 	p.AddFile("style.css", fr)
 
 	return nil

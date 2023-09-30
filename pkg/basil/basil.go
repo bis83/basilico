@@ -18,8 +18,8 @@ type Basil struct {
 	dist   []*File
 }
 
-func (p *Basil) ConfigToml() string {
-	return filepath.Join(p.baseDir, "config.toml")
+func (p *Basil) ConfigJson() string {
+	return filepath.Join(p.baseDir, "basilconfig.json")
 }
 
 func (p *Basil) BaseDir() string {
@@ -40,7 +40,7 @@ func (p *Basil) Middlewares() []string {
 
 func (p *Basil) Read(baseDir string) error {
 	p.baseDir = baseDir
-	if err := p.config.Read(p.ConfigToml()); err != nil {
+	if err := p.config.Read(p.ConfigJson()); err != nil {
 		return err
 	}
 	return nil

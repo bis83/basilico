@@ -13,13 +13,9 @@ go build -ldflags '-s -w' -trimpath ./cmd/...
 ## Usage
 
 ```
-./basilico your-project-directory [init/clean/build/serve]
+./basilico your-project-directory [clean/build/serve]
 ```
 
-- Create `setup.toml` (a project setting), `pages/` (asset descriptions) if not exists.
-```
-./basilico your-project-directory init
-```
 - Start a server. Visit `localhost:8080`
 ```
 ./basilico your-project-directory serve

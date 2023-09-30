@@ -1,21 +1,19 @@
 package basil
 
 import (
-	"bytes"
+	"encoding/json"
 	"fmt"
 	"os"
-
-	toml "github.com/pelletier/go-toml/v2"
 )
 
 type Config struct {
-	Title        string   `toml:"title"`
-	ExternScript []string `toml:"extern-script"`
-	Minify       bool     `toml:"minify"`
+	Title        string   `json:"title"`
+	ExternScript []string `json:"extern-script"`
+	Minify       bool     `json:"minify"`
 
-	Middleware []string `toml:"middleware"`
-	Script     []string `toml:"script"`
-	Resource   []string `toml:"resource"`
+	Middleware []string `json:"middleware"`
+	Script     []string `json:"script"`
+	Resource   []string `json:"resource"`
 }
 
 func (p *Config) Read(path string) error {
@@ -25,10 +23,7 @@ func (p *Config) Read(path string) error {
 	if err != nil {
 		return err
 	}
-	r := bytes.NewReader(data)
-	d := toml.NewDecoder(r)
-	d.DisallowUnknownFields()
-	if err := d.Decode(p); err != nil {
+	if err := json.Unmarshal(data, p); err != nil {
 		return fmt.Errorf("decode %s: %w", path, err)
 	}
 	return nil
