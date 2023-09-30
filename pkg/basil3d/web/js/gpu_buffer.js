@@ -5,8 +5,7 @@ const basil3d_gpu_upload_view_input = (gpu, device, canvas, view) => {
   const buf = new Float32Array(52);
 
   const aspect = canvas.width / canvas.height;
-  const fovx = deg2rad(camera.fov);
-  const fovy = 2 * Math.atan(Math.tan(fovx / 2) / aspect);
+  const fovy = deg2rad(camera.fov);
   const dir = vec3dir(camera.ha, camera.va);
   const eye = camera.eye;
   const at = vec3add(eye, dir);
