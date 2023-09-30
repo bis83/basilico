@@ -85,6 +85,11 @@ const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
         let z = dz * room.unit;
         let ha = 0;
         let va = 0;
+        if (room.transform) {
+          x += room.transform.x || 0;
+          y += room.transform.y || 0;
+          z += room.transform.z || 0;
+        }
         if (mesh.transform) {
           x += mesh.transform.x || 0;
           y += mesh.transform.y || 0;
