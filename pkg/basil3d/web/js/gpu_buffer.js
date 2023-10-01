@@ -2,7 +2,7 @@
 const basil3d_gpu_upload_view_input = (gpu, device, canvas, view) => {
   const camera = view.camera;
 
-  const buf = new Float32Array(52);
+  const buf = new Float32Array(68);
 
   const aspect = canvas.width / canvas.height;
   const fovy = deg2rad(camera.fov);
@@ -16,14 +16,15 @@ const basil3d_gpu_upload_view_input = (gpu, device, canvas, view) => {
   const ivp = mat4invert(vp);
   buf.set(vp, 0);
   buf.set(ivp, 16);
-  buf.set(eye, 32);
+  buf.set(look, 32);
+  buf.set(eye, 48);
 
   const light = view.light;
   const ldir = vec3dir(light.ha, light.va);
-  buf.set(ldir, 36);
-  buf.set(light.color, 40);
-  buf.set(light.ambient0, 44);
-  buf.set(light.ambient1, 48);
+  buf.set(ldir, 52);
+  buf.set(light.color, 56);
+  buf.set(light.ambient0, 60);
+  buf.set(light.ambient1, 64);
   device.queue.writeBuffer(gpu.buffer[0], 0, buf);
 };
 

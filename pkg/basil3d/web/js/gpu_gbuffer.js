@@ -24,11 +24,12 @@ const basil3d_gpu_gbuffer = (gpu, device, canvas) => {
     };
     deleteBindGroup(1);
     deleteBindGroup(2);
+    deleteBindGroup(3);
   }
   if (gpu.gbuffer[0] === undefined) {
     gpu.gbuffer[0] = device.createTexture({
       size: [canvas.width, canvas.height],
-      format: "depth24plus",
+      format: "depth32float",
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
     });
   }
@@ -75,6 +76,19 @@ const basil3d_gpu_gbuffer = (gpu, device, canvas) => {
   }
   if (gpu.bindGroup[2] === undefined) {
     gpu.bindGroup[2] = device.createBindGroup({
+      layout: gpu.bindGroupLayout[1],
+      entries: [
+        { binding: 0, resource: { buffer: gpu.buffer[0] }, },
+        { binding: 1, resource: gpu.gbuffer[0].createView(), },
+        { binding: 2, resource: gpu.gbuffer[1].createView(), },
+        { binding: 3, resource: gpu.gbuffer[1].createView(), },
+        { binding: 4, resource: gpu.gbuffer[1].createView(), },
+        { binding: 5, resource: gpu.sampler[0] },
+      ],
+    });
+  }
+  if (gpu.bindGroup[3] === undefined) {
+    gpu.bindGroup[3] = device.createBindGroup({
       layout: gpu.bindGroupLayout[1],
       entries: [
         { binding: 0, resource: { buffer: gpu.buffer[0] }, },

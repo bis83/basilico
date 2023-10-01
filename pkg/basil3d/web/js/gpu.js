@@ -15,6 +15,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   struct ViewInput {
     viewProj : mat4x4<f32>,
     invViewProj : mat4x4<f32>,
+    view : mat4x4<f32>,
     eyePosition : vec4<f32>,
     lightDir : vec4<f32>,
     lightColor : vec4<f32>,
@@ -22,7 +23,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     ambientColor1 : vec4<f32>,
   }`;
   gpu.buffer[0] = device.createBuffer({
-    size: 256 * 1,
+    size: 512 * 1,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   });
   const buffer1struct = `
@@ -109,6 +110,63 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   });
   gpu.shaderModule[2] = device.createShaderModule({
     code: buffer0struct + `
+    @group(0) @binding(0) var<uniform> view : ViewInput;
+    @group(0) @binding(1) var zbuffer : texture_depth_2d;
+    @group(0) @binding(2) var gbuffer0 : texture_2d<f32>;
+    @group(0) @binding(5) var sampler0 : sampler;
+
+    fn decodeViewNormal(xy : vec2<i32>) -> vec3<f32> {
+      var nView = mat3x3<f32>(view.view[0].xyz, view.view[1].xyz, view.view[2].xyz);
+      var N = normalize(textureLoad(gbuffer0, xy, 0).xyz * 2.0 - 1.0);
+      N = normalize(nView * N);
+      return N;
+    }
+
+    fn AO(uv : vec2<f32>, N : vec3<f32>) -> f32 {
+      const samples : i32 = 16;
+      const sampleSphere = array<vec3<f32>, samples>(
+        vec3<f32>( 0.5381, 0.1856,-0.4319),
+        vec3<f32>( 0.1379, 0.2486, 0.4430),
+        vec3<f32>( 0.3371, 0.5679,-0.0057),
+        vec3<f32>(-0.6999,-0.0451,-0.0019),
+        vec3<f32>( 0.0689,-0.1598,-0.8547),
+        vec3<f32>( 0.0560, 0.0069,-0.1843),
+        vec3<f32>(-0.0146, 0.1402, 0.0762),
+        vec3<f32>( 0.0100,-0.1924,-0.0344),
+        vec3<f32>(-0.3577,-0.5301,-0.4358),
+        vec3<f32>(-0.3169, 0.1063, 0.0158),
+        vec3<f32>( 0.0103,-0.5869, 0.0046),
+        vec3<f32>(-0.0897,-0.4940, 0.3287),
+        vec3<f32>( 0.7119,-0.0154,-0.0918),
+        vec3<f32>(-0.0533, 0.0596,-0.5411),
+        vec3<f32>( 0.0352,-0.0631, 0.5460),
+        vec3<f32>(-0.4776, 0.2847,-0.0271));
+
+      var radius = 0.01;
+      var depth = textureSample(zbuffer, sampler0, uv);
+
+      var occ : f32 = 0.0;
+      for(var i = 0; i < samples; i++) {
+        var R = (sampleSphere[i] * radius);
+        R *= sign(dot(R, N));
+        var uv2 = saturate(uv + vec2(R.x, -R.y));
+        var occDepth = textureSample(zbuffer, sampler0, uv2);
+        occ += step(occDepth, depth);
+      }
+      return saturate(1.0 - (occ / f32(samples)) + 0.2);
+    }
+
+    @fragment
+    fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
+      var xy = vec2<i32>(floor(coord.xy));
+      var uv = vec2<f32>(xy) / vec2<f32>(textureDimensions(zbuffer, 0).xy);
+      var N = decodeViewNormal(xy);
+      return vec4(AO(uv, N), 0, 0, 0);
+    }
+    `,
+  });
+  gpu.shaderModule[3] = device.createShaderModule({
+    code: buffer0struct + `
     const EPSILON = 0.0001;
     const M_PI = 3.141592653589793;
 
@@ -178,13 +236,17 @@ const basil3d_gpu_create = (device, canvasFormat) => {
 
       var L = normalize(view.lightDir.xyz);
       var C_L = (view.lightColor.rgb * view.lightColor.a) * BRDF(N, L, V, F0.rgb, F1.y, F1.z);
-      var C_A = mix(view.ambientColor0.rgb * view.ambientColor0.a, view.ambientColor1.rgb * view.ambientColor1.a, -dot(N, vec3<f32>(0, 1, 0)) * 0.5 + 0.5) * (F1.x * F0.rgb);
+      var A = mix(
+        view.ambientColor0.rgb * view.ambientColor0.a,
+        view.ambientColor1.rgb * view.ambientColor1.a,
+        -dot(N, vec3<f32>(0, 1, 0)) * 0.5 + 0.5);
+      var C_A = A * F1.x * F0.rgb;
       var C_E = F0.rgb * F1.w;
       return vec4(C_L + C_A + C_E, 1.0);
     }
     `,
   });
-  gpu.shaderModule[3] = device.createShaderModule({
+  gpu.shaderModule[4] = device.createShaderModule({
     code: buffer0struct + `
     @group(0) @binding(0) var<uniform> view : ViewInput;
     @group(0) @binding(1) var zbuffer : texture_depth_2d;
@@ -204,12 +266,15 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       var P = decodeWorldPosition(xy);
       var V = normalize(view.eyePosition.xyz - P);
 
-      var C_A = mix(view.ambientColor0.rgb * view.ambientColor0.a, view.ambientColor1.rgb * view.ambientColor1.a, dot(V, vec3<f32>(0, 1, 0)) * 0.5 + 0.5);
+      var C_A = mix(
+        view.ambientColor0.rgb * view.ambientColor0.a,
+        view.ambientColor1.rgb * view.ambientColor1.a,
+        dot(V, vec3<f32>(0, 1, 0)) * 0.5 + 0.5);
       return vec4(C_A, 1.0);
     }
     `,
   });
-  gpu.shaderModule[4] = device.createShaderModule({
+  gpu.shaderModule[5] = device.createShaderModule({
     // tonemapping: https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
     code: `
     @group(0) @binding(2) var lbuffer0 : texture_2d<f32>;
@@ -245,7 +310,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     }
     `,
   });
-  gpu.shaderModule[5] = device.createShaderModule({
+  gpu.shaderModule[6] = device.createShaderModule({
     code: buffer0struct + `
     @group(0) @binding(0) var<uniform> view : ViewInput;
 
@@ -336,7 +401,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     depthStencil: {
       depthWriteEnabled: true,
       depthCompare: "less",
-      format: "depth24plus",
+      format: "depth32float",
     },
     primitive: {
       cullMode: "back",
@@ -354,13 +419,19 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       module: gpu.shaderModule[2],
       entryPoint: "mainFragment",
       targets: [
-        { format: "rgba16float" },
+        {
+          format: "rgba8unorm",
+          blend: {
+            color: {
+              operation: "min",
+              srcFactor: "one",
+              dstFactor: "one",
+            },
+            alpha: {},
+          },
+          writeMask: GPUColorWrite.RED,
+        },
       ],
-    },
-    depthStencil: {
-      depthWriteEnabled: false,
-      depthCompare: "not-equal",
-      format: "depth24plus",
     },
   });
   gpu.pipeline[2] = device.createRenderPipeline({
@@ -379,8 +450,8 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     },
     depthStencil: {
       depthWriteEnabled: false,
-      depthCompare: "equal",
-      format: "depth24plus",
+      depthCompare: "not-equal",
+      format: "depth32float",
     },
   });
   gpu.pipeline[3] = device.createRenderPipeline({
@@ -394,24 +465,21 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       module: gpu.shaderModule[4],
       entryPoint: "mainFragment",
       targets: [
-        { format: canvasFormat },
+        { format: "rgba16float" },
       ],
     },
     depthStencil: {
       depthWriteEnabled: false,
-      depthCompare: "always",
-      format: "depth24plus",
+      depthCompare: "equal",
+      format: "depth32float",
     },
   });
   gpu.pipeline[4] = device.createRenderPipeline({
-    layout: gpu.pipelineLayout[0],
+    layout: gpu.pipelineLayout[1],
     vertex: {
-      module: gpu.shaderModule[5],
+      module: gpu.shaderModule[1],
       entryPoint: "mainVertex",
-      buffers: [
-        { arrayStride: 12, attributes: [{ format: "float32x3", offset: 0, shaderLocation: 0 }] }, // position
-        { arrayStride: 4, attributes: [{ format: "unorm8x4", offset: 0, shaderLocation: 1 }] }, // color
-      ],
+      buffers: [],
     },
     fragment: {
       module: gpu.shaderModule[5],
@@ -422,8 +490,31 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     },
     depthStencil: {
       depthWriteEnabled: false,
+      depthCompare: "always",
+      format: "depth32float",
+    },
+  });
+  gpu.pipeline[5] = device.createRenderPipeline({
+    layout: gpu.pipelineLayout[0],
+    vertex: {
+      module: gpu.shaderModule[6],
+      entryPoint: "mainVertex",
+      buffers: [
+        { arrayStride: 12, attributes: [{ format: "float32x3", offset: 0, shaderLocation: 0 }] }, // position
+        { arrayStride: 4, attributes: [{ format: "unorm8x4", offset: 0, shaderLocation: 1 }] }, // color
+      ],
+    },
+    fragment: {
+      module: gpu.shaderModule[6],
+      entryPoint: "mainFragment",
+      targets: [
+        { format: canvasFormat },
+      ],
+    },
+    depthStencil: {
+      depthWriteEnabled: false,
       depthCompare: "less",
-      format: "depth24plus",
+      format: "depth32float",
     },
     primitive: {
       topology: "line-list",
@@ -482,7 +573,7 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
         },
         {
           view: gpu.gbuffer[3].createView(),
-          clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+          clearValue: { r: 1.0, g: 0.0, b: 0.0, a: 0.0 },
           loadOp: "clear",
           storeOp: "store",
         }
@@ -511,6 +602,19 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
     }
     pass.end();
   }
+  { // Screen-Space AO
+    const pass = ce.beginRenderPass({
+      colorAttachments: [{
+        view: gpu.gbuffer[3].createView(),
+        loadOp: "load",
+        storeOp: "store",
+      }],
+    });
+    pass.setPipeline(gpu.pipeline[1]);
+    pass.setBindGroup(0, gpu.bindGroup[2]);
+    pass.draw(4);
+    pass.end();
+  }
   { // HDR Color-Space
     const pass = ce.beginRenderPass({
       depthStencilAttachment: {
@@ -524,10 +628,10 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
         storeOp: "store",
       }],
     });
-    pass.setPipeline(gpu.pipeline[1]);
+    pass.setPipeline(gpu.pipeline[2]);
     pass.setBindGroup(0, gpu.bindGroup[1]);
     pass.draw(4);
-    pass.setPipeline(gpu.pipeline[2]);
+    pass.setPipeline(gpu.pipeline[3]);
     pass.draw(4);
     pass.end();
   }
@@ -544,11 +648,11 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
         storeOp: "store",
       }],
     });
-    pass.setPipeline(gpu.pipeline[3]);
-    pass.setBindGroup(0, gpu.bindGroup[2]);
+    pass.setPipeline(gpu.pipeline[4]);
+    pass.setBindGroup(0, gpu.bindGroup[3]);
     pass.draw(4);
     if (view.lines.length > 0) {
-      pass.setPipeline(gpu.pipeline[4]);
+      pass.setPipeline(gpu.pipeline[5]);
       pass.setBindGroup(0, gpu.bindGroup[0]);
       pass.setVertexBuffer(0, gpu.buffer[4]);
       pass.setVertexBuffer(1, gpu.buffer[5]);
