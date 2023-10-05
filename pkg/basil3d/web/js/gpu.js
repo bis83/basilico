@@ -225,6 +225,13 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       }
     }
 
+    fn sampleEnvMap(R : vec3<f32>) -> vec3<f32> {
+      return mix(
+        view.ambientColor0.rgb * view.ambientColor0.a,
+        view.ambientColor1.rgb * view.ambientColor1.a,
+        dot(R, vec3<f32>(0, 1, 0)) * 0.5 + 0.5);
+    }
+
     @fragment
     fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
       var xy = vec2<i32>(floor(coord.xy));
@@ -233,13 +240,11 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       var N = decodeNormal(xy);
       var P = decodeWorldPosition(xy);
       var V = normalize(view.eyePosition.xyz - P);
+      var R = normalize(reflect(V, N));
 
       var L = normalize(view.lightDir.xyz);
       var C_L = (view.lightColor.rgb * view.lightColor.a) * BRDF(N, L, V, F0.rgb, F1.y, F1.z);
-      var A = mix(
-        view.ambientColor0.rgb * view.ambientColor0.a,
-        view.ambientColor1.rgb * view.ambientColor1.a,
-        -dot(N, vec3<f32>(0, 1, 0)) * 0.5 + 0.5);
+      var A = sampleEnvMap(R);
       var C_A = A * F1.x * F0.rgb;
       var C_E = F0.rgb * F1.w;
       return vec4(C_L + C_A + C_E, 1.0);
@@ -260,16 +265,20 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       return posWorld;
     }
 
+    fn sampleEnvMap(R : vec3<f32>) -> vec3<f32> {
+      return mix(
+        view.ambientColor0.rgb * view.ambientColor0.a,
+        view.ambientColor1.rgb * view.ambientColor1.a,
+        dot(R, vec3<f32>(0, 1, 0)) * 0.5 + 0.5);
+    }
+
     @fragment
     fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
       var xy = vec2<i32>(floor(coord.xy));
       var P = decodeWorldPosition(xy);
       var V = normalize(view.eyePosition.xyz - P);
 
-      var C_A = mix(
-        view.ambientColor0.rgb * view.ambientColor0.a,
-        view.ambientColor1.rgb * view.ambientColor1.a,
-        dot(V, vec3<f32>(0, 1, 0)) * 0.5 + 0.5);
+      var C_A = sampleEnvMap(V);
       return vec4(C_A, 1.0);
     }
     `,
