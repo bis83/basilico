@@ -66,6 +66,9 @@ const basil3d_listen_create = () => {
   html_listen(window, "focus", (ev) => {
   });
   html_listen(window, "blur", (ev) => {
+    for (const key in listen.keyboard) {
+      listen.keyboard[key] = false;
+    }
   });
   html_listen(window, "resize", (ev) => {
   });
