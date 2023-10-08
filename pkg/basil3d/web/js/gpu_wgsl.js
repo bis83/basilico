@@ -49,7 +49,7 @@ struct FragmentOutput {
 };
 
 @vertex
-fn mainVertex(input : VertexInput) -> VertexOutput {
+fn VS(input : VertexInput) -> VertexOutput {
   var world = inst[input.id].world;
   var nWorld = mat3x3<f32>(world[0].xyz, world[1].xyz, world[2].xyz);
 
@@ -61,7 +61,7 @@ fn mainVertex(input : VertexInput) -> VertexOutput {
 }
 
 @fragment
-fn mainFragment(input : VertexOutput) -> FragmentOutput {
+fn FS(input : VertexOutput) -> FragmentOutput {
   var output : FragmentOutput;
   output.gbuffer0 = vec4(normalize(input.normal) * 0.5 + 0.5, 0);
   output.gbuffer1 = inst[input.id].factor0.xyzw;
@@ -70,20 +70,38 @@ fn mainFragment(input : VertexOutput) -> FragmentOutput {
 }
 `;
 
-const shaderModule1 = `
+// tonemapping: https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
+const shaderModule1 = bindGroupLayout1 + `
+const EPSILON = 0.0001;
+const M_PI = 3.141592653589793;
+
 @vertex
-fn mainVertex(@builtin(vertex_index) id : u32) -> @builtin(position) vec4<f32> {
+fn VS(@builtin(vertex_index) id : u32) -> @builtin(position) vec4<f32> {
   return vec4(2.0f * f32((1 & id) << 1) - 1.0f, -2.0f * f32(2 & id) + 1.0f, 1.0, 1.0);
 }
-`;
 
-const shaderModule2 = bindGroupLayout1 + `
-
+fn decodeWorldPosition(xy : vec2<i32>) -> vec3<f32> {
+  var d = textureLoad(zbuffer, xy, 0);
+  var uv = vec2<f32>(xy) / vec2<f32>(textureDimensions(zbuffer, 0).xy);
+  var posClip = vec4<f32>(uv * vec2(2.0, -2.0) + vec2(-1.0, 1.0), d, 1);
+  var posWorldW = view.invViewProj * posClip;
+  var posWorld = posWorldW.xyz / posWorldW.www;
+  return posWorld;
+}
+fn decodeNormal(xy : vec2<i32>) -> vec3<f32> {
+  return normalize(textureLoad(gbuffer0, xy, 0).xyz * 2.0 - 1.0);
+}
 fn decodeViewNormal(xy : vec2<i32>) -> vec3<f32> {
   var nView = mat3x3<f32>(view.view[0].xyz, view.view[1].xyz, view.view[2].xyz);
   var N = normalize(textureLoad(gbuffer0, xy, 0).xyz * 2.0 - 1.0);
   N = normalize(nView * N);
   return N;
+}
+fn sampleEnvMap(R : vec3<f32>) -> vec3<f32> {
+  return mix(
+    view.ambientColor0.rgb * view.ambientColor0.a,
+    view.ambientColor1.rgb * view.ambientColor1.a,
+    dot(R, vec3<f32>(0, 1, 0)) * 0.5 + 0.5);
 }
 
 fn AO(uv : vec2<f32>, N : vec3<f32>) -> f32 {
@@ -119,30 +137,12 @@ fn AO(uv : vec2<f32>, N : vec3<f32>) -> f32 {
   }
   return saturate(1.0 - (occ / f32(samples)) + 0.2);
 }
-
 @fragment
-fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
+fn FS_SSAO(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
   var xy = vec2<i32>(floor(coord.xy));
   var uv = vec2<f32>(xy) / vec2<f32>(textureDimensions(zbuffer, 0).xy);
   var N = decodeViewNormal(xy);
   return vec4(AO(uv, N), 0, 0, 0);
-}
-`;
-
-const shaderModule3 = bindGroupLayout1 + `
-const EPSILON = 0.0001;
-const M_PI = 3.141592653589793;
-
-fn decodeWorldPosition(xy : vec2<i32>) -> vec3<f32> {
-  var d = textureLoad(zbuffer, xy, 0);
-  var uv = vec2<f32>(xy) / vec2<f32>(textureDimensions(zbuffer, 0).xy);
-  var posClip = vec4<f32>(uv * vec2(2.0, -2.0) + vec2(-1.0, 1.0), d, 1);
-  var posWorldW = view.invViewProj * posClip;
-  var posWorld = posWorldW.xyz / posWorldW.www;
-  return posWorld;
-}
-fn decodeNormal(xy : vec2<i32>) -> vec3<f32> {
-  return normalize(textureLoad(gbuffer0, xy, 0).xyz * 2.0 - 1.0);
 }
 
 fn D_GGX(NdH : f32, roughness : f32) -> f32 {
@@ -181,16 +181,8 @@ fn BRDF(N : vec3<f32>, L : vec3<f32>, V : vec3<f32>, baseColor : vec3<f32>, meta
     return vec3<f32>(0);
   }
 }
-
-fn sampleEnvMap(R : vec3<f32>) -> vec3<f32> {
-  return mix(
-    view.ambientColor0.rgb * view.ambientColor0.a,
-    view.ambientColor1.rgb * view.ambientColor1.a,
-    dot(R, vec3<f32>(0, 1, 0)) * 0.5 + 0.5);
-}
-
 @fragment
-fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
+fn FS_HDR(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
   var xy = vec2<i32>(floor(coord.xy));
   var F0 = textureLoad(gbuffer1, xy, 0);
   var F1 = textureLoad(gbuffer2, xy, 0);
@@ -206,38 +198,16 @@ fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> 
   var C_E = F0.rgb * F1.w;
   return vec4(C_L + C_A + C_E, 1.0);
 }
-`;
-
-const shaderModule4 = bindGroupLayout1 + `
-fn decodeWorldPosition(xy : vec2<i32>) -> vec3<f32> {
-  var d = textureLoad(zbuffer, xy, 0);
-  var uv = vec2<f32>(xy) / vec2<f32>(textureDimensions(zbuffer, 0).xy);
-  var posClip = vec4<f32>(uv * vec2(2.0, -2.0) + vec2(-1.0, 1.0), d, 1);
-  var posWorldW = view.invViewProj * posClip;
-  var posWorld = posWorldW.xyz / posWorldW.www;
-  return posWorld;
-}
-
-fn sampleEnvMap(R : vec3<f32>) -> vec3<f32> {
-  return mix(
-    view.ambientColor0.rgb * view.ambientColor0.a,
-    view.ambientColor1.rgb * view.ambientColor1.a,
-    dot(R, vec3<f32>(0, 1, 0)) * 0.5 + 0.5);
-}
 
 @fragment
-fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
+fn FS_HDRSky(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
   var xy = vec2<i32>(floor(coord.xy));
   var P = decodeWorldPosition(xy);
   var V = normalize(view.eyePosition.xyz - P);
-
   var C_A = sampleEnvMap(V);
   return vec4(C_A, 1.0);
 }
-`;
 
-// tonemapping: https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
-const shaderModule5 = bindGroupLayout1 + `
 fn toneMapping(x : vec3<f32>) -> vec3<f32> {
   var a = 2.51f;
   var b = 0.03f;
@@ -261,7 +231,7 @@ fn chromaticAberration(uv : vec2<f32>) -> vec3<f32> {
   return vec3<f32>(r, g, b);
 }
 @fragment
-fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
+fn FS_HDR2LDR(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
   var uv = coord.xy / vec2<f32>(textureDimensions(gbuffer0, 0).xy);
   var color = chromaticAberration(uv);
   color *= vignette(uv);
@@ -269,7 +239,7 @@ fn mainFragment(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> 
 }
 `;
 
-const shaderModule6 = bindGroupLayout0 + `
+const shaderModule2 = bindGroupLayout0 + `
 struct VertexInput {
   @location(0) position: vec3<f32>,
   @location(1) color : vec4<f32>,
@@ -280,14 +250,14 @@ struct VertexOutput {
 };
 
 @vertex
-fn mainVertex(input : VertexInput) -> VertexOutput {
+fn VS(input : VertexInput) -> VertexOutput {
   var output : VertexOutput;
   output.position = view.viewProj * vec4<f32>(input.position, 1.0);
   output.color = input.color;
   return output;
 }
 @fragment
-fn mainFragment(input : VertexOutput) -> @location(0) vec4<f32> {
+fn FS(input : VertexOutput) -> @location(0) vec4<f32> {
   return input.color;
 }
 `;

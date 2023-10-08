@@ -51,18 +51,6 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   gpu.shaderModule[2] = device.createShaderModule({
     code: shaderModule2,
   });
-  gpu.shaderModule[3] = device.createShaderModule({
-    code: shaderModule3,
-  });
-  gpu.shaderModule[4] = device.createShaderModule({
-    code: shaderModule4,
-  });
-  gpu.shaderModule[5] = device.createShaderModule({
-    code: shaderModule5,
-  });
-  gpu.shaderModule[6] = device.createShaderModule({
-    code: shaderModule6,
-  });
 
   gpu.bindGroupLayout[0] = device.createBindGroupLayout({
     entries: [
@@ -104,7 +92,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     layout: gpu.pipelineLayout[0],
     vertex: {
       module: gpu.shaderModule[0],
-      entryPoint: "mainVertex",
+      entryPoint: "VS",
       buffers: [
         { arrayStride: 4, attributes: [{ format: "uint32", offset: 0, shaderLocation: 0 }], stepMode: "instance" }, // instance
         { arrayStride: 12, attributes: [{ format: "float32x3", offset: 0, shaderLocation: 1 }] }, // position
@@ -119,7 +107,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     },
     fragment: {
       module: gpu.shaderModule[0],
-      entryPoint: "mainFragment",
+      entryPoint: "FS",
       targets: [
         { format: "rgb10a2unorm" },
         { format: "rgba8unorm" },
@@ -140,12 +128,12 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     layout: gpu.pipelineLayout[1],
     vertex: {
       module: gpu.shaderModule[1],
-      entryPoint: "mainVertex",
+      entryPoint: "VS",
       buffers: [],
     },
     fragment: {
-      module: gpu.shaderModule[2],
-      entryPoint: "mainFragment",
+      module: gpu.shaderModule[1],
+      entryPoint: "FS_SSAO",
       targets: [
         {
           format: "rgba8unorm",
@@ -166,12 +154,12 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     layout: gpu.pipelineLayout[1],
     vertex: {
       module: gpu.shaderModule[1],
-      entryPoint: "mainVertex",
+      entryPoint: "VS",
       buffers: [],
     },
     fragment: {
-      module: gpu.shaderModule[3],
-      entryPoint: "mainFragment",
+      module: gpu.shaderModule[1],
+      entryPoint: "FS_HDR",
       targets: [
         { format: "rgba16float" },
       ],
@@ -186,12 +174,12 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     layout: gpu.pipelineLayout[1],
     vertex: {
       module: gpu.shaderModule[1],
-      entryPoint: "mainVertex",
+      entryPoint: "VS",
       buffers: [],
     },
     fragment: {
-      module: gpu.shaderModule[4],
-      entryPoint: "mainFragment",
+      module: gpu.shaderModule[1],
+      entryPoint: "FS_HDRSky",
       targets: [
         { format: "rgba16float" },
       ],
@@ -206,12 +194,12 @@ const basil3d_gpu_create = (device, canvasFormat) => {
     layout: gpu.pipelineLayout[1],
     vertex: {
       module: gpu.shaderModule[1],
-      entryPoint: "mainVertex",
+      entryPoint: "VS",
       buffers: [],
     },
     fragment: {
-      module: gpu.shaderModule[5],
-      entryPoint: "mainFragment",
+      module: gpu.shaderModule[1],
+      entryPoint: "FS_HDR2LDR",
       targets: [
         { format: canvasFormat },
       ],
@@ -225,16 +213,16 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   gpu.pipeline[5] = device.createRenderPipeline({
     layout: gpu.pipelineLayout[0],
     vertex: {
-      module: gpu.shaderModule[6],
-      entryPoint: "mainVertex",
+      module: gpu.shaderModule[2],
+      entryPoint: "VS",
       buffers: [
         { arrayStride: 12, attributes: [{ format: "float32x3", offset: 0, shaderLocation: 0 }] }, // position
         { arrayStride: 4, attributes: [{ format: "unorm8x4", offset: 0, shaderLocation: 1 }] }, // color
       ],
     },
     fragment: {
-      module: gpu.shaderModule[6],
-      entryPoint: "mainFragment",
+      module: gpu.shaderModule[2],
+      entryPoint: "FS",
       targets: [
         { format: canvasFormat },
       ],
