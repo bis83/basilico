@@ -10,6 +10,7 @@ var fs embed.FS
 var scripts = []string{
 	"web/js/math.js",
 	"web/js/gpu.js",
+	"web/js/gpu_wgsl.js",
 	"web/js/gpu_buffer.js",
 	"web/js/gpu_gbuffer.js",
 	"web/js/listen.js",
