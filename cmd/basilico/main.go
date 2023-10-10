@@ -6,7 +6,6 @@ import (
 
 	basil "github.com/bis83/basilico/pkg/basil"
 	basil3d "github.com/bis83/basilico/pkg/basil3d"
-	oldpack "github.com/bis83/basilico/pkg/oldpack"
 	serve "github.com/bis83/basilico/pkg/serve"
 
 	toml "github.com/pelletier/go-toml/v2"
@@ -16,8 +15,6 @@ func getMiddlewares(middlewares []string) ([]basil.Middleware, error) {
 	var mdls []basil.Middleware
 	for _, m := range middlewares {
 		switch m {
-		case "oldpack":
-			mdls = append(mdls, oldpack.Middleware{})
 		case "basil3d":
 			mdls = append(mdls, basil3d.Middleware{})
 		default:
