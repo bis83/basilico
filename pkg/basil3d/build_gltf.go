@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/go-gl/mathgl/mgl32"
 	"github.com/qmuntal/gltf"
 	"github.com/x448/float16"
 
@@ -29,15 +28,6 @@ func toFloat32Array(buf []byte) ([]float32, error) {
 		return nil, err
 	}
 	return p, nil
-}
-
-func normalizeVector3(v []float32) []float32 {
-	var vv []float32
-	for i := 0; i < len(v)/3; i++ {
-		n := mgl32.Vec3{v[i*3+0], v[i*3+1], v[i*3+2]}.Normalize()
-		vv = append(vv, n[0], n[1], n[2])
-	}
-	return vv
 }
 
 func toFloat16Array(data []float32) []uint16 {
