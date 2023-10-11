@@ -68,6 +68,8 @@ const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
 
       const dx = mod(i, room.divisor);
       const dz = div(i, room.divisor);
+      const [x0, y0, z0, ha0, va0] = basil3d_view_get_offset(room.offset, dx * room.unit, 0, dz * room.unit, 0, 0);
+
       for (const mid of node.mesh) {
         const mesh = room.mesh[mid];
         if (!mesh) {
@@ -81,47 +83,11 @@ const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
           instance[n].push(index);
         }
 
-        let x = dx * room.unit;
-        let y = 0;
-        let z = dz * room.unit;
-        let ha = 0;
-        let va = 0;
-        if (room.transform) {
-          x += room.transform.x || 0;
-          y += room.transform.y || 0;
-          z += room.transform.z || 0;
-        }
-        if (mesh.transform) {
-          x += mesh.transform.x || 0;
-          y += mesh.transform.y || 0;
-          z += mesh.transform.z || 0;
-          ha = mesh.transform.ha || 0;
-          va = mesh.transform.va || 0;
-        }
+        const [x, y, z, ha, va] = basil3d_view_get_offset(mesh.offset, x0, y0, z0, ha0, va0);
         const matrix = mat4angle(ha, va);
         mat4translated(matrix, x, y, z);
-
-        const factor0 = [1.0, 1.0, 1.0, 1.0];
-        if (mesh.albedo) {
-          factor0[0] = mesh.albedo.r !== undefined ? mesh.albedo.r : 1.0;
-          factor0[1] = mesh.albedo.g !== undefined ? mesh.albedo.g : 1.0;
-          factor0[2] = mesh.albedo.b !== undefined ? mesh.albedo.b : 1.0;
-          factor0[3] = mesh.albedo.a !== undefined ? mesh.albedo.a : 1.0;
-        }
-        const factor1 = [1.0, 0.5, 0.5, 0.0];
-        if (mesh.occlusion !== undefined) {
-          factor1[0] = mesh.occlusion;
-        }
-        if (mesh.metallic !== undefined) {
-          factor1[1] = mesh.metallic;
-        }
-        if (mesh.roughness !== undefined) {
-          factor1[2] = mesh.roughness;
-        }
-        if (mesh.emission !== undefined) {
-          factor1[3] = mesh.emission;
-        }
-
+        const factor0 = basil3d_view_get_color(mesh.factor0, 1.0, 1.0, 1.0, 1.0);
+        const factor1 = basil3d_view_get_color(mesh.factor1, 1.0, 1.0, 1.0, 0.0);
         buf.set(matrix, 0);
         buf.set(factor0, 16);
         buf.set(factor1, 20);

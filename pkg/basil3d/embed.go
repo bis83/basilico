@@ -20,5 +20,6 @@ var scripts = []string{
 	"web/js/view_light.js",
 	"web/js/view_room.js",
 	"web/js/view_lines.js",
+	"web/js/view_get.js",
 	"web/js/basil3d.js",
 }
