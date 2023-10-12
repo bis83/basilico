@@ -2,7 +2,6 @@ package basil3d
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/binary"
 	"fmt"
 	"os"
@@ -138,7 +137,12 @@ func (p *Builder) importGLTF(app *App) error {
 					appMesh.IndexBuffer = []int{bufferIndex, offset, size}
 					appMesh.Count = len(ib) / 2
 				}
-				appBuffer.Embed = app.AddEmbed(base64.StdEncoding.EncodeToString(vb.Bytes()))
+
+				var err error
+				appBuffer.Embed, err = app.AddEmbedBase64(vb.Bytes(), true)
+				if err != nil {
+					return err
+				}
 
 				// Material
 				material := doc.Materials[*prim.Material]

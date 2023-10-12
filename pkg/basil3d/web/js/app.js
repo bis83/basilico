@@ -1,4 +1,15 @@
 
+const decodeEmbed = async (str) => {
+  const base64 = window.atob(str);
+  const bytes = new Uint8Array(base64.length);
+  for (let i = 0; i < base64.length; ++i) {
+    bytes[i] = base64.charCodeAt(i);
+  }
+  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+  const arrayBuffer = await new Response(stream).arrayBuffer();
+  return new Uint8Array(arrayBuffer);
+};
+
 const basil3d_app_load = (device) => {
   const app = {
     gpu: {},
@@ -6,11 +17,16 @@ const basil3d_app_load = (device) => {
     json: {},
     loading: 0,
   };
-  const path = "app.json";
-  fetch(path).then(res => res.json()).then((json) => {
+
+  app.loading += 1;
+  (async () => {
+    const path = "app.json";
+    const res = await fetch(path);
+    const json = await res.json();
     if (json.gpu) {
-      json.gpu.buffer = json.gpu.buffer.map(data => {
-        const binary = window.atob(json.embed[data.embed]);
+      for (let i = 0; i < json.gpu.buffer.length; ++i) {
+        const data = json.gpu.buffer[i];
+        const binary = await decodeEmbed(json.embed[data.embed]);
         const buffer = device.createBuffer({
           size: binary.length,
           usage: GPUBufferUsage.VERTEX | GPUBufferUsage.INDEX,
@@ -18,11 +34,11 @@ const basil3d_app_load = (device) => {
         });
         const view = new DataView(buffer.getMappedRange());
         for (let i = 0; i < binary.length; ++i) {
-          view.setUint8(i, binary.charCodeAt(i));
+          view.setUint8(i, binary[i]);
         }
         buffer.unmap();
-        return buffer;
-      });
+        json.gpu.buffer[i] = buffer;
+      }
       app.gpu = json.gpu;
     }
     if (json.audio) {
@@ -32,8 +48,7 @@ const basil3d_app_load = (device) => {
       app.json = json.json;
     }
     app.loading -= 1;
-  })
-  app.loading += 1;
+  })();
 
   return app;
 };

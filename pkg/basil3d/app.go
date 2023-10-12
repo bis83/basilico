@@ -1,5 +1,11 @@
 package basil3d
 
+import (
+	"bytes"
+	"compress/flate"
+	"encoding/base64"
+)
+
 type App struct {
 	Embed []*string               `json:"embed"`
 	GPU   AppGPU                  `json:"gpu"`
@@ -71,4 +77,23 @@ func (p *App) AddEmbed(buf string) int {
 	i := len(p.Embed)
 	p.Embed = append(p.Embed, &buf)
 	return i
+}
+
+func (p *App) AddEmbedBase64(buf []byte, compress bool) (int, error) {
+	if compress {
+		var b bytes.Buffer
+		w, err := flate.NewWriter(&b, flate.BestCompression)
+		if err != nil {
+			return -1, err
+		}
+		if _, err := w.Write(buf); err != nil {
+			w.Close()
+			return -1, err
+		}
+		w.Close()
+
+		return p.AddEmbed(base64.StdEncoding.EncodeToString(b.Bytes())), nil
+	} else {
+		return p.AddEmbed(base64.StdEncoding.EncodeToString(buf)), nil
+	}
 }
