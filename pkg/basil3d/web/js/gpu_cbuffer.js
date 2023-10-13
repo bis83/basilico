@@ -1,5 +1,6 @@
 
-const basil3d_gpu_upload_view_input = (gpu, device, canvas, view) => {
+const basil3d_gpu_upload_view_input = (gpu, view) => {
+  const device = gpu.device;
   const camera = view.camera;
 
   const buf = new Float32Array(68);
@@ -25,10 +26,12 @@ const basil3d_gpu_upload_view_input = (gpu, device, canvas, view) => {
   buf.set(light.color, 56);
   buf.set(light.ambient0, 60);
   buf.set(light.ambient1, 64);
-  device.queue.writeBuffer(gpu.buffer[0], 0, buf);
+  device.queue.writeBuffer(gpu.cbuffer[0], 0, buf);
 };
 
-const basil3d_gpu_upload_lines = (gpu, device, view) => {
+const basil3d_gpu_upload_lines = (gpu, view) => {
+  const device = gpu.device;
+
   if (view.lines.length <= 0) {
     return;
   }
@@ -45,13 +48,15 @@ const basil3d_gpu_upload_lines = (gpu, device, view) => {
     color[i * 4 + 2] = line.color[2];
     color[i * 4 + 3] = line.color[3];
   }
-  device.queue.writeBuffer(gpu.buffer[4], 0, position);
-  device.queue.writeBuffer(gpu.buffer[5], 0, color);
+  device.queue.writeBuffer(gpu.cbuffer[4], 0, position);
+  device.queue.writeBuffer(gpu.cbuffer[5], 0, color);
 };
 
-const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
+const basil3d_gpu_upload_instance_input = (gpu, view) => {
+  const device = gpu.device;
+
   const instance = [];
-  instance.length = app.gpu.mesh.length;
+  instance.length = gpu.mesh.length;
   for (let i = 0; i < instance.length; ++i) {
     instance[i] = [];
   }
@@ -75,11 +80,11 @@ const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
         if (!mesh) {
           continue;
         }
-        const id = basil3d_app_gpu_id(app, mesh.name);
+        const id = basil3d_gpu_id(gpu, mesh.name);
         if (id < 0) {
           continue;
         }
-        for (const n of app.gpu.id[id].mesh) {
+        for (const n of gpu.id[id].mesh) {
           instance[n].push(index);
         }
 
@@ -91,7 +96,7 @@ const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
         buf.set(matrix, 0);
         buf.set(factor0, 16);
         buf.set(factor1, 20);
-        device.queue.writeBuffer(gpu.buffer[1], index * stride, buf);
+        device.queue.writeBuffer(gpu.cbuffer[1], index * stride, buf);
         index += 1;
       }
     }
@@ -105,17 +110,17 @@ const basil3d_gpu_upload_instance_input = (gpu, device, app, view) => {
     if (instance[i].length <= 0) {
       continue;
     }
-    const mesh = app.gpu.mesh[i];
+    const mesh = gpu.mesh[i];
 
     const count = instance[i].length;
-    device.queue.writeBuffer(gpu.buffer[2], first * 4, new Uint32Array(instance[i]));
+    device.queue.writeBuffer(gpu.cbuffer[2], first * 4, new Uint32Array(instance[i]));
 
     args[0] = mesh.count; // indexCount
     args[1] = count;      // instanceCount
     args[2] = 0;          // firstIndex
     args[3] = 0;          // baseVertex
     args[4] = 0;          // firstInstance, need "indirect-first-instance"
-    device.queue.writeBuffer(gpu.buffer[3], offset, args);
+    device.queue.writeBuffer(gpu.cbuffer[3], offset, args);
 
     batch.push({
       id: i,

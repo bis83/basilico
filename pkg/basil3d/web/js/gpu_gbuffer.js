@@ -1,5 +1,8 @@
 
-const basil3d_gpu_gbuffer = (gpu, device, canvas) => {
+const basil3d_gpu_gbuffer = (gpu) => {
+  const device = gpu.device;
+  const canvas = gpu.canvas;
+
   // resize canvas and destroy render targets
   if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
     canvas.width = canvas.clientWidth;
@@ -65,7 +68,7 @@ const basil3d_gpu_gbuffer = (gpu, device, canvas) => {
     gpu.bindGroup[1] = device.createBindGroup({
       layout: gpu.bindGroupLayout[1],
       entries: [
-        { binding: 0, resource: { buffer: gpu.buffer[0] }, },
+        { binding: 0, resource: { buffer: gpu.cbuffer[0] }, },
         { binding: 1, resource: gpu.gbuffer[0].createView(), },
         { binding: 2, resource: gpu.gbuffer[1].createView(), },
         { binding: 3, resource: gpu.gbuffer[2].createView(), },
@@ -78,7 +81,7 @@ const basil3d_gpu_gbuffer = (gpu, device, canvas) => {
     gpu.bindGroup[2] = device.createBindGroup({
       layout: gpu.bindGroupLayout[1],
       entries: [
-        { binding: 0, resource: { buffer: gpu.buffer[0] }, },
+        { binding: 0, resource: { buffer: gpu.cbuffer[0] }, },
         { binding: 1, resource: gpu.gbuffer[0].createView(), },
         { binding: 2, resource: gpu.gbuffer[1].createView(), },
         { binding: 3, resource: gpu.gbuffer[1].createView(), },
@@ -91,7 +94,7 @@ const basil3d_gpu_gbuffer = (gpu, device, canvas) => {
     gpu.bindGroup[3] = device.createBindGroup({
       layout: gpu.bindGroupLayout[1],
       entries: [
-        { binding: 0, resource: { buffer: gpu.buffer[0] }, },
+        { binding: 0, resource: { buffer: gpu.cbuffer[0] }, },
         { binding: 1, resource: gpu.gbuffer[0].createView(), },
         { binding: 2, resource: gpu.gbuffer[4].createView(), },
         { binding: 3, resource: gpu.gbuffer[4].createView(), },

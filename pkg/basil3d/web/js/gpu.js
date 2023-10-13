@@ -1,37 +1,28 @@
 
-const basil3d_gpu_create = (device, canvasFormat) => {
-  const gpu = {
-    bindGroupLayout: [],
-    pipelineLayout: [],
-    shaderModule: [],
-    pipeline: [],
-    buffer: [],
-    sampler: [],
-    bindGroup: [],
-    gbuffer: [],
-  };
+const basil3d_gpu_init = (gpu) => {
+  const device = gpu.device;
 
-  gpu.buffer[0] = device.createBuffer({
+  gpu.cbuffer[0] = device.createBuffer({
     size: 512 * 1,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
   });
-  gpu.buffer[1] = device.createBuffer({
+  gpu.cbuffer[1] = device.createBuffer({
     size: 96 * (2 * 1024),
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
   });
-  gpu.buffer[2] = device.createBuffer({
+  gpu.cbuffer[2] = device.createBuffer({
     size: 4 * (16 * 1024),
     usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
   });
-  gpu.buffer[3] = device.createBuffer({
+  gpu.cbuffer[3] = device.createBuffer({
     size: 20 * (2 * 1024),
     usage: GPUBufferUsage.INDIRECT | GPUBufferUsage.COPY_DST,
   });
-  gpu.buffer[4] = device.createBuffer({
+  gpu.cbuffer[4] = device.createBuffer({
     size: 12 * (4 * 1024),
     usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
   });
-  gpu.buffer[5] = device.createBuffer({
+  gpu.cbuffer[5] = device.createBuffer({
     size: 4 * (4 * 1024),
     usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
   });
@@ -72,8 +63,8 @@ const basil3d_gpu_create = (device, canvasFormat) => {
   gpu.bindGroup[0] = device.createBindGroup({
     layout: gpu.bindGroupLayout[0],
     entries: [
-      { binding: 0, resource: { buffer: gpu.buffer[0] }, },
-      { binding: 1, resource: { buffer: gpu.buffer[1] }, },
+      { binding: 0, resource: { buffer: gpu.cbuffer[0] }, },
+      { binding: 1, resource: { buffer: gpu.cbuffer[1] }, },
     ],
   });
 
@@ -201,7 +192,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       module: gpu.shaderModule[1],
       entryPoint: "FS_HDR2LDR",
       targets: [
-        { format: canvasFormat },
+        { format: gpu.canvasFormat },
       ],
     },
     depthStencil: {
@@ -224,7 +215,7 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       module: gpu.shaderModule[2],
       entryPoint: "FS",
       targets: [
-        { format: canvasFormat },
+        { format: gpu.canvasFormat },
       ],
     },
     depthStencil: {
@@ -236,15 +227,16 @@ const basil3d_gpu_create = (device, canvasFormat) => {
       topology: "line-list",
     },
   });
-
-  return gpu;
 };
 
-const basil3d_gpu_on_frame_start = (gpu, device, canvas) => {
-  basil3d_gpu_gbuffer(gpu, device, canvas);
+const basil3d_gpu_on_frame_start = (gpu) => {
+  basil3d_gpu_gbuffer(gpu);
 };
 
-const basil3d_gpu_on_frame_loading = (gpu, device, context) => {
+const basil3d_gpu_on_frame_loading = (gpu) => {
+  const device = gpu.device;
+  const context = gpu.context;
+
   const ce = device.createCommandEncoder();
   const pass = ce.beginRenderPass({
     colorAttachments: [{
@@ -258,11 +250,14 @@ const basil3d_gpu_on_frame_loading = (gpu, device, context) => {
   device.queue.submit([ce.finish()]);
 };
 
-const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
+const basil3d_gpu_on_frame_view = (gpu, view) => {
+  const device = gpu.device;
+  const context = gpu.context;
+
   // Upload Buffers
-  basil3d_gpu_upload_view_input(gpu, device, canvas, view);
-  basil3d_gpu_upload_lines(gpu, device, view);
-  const batch = basil3d_gpu_upload_instance_input(gpu, device, app, view);
+  basil3d_gpu_upload_view_input(gpu, view);
+  basil3d_gpu_upload_lines(gpu, view);
+  const batch = basil3d_gpu_upload_instance_input(gpu, view);
 
   // Create CommandBuffer
   const ce = device.createCommandEncoder();
@@ -298,23 +293,23 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
     for (const b of batch) {
       pass.setPipeline(gpu.pipeline[0]);
       pass.setBindGroup(0, gpu.bindGroup[0]);
-      pass.setVertexBuffer(0, gpu.buffer[2], b.first * 4);
+      pass.setVertexBuffer(0, gpu.cbuffer[2], b.first * 4);
 
-      const mesh = app.gpu.mesh[b.id];
+      const mesh = gpu.mesh[b.id];
       if (mesh.vb0) {
         const [index, offset, size] = mesh.vb0;
-        pass.setVertexBuffer(1, app.gpu.buffer[index], offset, size);
+        pass.setVertexBuffer(1, gpu.buffer[index], offset, size);
       }
       if (mesh.vb1) {
         const [index, offset, size] = mesh.vb1;
-        pass.setVertexBuffer(2, app.gpu.buffer[index], offset, size);
+        pass.setVertexBuffer(2, gpu.buffer[index], offset, size);
       }
       if (mesh.ib) {
         const [index, offset, size] = mesh.ib;
-        pass.setIndexBuffer(app.gpu.buffer[index], "uint16", offset, size);
+        pass.setIndexBuffer(gpu.buffer[index], "uint16", offset, size);
       }
 
-      pass.drawIndexedIndirect(gpu.buffer[3], b.offset);
+      pass.drawIndexedIndirect(gpu.cbuffer[3], b.offset);
     }
     pass.end();
   }
@@ -370,8 +365,8 @@ const basil3d_gpu_on_frame_view = (gpu, device, context, canvas, app, view) => {
     if (view.lines.length > 0) {
       pass.setPipeline(gpu.pipeline[5]);
       pass.setBindGroup(0, gpu.bindGroup[0]);
-      pass.setVertexBuffer(0, gpu.buffer[4]);
-      pass.setVertexBuffer(1, gpu.buffer[5]);
+      pass.setVertexBuffer(0, gpu.cbuffer[4]);
+      pass.setVertexBuffer(1, gpu.cbuffer[5]);
       pass.draw(view.lines.length);
     }
     pass.end();

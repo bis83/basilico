@@ -1,10 +1,4 @@
 
-const basil3d_view_create = () => {
-  const view = {};
-  basil3d_view_reset(view);
-  return view;
-};
-
 const basil3d_view_reset = (view) => {
   view.camera = {
     eye: [0, 0, 0],
@@ -27,9 +21,9 @@ const basil3d_view_reset = (view) => {
   view.lines = [];
 };
 
-const basil3d_view_open = (view, app, desc) => {
+const basil3d_view_open = (view, desc) => {
   basil3d_view_camera(view, desc);
   basil3d_view_light(view, desc);
-  basil3d_view_room(view, app, desc);
+  basil3d_view_room(view, desc);
   basil3d_view_lines(view, desc);
 };

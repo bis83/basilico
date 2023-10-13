@@ -1,46 +1,5 @@
 
-const basil3d_listen_create = () => {
-  const listen = {
-    timer: {
-      t: performance.now(),
-      dt: 0,
-      n: 0,
-    },
-    gamepad: {
-      index: null,
-      lx: 0,
-      ly: 0,
-      rx: 0,
-      ry: 0,
-      b0: false,
-      b1: false,
-      b8: false,
-      b9: false,
-      lb: false,
-      rb: false,
-      lt: false,
-      rt: false,
-    },
-    keyboard: {
-      w: false,
-      a: false,
-      s: false,
-      d: false,
-      up: false,
-      left: false,
-      down: false,
-      right: false,
-      q: false,
-      e: false,
-      z: false,
-      x: false,
-      space: false,
-      lctrl: false,
-      esc: false,
-    },
-    touch: new Map(),
-  };
-
+const basil3d_listen_init = (listen) => {
   const keymap = (keyboard, code, value) => {
     switch (code) {
       case "KeyW": keyboard.w = value; break;
@@ -115,8 +74,6 @@ const basil3d_listen_create = () => {
       touch.y = ev.clientY;
     }
   });
-
-  return listen;
 }
 
 const basil3d_listen_tick = (listen, time) => {

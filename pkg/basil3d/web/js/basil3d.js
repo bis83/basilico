@@ -5,37 +5,92 @@ const basil3d_start = async (setup, update) => {
     return;
   }
 
-  const adapter = await navigator.gpu.requestAdapter();
-  const device = await adapter.requestDevice();
-  const canvasFormat = navigator.gpu.getPreferredCanvasFormat();
+  const app = {
+    loading: 0,
+    gpu: {
+      bindGroupLayout: [],
+      pipelineLayout: [],
+      shaderModule: [],
+      pipeline: [],
+      sampler: [],
+      bindGroup: [],
+      cbuffer: [],
+      gbuffer: [],
+    },
+    audio: {},
+    listen: {
+      timer: {
+        t: performance.now(),
+        dt: 0,
+        n: 0,
+      },
+      gamepad: {
+        index: null,
+        lx: 0,
+        ly: 0,
+        rx: 0,
+        ry: 0,
+        b0: false,
+        b1: false,
+        b8: false,
+        b9: false,
+        lb: false,
+        rb: false,
+        lt: false,
+        rt: false,
+      },
+      keyboard: {
+        w: false,
+        a: false,
+        s: false,
+        d: false,
+        up: false,
+        left: false,
+        down: false,
+        right: false,
+        q: false,
+        e: false,
+        z: false,
+        x: false,
+        space: false,
+        lctrl: false,
+        esc: false,
+      },
+      touch: new Map(),
+    },
+    json: {},
+    view: {},
+  };
 
-  const canvas = html_canvas();
-  const context = canvas.getContext("webgpu");
-  context.configure({
-    device: device,
-    format: canvasFormat,
+  app.gpu.adapter = await navigator.gpu.requestAdapter();
+  app.gpu.device = await app.gpu.adapter.requestDevice();
+  app.gpu.canvasFormat = navigator.gpu.getPreferredCanvasFormat();
+  app.gpu.canvas = html_canvas();
+  app.gpu.context = app.gpu.canvas.getContext("webgpu");
+  app.gpu.context.configure({
+    device: app.gpu.device,
+    format: app.gpu.canvasFormat,
     alphaMode: "opaque",
   });
+  basil3d_gpu_init(app.gpu);
+  basil3d_listen_init(app.listen);
+  basil3d_view_reset(app.view);
 
-  const gpu = basil3d_gpu_create(device, canvasFormat);
-  const listen = basil3d_listen_create();
-  const app = basil3d_app_load(device);
-  const view = basil3d_view_create();
-
+  basil3d_app_load(app);
   const frame = (time) => {
-    basil3d_listen_tick(listen, time);
-    basil3d_gpu_on_frame_start(gpu, device, canvas);
+    basil3d_listen_tick(app.listen, time);
+    basil3d_gpu_on_frame_start(app.gpu);
     if (basil3d_app_is_loading(app)) {
-      basil3d_gpu_on_frame_loading(gpu, device, context);
+      basil3d_gpu_on_frame_loading(app.gpu);
     } else {
       if (setup) {
-        setup(app, view);
+        setup(app);
         setup = null;
       }
       if (update) {
-        update(app, view, listen);
+        update(app);
       }
-      basil3d_gpu_on_frame_view(gpu, device, context, canvas, app, view);
+      basil3d_gpu_on_frame_view(app.gpu, app.view);
     }
     requestAnimationFrame(frame);
   };
