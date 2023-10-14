@@ -28,10 +28,14 @@ const (
 )
 
 type AppGPU struct {
+	Shader  []*AppGPUShader  `json:"shader,omitempty"`
 	Buffer  []*AppGPUBuffer  `json:"buffer,omitempty"`
 	Texture []*AppGPUTexture `json:"texture,omitempty"`
 	Mesh    []*AppGPUMesh    `json:"mesh,omitempty"`
 	ID      []*AppGPUID      `json:"id,omitempty"`
+}
+type AppGPUShader struct {
+	Embed int `json:"embed,omitempty"`
 }
 type AppGPUBuffer struct {
 	Embed int `json:"embed,omitempty"`

@@ -1,77 +1,4 @@
-
-const buffer0struct = `
-struct ViewInput {
-  viewProj : mat4x4<f32>,
-  invViewProj : mat4x4<f32>,
-  view : mat4x4<f32>,
-  eyePosition : vec4<f32>,
-  lightDir : vec4<f32>,
-  lightColor : vec4<f32>,
-  ambientColor0 : vec4<f32>,
-  ambientColor1 : vec4<f32>,
-}`;
-
-const buffer1struct = `
-struct InstanceInput {
-  world : mat4x4<f32>,
-  factor0 : vec4<f32>,
-  factor1 : vec4<f32>,
-}`;
-
-const bindGroupLayout0 = buffer0struct + buffer1struct + `
-@group(0) @binding(0) var<uniform> view : ViewInput;
-@group(0) @binding(1) var<storage, read> inst : array<InstanceInput>;
-`;
-const bindGroupLayout1 = buffer0struct + `
-@group(0) @binding(0) var<uniform> view : ViewInput;
-@group(0) @binding(1) var zbuffer : texture_depth_2d;
-@group(0) @binding(2) var gbuffer0 : texture_2d<f32>;
-@group(0) @binding(3) var gbuffer1 : texture_2d<f32>;
-@group(0) @binding(4) var gbuffer2 : texture_2d<f32>;
-@group(0) @binding(5) var sampler0 : sampler;
-`;
-
-const shaderModule0 = bindGroupLayout0 + `
-struct VertexInput {
-  @location(0) id: u32,
-  @location(1) position: vec3<f32>,
-  @location(2) normal : vec3<f32>,
-};
-struct VertexOutput {
-  @builtin(position) position : vec4<f32>,
-  @location(0) normal : vec3<f32>,
-  @location(1) @interpolate(flat) id : u32,
-};
-struct FragmentOutput {
-  @location(0) gbuffer0 : vec4<f32>,
-  @location(1) gbuffer1 : vec4<f32>,
-  @location(2) gbuffer2 : vec4<f32>,
-};
-
-@vertex
-fn VS(input : VertexInput) -> VertexOutput {
-  var world = inst[input.id].world;
-  var nWorld = mat3x3<f32>(world[0].xyz, world[1].xyz, world[2].xyz);
-
-  var output : VertexOutput;
-  output.position = (view.viewProj * world * vec4(input.position, 1.0));
-  output.normal = normalize(nWorld * input.normal);
-  output.id = input.id;
-  return output;
-}
-
-@fragment
-fn FS(input : VertexOutput) -> FragmentOutput {
-  var output : FragmentOutput;
-  output.gbuffer0 = vec4(normalize(input.normal) * 0.5 + 0.5, 0);
-  output.gbuffer1 = inst[input.id].factor0.xyzw;
-  output.gbuffer2 = inst[input.id].factor1.xyzw;
-  return output;
-}
-`;
-
 // tonemapping: https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
-const shaderModule1 = bindGroupLayout1 + `
 const EPSILON = 0.0001;
 const M_PI = 3.141592653589793;
 
@@ -137,6 +64,7 @@ fn AO(uv : vec2<f32>, N : vec3<f32>) -> f32 {
   }
   return saturate(1.0 - (occ / f32(samples)) + 0.2);
 }
+
 @fragment
 fn FS_SSAO(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
   var xy = vec2<i32>(floor(coord.xy));
@@ -181,6 +109,7 @@ fn BRDF(N : vec3<f32>, L : vec3<f32>, V : vec3<f32>, baseColor : vec3<f32>, meta
     return vec3<f32>(0);
   }
 }
+
 @fragment
 fn FS_HDR(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
   var xy = vec2<i32>(floor(coord.xy));
@@ -230,6 +159,7 @@ fn chromaticAberration(uv : vec2<f32>) -> vec3<f32> {
   var b = textureSample(gbuffer0, sampler0, uv + dir * blueOffset).b;
   return vec3<f32>(r, g, b);
 }
+
 @fragment
 fn FS_HDR2LDR(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
   var uv = coord.xy / vec2<f32>(textureDimensions(gbuffer0, 0).xy);
@@ -237,27 +167,3 @@ fn FS_HDR2LDR(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
   color *= vignette(uv);
   return vec4<f32>(toneMapping(color), 1);
 }
-`;
-
-const shaderModule2 = bindGroupLayout0 + `
-struct VertexInput {
-  @location(0) position: vec3<f32>,
-  @location(1) color : vec4<f32>,
-};
-struct VertexOutput {
-  @builtin(position) position : vec4<f32>,
-  @location(0) color : vec4<f32>,
-};
-
-@vertex
-fn VS(input : VertexInput) -> VertexOutput {
-  var output : VertexOutput;
-  output.position = view.viewProj * vec4<f32>(input.position, 1.0);
-  output.color = input.color;
-  return output;
-}
-@fragment
-fn FS(input : VertexOutput) -> @location(0) vec4<f32> {
-  return input.color;
-}
-`;
