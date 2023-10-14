@@ -61,6 +61,8 @@ const $start = async (setup, update) => {
     json: {},
     view: {},
   };
+  $viewReset(app.view);
+
   app.gpu.adapter = await navigator.gpu.requestAdapter();
   app.gpu.device = await app.gpu.adapter.requestDevice();
   app.gpu.canvasFormat = navigator.gpu.getPreferredCanvasFormat();
@@ -73,7 +75,6 @@ const $start = async (setup, update) => {
   });
   $__gpuInit(app.gpu);
   $__listenInit(app.listen);
-  $viewReset(app.view);
 
   $__onload(app);
 

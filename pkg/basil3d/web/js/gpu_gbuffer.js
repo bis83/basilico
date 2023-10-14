@@ -29,78 +29,38 @@ const $__gpuGbuffer = (gpu) => {
     deleteBindGroup(2);
     deleteBindGroup(3);
   }
-  if (gpu.gbuffer[0] === undefined) {
-    gpu.gbuffer[0] = device.createTexture({
-      size: [canvas.width, canvas.height],
-      format: "depth32float",
-      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
-    });
-  }
-  if (gpu.gbuffer[1] === undefined) {
-    gpu.gbuffer[1] = device.createTexture({
-      size: [canvas.width, canvas.height],
-      format: "rgb10a2unorm",
-      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
-    });
-  }
-  if (gpu.gbuffer[2] === undefined) {
-    gpu.gbuffer[2] = device.createTexture({
-      size: [canvas.width, canvas.height],
-      format: "rgba8unorm",
-      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
-    });
-  }
-  if (gpu.gbuffer[3] === undefined) {
-    gpu.gbuffer[3] = device.createTexture({
-      size: [canvas.width, canvas.height],
-      format: "rgba8unorm",
-      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
-    });
-  }
-  if (gpu.gbuffer[4] === undefined) {
-    gpu.gbuffer[4] = device.createTexture({
-      size: [canvas.width, canvas.height],
-      format: "rgba16float",
-      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
-    });
-  }
-  if (gpu.bindGroup[1] === undefined) {
-    gpu.bindGroup[1] = device.createBindGroup({
-      layout: gpu.bindGroupLayout[1],
-      entries: [
-        { binding: 0, resource: { buffer: gpu.cbuffer[0] }, },
-        { binding: 1, resource: gpu.gbuffer[0].createView(), },
-        { binding: 2, resource: gpu.gbuffer[1].createView(), },
-        { binding: 3, resource: gpu.gbuffer[2].createView(), },
-        { binding: 4, resource: gpu.gbuffer[3].createView(), },
-        { binding: 5, resource: gpu.sampler[0] },
-      ],
-    });
-  }
-  if (gpu.bindGroup[2] === undefined) {
-    gpu.bindGroup[2] = device.createBindGroup({
-      layout: gpu.bindGroupLayout[1],
-      entries: [
-        { binding: 0, resource: { buffer: gpu.cbuffer[0] }, },
-        { binding: 1, resource: gpu.gbuffer[0].createView(), },
-        { binding: 2, resource: gpu.gbuffer[1].createView(), },
-        { binding: 3, resource: gpu.gbuffer[1].createView(), },
-        { binding: 4, resource: gpu.gbuffer[1].createView(), },
-        { binding: 5, resource: gpu.sampler[0] },
-      ],
-    });
-  }
-  if (gpu.bindGroup[3] === undefined) {
-    gpu.bindGroup[3] = device.createBindGroup({
-      layout: gpu.bindGroupLayout[1],
-      entries: [
-        { binding: 0, resource: { buffer: gpu.cbuffer[0] }, },
-        { binding: 1, resource: gpu.gbuffer[0].createView(), },
-        { binding: 2, resource: gpu.gbuffer[4].createView(), },
-        { binding: 3, resource: gpu.gbuffer[4].createView(), },
-        { binding: 4, resource: gpu.gbuffer[4].createView(), },
-        { binding: 5, resource: gpu.sampler[0] },
-      ],
-    });
-  }
+
+  const createTexture = (i, format) => {
+    if (gpu.gbuffer[i] === undefined) {
+      gpu.gbuffer[i] = device.createTexture({
+        size: [canvas.width, canvas.height],
+        format: format,
+        usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
+      });
+    }
+  };
+  createTexture(0, "depth32float");
+  createTexture(1, "rgb10a2unorm");
+  createTexture(2, "rgba8unorm");
+  createTexture(3, "rgba8unorm");
+  createTexture(4, "rgba16float");
+
+  const createBindGroup = (i, t0, t1, t2, t3) => {
+    if (gpu.bindGroup[i] === undefined) {
+      gpu.bindGroup[i] = device.createBindGroup({
+        layout: gpu.bindGroupLayout[1],
+        entries: [
+          { binding: 0, resource: { buffer: gpu.cbuffer[0] }, },
+          { binding: 1, resource: gpu.gbuffer[t0].createView(), },
+          { binding: 2, resource: gpu.gbuffer[t1].createView(), },
+          { binding: 3, resource: gpu.gbuffer[t2].createView(), },
+          { binding: 4, resource: gpu.gbuffer[t3].createView(), },
+          { binding: 5, resource: gpu.sampler[0] },
+        ],
+      });
+    }
+  };
+  createBindGroup(1, 0, 1, 2, 3);
+  createBindGroup(2, 0, 1, 1, 1);
+  createBindGroup(3, 0, 4, 4, 4);
 };
