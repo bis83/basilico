@@ -12,6 +12,8 @@ var scripts = []string{
 	"web/js/gpu.js",
 	"web/js/gpu_cbuffer.js",
 	"web/js/gpu_gbuffer.js",
+	"web/js/gpu_pipeline.js",
+	"web/js/gpu_pass.js",
 	"web/js/listen.js",
 	"web/js/app.js",
 	"web/js/view.js",
