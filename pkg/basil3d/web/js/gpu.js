@@ -1,5 +1,5 @@
 
-const basil3d_gpu_init = (gpu) => {
+const $__gpuInit = (gpu) => {
   const device = gpu.device;
 
   gpu.cbuffer[0] = device.createBuffer({
@@ -70,7 +70,7 @@ const basil3d_gpu_init = (gpu) => {
   });
 };
 
-const basil3d_gpu_id = (gpu, name) => {
+const $__gpuID = (gpu, name) => {
   for (let i = 0; i < gpu.id.length; ++i) {
     if (gpu.id[i].name === name) {
       return i;

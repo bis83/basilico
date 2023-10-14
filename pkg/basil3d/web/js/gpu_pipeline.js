@@ -1,5 +1,5 @@
 
-const basil3d_gpu_init_pipeline = (gpu) => {
+const $__gpuInitPipeline = (gpu) => {
   const device = gpu.device;
 
   gpu.pipeline[0] = device.createRenderPipeline({

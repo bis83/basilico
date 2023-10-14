@@ -1,5 +1,5 @@
 
-const basil3d_gpu_gbuffer = (gpu) => {
+const $__gpuGbuffer = (gpu) => {
   const device = gpu.device;
   const canvas = gpu.canvas;
 

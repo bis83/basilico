@@ -1,5 +1,5 @@
 
-const basil3d_view_reset = (view) => {
+const $viewReset = (view) => {
   view.camera = {
     eye: [0, 0, 0],
     ha: 0,
@@ -21,9 +21,9 @@ const basil3d_view_reset = (view) => {
   view.lines = [];
 };
 
-const basil3d_view_open = (view, desc) => {
-  basil3d_view_camera(view, desc);
-  basil3d_view_light(view, desc);
-  basil3d_view_room(view, desc);
-  basil3d_view_lines(view, desc);
+const $viewOpen = (view, desc) => {
+  $__viewCamera(view, desc);
+  $__viewLight(view, desc);
+  $__viewRoom(view, desc);
+  $__viewLines(view, desc);
 };

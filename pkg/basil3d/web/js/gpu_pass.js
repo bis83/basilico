@@ -1,9 +1,9 @@
 
-const basil3d_gpu_on_frame_start = (gpu) => {
-  basil3d_gpu_gbuffer(gpu);
+const $__gpuOnFrameBegin = (gpu) => {
+  $__gpuGbuffer(gpu);
 };
 
-const basil3d_gpu_on_frame_loading = (gpu) => {
+const $__gpuOnFrameLoading = (gpu) => {
   const device = gpu.device;
   const context = gpu.context;
 
@@ -20,14 +20,14 @@ const basil3d_gpu_on_frame_loading = (gpu) => {
   device.queue.submit([ce.finish()]);
 };
 
-const basil3d_gpu_on_frame_view = (gpu, view) => {
+const $__gpuOnFrameView = (gpu, view) => {
   const device = gpu.device;
   const context = gpu.context;
 
   // Upload Buffers
-  basil3d_gpu_upload_view_input(gpu, view);
-  basil3d_gpu_upload_lines(gpu, view);
-  const batch = basil3d_gpu_upload_instance_input(gpu, view);
+  $__gpuUploadViewInput(gpu, view);
+  $__gpuUploadLines(gpu, view);
+  const batch = $__gpuUploadInstanceInput(gpu, view);
 
   // Create CommandBuffer
   const ce = device.createCommandEncoder();

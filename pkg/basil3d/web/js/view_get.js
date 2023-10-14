@@ -1,5 +1,5 @@
 
-const basil3d_view_get_offset = (offset, x, y, z, ha, va) => {
+const $getOffset = (offset, x, y, z, ha, va) => {
   if (offset) {
     x += offset.x || 0;
     y += offset.y || 0;
@@ -10,7 +10,7 @@ const basil3d_view_get_offset = (offset, x, y, z, ha, va) => {
   return [x, y, z, ha, va];
 };
 
-const basil3d_view_get_color = (color, r, g, b, a) => {
+const $getColor = (color, r, g, b, a) => {
   if (color) {
     if (color.r !== undefined) {
       r = color.r;

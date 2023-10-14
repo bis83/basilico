@@ -1,5 +1,5 @@
 
-const basil3d_gpu_upload_view_input = (gpu, view) => {
+const $__gpuUploadViewInput = (gpu, view) => {
   const device = gpu.device;
   const camera = view.camera;
 
@@ -29,7 +29,7 @@ const basil3d_gpu_upload_view_input = (gpu, view) => {
   device.queue.writeBuffer(gpu.cbuffer[0], 0, buf);
 };
 
-const basil3d_gpu_upload_lines = (gpu, view) => {
+const $__gpuUploadLines = (gpu, view) => {
   const device = gpu.device;
 
   if (view.lines.length <= 0) {
@@ -52,7 +52,7 @@ const basil3d_gpu_upload_lines = (gpu, view) => {
   device.queue.writeBuffer(gpu.cbuffer[5], 0, color);
 };
 
-const basil3d_gpu_upload_instance_input = (gpu, view) => {
+const $__gpuUploadInstanceInput = (gpu, view) => {
   const device = gpu.device;
 
   const instance = [];
@@ -73,14 +73,14 @@ const basil3d_gpu_upload_instance_input = (gpu, view) => {
 
       const dx = mod(i, room.divisor);
       const dz = div(i, room.divisor);
-      const [x0, y0, z0, ha0, va0] = basil3d_view_get_offset(room.offset, dx * room.unit, 0, dz * room.unit, 0, 0);
+      const [x0, y0, z0, ha0, va0] = $getOffset(room.offset, dx * room.unit, 0, dz * room.unit, 0, 0);
 
       for (const mid of node.mesh) {
         const mesh = room.mesh[mid];
         if (!mesh) {
           continue;
         }
-        const id = basil3d_gpu_id(gpu, mesh.name);
+        const id = $__gpuID(gpu, mesh.name);
         if (id < 0) {
           continue;
         }
@@ -88,11 +88,11 @@ const basil3d_gpu_upload_instance_input = (gpu, view) => {
           instance[n].push(index);
         }
 
-        const [x, y, z, ha, va] = basil3d_view_get_offset(mesh.offset, x0, y0, z0, ha0, va0);
+        const [x, y, z, ha, va] = $getOffset(mesh.offset, x0, y0, z0, ha0, va0);
         const matrix = mat4angle(ha, va);
         mat4translated(matrix, x, y, z);
-        const factor0 = basil3d_view_get_color(mesh.factor0, 1.0, 1.0, 1.0, 1.0);
-        const factor1 = basil3d_view_get_color(mesh.factor1, 1.0, 1.0, 1.0, 0.0);
+        const factor0 = $getColor(mesh.factor0, 1.0, 1.0, 1.0, 1.0);
+        const factor1 = $getColor(mesh.factor1, 1.0, 1.0, 1.0, 0.0);
         buf.set(matrix, 0);
         buf.set(factor0, 16);
         buf.set(factor1, 20);

@@ -1,5 +1,5 @@
 
-const basil3d_listen_init = (listen) => {
+const $__listenInit = (listen) => {
   const keymap = (keyboard, code, value) => {
     switch (code) {
       case "KeyW": keyboard.w = value; break;
@@ -76,7 +76,7 @@ const basil3d_listen_init = (listen) => {
   });
 }
 
-const basil3d_listen_tick = (listen, time) => {
+const $__listenTick = (listen, time) => {
   listen.timer.dt = (time - listen.timer.t) / 1000;
   listen.timer.t = time;
   listen.timer.n += 1;
@@ -99,11 +99,11 @@ const basil3d_listen_tick = (listen, time) => {
   }
 };
 
-const basil3d_listen_delta_time = (listen) => {
+const $listenDeltaTime = (listen) => {
   return listen.timer.dt;
 };
 
-const basil3d_listen_get = (listen, shortcut_key, shortcut_gamepad, touch_rect) => {
+const $listenGet = (listen, shortcut_key, shortcut_gamepad, touch_rect) => {
   if (touch_rect) {
     for (const touch of listen.touch.values()) {
       if (xy_hit_rect([touch.sx, touch.sy], ...touch_rect)) {

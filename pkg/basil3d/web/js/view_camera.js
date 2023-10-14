@@ -1,5 +1,5 @@
 
-const basil3d_view_camera = (view, desc) => {
+const $__viewCamera = (view, desc) => {
   if (desc.camera) {
     Object.assign(view.camera, desc.camera)
   }
