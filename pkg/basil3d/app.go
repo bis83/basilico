@@ -7,10 +7,12 @@ import (
 )
 
 type App struct {
-	Embed []*string               `json:"embed"`
-	GPU   AppGPU                  `json:"gpu"`
-	Audio AppAudio                `json:"audio"`
-	JSON  map[string]*interface{} `json:"json"`
+	Embed  []*string               `json:"embed"`
+	JSON   map[string]*interface{} `json:"json"`
+	GPU    AppGPU                  `json:"gpu"`
+	Audio  AppAudio                `json:"audio"`
+	Listen AppListen               `json:"listen"`
+	View   AppView                 `json:"view"`
 }
 
 const (
@@ -70,6 +72,12 @@ type AppGPUID struct {
 }
 
 type AppAudio struct {
+}
+
+type AppListen struct {
+}
+
+type AppView struct {
 }
 
 func (p *App) AddEmbed(buf string) int {

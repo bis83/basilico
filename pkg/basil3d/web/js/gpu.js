@@ -2,6 +2,14 @@
 const $__gpuInit = (gpu) => {
   const device = gpu.device;
 
+  gpu.bindGroupLayout = [];
+  gpu.pipelineLayout = [];
+  gpu.pipeline = [];
+  gpu.sampler = [];
+  gpu.bindGroup = [];
+  gpu.cbuffer = [];
+  gpu.gbuffer = [];
+
   const createCBuffer = (i, size, usage) => {
     gpu.cbuffer[i] = device.createBuffer({
       size: size,
