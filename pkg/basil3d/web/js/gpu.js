@@ -2,30 +2,18 @@
 const $__gpuInit = (gpu) => {
   const device = gpu.device;
 
-  gpu.cbuffer[0] = device.createBuffer({
-    size: 512 * 1,
-    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-  });
-  gpu.cbuffer[1] = device.createBuffer({
-    size: 96 * (2 * 1024),
-    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-  });
-  gpu.cbuffer[2] = device.createBuffer({
-    size: 4 * (16 * 1024),
-    usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-  });
-  gpu.cbuffer[3] = device.createBuffer({
-    size: 20 * (2 * 1024),
-    usage: GPUBufferUsage.INDIRECT | GPUBufferUsage.COPY_DST,
-  });
-  gpu.cbuffer[4] = device.createBuffer({
-    size: 12 * (4 * 1024),
-    usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-  });
-  gpu.cbuffer[5] = device.createBuffer({
-    size: 4 * (4 * 1024),
-    usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-  });
+  const createCBuffer = (i, size, usage) => {
+    gpu.cbuffer[i] = device.createBuffer({
+      size: size,
+      usage: usage | GPUBufferUsage.COPY_DST,
+    });
+  };
+  createCBuffer(0, 512 * 1, GPUBufferUsage.UNIFORM);
+  createCBuffer(1, 96 * (2 * 1024), GPUBufferUsage.STORAGE);
+  createCBuffer(2, 4 * (16 * 1024), GPUBufferUsage.VERTEX);
+  createCBuffer(3, 20 * (2 * 1024), GPUBufferUsage.INDIRECT);
+  createCBuffer(4, 12 * (4 * 1024), GPUBufferUsage.VERTEX);
+  createCBuffer(5, 4 * (4 * 1024), GPUBufferUsage.VERTEX);
 
   gpu.sampler[0] = device.createSampler({
     magFilter: 'linear',
