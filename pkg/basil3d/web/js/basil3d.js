@@ -14,7 +14,6 @@ const $start = async (setup, update) => {
     if ($isLoadCompleted(app)) {
       $__listenTick(app.listen, time);
       $__gpuOnFrameBegin(app.gpu);
-      $__gpuOnFrameLoading(app.gpu);
       if (setup) {
         setup(app);
         setup = null;

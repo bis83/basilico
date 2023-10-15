@@ -3,23 +3,6 @@ const $__gpuOnFrameBegin = (gpu) => {
   $__gpuGbuffer(gpu);
 };
 
-const $__gpuOnFrameLoading = (gpu) => {
-  const device = gpu.device;
-  const context = gpu.context;
-
-  const ce = device.createCommandEncoder();
-  const pass = ce.beginRenderPass({
-    colorAttachments: [{
-      view: context.getCurrentTexture().createView(),
-      clearValue: { r: 0.2, g: 0.2, b: 0.2, a: 1.0 },
-      loadOp: "clear",
-      storeOp: "store",
-    }],
-  });
-  pass.end();
-  device.queue.submit([ce.finish()]);
-};
-
 const $__gpuOnFrameView = (gpu, view) => {
   const device = gpu.device;
   const context = gpu.context;
