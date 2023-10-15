@@ -5,8 +5,8 @@ const $__listenInit = (listen) => {
     dt: 0,
     n: 0,
   };
-  listen.gamepad = {
-    index: null,
+  listen.gpad = {
+    id: null,
     lx: 0,
     ly: 0,
     rx: 0,
@@ -20,7 +20,14 @@ const $__listenInit = (listen) => {
     lt: false,
     rt: false,
   };
-  listen.keyboard = {
+  listen.mkey = {
+    mx: 0,
+    my: 0,
+    b0: false,
+    b1: false,
+    b2: false,
+    b3: false,
+    b4: false,
     w: false,
     a: false,
     s: false,
@@ -37,151 +44,167 @@ const $__listenInit = (listen) => {
     lctrl: false,
     esc: false,
   };
-  listen.touch = new Map();
 
-  const keymap = (keyboard, code, value) => {
-    switch (code) {
-      case "KeyW": keyboard.w = value; break;
-      case "KeyA": keyboard.a = value; break;
-      case "KeyS": keyboard.s = value; break;
-      case "KeyD": keyboard.d = value; break;
-      case "ArrowUp": keyboard.up = value; break;
-      case "ArrowLeft": keyboard.left = value; break;
-      case "ArrowDown": keyboard.down = value; break;
-      case "ArrowRight": keyboard.right = value; break;
-      case "KeyQ": keyboard.q = value; break;
-      case "KeyE": keyboard.e = value; break;
-      case "KeyZ": keyboard.z = value; break;
-      case "KeyX": keyboard.x = value; break;
-      case "Space": keyboard.space = value; break;
-      case "ControlLeft": keyboard.lctrl = value; break;
-      case "Escape": keyboard.esc = value; break;
-      default: return false;
-    }
-    return true;
+  const keymap = {
+    "KeyW": "w",
+    "KeyA": "a",
+    "KeyS": "s",
+    "KeyD": "d",
+    "ArrowUp": "up",
+    "ArrowLeft": "left",
+    "ArrowDown": "down",
+    "ArrowRight": "right",
+    "KeyQ": "q",
+    "KeyE": "e",
+    "KeyZ": "z",
+    "KeyX": "x",
+    "Space": "space",
+    "ControlLeft": "lctrl",
+    "Escape": "esc",
+  };
+  const buttonmap = {
+    0: "b0",
+    1: "b1",
+    2: "b2",
+    3: "b3",
+    4: "b4",
   };
 
   html_listen(window, "focus", (ev) => {
   });
   html_listen(window, "blur", (ev) => {
-    for (const key in listen.keyboard) {
-      listen.keyboard[key] = false;
+    const mkey = listen.mkey;
+    for (const key in keymap) {
+      mkey[keymap[key]] = false;
     }
+    for (const btn in buttonmap) {
+      mkey[buttonmap[btn]] = false;
+    }
+    mkey.mx = 0;
+    mkey.my = 0;
   });
   html_listen(window, "resize", (ev) => {
   });
   html_listen(window, "gamepadconnected", (ev) => {
-    listen.gamepad.index = ev.gamepad.index;
+    listen.gpad.id = ev.gamepad.index;
   });
   html_listen(window, "gamepaddisconnected", (ev) => {
-    if (listen.gamepad.index === ev.gamepad.index) {
-      listen.gamepad.index = null;
+    if (listen.gpad.id === ev.gamepad.index) {
+      listen.gpad.id = null;
     }
   });
   html_listen(document, "keydown", (ev) => {
-    if (keymap(listen.keyboard, ev.code, true)) {
+    const key = keymap[ev.code];
+    if (key) {
+      listen.mkey[key] = true;
       ev.preventDefault();
     }
   });
   html_listen(document, "keyup", (ev) => {
-    if (keymap(listen.keyboard, ev.code, false)) {
+    const key = keymap[ev.code];
+    if (key) {
+      listen.mkey[key] = false;
+      ev.preventDefault();
+    }
+  });
+  html_listen(document, "click", (ev) => {
+    if (!document.pointerLockElement) {
+      const canvas = html_canvas();
+      canvas.requestPointerLock();
+    }
+  });
+  html_listen(document, "mousedown", (ev) => {
+    if (document.pointerLockElement === html_canvas()) {
+      const btn = buttonmap[ev.button];
+      if (btn) {
+        listen.mkey[btn] = true;
+        ev.preventDefault();
+      }
+    }
+  });
+  html_listen(document, "mouseup", (ev) => {
+    if (document.pointerLockElement === html_canvas()) {
+      const btn = buttonmap[ev.button];
+      if (btn) {
+        listen.mkey[btn] = false;
+        ev.preventDefault();
+      }
+    }
+  });
+  html_listen(document, "mousemove", (ev) => {
+    if (document.pointerLockElement === html_canvas()) {
+      listen.mkey.mx = ev.movementX;
+      listen.mkey.my = ev.movementY;
       ev.preventDefault();
     }
   });
   html_listen(document.body, "contextmenu", (ev) => {
     ev.preventDefault();
   });
-  html_listen(document.body, "pointerdown", (ev) => {
-    listen.touch.set(ev.pointerId, {
-      x: ev.clientX,
-      y: ev.clientY,
-      sx: ev.clientX,
-      sy: ev.clientY,
-      time: performance.now(),
-    });
-  });
-  html_listen(document.body, "pointerup", (ev) => {
-    listen.touch.delete(ev.pointerId);
-  });
-  html_listen(document.body, "pointerout", (ev) => {
-    listen.touch.delete(ev.pointerId);
-  });
-  html_listen(document.body, "pointermove", (ev) => {
-    const touch = listen.touch.get(ev.pointerId);
-    if (touch) {
-      touch.x = ev.clientX;
-      touch.y = ev.clientY;
-    }
-  });
 }
 
-const $__listenTick = (listen, time) => {
+const $__listenFrameBegin = (listen, time) => {
   listen.timer.dt = (time - listen.timer.t) / 1000;
   listen.timer.t = time;
   listen.timer.n += 1;
 
-  if (listen.gamepad.index !== null) {
-    const gamepads = navigator.getGamepads();
-    const gp = gamepads[listen.gamepad.index];
-    listen.gamepad.lx = Math.trunc(gp.axes[0] * 4) / 4;
-    listen.gamepad.ly = Math.trunc(gp.axes[1] * 4) / 4;
-    listen.gamepad.rx = Math.trunc(gp.axes[2] * 4) / 4;
-    listen.gamepad.ry = Math.trunc(gp.axes[3] * 4) / 4;
-    listen.gamepad.b0 = (gp.buttons[0].value >= 0.5);
-    listen.gamepad.b1 = (gp.buttons[1].value >= 0.5);
-    listen.gamepad.b8 = (gp.buttons[8].value >= 0.5);
-    listen.gamepad.b9 = (gp.buttons[9].value >= 0.5);
-    listen.gamepad.lb = (gp.buttons[4].value >= 0.5);
-    listen.gamepad.rb = (gp.buttons[5].value >= 0.5);
-    listen.gamepad.lt = (gp.buttons[6].value >= 0.5);
-    listen.gamepad.rt = (gp.buttons[7].value >= 0.5);
+  if (listen.gpad.id !== null) {
+    const gp = navigator.getGamepads()[listen.gpad.id];
+    listen.gpad.lx = Math.trunc(gp.axes[0] * 4) / 4;
+    listen.gpad.ly = Math.trunc(gp.axes[1] * 4) / 4;
+    listen.gpad.rx = Math.trunc(gp.axes[2] * 4) / 4;
+    listen.gpad.ry = Math.trunc(gp.axes[3] * 4) / 4;
+    listen.gpad.b0 = (gp.buttons[0].value >= 0.5);
+    listen.gpad.b1 = (gp.buttons[1].value >= 0.5);
+    listen.gpad.b8 = (gp.buttons[8].value >= 0.5);
+    listen.gpad.b9 = (gp.buttons[9].value >= 0.5);
+    listen.gpad.lb = (gp.buttons[4].value >= 0.5);
+    listen.gpad.rb = (gp.buttons[5].value >= 0.5);
+    listen.gpad.lt = (gp.buttons[6].value >= 0.5);
+    listen.gpad.rt = (gp.buttons[7].value >= 0.5);
   }
+};
+
+const $__listenFrameEnd = (listen) => {
+  listen.mkey.mx = 0;
+  listen.mkey.my = 0;
 };
 
 const $listenDeltaTime = (listen) => {
   return listen.timer.dt;
 };
 
-const $listenGet = (listen, shortcut_key, shortcut_gamepad, touch_rect) => {
-  if (touch_rect) {
-    for (const touch of listen.touch.values()) {
-      if (xy_hit_rect([touch.sx, touch.sy], ...touch_rect)) {
-        const x = (touch.x - touch.sx);
-        const y = -(touch.y - touch.sy);
-        return xy_normalize(x, y);
-      }
-    }
-  }
-  if (shortcut_key) {
-    if (shortcut_key === "wasd") {
-      const keyboard = listen.keyboard;
-      const x = keyboard.a ? -1 : keyboard.d ? +1 : 0;
-      const y = keyboard.w ? +1 : keyboard.s ? -1 : 0;
+const $listenGet = (listen, shortcut_mkey, shortcut_gpad) => {
+  if (shortcut_mkey) {
+    const mkey = listen.mkey;
+    if (shortcut_mkey === "wasd") {
+      const x = mkey.a ? -1 : mkey.d ? +1 : 0;
+      const y = mkey.w ? +1 : mkey.s ? -1 : 0;
       if (x !== 0 || y !== 0) {
         return xy_normalize(x, y);
       }
-    } else if (shortcut_key === "arrow") {
-      const keyboard = listen.keyboard;
-      const x = keyboard.right ? +1 : keyboard.left ? -1 : 0;
-      const y = keyboard.up ? +1 : keyboard.down ? -1 : 0;
+    } else if (shortcut_mkey === "arrow") {
+      const x = mkey.right ? +1 : mkey.left ? -1 : 0;
+      const y = mkey.up ? +1 : mkey.down ? -1 : 0;
       if (x !== 0 || y !== 0) {
         return xy_normalize(x, y);
       }
+    } else if (shortcut_mkey === "mouse") {
+      return xy_normalize(mkey.mx, -mkey.my);
     } else {
-      if (listen.keyboard[shortcut_key]) {
+      if (mkey[shortcut_mkey]) {
         return [1, 0];
       }
     }
   }
-  if (shortcut_gamepad) {
-    if (shortcut_gamepad === "left-stick") {
-      const gamepad = listen.gamepad;
-      return xy_normalize(gamepad.lx, -gamepad.ly);
-    } else if (shortcut_gamepad === "right-stick") {
-      const gamepad = listen.gamepad;
-      return xy_normalize(gamepad.rx, -gamepad.ry);
+  if (shortcut_gpad) {
+    const gpad = listen.gpad;
+    if (shortcut_gpad === "ls") {
+      return xy_normalize(gpad.lx, -gpad.ly);
+    } else if (shortcut_gpad === "rs") {
+      return xy_normalize(gpad.rx, -gpad.ry);
     } else {
-      if (listen.gamepad[shortcut_gamepad]) {
+      if (listen.gpad[shortcut_gpad]) {
         return [1, 0];
       }
     }
