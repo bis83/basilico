@@ -3,11 +3,11 @@ const $__gpuFrameBegin = (gpu) => {
   $__gpuResizeGBuffer(gpu);
 };
 
-const $__gpuFrameEnd = (gpu, view) => {
+const $__gpuFrameEnd = (gpu, view, app) => {
   // Upload Buffers
   $__gpuUploadViewInput(gpu, view);
-  const lines = $__gpuUploadLines(gpu, view);
-  const batch = $__gpuUploadInstanceInput(gpu, view);
+  const batch = $__gpuUploadInstanceInput(gpu, view, app);
+  const lines = $__gpuUploadLineInput(gpu, view);
 
   // Create CommandBuffer
   const device = gpu.device;
@@ -19,7 +19,7 @@ const $__gpuFrameEnd = (gpu, view) => {
   device.queue.submit([ce.finish()]);
 };
 
-$__gpuPassGBuffer = (ce, gpu, batch) => {
+const $__gpuPassGBuffer = (ce, gpu, batch) => {
   const pass = ce.beginRenderPass({
     depthStencilAttachment: {
       view: gpu.gbuffer[0].createView(),
@@ -107,7 +107,7 @@ const $__gpuPassHDR = (ce, gpu) => {
   pass.end();
 };
 
-$__gpuPassLDR = (ce, gpu, lines) => {
+const $__gpuPassLDR = (ce, gpu, lines) => {
   const pass = ce.beginRenderPass({
     depthStencilAttachment: {
       view: gpu.gbuffer[0].createView(),
@@ -123,7 +123,7 @@ $__gpuPassLDR = (ce, gpu, lines) => {
   pass.setPipeline(gpu.pipeline[4]);
   pass.setBindGroup(0, gpu.bindGroup[3]);
   pass.draw(4);
-  if (lines > 0) {
+  if (lines) {
     pass.setPipeline(gpu.pipeline[5]);
     pass.setBindGroup(0, gpu.bindGroup[0]);
     pass.setVertexBuffer(0, gpu.cbuffer[4]);

@@ -13,6 +13,7 @@ type App struct {
 	Audio  AppAudio                `json:"audio"`
 	Listen AppListen               `json:"listen"`
 	View   AppView                 `json:"view"`
+	Room   map[string]*AppRoom     `json:"room"`
 }
 
 const (
@@ -75,9 +76,70 @@ type AppAudio struct {
 }
 
 type AppListen struct {
+	Event []*AppListenEvent `json:"event"`
+}
+type AppListenEvent struct {
+	Name          string `json:"name"`
+	MouseKeyboard string `json:"mkey"`
+	GamePad       string `json:"gpad"`
+}
+
+type AppRoom struct {
+	Mesh    []*AppRoomMesh `json:"mesh"`
+	Node    []*AppRoomNode `json:"node"`
+	Unit    float32        `json:"unit"`
+	Divisor int            `json:"divisor"`
+	Indices []int          `json:"indices"`
+}
+type AppRoomMesh struct {
+	Name    string     `json:"name"`
+	Offset  *AppOffset `json:"offset"`
+	Factor0 *AppColor  `json:"factor0"`
+	Factor1 *AppColor  `json:"factor1"`
+}
+type AppRoomNode struct {
+	Mesh  []int     `json:"mesh"`
+	Space *AppRange `json:"space,omitempty"`
 }
 
 type AppView struct {
+	Room   []*AppViewRoom `json:"room"`
+	Camera AppViewCamera  `json:"camera"`
+	Light  AppViewLight   `json:"light"`
+}
+type AppViewRoom struct {
+	Offset AppOffset `json:"offset,omitempty"`
+	Name   string    `json:"name"`
+}
+type AppViewCamera struct {
+	Offset AppOffset `json:"offset"`
+	Fov    float32   `json:"fov"`
+	Near   float32   `json:"near"`
+	Far    float32   `json:"far"`
+}
+type AppViewLight struct {
+	Offset   AppOffset `json:"offset"`
+	Color    AppColor  `json:"color"`
+	Ambient0 AppColor  `json:"ambient0"`
+	Ambient1 AppColor  `json:"ambient1"`
+}
+
+type AppOffset struct {
+	X  float32 `json:"x"`
+	Y  float32 `json:"y"`
+	Z  float32 `json:"z"`
+	HA float32 `json:"ha"`
+	VA float32 `json:"va"`
+}
+type AppColor struct {
+	R float32 `json:"r"`
+	G float32 `json:"g"`
+	B float32 `json:"b"`
+	A float32 `json:"a"`
+}
+type AppRange struct {
+	Min *float32 `json:"min,omitempty"`
+	Max *float32 `json:"max,omitempty"`
 }
 
 func (p *App) AddEmbed(buf string) int {

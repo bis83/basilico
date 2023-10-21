@@ -1,39 +1,48 @@
 
 const $__gpuUploadViewInput = (gpu, view) => {
   const device = gpu.device;
-  const camera = view.camera;
-
   const buf = new Float32Array(68);
-
-  const aspect = canvas.width / canvas.height;
-  const fovy = deg2rad(camera.fov);
-  const dir = vec3dir(camera.ha, camera.va);
-  const eye = camera.eye;
-  const at = vec3add(eye, dir);
-  const up = [0, 1, 0];
-  const look = mat4lookat(eye, at, up);
-  const proj = mat4perspective(fovy, aspect, camera.near, camera.far);
-  const vp = mat4multiply(look, proj);
-  const ivp = mat4invert(vp);
-  buf.set(vp, 0);
-  buf.set(ivp, 16);
-  buf.set(look, 32);
-  buf.set(eye, 48);
-
-  const light = view.light;
-  const ldir = vec3dir(light.ha, light.va);
-  buf.set(ldir, 52);
-  buf.set(light.color, 56);
-  buf.set(light.ambient0, 60);
-  buf.set(light.ambient1, 64);
+  { // Camera
+    const camera = view.camera;
+    const aspect = gpu.canvas.width / gpu.canvas.height;
+    const fovy = deg2rad(camera.fov);
+    const [x, y, z, ha, va] = $getOffset(camera.offset, 0, 0, 0, 0, 0);
+    const dir = vec3dir(ha, va);
+    const eye = [x, y, z];
+    const at = vec3add(eye, dir);
+    const up = [0, 1, 0];
+    const look = mat4lookat(eye, at, up);
+    const proj = mat4perspective(fovy, aspect, camera.near, camera.far);
+    const vp = mat4multiply(look, proj);
+    const ivp = mat4invert(vp);
+    buf.set(vp, 0);
+    buf.set(ivp, 16);
+    buf.set(look, 32);
+    buf.set(eye, 48);
+  }
+  { // Light
+    const light = view.light;
+    const [x, y, z, ha, va] = $getOffset(light.offset, 0, 0, 0, 0, 0);
+    const color = $getColor(light.color, 0, 0, 0, 0);
+    const ambient0 = $getColor(light.ambient0, 0, 0, 0, 0);
+    const ambient1 = $getColor(light.ambient1, 0, 0, 0, 0);
+    const ldir = vec3dir(ha, va);
+    buf.set(ldir, 52);
+    buf.set(color, 56);
+    buf.set(ambient0, 60);
+    buf.set(ambient1, 64);
+  }
   device.queue.writeBuffer(gpu.cbuffer[0], 0, buf);
 };
 
-const $__gpuUploadLines = (gpu, view) => {
+const $__gpuUploadLineInput = (gpu, view) => {
   const device = gpu.device;
 
+  if (!view.lines) {
+    return 0;
+  }
   if (view.lines.length <= 0) {
-    return;
+    return 0;
   }
 
   const position = new Float32Array(view.lines.length * 3);
@@ -53,7 +62,7 @@ const $__gpuUploadLines = (gpu, view) => {
   return view.lines.length;
 };
 
-const $__gpuUploadInstanceInput = (gpu, view) => {
+const $__gpuUploadInstanceInput = (gpu, view, app) => {
   const device = gpu.device;
 
   const instance = [];
@@ -65,7 +74,11 @@ const $__gpuUploadInstanceInput = (gpu, view) => {
   const buf = new Float32Array(24);
   const stride = (4 * 24);
   let index = 0;
-  for (const room of view.room) {
+  for (const rid of view.room) {
+    const room = $room(app, rid.name);
+    if (!room) {
+      continue;
+    }
     for (let i = 0; i < room.indices.length; ++i) {
       const node = room.node[room.indices[i]];
       if (!node) {
@@ -74,7 +87,7 @@ const $__gpuUploadInstanceInput = (gpu, view) => {
 
       const dx = mod(i, room.divisor);
       const dz = div(i, room.divisor);
-      const [x0, y0, z0, ha0, va0] = $getOffset(room.offset, dx * room.unit, 0, dz * room.unit, 0, 0);
+      const [x0, y0, z0, ha0, va0] = $getOffset(rid.offset, dx * room.unit, 0, dz * room.unit, 0, 0);
 
       for (const mid of node.mesh) {
         const mesh = room.mesh[mid];

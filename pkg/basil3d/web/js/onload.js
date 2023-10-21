@@ -13,9 +13,6 @@ const $__onload = (app) => {
     if (app.listen) {
       $__listenInit(app.listen);
     }
-    if (app.view) {
-      $viewReset(app.view);
-    }
 
     delete app.embed;
     app.loading -= 1;

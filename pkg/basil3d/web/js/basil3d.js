@@ -21,7 +21,7 @@ const $start = async (setup, update) => {
       if (update) {
         update(app);
       }
-      $__gpuFrameEnd(app.gpu, app.view);
+      $__gpuFrameEnd(app.gpu, app.view, app);
       $__listenFrameEnd(app.listen);
     }
     requestAnimationFrame(frame);
@@ -35,4 +35,8 @@ const $isLoadCompleted = (app) => {
 
 const $json = (app, name) => {
   return app.json[name];
+};
+
+const $room = (app, name) => {
+  return app.room[name];
 };
