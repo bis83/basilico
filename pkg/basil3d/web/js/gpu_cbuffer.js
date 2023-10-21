@@ -50,6 +50,7 @@ const $__gpuUploadLines = (gpu, view) => {
   }
   device.queue.writeBuffer(gpu.cbuffer[4], 0, position);
   device.queue.writeBuffer(gpu.cbuffer[5], 0, color);
+  return view.lines.length;
 };
 
 const $__gpuUploadInstanceInput = (gpu, view) => {
