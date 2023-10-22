@@ -7,13 +7,13 @@ import (
 )
 
 type App struct {
-	Embed  []*string               `json:"embed"`
-	JSON   map[string]*interface{} `json:"json"`
-	GPU    AppGPU                  `json:"gpu"`
-	Audio  AppAudio                `json:"audio"`
-	Listen AppListen               `json:"listen"`
-	View   AppView                 `json:"view"`
-	Room   map[string]*AppRoom     `json:"room"`
+	Embed []*string               `json:"embed"`
+	JSON  map[string]*interface{} `json:"json"`
+	GPU   AppGPU                  `json:"gpu"`
+	Audio AppAudio                `json:"audio"`
+	View  AppView                 `json:"view"`
+	Com   AppCom                  `json:"com"`
+	Room  map[string]*AppRoom     `json:"room"`
 }
 
 const (
@@ -75,10 +75,18 @@ type AppGPUID struct {
 type AppAudio struct {
 }
 
-type AppListen struct {
-	Event []*AppListenEvent `json:"event"`
+type AppCom struct {
+	Timer         AppComTimer            `json:"timer"`
+	MouseKeyboard map[string]interface{} `json:"mkey"`
+	GamePad       map[string]interface{} `json:"gpad"`
+	Event         []*AppComEvent         `json:"event"`
 }
-type AppListenEvent struct {
+type AppComTimer struct {
+	Time      float32 `json:"t"`
+	DeltaTime float32 `json:"dt"`
+	Count     int     `json:"n"`
+}
+type AppComEvent struct {
 	Name          string `json:"name"`
 	MouseKeyboard string `json:"mkey"`
 	GamePad       string `json:"gpad"`

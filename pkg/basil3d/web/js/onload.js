@@ -10,8 +10,8 @@ const $__onload = (app) => {
     if (app.gpu) {
       await $__gpuInit(app.gpu, app.embed);
     }
-    if (app.listen) {
-      $__listenInit(app.listen);
+    if (app.com) {
+      $__comInit(app.com);
     }
 
     delete app.embed;

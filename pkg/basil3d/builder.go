@@ -35,6 +35,9 @@ func (p *Builder) build() (*App, error) {
 	if err := p.importJSON(&app); err != nil {
 		return nil, err
 	}
+	if err := p.importCom(&app); err != nil {
+		return nil, err
+	}
 	if err := p.importRoom(&app); err != nil {
 		return nil, err
 	}
