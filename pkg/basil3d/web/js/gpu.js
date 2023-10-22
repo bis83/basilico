@@ -55,7 +55,7 @@ const $__gpuInit = async (gpu, embed) => {
     });
   };
   createCBuffer(0, 512 * 1, GPUBufferUsage.UNIFORM);
-  createCBuffer(1, 96 * (2 * 1024), GPUBufferUsage.STORAGE);
+  createCBuffer(1, 112 * (2 * 1024), GPUBufferUsage.STORAGE);
   createCBuffer(2, 4 * (16 * 1024), GPUBufferUsage.VERTEX);
   createCBuffer(3, 20 * (2 * 1024), GPUBufferUsage.INDIRECT);
   createCBuffer(4, 12 * (4 * 1024), GPUBufferUsage.VERTEX);

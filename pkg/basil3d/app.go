@@ -61,6 +61,7 @@ type AppGPUMesh struct {
 	// Uniform
 	Factor0  []float64 `json:"factor0,omitempty"`  // [Color.r, Color.g, Color.b, Color.a]
 	Factor1  []float64 `json:"factor1,omitempty"`  // [Occlusion, Metallic, Roughness, unused]
+	Factor2  []float64 `json:"factor2,omitempty"`  // [Emissive.r, Emissive.g, Emissive.b, unused]
 	Texture0 int       `json:"texture0,omitempty"` // BaseColorTexture
 	Texture1 int       `json:"texture1,omitempty"` // ParameterTexture(OcclusionMetallicRoughness)
 	Texture2 int       `json:"texture2,omitempty"` // NormalTexture
@@ -102,8 +103,9 @@ type AppRoom struct {
 type AppRoomMesh struct {
 	Name    string     `json:"name"`
 	Offset  *AppOffset `json:"offset"`
-	Factor0 *AppColor  `json:"factor0"`
-	Factor1 *AppColor  `json:"factor1"`
+	Factor0 *AppColor  `json:"factor0,omitempty"`
+	Factor1 *AppColor  `json:"factor1,omitempty"`
+	Factor2 *AppColor  `json:"factor2,omitempty"`
 }
 type AppRoomNode struct {
 	Mesh  []int     `json:"mesh"`

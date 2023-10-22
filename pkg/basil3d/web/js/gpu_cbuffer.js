@@ -71,8 +71,8 @@ const $__gpuUploadInstanceInput = (gpu, view, app) => {
     instance[i] = [];
   }
 
-  const buf = new Float32Array(24);
-  const stride = (4 * 24);
+  const buf = new Float32Array(28);
+  const stride = (4 * 28);
   let index = 0;
   for (const rid of view.room) {
     const room = $room(app, rid.name);
@@ -107,9 +107,11 @@ const $__gpuUploadInstanceInput = (gpu, view, app) => {
         mat4translated(matrix, x, y, z);
         const factor0 = $getColor(mesh.factor0, 1.0, 1.0, 1.0, 1.0);
         const factor1 = $getColor(mesh.factor1, 1.0, 1.0, 1.0, 0.0);
+        const factor2 = $getColor(mesh.factor2, 0.0, 0.0, 0.0, 0.0);
         buf.set(matrix, 0);
         buf.set(factor0, 16);
         buf.set(factor1, 20);
+        buf.set(factor2, 24);
         device.queue.writeBuffer(gpu.cbuffer[1], index * stride, buf);
         index += 1;
       }

@@ -45,6 +45,12 @@ const $__gpuPassGBuffer = (ce, gpu, batch) => {
         clearValue: { r: 1.0, g: 0.0, b: 0.0, a: 0.0 },
         loadOp: "clear",
         storeOp: "store",
+      },
+      {
+        view: gpu.gbuffer[4].createView(),
+        clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+        loadOp: "clear",
+        storeOp: "store",
       }
     ],
   });
@@ -94,8 +100,7 @@ const $__gpuPassHDR = (ce, gpu) => {
     },
     colorAttachments: [{
       view: gpu.gbuffer[4].createView(),
-      clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
-      loadOp: "clear",
+      loadOp: "load",
       storeOp: "store",
     }],
   });

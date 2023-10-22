@@ -124,8 +124,7 @@ fn FS_HDR(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
   var C_L = (view.lightColor.rgb * view.lightColor.a) * BRDF(N, L, V, F0.rgb, F1.y, F1.z);
   var A = sampleEnvMap(R);
   var C_A = A * F1.x * F0.rgb;
-  var C_E = F0.rgb * F1.w;
-  return vec4(C_L + C_A + C_E, 1.0);
+  return vec4(C_L + C_A, 0.0);
 }
 
 @fragment
@@ -134,7 +133,7 @@ fn FS_HDRSky(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
   var P = decodeWorldPosition(xy);
   var V = normalize(view.eyePosition.xyz - P);
   var C_A = sampleEnvMap(V);
-  return vec4(C_A, 1.0);
+  return vec4(C_A, 0.0);
 }
 
 fn toneMapping(x : vec3<f32>) -> vec3<f32> {

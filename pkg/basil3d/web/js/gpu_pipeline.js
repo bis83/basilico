@@ -26,6 +26,7 @@ const $__gpuInitPipeline = (gpu) => {
         { format: "rgb10a2unorm" },
         { format: "rgba8unorm" },
         { format: "rgba8unorm" },
+        { format: "rgba16float" },
       ],
     },
     depthStencil: {
@@ -75,7 +76,17 @@ const $__gpuInitPipeline = (gpu) => {
       module: gpu.shader[1],
       entryPoint: "FS_HDR",
       targets: [
-        { format: "rgba16float" },
+        {
+          format: "rgba16float",
+          blend: {
+            color: {
+              operation: "add",
+              srcFactor: "one",
+              dstFactor: "one",
+            },
+            alpha: {},
+          },
+        },
       ],
     },
     depthStencil: {
@@ -95,7 +106,17 @@ const $__gpuInitPipeline = (gpu) => {
       module: gpu.shader[1],
       entryPoint: "FS_HDRSky",
       targets: [
-        { format: "rgba16float" },
+        {
+          format: "rgba16float",
+          blend: {
+            color: {
+              operation: "add",
+              srcFactor: "one",
+              dstFactor: "one",
+            },
+            alpha: {},
+          },
+        },
       ],
     },
     depthStencil: {

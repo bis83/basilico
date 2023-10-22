@@ -12,6 +12,7 @@ struct FragmentOutput {
   @location(0) gbuffer0 : vec4<f32>,
   @location(1) gbuffer1 : vec4<f32>,
   @location(2) gbuffer2 : vec4<f32>,
+  @location(3) gbuffer3 : vec4<f32>,
 };
 
 @vertex
@@ -32,5 +33,6 @@ fn FS(input : VertexOutput) -> FragmentOutput {
   output.gbuffer0 = vec4(normalize(input.normal) * 0.5 + 0.5, 0);
   output.gbuffer1 = inst[input.id].factor0.xyzw;
   output.gbuffer2 = inst[input.id].factor1.xyzw;
+  output.gbuffer3 = inst[input.id].factor2.xyzw;
   return output;
 }
