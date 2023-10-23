@@ -158,7 +158,11 @@ const $comGet = (com, shortcut_mkey, shortcut_gpad) => {
         return xy_normalize(x, y);
       }
     } else if (shortcut_mkey === "mouse") {
-      return xy_normalize(mkey.mx, -mkey.my);
+      const x = mkey.mx;
+      const y = -mkey.my;
+      if (x !== 0 || y !== 0) {
+        return xy_normalize(x, y);
+      }
     } else {
       if (mkey[shortcut_mkey]) {
         return [1, 0];
