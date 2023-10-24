@@ -12,7 +12,7 @@ type App struct {
 	GPU   AppGPU                  `json:"gpu"`
 	Audio AppAudio                `json:"audio"`
 	View  AppView                 `json:"view"`
-	Com   AppCom                  `json:"com"`
+	Func  AppFunc                 `json:"func"`
 	Room  map[string]*AppRoom     `json:"room"`
 }
 
@@ -76,18 +76,18 @@ type AppGPUID struct {
 type AppAudio struct {
 }
 
-type AppCom struct {
-	Timer         AppComTimer            `json:"timer"`
+type AppFunc struct {
+	Timer         AppFuncTimer           `json:"timer"`
 	MouseKeyboard map[string]interface{} `json:"mkey"`
 	GamePad       map[string]interface{} `json:"gpad"`
-	Event         []*AppComEvent         `json:"event"`
+	Event         []*AppFuncEvent        `json:"event"`
 }
-type AppComTimer struct {
+type AppFuncTimer struct {
 	Time      float32 `json:"t"`
 	DeltaTime float32 `json:"dt"`
 	Count     int     `json:"n"`
 }
-type AppComEvent struct {
+type AppFuncEvent struct {
 	Name          string `json:"name"`
 	MouseKeyboard string `json:"mkey"`
 	GamePad       string `json:"gpad"`

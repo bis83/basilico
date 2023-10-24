@@ -1,6 +1,6 @@
 
-const $__comInit = (com) => {
-  com.timer.t = performance.now();
+const $__funcInit = (func) => {
+  func.timer.t = performance.now();
 
   const keymap = {
     "KeyW": "w",
@@ -30,7 +30,7 @@ const $__comInit = (com) => {
   html_listen(window, "focus", (ev) => {
   });
   html_listen(window, "blur", (ev) => {
-    const mkey = com.mkey;
+    const mkey = func.mkey;
     for (const key in keymap) {
       mkey[keymap[key]] = false;
     }
@@ -43,18 +43,18 @@ const $__comInit = (com) => {
   html_listen(window, "resize", (ev) => {
   });
   html_listen(window, "gamepadconnected", (ev) => {
-    com.gpad.id = ev.gamepad.index;
+    func.gpad.id = ev.gamepad.index;
   });
   html_listen(window, "gamepaddisconnected", (ev) => {
-    if (com.gpad.id === ev.gamepad.index) {
-      com.gpad.id = null;
+    if (func.gpad.id === ev.gamepad.index) {
+      func.gpad.id = null;
     }
   });
   html_listen(document, "keydown", (ev) => {
     if (html_is_pointer_lock()) {
       const key = keymap[ev.code];
       if (key) {
-        com.mkey[key] = true;
+        func.mkey[key] = true;
         ev.preventDefault();
       }
     }
@@ -63,7 +63,7 @@ const $__comInit = (com) => {
     if (html_is_pointer_lock()) {
       const key = keymap[ev.code];
       if (key) {
-        com.mkey[key] = false;
+        func.mkey[key] = false;
         ev.preventDefault();
       }
     }
@@ -77,7 +77,7 @@ const $__comInit = (com) => {
     if (html_is_pointer_lock()) {
       const btn = buttonmap[ev.button];
       if (btn) {
-        com.mkey[btn] = true;
+        func.mkey[btn] = true;
         ev.preventDefault();
       }
     }
@@ -86,15 +86,15 @@ const $__comInit = (com) => {
     if (html_is_pointer_lock()) {
       const btn = buttonmap[ev.button];
       if (btn) {
-        com.mkey[btn] = false;
+        func.mkey[btn] = false;
         ev.preventDefault();
       }
     }
   });
   html_listen(document, "mousemove", (ev) => {
     if (html_is_pointer_lock()) {
-      com.mkey.mx = ev.movementX;
-      com.mkey.my = ev.movementY;
+      func.mkey.mx = ev.movementX;
+      func.mkey.my = ev.movementY;
       ev.preventDefault();
     }
   });
@@ -103,15 +103,15 @@ const $__comInit = (com) => {
   });
 }
 
-const $__comFrameBegin = (com, time) => {
+const $__funcFrameBegin = (func, time) => {
   {
-    const timer = com.timer;
+    const timer = func.timer;
     timer.dt = (time - timer.t) / 1000;
     timer.t = time;
     timer.n += 1;
   }
   {
-    const gpad = com.gpad;
+    const gpad = func.gpad;
     if (gpad.id !== null) {
       const gp = navigator.getGamepads()[gpad.id];
       gpad.lx = Math.trunc(gp.axes[0] * 4) / 4;
@@ -130,21 +130,22 @@ const $__comFrameBegin = (com, time) => {
   }
 };
 
-const $__comFrameEnd = (com) => {
+const $__funcFrameEnd = (func) => {
   {
-    const mkey = com.mkey;
+    const mkey = func.mkey;
     mkey.mx = 0;
     mkey.my = 0;
   }
 };
 
-const $comDeltaTime = (com) => {
-  return com.timer.dt;
+const $deltaTime = (app) => {
+  return app.func.timer.dt;
 };
 
-const $comGet = (com, shortcut_mkey, shortcut_gpad) => {
+const $event = (app, shortcut_mkey, shortcut_gpad) => {
+  const func = app.func;
   if (shortcut_mkey) {
-    const mkey = com.mkey;
+    const mkey = func.mkey;
     if (shortcut_mkey === "wasd") {
       const x = mkey.a ? -1 : mkey.d ? +1 : 0;
       const y = mkey.w ? +1 : mkey.s ? -1 : 0;
@@ -170,7 +171,7 @@ const $comGet = (com, shortcut_mkey, shortcut_gpad) => {
     }
   }
   if (shortcut_gpad) {
-    const gpad = com.gpad;
+    const gpad = func.gpad;
     if (shortcut_gpad === "ls") {
       return xy_normalize(gpad.lx, -gpad.ly);
     } else if (shortcut_gpad === "rs") {

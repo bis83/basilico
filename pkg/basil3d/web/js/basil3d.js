@@ -12,7 +12,7 @@ const $start = async (setup, update) => {
 
   const frame = (time) => {
     if ($isLoadCompleted(app)) {
-      $__comFrameBegin(app.com, time);
+      $__funcFrameBegin(app.func, time);
       $__gpuFrameBegin(app.gpu);
       if (setup) {
         setup(app);
@@ -22,7 +22,7 @@ const $start = async (setup, update) => {
         update(app);
       }
       $__gpuFrameEnd(app.gpu, app.view, app);
-      $__comFrameEnd(app.com);
+      $__funcFrameEnd(app.func);
     }
     requestAnimationFrame(frame);
   };
