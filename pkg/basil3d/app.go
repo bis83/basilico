@@ -77,10 +77,12 @@ type AppAudio struct {
 }
 
 type AppFunc struct {
-	Timer         AppFuncTimer           `json:"timer"`
-	MouseKeyboard map[string]interface{} `json:"mkey"`
-	GamePad       map[string]interface{} `json:"gpad"`
-	Event         []*AppFuncEvent        `json:"event"`
+	Timer          AppFuncTimer           `json:"timer"`
+	MouseKeyboard  map[string]interface{} `json:"mkey"`
+	KeyboardMap    map[string]string      `json:"keymap"`
+	MouseButtonMap []string               `json:"btnmap"`
+	GamePad        map[string]interface{} `json:"gpad"`
+	Event          []*AppFuncEvent        `json:"event"`
 }
 type AppFuncTimer struct {
 	Time      float32 `json:"t"`

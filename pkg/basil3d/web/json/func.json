@@ -28,6 +28,30 @@
     "lctrl": false,
     "esc": false
   },
+  "keymap": {
+    "KeyW": "w",
+    "KeyA": "a",
+    "KeyS": "s",
+    "KeyD": "d",
+    "ArrowUp": "up",
+    "ArrowLeft": "left",
+    "ArrowDown": "down",
+    "ArrowRight": "right",
+    "KeyQ": "q",
+    "KeyE": "e",
+    "KeyZ": "z",
+    "KeyX": "x",
+    "Space": "space",
+    "ControlLeft": "lctrl",
+    "Escape": "esc"
+  },
+  "btnmap": [
+    "b0",
+    "b1",
+    "b2",
+    "b3",
+    "b4"
+  ],
   "gpad": {
     "id": null,
     "lx": 0,
