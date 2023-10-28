@@ -77,22 +77,30 @@ type AppAudio struct {
 }
 
 type AppFunc struct {
-	Timer          AppFuncTimer           `json:"timer"`
-	MouseKeyboard  map[string]interface{} `json:"mkey"`
-	KeyboardMap    map[string]string      `json:"keymap"`
-	MouseButtonMap []string               `json:"btnmap"`
-	GamePad        map[string]interface{} `json:"gpad"`
-	Event          []*AppFuncEvent        `json:"event"`
+	Signal   map[string]*AppFuncSignal `json:"signal"`
+	Timer    *AppFuncTimer             `json:"timer"`
+	Keyboard map[string]*string        `json:"keyboard"`
+	Mouse    *AppFuncMouse             `json:"mouse"`
+	Gamepad  *AppFuncGamepad           `json:"gamepad"`
+}
+type AppFuncSignal struct {
+	Value float64 `json:"value"`
+	Hold  bool    `json:"hold"`
 }
 type AppFuncTimer struct {
-	Time      float32 `json:"t"`
-	DeltaTime float32 `json:"dt"`
-	Count     int     `json:"n"`
+	Time       *string `json:"time"`
+	DeltaTime  *string `json:"deltaTime"`
+	FrameCount *string `json:"frameCount"`
 }
-type AppFuncEvent struct {
-	Name          string `json:"name"`
-	MouseKeyboard string `json:"mkey"`
-	GamePad       string `json:"gpad"`
+type AppFuncMouse struct {
+	Button    []*string `json:"button"`
+	MovementX []*string `json:"movementX"`
+	MovementY []*string `json:"movementY"`
+}
+type AppFuncGamepad struct {
+	Index   *interface{} `json:"id"`
+	Buttons []*string    `json:"buttons"`
+	Axes    [][]*string  `json:"axes"`
 }
 
 type AppRoom struct {
