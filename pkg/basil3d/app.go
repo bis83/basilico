@@ -82,6 +82,7 @@ type AppFunc struct {
 	Keyboard map[string]*string        `json:"keyboard"`
 	Mouse    *AppFuncMouse             `json:"mouse"`
 	Gamepad  *AppFuncGamepad           `json:"gamepad"`
+	Last     int                       `json:"last"`
 	Update   *interface{}              `json:"update"`
 }
 type AppFuncSignal struct {
@@ -99,9 +100,8 @@ type AppFuncMouse struct {
 	MovementY []*string `json:"movementY"`
 }
 type AppFuncGamepad struct {
-	Index   *interface{} `json:"id"`
-	Buttons []*string    `json:"buttons"`
-	Axes    [][]*string  `json:"axes"`
+	Buttons []*string   `json:"buttons"`
+	Axes    [][]*string `json:"axes"`
 }
 
 type AppRoom struct {

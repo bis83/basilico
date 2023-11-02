@@ -23,6 +23,24 @@ const $__signalGet = (signal, key) => {
   return 0;
 };
 
+const $__gamepadTouched = (gamepad) => {
+  if (!gamepad) {
+    return false;
+  }
+
+  for (const b of gamepad.buttons) {
+    if (b.value > 0.5) {
+      return true;
+    }
+  }
+  for (const a of gamepad.axes) {
+    if (Math.abs(a) > 0.5) {
+      return true;
+    }
+  }
+  return false;
+};
+
 const $__funcInit = (func) => {
 
   const signalReset = () => {
@@ -41,6 +59,7 @@ const $__funcInit = (func) => {
     if (key) {
       $__signalHold(func.signal, key, value, hold);
       ev.preventDefault();
+      func.last = -1;
     }
   };
   const signalMouse = (ev, value, hold) => {
@@ -51,21 +70,15 @@ const $__funcInit = (func) => {
     if (key) {
       $__signalHold(func.signal, key, value, hold);
       ev.preventDefault();
+      func.last = -1;
     }
   };
 
   html_listen(document.body, "contextmenu", (ev) => {
     ev.preventDefault();
   });
-  html_listen(window, "gamepadconnected", (ev) => {
-    const gamepad = func.gamepad;
-    gamepad.id = ev.gamepad.index;
-  });
-  html_listen(window, "gamepaddisconnected", (ev) => {
-    const gamepad = func.gamepad;
-    if (gamepad.id === ev.gamepad.index) {
-      gamepad.id = null;
-    }
+  html_listen(window, "blur", (ev) => {
+    signalReset();
   });
   html_listen(document, "click", (ev) => {
     if (!html_is_pointer_lock()) {
@@ -101,9 +114,7 @@ const $__funcInit = (func) => {
       $__signalSet(func.signal, movementY[1], ev.movementY * mouseSensitive);
     }
     ev.preventDefault();
-  });
-  html_listen(window, "blur", (ev) => {
-    signalReset();
+    func.last = -1;
   });
 }
 
@@ -117,10 +128,18 @@ const $__funcFrameBegin = (func, time) => {
     $__signalHold(func.signal, timer.deltaTime, dt, true);
     $__signalHold(func.signal, timer.frameCount, frameCount + 1, true);
   }
-  if (!html_is_pointer_lock()) {
-    const gamepad = func.gamepad;
-    if (gamepad.id !== null) {
-      const gp = navigator.getGamepads()[gamepad.id];
+  {
+    const gps = navigator.getGamepads();
+    for (let i = 0; i < gps.length; ++i) {
+      if ($__gamepadTouched(gps[i])) {
+        func.last = i;
+        break;
+      }
+    }
+
+    const gp = gps[func.last];
+    if (gp) {
+      const gamepad = func.gamepad;
       for (let i = 0; i < gp.buttons.length; ++i) {
         const key = gamepad.buttons[i];
         if (!key) {
