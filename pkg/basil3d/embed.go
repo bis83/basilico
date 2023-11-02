@@ -19,5 +19,5 @@ var scripts = []string{
 	"web/js/view_get.js",
 	"web/js/onload.js",
 	"web/js/onload_decode.js",
-	"web/js/basil3d.js",
+	"web/js/api.js",
 }

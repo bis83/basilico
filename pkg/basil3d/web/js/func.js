@@ -24,22 +24,6 @@ const $__signalGet = (signal, key) => {
 };
 
 const $__funcInit = (func) => {
-  $__signalHold(func.signal, func.timer.time, performance.now(), true);
-
-  html_listen(document.body, "contextmenu", (ev) => {
-    ev.preventDefault();
-  });
-
-  html_listen(window, "gamepadconnected", (ev) => {
-    const gamepad = func.gamepad;
-    gamepad.id = ev.gamepad.index;
-  });
-  html_listen(window, "gamepaddisconnected", (ev) => {
-    const gamepad = func.gamepad;
-    if (gamepad.id === ev.gamepad.index) {
-      gamepad.id = null;
-    }
-  });
 
   const signalReset = () => {
     for (const key in func.keyboard) {
@@ -70,6 +54,19 @@ const $__funcInit = (func) => {
     }
   };
 
+  html_listen(document.body, "contextmenu", (ev) => {
+    ev.preventDefault();
+  });
+  html_listen(window, "gamepadconnected", (ev) => {
+    const gamepad = func.gamepad;
+    gamepad.id = ev.gamepad.index;
+  });
+  html_listen(window, "gamepaddisconnected", (ev) => {
+    const gamepad = func.gamepad;
+    if (gamepad.id === ev.gamepad.index) {
+      gamepad.id = null;
+    }
+  });
   html_listen(document, "click", (ev) => {
     if (!html_is_pointer_lock()) {
       html_pointer_lock();
@@ -144,12 +141,14 @@ const $__funcFrameBegin = (func, time) => {
   }
 };
 
+const $__funcDispatch = (app) => {
+  if (app.func.update) {
+    app.func.update(app);
+  }
+};
+
 const $__funcFrameEnd = (func) => {
   for (const key in func.signal) {
     $__signalSet(func.signal, key, 0);
   }
-};
-
-const $signal = (app, signal) => {
-  return $__signalGet(app.func.signal, signal);
 };

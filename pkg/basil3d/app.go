@@ -82,6 +82,7 @@ type AppFunc struct {
 	Keyboard map[string]*string        `json:"keyboard"`
 	Mouse    *AppFuncMouse             `json:"mouse"`
 	Gamepad  *AppFuncGamepad           `json:"gamepad"`
+	Update   *interface{}              `json:"update"`
 }
 type AppFuncSignal struct {
 	Value float64 `json:"value"`

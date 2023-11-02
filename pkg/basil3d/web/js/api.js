@@ -1,5 +1,5 @@
 
-const $start = async (setup, update) => {
+const $start = async (func) => {
   if (!navigator.gpu) {
     html_show_message("ERROR: WebGPU not supported.")
     return;
@@ -8,19 +8,13 @@ const $start = async (setup, update) => {
   const app = {
     loading: 0,
   };
-  $__onload(app);
+  $__onload(app, func);
 
   const frame = (time) => {
     if ($isLoadCompleted(app)) {
       $__funcFrameBegin(app.func, time);
       $__gpuFrameBegin(app.gpu);
-      if (setup) {
-        setup(app);
-        setup = null;
-      }
-      if (update) {
-        update(app);
-      }
+      $__funcDispatch(app);
       $__gpuFrameEnd(app.gpu, app.view, app);
       $__funcFrameEnd(app.func);
     }
@@ -39,4 +33,8 @@ const $json = (app, name) => {
 
 const $room = (app, name) => {
   return app.room[name];
+};
+
+const $signal = (app, signal) => {
+  return $__signalGet(app.func.signal, signal);
 };
