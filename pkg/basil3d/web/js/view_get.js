@@ -12,16 +12,16 @@ const $getOffset = (offset, x, y, z, ha, va) => {
 
 const $getColor = (color, r, g, b, a) => {
   if (color) {
-    if (color.r !== undefined) {
+    if (defined(color.r)) {
       r = color.r;
     }
-    if (color.g !== undefined) {
+    if (defined(color.g)) {
       g = color.g;
     }
-    if (color.r !== undefined) {
+    if (defined(color.r)) {
       b = color.b;
     }
-    if (color.a !== undefined) {
+    if (defined(color.a)) {
       a = color.a;
     }
   }

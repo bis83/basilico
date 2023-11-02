@@ -9,7 +9,7 @@ const $__gpuResizeGBuffer = (gpu) => {
     canvas.height = canvas.clientHeight;
 
     const deleteTexture = (no) => {
-      if (gpu.gbuffer[no] !== undefined) {
+      if (defined(gpu.gbuffer[no])) {
         gpu.gbuffer[no].destroy();
         delete gpu.gbuffer[no];
       }
@@ -21,7 +21,7 @@ const $__gpuResizeGBuffer = (gpu) => {
     deleteTexture(4);
 
     const deleteBindGroup = (no) => {
-      if (gpu.bindGroup[no] !== undefined) {
+      if (defined(gpu.bindGroup[no])) {
         delete gpu.bindGroup[no];
       }
     };
@@ -31,7 +31,7 @@ const $__gpuResizeGBuffer = (gpu) => {
   }
 
   const createTexture = (i, format) => {
-    if (gpu.gbuffer[i] === undefined) {
+    if (!defined(gpu.gbuffer[i])) {
       gpu.gbuffer[i] = device.createTexture({
         size: [canvas.width, canvas.height],
         format: format,
@@ -46,7 +46,7 @@ const $__gpuResizeGBuffer = (gpu) => {
   createTexture(4, "rgba16float");
 
   const createBindGroup = (i, t0, t1, t2, t3) => {
-    if (gpu.bindGroup[i] === undefined) {
+    if (!defined(gpu.bindGroup[i])) {
       gpu.bindGroup[i] = device.createBindGroup({
         layout: gpu.bindGroupLayout[1],
         entries: [
