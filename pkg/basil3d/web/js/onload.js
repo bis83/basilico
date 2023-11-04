@@ -10,8 +10,8 @@ const $__onload = (app, onload) => {
     if (app.gpu) {
       await $__gpuInit(app.gpu, app.embed);
     }
-    if (app.func) {
-      $__funcInit(app.func);
+    if (app.signal) {
+      $__signalInit(app.signal);
     }
 
     if (onload) {

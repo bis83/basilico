@@ -12,11 +12,11 @@ const $start = async (func) => {
 
   const frame = (time) => {
     if ($isLoadCompleted(app)) {
-      $__funcFrameBegin(app.func, time);
+      $__signalFrameBegin(app.signal, time);
       $__gpuFrameBegin(app.gpu);
       $__funcDispatch(app);
       $__gpuFrameEnd(app.gpu, app.view, app);
-      $__funcFrameEnd(app.func);
+      $__signalFrameEnd(app.signal);
     }
     requestAnimationFrame(frame);
   };
@@ -36,5 +36,5 @@ const $room = (app, name) => {
 };
 
 const $signal = (app, signal) => {
-  return $__signalGet(app.func.signal, signal);
+  return $__signalGet(app.signal.map, signal);
 };

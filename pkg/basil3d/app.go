@@ -9,11 +9,17 @@ import (
 type App struct {
 	Embed []*string               `json:"embed"`
 	JSON  map[string]*interface{} `json:"json"`
-	GPU   AppGPU                  `json:"gpu"`
-	Audio AppAudio                `json:"audio"`
-	View  AppView                 `json:"view"`
-	Func  AppFunc                 `json:"func"`
-	Room  map[string]*AppRoom     `json:"room"`
+
+	Room map[string]*AppRoom `json:"room"`
+	Mob  map[string]*AppMob  `json:"mob"`
+	Func map[string]*AppFunc `json:"func"`
+
+	GPU    AppGPU    `json:"gpu"`
+	Audio  AppAudio  `json:"audio"`
+	Signal AppSignal `json:"signal"`
+	View   AppView   `json:"view"`
+
+	Update *interface{} `json:"update"`
 }
 
 const (
@@ -76,30 +82,29 @@ type AppGPUID struct {
 type AppAudio struct {
 }
 
-type AppFunc struct {
-	Signal   map[string]*AppFuncSignal `json:"signal"`
-	Timer    *AppFuncTimer             `json:"timer"`
-	Keyboard map[string]*string        `json:"keyboard"`
-	Mouse    *AppFuncMouse             `json:"mouse"`
-	Gamepad  *AppFuncGamepad           `json:"gamepad"`
-	Last     int                       `json:"last"`
-	Update   *interface{}              `json:"update"`
+type AppSignal struct {
+	Last     int                      `json:"last"`
+	Map      map[string]*AppSignalMap `json:"map"`
+	Timer    *AppSignalTimer          `json:"timer"`
+	Keyboard map[string]*string       `json:"keyboard"`
+	Mouse    *AppSignalMouse          `json:"mouse"`
+	Gamepad  *AppSignalGamepad        `json:"gamepad"`
 }
-type AppFuncSignal struct {
+type AppSignalMap struct {
 	Value float64 `json:"value"`
 	Hold  bool    `json:"hold"`
 }
-type AppFuncTimer struct {
+type AppSignalTimer struct {
 	Time       *string `json:"time"`
 	DeltaTime  *string `json:"deltaTime"`
 	FrameCount *string `json:"frameCount"`
 }
-type AppFuncMouse struct {
+type AppSignalMouse struct {
 	Button    []*string `json:"button"`
 	MovementX []*string `json:"movementX"`
 	MovementY []*string `json:"movementY"`
 }
-type AppFuncGamepad struct {
+type AppSignalGamepad struct {
 	Buttons []*string   `json:"buttons"`
 	Axes    [][]*string `json:"axes"`
 }
@@ -121,6 +126,12 @@ type AppRoomMesh struct {
 type AppRoomNode struct {
 	Mesh  []int     `json:"mesh"`
 	Space *AppRange `json:"space,omitempty"`
+}
+
+type AppMob struct {
+}
+
+type AppFunc struct {
 }
 
 type AppView struct {
