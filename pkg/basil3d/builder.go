@@ -8,6 +8,7 @@ type Builder struct {
 	GLTF []*gltf.Document
 	JSON map[string]*interface{}
 	Room map[string]*AppRoom
+	Func map[string]*AppFunc
 }
 
 func (p *Builder) read(baseDir string) error {
@@ -18,6 +19,9 @@ func (p *Builder) read(baseDir string) error {
 		return err
 	}
 	if err := p.readRoom(baseDir); err != nil {
+		return err
+	}
+	if err := p.readFunc(baseDir); err != nil {
 		return err
 	}
 	return nil
@@ -39,6 +43,9 @@ func (p *Builder) build() (*App, error) {
 		return nil, err
 	}
 	if err := p.importRoom(&app); err != nil {
+		return nil, err
+	}
+	if err := p.importFunc(&app); err != nil {
 		return nil, err
 	}
 	return &app, nil

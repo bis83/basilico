@@ -10,16 +10,15 @@ type App struct {
 	Embed []*string               `json:"embed"`
 	JSON  map[string]*interface{} `json:"json"`
 
-	Room map[string]*AppRoom `json:"room"`
-	Mob  map[string]*AppMob  `json:"mob"`
-	Func map[string]*AppFunc `json:"func"`
+	Room map[string]*AppRoom     `json:"room"`
+	Mob  map[string]*AppMob      `json:"mob"`
+	Func map[string]*AppFunc     `json:"func"`
+	Exec map[string]*interface{} `json:"exec"`
 
 	GPU    AppGPU    `json:"gpu"`
 	Audio  AppAudio  `json:"audio"`
 	Signal AppSignal `json:"signal"`
 	View   AppView   `json:"view"`
-
-	Update *interface{} `json:"update"`
 }
 
 const (
@@ -132,12 +131,24 @@ type AppMob struct {
 }
 
 type AppFunc struct {
+	Target string           `json:"target"`
+	Branch []*AppFuncBranch `json:"branch"`
+}
+type AppFuncBranch struct {
+	Condition []string `json:"condition"`
+	Action    []string `json:"action"`
 }
 
 type AppView struct {
+	Func   []*AppViewFunc `json:"func"`
 	Room   []*AppViewRoom `json:"room"`
 	Camera AppViewCamera  `json:"camera"`
 	Light  AppViewLight   `json:"light"`
+}
+type AppViewFunc struct {
+	Name   string `json:"name"`
+	Branch int    `json:"branch"`
+	Action int    `json:"action"`
 }
 type AppViewRoom struct {
 	Offset AppOffset `json:"offset,omitempty"`

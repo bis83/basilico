@@ -1,5 +1,5 @@
 
-const $start = async (func) => {
+const $start = async (exec) => {
   if (!navigator.gpu) {
     html_show_message("ERROR: WebGPU not supported.")
     return;
@@ -8,7 +8,7 @@ const $start = async (func) => {
   const app = {
     loading: 0,
   };
-  $__onload(app, func);
+  $__onload(app, exec);
 
   const frame = (time) => {
     if ($isLoadCompleted(app)) {

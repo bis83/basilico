@@ -1,5 +1,5 @@
 
-const $__onload = (app, onload) => {
+const $__onload = (app, exec) => {
   app.loading += 1;
   (async () => {
     const path = "app.json";
@@ -14,9 +14,9 @@ const $__onload = (app, onload) => {
       $__signalInit(app.signal);
     }
 
-    if (onload) {
-      onload(app);
-    }
+    app.exec = {};
+    Object.assign(app.exec, exec);
+    $__funcInit(app);
 
     delete app.embed;
     app.loading -= 1;
