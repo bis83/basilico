@@ -1,6 +1,7 @@
 package basil3d
 
 import (
+	"bytes"
 	"encoding/json"
 )
 
@@ -9,7 +10,9 @@ func (p *Builder) importSignal(app *App) error {
 	if err != nil {
 		return err
 	}
-	if err := json.Unmarshal(data, &app.Signal); err != nil {
+	d := json.NewDecoder(bytes.NewReader(data))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&app.Signal); err != nil {
 		return err
 	}
 	return nil

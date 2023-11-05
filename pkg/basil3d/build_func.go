@@ -1,6 +1,7 @@
 package basil3d
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -16,7 +17,9 @@ func openFunc(path string) (*AppFunc, error) {
 	}
 
 	var doc AppFunc
-	if err := json.Unmarshal(data, &doc); err != nil {
+	d := json.NewDecoder(bytes.NewReader(data))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&doc); err != nil {
 		return nil, fmt.Errorf("decode %s: %w", path, err)
 	}
 	return &doc, nil

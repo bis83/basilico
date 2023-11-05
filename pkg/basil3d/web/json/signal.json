@@ -135,7 +135,6 @@
     ]
   },
   "gamepad": {
-    "id": null,
     "buttons": [
       "b0",
       "b1",
