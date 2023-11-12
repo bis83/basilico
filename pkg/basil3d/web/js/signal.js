@@ -22,6 +22,19 @@ const $__signalGet = (signal, key) => {
   }
   return 0;
 };
+const $__signalHistory = (signal, key) => {
+  const sig = signal[key];
+  if (sig) {
+    sig.history = sig.value;
+  }
+};
+const $__signalDelta = (signal, key) => {
+  const sig = signal[key];
+  if (sig) {
+    return sig.value - sig.history;
+  }
+  return 0;
+};
 
 const $__gamepadTouched = (gamepad) => {
   if (!gamepad) {
@@ -121,11 +134,8 @@ const $__signalInit = (signal) => {
 const $__signalFrameBegin = (signal, time) => {
   {
     const timer = signal.timer;
-    const prevTime = $__signalGet(signal.map, timer.time);
     const frameCount = $__signalGet(signal.map, timer.frameCount);
-    const dt = (time - prevTime) / 1000;
-    $__signalHold(signal.map, timer.time, time, true);
-    $__signalHold(signal.map, timer.deltaTime, dt, true);
+    $__signalHold(signal.map, timer.time, time / 1000, true);
     $__signalHold(signal.map, timer.frameCount, frameCount + 1, true);
   }
   {
@@ -163,5 +173,6 @@ const $__signalFrameBegin = (signal, time) => {
 const $__signalFrameEnd = (signal) => {
   for (const key in signal.map) {
     $__signalSet(signal.map, key, 0);
+    $__signalHistory(signal.map, key);
   }
 };

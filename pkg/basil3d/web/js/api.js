@@ -38,3 +38,7 @@ const $room = (app, name) => {
 const $signal = (app, signal) => {
   return $__signalGet(app.signal.map, signal);
 };
+
+const $signalDelta = (app, signal) => {
+  return $__signalDelta(app.signal.map, signal);
+};

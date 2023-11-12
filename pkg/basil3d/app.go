@@ -90,12 +90,12 @@ type AppSignal struct {
 	Gamepad  *AppSignalGamepad        `json:"gamepad"`
 }
 type AppSignalMap struct {
-	Value float64 `json:"value"`
-	Hold  bool    `json:"hold"`
+	History float64 `json:"history"`
+	Value   float64 `json:"value"`
+	Hold    bool    `json:"hold"`
 }
 type AppSignalTimer struct {
 	Time       *string `json:"time"`
-	DeltaTime  *string `json:"deltaTime"`
 	FrameCount *string `json:"frameCount"`
 }
 type AppSignalMouse struct {
