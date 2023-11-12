@@ -22,10 +22,18 @@ const $__signalGet = (signal, key) => {
   }
   return 0;
 };
+
 const $__signalHistory = (signal, key) => {
   const sig = signal[key];
   if (sig) {
     sig.history = sig.value;
+  }
+};
+const $__signalAddDelta = (signal, key, value) => {
+  value = value || 0;
+  const sig = signal[key];
+  if (sig && !sig.hold) {
+    sig.value = Math.max(0, sig.history + value);
   }
 };
 const $__signalDelta = (signal, key) => {
@@ -134,9 +142,8 @@ const $__signalInit = (signal) => {
 const $__signalFrameBegin = (signal, time) => {
   {
     const timer = signal.timer;
-    const frameCount = $__signalGet(signal.map, timer.frameCount);
-    $__signalHold(signal.map, timer.time, time / 1000, true);
-    $__signalHold(signal.map, timer.frameCount, frameCount + 1, true);
+    $__signalSet(signal.map, timer.time, time / 1000);
+    $__signalAddDelta(signal.map, timer.frameCount, 1);
   }
   {
     const gps = navigator.getGamepads();
@@ -172,7 +179,7 @@ const $__signalFrameBegin = (signal, time) => {
 
 const $__signalFrameEnd = (signal) => {
   for (const key in signal.map) {
-    $__signalSet(signal.map, key, 0);
     $__signalHistory(signal.map, key);
+    $__signalSet(signal.map, key, 0);
   }
 };
