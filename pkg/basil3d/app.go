@@ -131,12 +131,11 @@ type AppMob struct {
 }
 
 type AppFunc struct {
-	Target string           `json:"target"`
 	Branch []*AppFuncBranch `json:"branch"`
 }
 type AppFuncBranch struct {
-	Condition []string `json:"condition"`
-	Action    []string `json:"action"`
+	Next   int      `json:"next"`
+	Action []string `json:"action"`
 }
 
 type AppView struct {
