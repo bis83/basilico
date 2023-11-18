@@ -31,7 +31,7 @@ const $__funcStep = (app, fv) => {
     }
     const action = branch.action[fv.action];
     if (!action) {
-      fv.branch = branch.next;
+      fv.branch += branch.next;
       fv.action = 0;
       break;
     }
