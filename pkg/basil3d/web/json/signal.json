@@ -21,12 +21,10 @@
     "c2": {},
     "c3": {},
     "m": {},
-    "t": {},
-    "f": {}
+    "t": {}
   },
   "timer": {
-    "time": "t",
-    "frameCount": "f"
+    "time": "t"
   },
   "keyboard": {
     "KeyW": "l2",

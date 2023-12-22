@@ -18,7 +18,8 @@ type App struct {
 	GPU    AppGPU    `json:"gpu"`
 	Audio  AppAudio  `json:"audio"`
 	Signal AppSignal `json:"signal"`
-	View   AppView   `json:"view"`
+
+	View AppView `json:"view"`
 }
 
 const (
@@ -96,7 +97,6 @@ type AppSignalMap struct {
 }
 type AppSignalTimer struct {
 	Time       *string `json:"time"`
-	FrameCount *string `json:"frameCount"`
 }
 type AppSignalMouse struct {
 	Button    []*string `json:"button"`
