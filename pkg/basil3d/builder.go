@@ -39,7 +39,7 @@ func (p *Builder) build() (*App, error) {
 	if err := p.importJSON(&app); err != nil {
 		return nil, err
 	}
-	if err := p.importSignal(&app); err != nil {
+	if err := p.importHID(&app); err != nil {
 		return nil, err
 	}
 	if err := p.importRoom(&app); err != nil {

@@ -12,11 +12,11 @@ const $start = async (exec) => {
 
   const frame = (time) => {
     if ($isLoadCompleted(app)) {
-      $__signalFrameBegin(app.signal, time);
+      $__hidFrameBegin(app.hid, time);
       $__gpuFrameBegin(app.gpu);
       $__funcDispatch(app);
       $__gpuFrameEnd(app.gpu, app.view, app);
-      $__signalFrameEnd(app.signal);
+      $__hidFrameEnd(app.hid);
     }
     requestAnimationFrame(frame);
   };
@@ -35,10 +35,10 @@ const $room = (app, name) => {
   return app.room[name];
 };
 
-const $signal = (app, signal) => {
-  return $__signalGet(app.signal.map, signal);
+const $hid = (app, key) => {
+  return $__hidGet(app.hid.map, key);
 };
 
-const $signalDelta = (app, signal) => {
-  return $__signalDelta(app.signal.map, signal);
+const $hidDelta = (app, key) => {
+  return $__hidDelta(app.hid.map, key);
 };

@@ -7,11 +7,11 @@ const $__onload = (app, exec) => {
     const json = await res.json();
     Object.assign(app, json);
 
+    if (app.hid) {
+      $__hidInit(app.hid);
+    }
     if (app.gpu) {
       await $__gpuInit(app.gpu, app.embed);
-    }
-    if (app.signal) {
-      $__signalInit(app.signal);
     }
 
     app.exec = {};

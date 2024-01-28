@@ -1,43 +1,43 @@
 
-const $__signalSet = (signal, key, value) => {
+const $__hidSet = (hid, key, value) => {
   value = value || 0;
-  const sig = signal[key];
+  const sig = hid[key];
   if (sig && !sig.hold) {
     sig.value = Math.max(0, value);
   }
 };
-const $__signalHold = (signal, key, value, hold) => {
+const $__hidHold = (hid, key, value, hold) => {
   value = value || 0;
   hold = hold || false;
-  const sig = signal[key];
+  const sig = hid[key];
   if (sig) {
     sig.value = Math.max(0, value);
     sig.hold = hold;
   }
 };
-const $__signalGet = (signal, key) => {
-  const sig = signal[key];
+const $__hidGet = (hid, key) => {
+  const sig = hid[key];
   if (sig) {
     return sig.value;
   }
   return 0;
 };
 
-const $__signalHistory = (signal, key) => {
-  const sig = signal[key];
+const $__hidHistory = (hid, key) => {
+  const sig = hid[key];
   if (sig) {
     sig.history = sig.value;
   }
 };
-const $__signalAddDelta = (signal, key, value) => {
+const $__hidAddDelta = (hid, key, value) => {
   value = value || 0;
-  const sig = signal[key];
+  const sig = hid[key];
   if (sig && !sig.hold) {
     sig.value = Math.max(0, sig.history + value);
   }
 };
-const $__signalDelta = (signal, key) => {
-  const sig = signal[key];
+const $__hidDelta = (hid, key) => {
+  const sig = hid[key];
   if (sig) {
     return sig.value - sig.history;
   }
@@ -62,36 +62,36 @@ const $__gamepadTouched = (gamepad) => {
   return false;
 };
 
-const $__signalInit = (signal) => {
+const $__hidInit = (hid) => {
 
-  const signalReset = () => {
-    for (const key in signal.keyboard) {
-      $__signalHold(signal.map, signal.keyboard[key], 0, false);
+  const hidReset = () => {
+    for (const key in hid.keyboard) {
+      $__hidHold(hid.map, hid.keyboard[key], 0, false);
     }
-    for (const key of signal.mouse.button) {
-      $__signalHold(signal.map, key, 0, false);
+    for (const key of hid.mouse.button) {
+      $__hidHold(hid.map, key, 0, false);
     }
   };
-  const signalKeyboard = (ev, value, hold) => {
+  const hidKeyboard = (ev, value, hold) => {
     if (!html_is_pointer_lock()) {
       return;
     }
-    const key = signal.keyboard[ev.code];
+    const key = hid.keyboard[ev.code];
     if (key) {
-      $__signalHold(signal.map, key, value, hold);
+      $__hidHold(hid.map, key, value, hold);
       ev.preventDefault();
-      signal.last = -1;
+      hid.last = -1;
     }
   };
-  const signalMouse = (ev, value, hold) => {
+  const hidMouse = (ev, value, hold) => {
     if (!html_is_pointer_lock()) {
       return;
     }
-    const key = signal.mouse.button[ev.button];
+    const key = hid.mouse.button[ev.button];
     if (key) {
-      $__signalHold(signal.map, key, value, hold);
+      $__hidHold(hid.map, key, value, hold);
       ev.preventDefault();
-      signal.last = -1;
+      hid.last = -1;
     }
   };
 
@@ -99,66 +99,66 @@ const $__signalInit = (signal) => {
     ev.preventDefault();
   });
   html_listen(window, "blur", (ev) => {
-    signalReset();
+    hidReset();
   });
   html_listen(document, "click", (ev) => {
     if (!html_is_pointer_lock()) {
       html_pointer_lock();
-      signalReset();
+      hidReset();
     }
   });
   html_listen(document, "keydown", (ev) => {
-    signalKeyboard(ev, 1, true);
+    hidKeyboard(ev, 1, true);
   });
   html_listen(document, "keyup", (ev) => {
-    signalKeyboard(ev, 0, false);
+    hidKeyboard(ev, 0, false);
   });
   html_listen(document, "mousedown", (ev) => {
-    signalMouse(ev, 1, true);
+    hidMouse(ev, 1, true);
   });
   html_listen(document, "mouseup", (ev) => {
-    signalMouse(ev, 0, false);
+    hidMouse(ev, 0, false);
   });
   html_listen(document, "mousemove", (ev) => {
     if (!html_is_pointer_lock()) {
       return;
     }
     const mouseSensitive = 0.25;
-    const movementX = signal.mouse.movementX;
+    const movementX = hid.mouse.movementX;
     if (movementX) {
-      $__signalSet(signal.map, movementX[0], -ev.movementX * mouseSensitive);
-      $__signalSet(signal.map, movementX[1], ev.movementX * mouseSensitive);
+      $__hidSet(hid.map, movementX[0], -ev.movementX * mouseSensitive);
+      $__hidSet(hid.map, movementX[1], ev.movementX * mouseSensitive);
     }
-    const movementY = signal.mouse.movementY;
+    const movementY = hid.mouse.movementY;
     if (movementY) {
-      $__signalSet(signal.map, movementY[0], -ev.movementY * mouseSensitive);
-      $__signalSet(signal.map, movementY[1], ev.movementY * mouseSensitive);
+      $__hidSet(hid.map, movementY[0], -ev.movementY * mouseSensitive);
+      $__hidSet(hid.map, movementY[1], ev.movementY * mouseSensitive);
     }
     ev.preventDefault();
-    signal.last = -1;
+    hid.last = -1;
   });
 }
 
-const $__signalFrameBegin = (signal, time) => {
-  $__signalSet(signal.map, signal.timer, time / 1000);
+const $__hidFrameBegin = (hid, time) => {
+  $__hidSet(hid.map, hid.timer, time / 1000);
   {
     const gps = navigator.getGamepads();
     for (let i = 0; i < gps.length; ++i) {
       if ($__gamepadTouched(gps[i])) {
-        signal.last = i;
+        hid.last = i;
         break;
       }
     }
 
-    const gp = gps[signal.last];
+    const gp = gps[hid.last];
     if (gp) {
-      const gamepad = signal.gamepad;
+      const gamepad = hid.gamepad;
       for (let i = 0; i < gp.buttons.length; ++i) {
         const key = gamepad.buttons[i];
         if (!key) {
           continue;
         }
-        $__signalSet(signal.map, key, gp.buttons[i].value);
+        $__hidSet(hid.map, key, gp.buttons[i].value);
       }
       for (let i = 0; i < gp.axes.length; ++i) {
         const key = gamepad.axes[i];
@@ -166,16 +166,16 @@ const $__signalFrameBegin = (signal, time) => {
           continue;
         }
         const value = Math.trunc(gp.axes[i] * 4) / 4;
-        $__signalSet(signal.map, key[0], -value);
-        $__signalSet(signal.map, key[1], value);
+        $__hidSet(hid.map, key[0], -value);
+        $__hidSet(hid.map, key[1], value);
       }
     }
   }
 };
 
-const $__signalFrameEnd = (signal) => {
-  for (const key in signal.map) {
-    $__signalHistory(signal.map, key);
-    $__signalSet(signal.map, key, 0);
+const $__hidFrameEnd = (hid) => {
+  for (const key in hid.map) {
+    $__hidHistory(hid.map, key);
+    $__hidSet(hid.map, key, 0);
   }
 };

@@ -15,9 +15,9 @@ type App struct {
 	Func map[string]*AppFunc     `json:"func"`
 	Exec map[string]*interface{} `json:"exec"`
 
-	GPU    AppGPU    `json:"gpu"`
-	Audio  AppAudio  `json:"audio"`
-	Signal AppSignal `json:"signal"`
+	HID   AppHID   `json:"hid"`
+	GPU   AppGPU   `json:"gpu"`
+	Audio AppAudio `json:"audio"`
 
 	View AppView `json:"view"`
 }
@@ -82,25 +82,25 @@ type AppGPUID struct {
 type AppAudio struct {
 }
 
-type AppSignal struct {
-	Last     int                      `json:"last"`
-	Map      map[string]*AppSignalMap `json:"map"`
-	Timer    string                   `json:"timer"`
-	Keyboard map[string]*string       `json:"keyboard"`
-	Mouse    *AppSignalMouse          `json:"mouse"`
-	Gamepad  *AppSignalGamepad        `json:"gamepad"`
+type AppHID struct {
+	Last     int                   `json:"last"`
+	Map      map[string]*AppHIDMap `json:"map"`
+	Timer    string                `json:"timer"`
+	Keyboard map[string]*string    `json:"keyboard"`
+	Mouse    *AppHIDMouse          `json:"mouse"`
+	Gamepad  *AppHIDGamepad        `json:"gamepad"`
 }
-type AppSignalMap struct {
+type AppHIDMap struct {
 	History float64 `json:"history"`
 	Value   float64 `json:"value"`
 	Hold    bool    `json:"hold"`
 }
-type AppSignalMouse struct {
+type AppHIDMouse struct {
 	Button    []*string `json:"button"`
 	MovementX []*string `json:"movementX"`
 	MovementY []*string `json:"movementY"`
 }
-type AppSignalGamepad struct {
+type AppHIDGamepad struct {
 	Buttons []*string   `json:"buttons"`
 	Axes    [][]*string `json:"axes"`
 }
