@@ -35,33 +35,6 @@ const $__gpuUploadViewInput = (gpu, view) => {
   device.queue.writeBuffer(gpu.cbuffer[0], 0, buf);
 };
 
-const $__gpuUploadLineInput = (gpu, view) => {
-  const device = gpu.device;
-
-  if (!view.lines) {
-    return 0;
-  }
-  if (view.lines.length <= 0) {
-    return 0;
-  }
-
-  const position = new Float32Array(view.lines.length * 3);
-  const color = new Uint8Array(view.lines.length * 4);
-  for (let i = 0; i < view.lines.length; ++i) {
-    const line = view.lines[i];
-    position[i * 3 + 0] = line.pos[0];
-    position[i * 3 + 1] = line.pos[1];
-    position[i * 3 + 2] = line.pos[2];
-    color[i * 4 + 0] = line.color[0];
-    color[i * 4 + 1] = line.color[1];
-    color[i * 4 + 2] = line.color[2];
-    color[i * 4 + 3] = line.color[3];
-  }
-  device.queue.writeBuffer(gpu.cbuffer[4], 0, position);
-  device.queue.writeBuffer(gpu.cbuffer[5], 0, color);
-  return view.lines.length;
-};
-
 const $__gpuUploadInstanceInput = (gpu, view, app) => {
   const device = gpu.device;
 
