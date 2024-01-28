@@ -85,7 +85,7 @@ type AppAudio struct {
 type AppSignal struct {
 	Last     int                      `json:"last"`
 	Map      map[string]*AppSignalMap `json:"map"`
-	Timer    *AppSignalTimer          `json:"timer"`
+	Timer    string                   `json:"timer"`
 	Keyboard map[string]*string       `json:"keyboard"`
 	Mouse    *AppSignalMouse          `json:"mouse"`
 	Gamepad  *AppSignalGamepad        `json:"gamepad"`
@@ -94,9 +94,6 @@ type AppSignalMap struct {
 	History float64 `json:"history"`
 	Value   float64 `json:"value"`
 	Hold    bool    `json:"hold"`
-}
-type AppSignalTimer struct {
-	Time       *string `json:"time"`
 }
 type AppSignalMouse struct {
 	Button    []*string `json:"button"`

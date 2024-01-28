@@ -23,9 +23,7 @@
     "m": {},
     "t": {}
   },
-  "timer": {
-    "time": "t"
-  },
+  "timer": "t",
   "keyboard": {
     "KeyW": "l2",
     "KeyA": "l0",

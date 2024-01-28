@@ -140,10 +140,7 @@ const $__signalInit = (signal) => {
 }
 
 const $__signalFrameBegin = (signal, time) => {
-  {
-    const timer = signal.timer;
-    $__signalSet(signal.map, timer.time, time / 1000);
-  }
+  $__signalSet(signal.map, signal.timer, time / 1000);
   {
     const gps = navigator.getGamepads();
     for (let i = 0; i < gps.length; ++i) {
