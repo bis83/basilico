@@ -113,20 +113,6 @@ func (p *Builder) importGLTF(app *App) error {
 					appMesh.Hint |= HasNormal
 					appMesh.VertexBuffer1 = []int{bufferIndex, offset, size}
 				}
-				if attr, ok := prim.Attributes["TEXCOORD_0"]; ok {
-					offset := vb.Len()
-					buf, err := toFloat32Array(getBytes(doc, attr))
-					if err != nil {
-						return err
-					}
-					buf2 := toFloat16Array(buf)
-					if err := binary.Write(&vb, binary.LittleEndian, buf2); err != nil {
-						return err
-					}
-					size := vb.Len() - offset
-					appMesh.Hint |= HasTexcoord0
-					appMesh.VertexBuffer3 = []int{bufferIndex, offset, size}
-				}
 				if prim.Indices != nil {
 					offset := vb.Len()
 					ib := getBytes(doc, *prim.Indices)
