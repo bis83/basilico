@@ -36,9 +36,9 @@ const $room = (app, name) => {
 };
 
 const $hid = (app, key) => {
-  return $__hidGet(app.hid.map, key);
+  return $__hidMapGet(app.hid.map, key);
 };
 
 const $hidDelta = (app, key) => {
-  return $__hidDelta(app.hid.map, key);
+  return $__hidMapDelta(app.hid.map, key);
 };

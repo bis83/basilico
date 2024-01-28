@@ -1,45 +1,47 @@
 
-const $__hidSet = (hid, key, value) => {
-  value = value || 0;
-  const sig = hid[key];
-  if (sig && !sig.hold) {
-    sig.value = Math.max(0, value);
+const $__hidMapInit = (m, key) => {
+  if (!m[key]) {
+    m[key] = {};
   }
 };
-const $__hidHold = (hid, key, value, hold) => {
+const $__hidMapSet = (m, key, value) => {
+  $__hidMapInit(m, key);
+
+  value = value || 0;
+  const it = m[key];
+  if (it && !it.hold) {
+    it.value = Math.max(0, value);
+  }
+};
+const $__hidMapHold = (m, key, value, hold) => {
+  $__hidMapInit(m, key);
+
   value = value || 0;
   hold = hold || false;
-  const sig = hid[key];
-  if (sig) {
-    sig.value = Math.max(0, value);
-    sig.hold = hold;
+  const it = m[key];
+  if (it) {
+    it.value = Math.max(0, value);
+    it.hold = hold;
   }
 };
-const $__hidGet = (hid, key) => {
-  const sig = hid[key];
-  if (sig) {
-    return sig.value;
+const $__hidMapHistory = (m, key) => {
+  const it = m[key];
+  if (it) {
+    it.history = it.value;
+  }
+};
+
+const $__hidMapGet = (m, key) => {
+  const it = m[key];
+  if (it) {
+    return it.value;
   }
   return 0;
 };
-
-const $__hidHistory = (hid, key) => {
-  const sig = hid[key];
-  if (sig) {
-    sig.history = sig.value;
-  }
-};
-const $__hidAddDelta = (hid, key, value) => {
-  value = value || 0;
-  const sig = hid[key];
-  if (sig && !sig.hold) {
-    sig.value = Math.max(0, sig.history + value);
-  }
-};
-const $__hidDelta = (hid, key) => {
-  const sig = hid[key];
-  if (sig) {
-    return sig.value - sig.history;
+const $__hidMapDelta = (m, key) => {
+  const it = m[key];
+  if (it) {
+    return it.value - it.history;
   }
   return 0;
 };
@@ -66,10 +68,10 @@ const $__hidInit = (hid) => {
 
   const hidReset = () => {
     for (const key in hid.keyboard) {
-      $__hidHold(hid.map, hid.keyboard[key], 0, false);
+      $__hidMapHold(hid.map, hid.keyboard[key], 0, false);
     }
     for (const key of hid.mouse.button) {
-      $__hidHold(hid.map, key, 0, false);
+      $__hidMapHold(hid.map, key, 0, false);
     }
   };
   const hidKeyboard = (ev, value, hold) => {
@@ -78,7 +80,7 @@ const $__hidInit = (hid) => {
     }
     const key = hid.keyboard[ev.code];
     if (key) {
-      $__hidHold(hid.map, key, value, hold);
+      $__hidMapHold(hid.map, key, value, hold);
       ev.preventDefault();
       hid.last = -1;
     }
@@ -89,7 +91,7 @@ const $__hidInit = (hid) => {
     }
     const key = hid.mouse.button[ev.button];
     if (key) {
-      $__hidHold(hid.map, key, value, hold);
+      $__hidMapHold(hid.map, key, value, hold);
       ev.preventDefault();
       hid.last = -1;
     }
@@ -126,13 +128,13 @@ const $__hidInit = (hid) => {
     const mouseSensitive = 0.25;
     const movementX = hid.mouse.movementX;
     if (movementX) {
-      $__hidSet(hid.map, movementX[0], -ev.movementX * mouseSensitive);
-      $__hidSet(hid.map, movementX[1], ev.movementX * mouseSensitive);
+      $__hidMapSet(hid.map, movementX[0], -ev.movementX * mouseSensitive);
+      $__hidMapSet(hid.map, movementX[1], ev.movementX * mouseSensitive);
     }
     const movementY = hid.mouse.movementY;
     if (movementY) {
-      $__hidSet(hid.map, movementY[0], -ev.movementY * mouseSensitive);
-      $__hidSet(hid.map, movementY[1], ev.movementY * mouseSensitive);
+      $__hidMapSet(hid.map, movementY[0], -ev.movementY * mouseSensitive);
+      $__hidMapSet(hid.map, movementY[1], ev.movementY * mouseSensitive);
     }
     ev.preventDefault();
     hid.last = -1;
@@ -140,7 +142,7 @@ const $__hidInit = (hid) => {
 }
 
 const $__hidFrameBegin = (hid, time) => {
-  $__hidSet(hid.map, hid.timer, time / 1000);
+  $__hidMapSet(hid.map, hid.timer, time / 1000);
   {
     const gps = navigator.getGamepads();
     for (let i = 0; i < gps.length; ++i) {
@@ -158,7 +160,7 @@ const $__hidFrameBegin = (hid, time) => {
         if (!key) {
           continue;
         }
-        $__hidSet(hid.map, key, gp.buttons[i].value);
+        $__hidMapSet(hid.map, key, gp.buttons[i].value);
       }
       for (let i = 0; i < gp.axes.length; ++i) {
         const key = gamepad.axes[i];
@@ -166,8 +168,8 @@ const $__hidFrameBegin = (hid, time) => {
           continue;
         }
         const value = Math.trunc(gp.axes[i] * 4) / 4;
-        $__hidSet(hid.map, key[0], -value);
-        $__hidSet(hid.map, key[1], value);
+        $__hidMapSet(hid.map, key[0], -value);
+        $__hidMapSet(hid.map, key[1], value);
       }
     }
   }
@@ -175,7 +177,7 @@ const $__hidFrameBegin = (hid, time) => {
 
 const $__hidFrameEnd = (hid) => {
   for (const key in hid.map) {
-    $__hidHistory(hid.map, key);
-    $__hidSet(hid.map, key, 0);
+    $__hidMapHistory(hid.map, key);
+    $__hidMapSet(hid.map, key, 0);
   }
 };
