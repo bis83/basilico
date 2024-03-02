@@ -18,8 +18,6 @@ type App struct {
 	HID   AppHID   `json:"hid"`
 	GPU   AppGPU   `json:"gpu"`
 	Audio AppAudio `json:"audio"`
-
-	View AppView `json:"view"`
 }
 
 const (
@@ -133,34 +131,6 @@ type AppFunc struct {
 type AppFuncBranch struct {
 	Next   int      `json:"next"`
 	Action []string `json:"action"`
-}
-
-type AppView struct {
-	Func   []*AppViewFunc `json:"func"`
-	Room   []*AppViewRoom `json:"room"`
-	Camera AppViewCamera  `json:"camera"`
-	Light  AppViewLight   `json:"light"`
-}
-type AppViewFunc struct {
-	Name   string `json:"name"`
-	Branch int    `json:"branch"`
-	Action int    `json:"action"`
-}
-type AppViewRoom struct {
-	Offset AppOffset `json:"offset,omitempty"`
-	Name   string    `json:"name"`
-}
-type AppViewCamera struct {
-	Offset AppOffset `json:"offset"`
-	Fov    float32   `json:"fov"`
-	Near   float32   `json:"near"`
-	Far    float32   `json:"far"`
-}
-type AppViewLight struct {
-	Offset   AppOffset `json:"offset"`
-	Color    AppColor  `json:"color"`
-	Ambient0 AppColor  `json:"ambient0"`
-	Ambient1 AppColor  `json:"ambient1"`
 }
 
 type AppOffset struct {
