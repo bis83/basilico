@@ -1,9 +1,10 @@
 
-const $__gpuUploadViewInput = (gpu, view) => {
+const $__gpuUploadViewInput = (app) => {
+  const gpu = app.data.gpu;
   const device = gpu.device;
   const buf = new Float32Array(68);
   { // Camera
-    const camera = view.camera;
+    const camera = app.camera;
     const aspect = gpu.canvas.width / gpu.canvas.height;
     const fovy = deg2rad(camera.fov);
     const [x, y, z, ha, va] = $getOffset(camera.offset, 0, 0, 0, 0, 0);
@@ -21,7 +22,7 @@ const $__gpuUploadViewInput = (gpu, view) => {
     buf.set(eye, 48);
   }
   { // Light
-    const light = view.light;
+    const light = app.light;
     const [x, y, z, ha, va] = $getOffset(light.offset, 0, 0, 0, 0, 0);
     const color = $getColor(light.color, 0, 0, 0, 0);
     const ambient0 = $getColor(light.ambient0, 0, 0, 0, 0);
@@ -35,7 +36,8 @@ const $__gpuUploadViewInput = (gpu, view) => {
   device.queue.writeBuffer(gpu.cbuffer[0], 0, buf);
 };
 
-const $__gpuUploadInstanceInput = (gpu, view, app) => {
+const $__gpuUploadInstanceInput = (app) => {
+  const gpu = app.data.gpu;
   const device = gpu.device;
 
   const instance = [];
@@ -47,8 +49,8 @@ const $__gpuUploadInstanceInput = (gpu, view, app) => {
   const buf = new Float32Array(28);
   const stride = (4 * 28);
   let index = 0;
-  if (view.room) {
-    for (const rid of view.room) {
+  if (app.room) {
+    for (const rid of app.room) {
       const room = $room(app, rid.name);
       if (!room) {
         continue;

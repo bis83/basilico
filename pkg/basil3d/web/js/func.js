@@ -1,16 +1,16 @@
 
 const $__funcInit = (app) => {
-  if (app.func) {
+  if (app.data.func) {
     $__funcCreate(app, "main");
   }
 };
 
 const $__funcCreate = (app, name) => {
-  if (!defined(app.func[name])) {
+  if (!defined(app.data.func[name])) {
     return;
   }
-  app.view.func = app.view.func || [];
-  app.view.func.push({
+  app.func = app.func || [];
+  app.func.push({
     name: name,
     branch: 0,
     action: 0,
@@ -18,7 +18,7 @@ const $__funcCreate = (app, name) => {
 };
 
 const $__funcStep = (app, fv) => {
-  const func = app.func[fv.name];
+  const func = app.data.func[fv.name];
   if (!func) {
     fv.branch = -1;
     return;
@@ -44,13 +44,12 @@ const $__funcStep = (app, fv) => {
 };
 
 const $__funcDispatch = (app) => {
-  const view = app.view;
-  if (view.func) {
-    const func = view.func;
+  if (app.func) {
+    const func = app.func;
     for (const fv of func) {
       $__funcStep(app, fv);
     }
-    view.func = func.filter(fv => {
+    app.func = func.filter(fv => {
       return fv.branch >= 0;
     });
   }

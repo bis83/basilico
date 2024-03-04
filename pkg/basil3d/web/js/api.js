@@ -6,17 +6,57 @@ const $start = async (exec) => {
   }
 
   const app = {
-    loading: 0,
+    data: {
+      loading: 0,
+    },
+    hid: {
+      map: {},
+      last: 0,
+    },
+    exec: exec,
+    func: [],
+    room: [],
+    camera: {
+      offset: {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
+      fov: 0,
+      near: 0,
+      far: 0,
+    },
+    light: {
+      offset: {
+        ha: 0,
+        va: 0,
+      },
+      color: {
+        r: 0,
+        g: 0,
+        b: 0,
+      },
+      ambient0: {
+        r: 0,
+        g: 0,
+        b: 0,
+      },
+      ambient1: {
+        r: 0,
+        g: 0,
+        b: 0,
+      },
+    },
   };
-  $__onload(app, exec);
+  $__onload(app);
 
   const frame = (time) => {
     if ($isLoadCompleted(app)) {
-      $__hidFrameBegin(app.hid, time);
-      $__gpuFrameBegin(app.gpu);
+      $__hidFrameBegin(app, time);
+      $__gpuFrameBegin(app);
       $__funcDispatch(app);
-      $__gpuFrameEnd(app.gpu, app.view, app);
-      $__hidFrameEnd(app.hid);
+      $__gpuFrameEnd(app);
+      $__hidFrameEnd(app);
     }
     requestAnimationFrame(frame);
   };
@@ -24,15 +64,15 @@ const $start = async (exec) => {
 };
 
 const $isLoadCompleted = (app) => {
-  return app.loading <= 0;
+  return app.data.loading <= 0;
 };
 
 const $json = (app, name) => {
-  return app.json[name];
+  return app.data.json[name];
 };
 
 const $room = (app, name) => {
-  return app.room[name];
+  return app.data.room[name];
 };
 
 const $hid = (app, key) => {

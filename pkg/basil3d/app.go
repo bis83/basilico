@@ -10,10 +10,9 @@ type App struct {
 	Embed []*string               `json:"embed"`
 	JSON  map[string]*interface{} `json:"json"`
 
-	Room map[string]*AppRoom     `json:"room"`
-	Mob  map[string]*AppMob      `json:"mob"`
-	Func map[string]*AppFunc     `json:"func"`
-	Exec map[string]*interface{} `json:"exec"`
+	Room map[string]*AppRoom `json:"room"`
+	Mob  map[string]*AppMob  `json:"mob"`
+	Func map[string]*AppFunc `json:"func"`
 
 	HID   AppHID   `json:"hid"`
 	GPU   AppGPU   `json:"gpu"`
@@ -81,17 +80,10 @@ type AppAudio struct {
 }
 
 type AppHID struct {
-	Last     int                   `json:"last"`
-	Map      map[string]*AppHIDMap `json:"map"`
-	Timer    string                `json:"timer"`
-	Keyboard map[string]*string    `json:"keyboard"`
-	Mouse    *AppHIDMouse          `json:"mouse"`
-	Gamepad  *AppHIDGamepad        `json:"gamepad"`
-}
-type AppHIDMap struct {
-	History float64 `json:"history"`
-	Value   float64 `json:"value"`
-	Hold    bool    `json:"hold"`
+	Timer    string             `json:"timer"`
+	Keyboard map[string]*string `json:"keyboard"`
+	Mouse    *AppHIDMouse       `json:"mouse"`
+	Gamepad  *AppHIDGamepad     `json:"gamepad"`
 }
 type AppHIDMouse struct {
 	Button    []*string `json:"button"`

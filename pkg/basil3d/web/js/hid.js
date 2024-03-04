@@ -64,14 +64,16 @@ const $__gamepadTouched = (gamepad) => {
   return false;
 };
 
-const $__hidInit = (hid) => {
+const $__hidInit = (app) => {
+  const hv = app.hid;
+  const hid = app.data.hid;
 
   const hidReset = () => {
     for (const key in hid.keyboard) {
-      $__hidMapHold(hid.map, hid.keyboard[key], 0, false);
+      $__hidMapHold(hv.map, hid.keyboard[key], 0, false);
     }
     for (const key of hid.mouse.button) {
-      $__hidMapHold(hid.map, key, 0, false);
+      $__hidMapHold(hv.map, key, 0, false);
     }
   };
   const hidKeyboard = (ev, value, hold) => {
@@ -80,9 +82,9 @@ const $__hidInit = (hid) => {
     }
     const key = hid.keyboard[ev.code];
     if (key) {
-      $__hidMapHold(hid.map, key, value, hold);
+      $__hidMapHold(hv.map, key, value, hold);
       ev.preventDefault();
-      hid.last = -1;
+      hv.last = -1;
     }
   };
   const hidMouse = (ev, value, hold) => {
@@ -91,9 +93,9 @@ const $__hidInit = (hid) => {
     }
     const key = hid.mouse.button[ev.button];
     if (key) {
-      $__hidMapHold(hid.map, key, value, hold);
+      $__hidMapHold(hv.map, key, value, hold);
       ev.preventDefault();
-      hid.last = -1;
+      hv.last = -1;
     }
   };
 
@@ -128,31 +130,34 @@ const $__hidInit = (hid) => {
     const mouseSensitive = 0.25;
     const movementX = hid.mouse.movementX;
     if (movementX) {
-      $__hidMapSet(hid.map, movementX[0], -ev.movementX * mouseSensitive);
-      $__hidMapSet(hid.map, movementX[1], ev.movementX * mouseSensitive);
+      $__hidMapSet(hv.map, movementX[0], -ev.movementX * mouseSensitive);
+      $__hidMapSet(hv.map, movementX[1], ev.movementX * mouseSensitive);
     }
     const movementY = hid.mouse.movementY;
     if (movementY) {
-      $__hidMapSet(hid.map, movementY[0], -ev.movementY * mouseSensitive);
-      $__hidMapSet(hid.map, movementY[1], ev.movementY * mouseSensitive);
+      $__hidMapSet(hv.map, movementY[0], -ev.movementY * mouseSensitive);
+      $__hidMapSet(hv.map, movementY[1], ev.movementY * mouseSensitive);
     }
     ev.preventDefault();
-    hid.last = -1;
+    hv.last = -1;
   });
 }
 
-const $__hidFrameBegin = (hid, time) => {
-  $__hidMapSet(hid.map, hid.timer, time / 1000);
+const $__hidFrameBegin = (app, time) => {
+  const hv = app.hid;
+  const hid = app.data.hid;
+
+  $__hidMapSet(hv.map, hid.timer, time / 1000);
   {
     const gps = navigator.getGamepads();
     for (let i = 0; i < gps.length; ++i) {
       if ($__gamepadTouched(gps[i])) {
-        hid.last = i;
+        hv.last = i;
         break;
       }
     }
 
-    const gp = gps[hid.last];
+    const gp = gps[hv.last];
     if (gp) {
       const gamepad = hid.gamepad;
       for (let i = 0; i < gp.buttons.length; ++i) {
@@ -160,7 +165,7 @@ const $__hidFrameBegin = (hid, time) => {
         if (!key) {
           continue;
         }
-        $__hidMapSet(hid.map, key, gp.buttons[i].value);
+        $__hidMapSet(hv.map, key, gp.buttons[i].value);
       }
       for (let i = 0; i < gp.axes.length; ++i) {
         const key = gamepad.axes[i];
@@ -168,16 +173,17 @@ const $__hidFrameBegin = (hid, time) => {
           continue;
         }
         const value = Math.trunc(gp.axes[i] * 4) / 4;
-        $__hidMapSet(hid.map, key[0], -value);
-        $__hidMapSet(hid.map, key[1], value);
+        $__hidMapSet(hv.map, key[0], -value);
+        $__hidMapSet(hv.map, key[1], value);
       }
     }
   }
 };
 
-const $__hidFrameEnd = (hid) => {
-  for (const key in hid.map) {
-    $__hidMapHistory(hid.map, key);
-    $__hidMapSet(hid.map, key, 0);
+const $__hidFrameEnd = (app) => {
+  const hv = app.hid;
+  for (const key in hv.map) {
+    $__hidMapHistory(hv.map, key);
+    $__hidMapSet(hv.map, key, 0);
   }
 };

@@ -1,14 +1,16 @@
 
-const $__gpuFrameBegin = (gpu) => {
+const $__gpuFrameBegin = (app) => {
+  const gpu = app.data.gpu;
   $__gpuResizeGBuffer(gpu);
 };
 
-const $__gpuFrameEnd = (gpu, view, app) => {
+const $__gpuFrameEnd = (app) => {
   // Upload Buffers
-  $__gpuUploadViewInput(gpu, view);
-  const batch = $__gpuUploadInstanceInput(gpu, view, app);
+  $__gpuUploadViewInput(app);
+  const batch = $__gpuUploadInstanceInput(app);
 
   // Create CommandBuffer
+  const gpu = app.data.gpu;
   const device = gpu.device;
   const ce = device.createCommandEncoder();
   $__gpuPassGBuffer(ce, gpu, batch);
