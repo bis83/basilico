@@ -6,6 +6,7 @@ const $start = async (exec) => {
   }
 
   const app = {
+    exec: exec,
     data: {
       loading: 0,
     },
@@ -13,9 +14,9 @@ const $start = async (exec) => {
       map: {},
       last: 0,
     },
-    exec: exec,
     func: [],
     room: [],
+    mob: [],
     camera: {
       offset: {
         x: 0,
@@ -73,6 +74,10 @@ const $json = (app, name) => {
 
 const $room = (app, name) => {
   return app.data.room[name];
+};
+
+const $mob = (app, name) => {
+  return app.data.mob[name];
 };
 
 const $hid = (app, key) => {

@@ -96,25 +96,28 @@ type AppHIDGamepad struct {
 }
 
 type AppRoom struct {
-	Mesh    []*AppRoomMesh `json:"mesh"`
+	Mesh    []*AppMesh     `json:"mesh"`
 	Node    []*AppRoomNode `json:"node"`
 	Unit    float32        `json:"unit"`
 	Divisor int            `json:"divisor"`
 	Indices []int          `json:"indices"`
 }
-type AppRoomMesh struct {
+type AppRoomNode struct {
+	Mesh  []int     `json:"mesh"`
+	Space *AppSpace `json:"space,omitempty"`
+}
+
+type AppMob struct {
+	Mesh  []*AppMesh `json:"mesh"`
+	Space *AppSpace  `json:"space,omitempty"`
+}
+
+type AppMesh struct {
 	Name    string     `json:"name"`
 	Offset  *AppOffset `json:"offset"`
 	Factor0 *AppColor  `json:"factor0,omitempty"`
 	Factor1 *AppColor  `json:"factor1,omitempty"`
 	Factor2 *AppColor  `json:"factor2,omitempty"`
-}
-type AppRoomNode struct {
-	Mesh  []int     `json:"mesh"`
-	Space *AppRange `json:"space,omitempty"`
-}
-
-type AppMob struct {
 }
 
 type AppFunc struct {
@@ -138,9 +141,10 @@ type AppColor struct {
 	B float32 `json:"b"`
 	A float32 `json:"a"`
 }
-type AppRange struct {
-	Min *float32 `json:"min,omitempty"`
-	Max *float32 `json:"max,omitempty"`
+type AppSpace struct {
+	Min    *float32 `json:"min,omitempty"`
+	Max    *float32 `json:"max,omitempty"`
+	Radius *float32 `json:"radius,omitempty"`
 }
 
 func (p *App) AddEmbed(buf string) int {

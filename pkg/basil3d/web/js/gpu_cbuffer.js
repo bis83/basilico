@@ -50,8 +50,8 @@ const $__gpuUploadInstanceInput = (app) => {
   const stride = (4 * 28);
   let index = 0;
   if (app.room) {
-    for (const rid of app.room) {
-      const room = $room(app, rid.name);
+    for (const obj of app.room) {
+      const room = $room(app, obj.name);
       if (!room) {
         continue;
       }
@@ -63,7 +63,7 @@ const $__gpuUploadInstanceInput = (app) => {
 
         const dx = mod(i, room.divisor);
         const dz = div(i, room.divisor);
-        const [x0, y0, z0, ha0, va0] = $getOffset(rid.offset, dx * room.unit, 0, dz * room.unit, 0, 0);
+        const [x0, y0, z0, ha0, va0] = $getOffset(obj.offset, dx * room.unit, 0, dz * room.unit, 0, 0);
 
         for (const mid of node.mesh) {
           const mesh = room.mesh[mid];
@@ -91,6 +91,38 @@ const $__gpuUploadInstanceInput = (app) => {
           device.queue.writeBuffer(gpu.cbuffer[1], index * stride, buf);
           index += 1;
         }
+      }
+    }
+  }
+  if (app.mob) {
+    for (const obj of app.mob) {
+      const mob = $mob(app, obj.name);
+      if (!mob) {
+        continue;
+      }
+      const [x0, y0, z0, ha0, va0] = $getOffset(obj.offset, 0, 0, 0, 0, 0);
+
+      for (const mesh of mob.mesh) {
+        const id = $__gpuID(gpu, mesh.name);
+        if (id < 0) {
+          continue;
+        }
+        for (const n of gpu.id[id].mesh) {
+          instance[n].push(index);
+        }
+
+        const [x, y, z, ha, va] = $getOffset(mesh.offset, x0, y0, z0, ha0, va0);
+        const matrix = mat4angle(ha, va);
+        mat4translated(matrix, x, y, z);
+        const factor0 = $getColor(mesh.factor0, 1.0, 1.0, 1.0, 1.0);
+        const factor1 = $getColor(mesh.factor1, 1.0, 1.0, 1.0, 0.0);
+        const factor2 = $getColor(mesh.factor2, 0.0, 0.0, 0.0, 0.0);
+        buf.set(matrix, 0);
+        buf.set(factor0, 16);
+        buf.set(factor1, 20);
+        buf.set(factor2, 24);
+        device.queue.writeBuffer(gpu.cbuffer[1], index * stride, buf);
+        index += 1;
       }
     }
   }

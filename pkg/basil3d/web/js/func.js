@@ -9,7 +9,6 @@ const $__funcCreate = (app, name) => {
   if (!defined(app.data.func[name])) {
     return;
   }
-  app.func = app.func || [];
   app.func.push({
     name: name,
     branch: 0,
@@ -45,11 +44,10 @@ const $__funcStep = (app, fv) => {
 
 const $__funcDispatch = (app) => {
   if (app.func) {
-    const func = app.func;
-    for (const fv of func) {
+    for (const fv of app.func) {
       $__funcStep(app, fv);
     }
-    app.func = func.filter(fv => {
+    app.func = app.func.filter(fv => {
       return fv.branch >= 0;
     });
   }
