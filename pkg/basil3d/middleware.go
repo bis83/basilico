@@ -8,31 +8,12 @@ type Middleware struct {
 }
 
 func (p Middleware) PreBuild(bsl *basil.Basil) error {
-	if err := addScript(bsl); err != nil {
-		return err
-	}
-	if err := addAppJson(bsl); err != nil {
-		return err
-	}
-	return nil
-}
-
-func addScript(bsl *basil.Basil) error {
-	for _, path := range scripts {
-		js, err := fs.ReadFile(path)
-		if err != nil {
-			return err
-		}
-		bsl.AddScript(js)
-	}
-	return nil
-}
-
-func addAppJson(bsl *basil.Basil) error {
 	var builder Builder
 	if err := builder.read(bsl.BaseDir()); err != nil {
 		return err
 	}
+
+	// generate app.json
 	app, err := builder.build()
 	if err != nil {
 		return err
@@ -43,5 +24,15 @@ func addAppJson(bsl *basil.Basil) error {
 		return err
 	}
 	bsl.AddFile(path, data)
+
+	// generate script
+	for _, path := range scripts {
+		js, err := fs.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		bsl.AddScript(js)
+	}
+
 	return nil
 }

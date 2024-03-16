@@ -1,4 +1,6 @@
 
+const $__exec = {};
+
 const $__funcInit = (app) => {
   if (app.data.func) {
     $__funcCreate(app, "main");
@@ -34,7 +36,7 @@ const $__funcStep = (app, fv) => {
       fv.action = 0;
       break;
     }
-    const exec = app.exec[action];
+    const exec = $__exec[action];
     if (exec) {
       exec(app);
     }

@@ -1,12 +1,11 @@
 
-const $start = async (exec) => {
+const $start = async () => {
   if (!navigator.gpu) {
     html_show_message("ERROR: WebGPU not supported.")
     return;
   }
 
   const app = {
-    exec: exec,
     data: {
       loading: 0,
     },
