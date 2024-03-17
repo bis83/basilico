@@ -1,4 +1,4 @@
-struct ViewInput {
+struct SceneInput {
   viewProj : mat4x4<f32>,
   invViewProj : mat4x4<f32>,
   view : mat4x4<f32>,

@@ -1,5 +1,5 @@
 
-const $__gpuResizeGBuffer = (gpu) => {
+const $__gpuGBufferResize = (gpu) => {
   const device = gpu.device;
   const canvas = gpu.canvas;
 

@@ -10,7 +10,7 @@ struct VertexOutput {
 @vertex
 fn VS(input : VertexInput) -> VertexOutput {
   var output : VertexOutput;
-  output.position = view.viewProj * vec4<f32>(input.position, 1.0);
+  output.position = scene.viewProj * vec4<f32>(input.position, 1.0);
   output.color = input.color;
   return output;
 }

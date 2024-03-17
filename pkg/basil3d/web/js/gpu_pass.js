@@ -1,13 +1,13 @@
 
 const $__gpuFrameBegin = (app) => {
   const gpu = app.data.gpu;
-  $__gpuResizeGBuffer(gpu);
+  $__gpuGBufferResize(gpu);
 };
 
 const $__gpuFrameEnd = (app) => {
   // Upload Buffers
-  $__gpuUploadViewInput(app);
-  const batch = $__gpuUploadInstanceInput(app);
+  $__gpuBufferView(app);
+  const batch = $__gpuBufferMesh(app);
 
   // Create CommandBuffer
   const gpu = app.data.gpu;

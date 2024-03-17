@@ -11,7 +11,7 @@ fn decodeWorldPosition(xy : vec2<i32>) -> vec3<f32> {
   var d = textureLoad(zbuffer, xy, 0);
   var uv = vec2<f32>(xy) / vec2<f32>(textureDimensions(zbuffer, 0).xy);
   var posClip = vec4<f32>(uv * vec2(2.0, -2.0) + vec2(-1.0, 1.0), d, 1);
-  var posWorldW = view.invViewProj * posClip;
+  var posWorldW = scene.invViewProj * posClip;
   var posWorld = posWorldW.xyz / posWorldW.www;
   return posWorld;
 }
@@ -19,15 +19,15 @@ fn decodeNormal(xy : vec2<i32>) -> vec3<f32> {
   return normalize(textureLoad(gbuffer0, xy, 0).xyz * 2.0 - 1.0);
 }
 fn decodeViewNormal(xy : vec2<i32>) -> vec3<f32> {
-  var nView = mat3x3<f32>(view.view[0].xyz, view.view[1].xyz, view.view[2].xyz);
+  var nView = mat3x3<f32>(scene.view[0].xyz, scene.view[1].xyz, scene.view[2].xyz);
   var N = normalize(textureLoad(gbuffer0, xy, 0).xyz * 2.0 - 1.0);
   N = normalize(nView * N);
   return N;
 }
 fn sampleEnvMap(R : vec3<f32>) -> vec3<f32> {
   return mix(
-    view.ambientColor0.rgb * view.ambientColor0.a,
-    view.ambientColor1.rgb * view.ambientColor1.a,
+    scene.ambientColor0.rgb * scene.ambientColor0.a,
+    scene.ambientColor1.rgb * scene.ambientColor1.a,
     dot(R, vec3<f32>(0, 1, 0)) * 0.5 + 0.5);
 }
 
@@ -117,11 +117,11 @@ fn FS_HDR(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
   var F1 = textureLoad(gbuffer2, xy, 0);
   var N = decodeNormal(xy);
   var P = decodeWorldPosition(xy);
-  var V = normalize(view.eyePosition.xyz - P);
+  var V = normalize(scene.eyePosition.xyz - P);
   var R = normalize(reflect(V, N));
 
-  var L = normalize(view.lightDir.xyz);
-  var C_L = (view.lightColor.rgb * view.lightColor.a) * BRDF(N, L, V, F0.rgb, F1.y, F1.z);
+  var L = normalize(scene.lightDir.xyz);
+  var C_L = (scene.lightColor.rgb * scene.lightColor.a) * BRDF(N, L, V, F0.rgb, F1.y, F1.z);
   var A = sampleEnvMap(R);
   var C_A = A * F1.x * F0.rgb;
   return vec4(C_L + C_A, 0.0);
@@ -131,7 +131,7 @@ fn FS_HDR(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
 fn FS_HDRSky(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
   var xy = vec2<i32>(floor(coord.xy));
   var P = decodeWorldPosition(xy);
-  var V = normalize(view.eyePosition.xyz - P);
+  var V = normalize(scene.eyePosition.xyz - P);
   var C_A = sampleEnvMap(V);
   return vec4(C_A, 0.0);
 }

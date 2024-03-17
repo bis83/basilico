@@ -16,6 +16,7 @@ const $start = async () => {
     func: [],
     room: [],
     mob: [],
+    hud: [],
     camera: {
       offset: {
         x: 0,
