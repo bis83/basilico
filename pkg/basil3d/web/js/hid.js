@@ -34,14 +34,14 @@ const $__hidMapHistory = (m, key) => {
 const $__hidMapGet = (m, key) => {
   const it = m[key];
   if (it) {
-    return it.value;
+    return (it.value || 0);
   }
   return 0;
 };
 const $__hidMapDelta = (m, key) => {
   const it = m[key];
   if (it) {
-    return it.value - it.history;
+    return (it.value || 0) - (it.history || 0);
   }
   return 0;
 };

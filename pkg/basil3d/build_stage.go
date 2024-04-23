@@ -10,13 +10,13 @@ import (
 	basil "github.com/bis83/basilico/pkg/basil"
 )
 
-func openFunc(path string) (*AppFunc, error) {
+func openStage(path string) (*AppStage, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
 
-	var doc AppFunc
+	var doc AppStage
 	d := json.NewDecoder(bytes.NewReader(data))
 	d.DisallowUnknownFields()
 	if err := d.Decode(&doc); err != nil {
@@ -25,13 +25,13 @@ func openFunc(path string) (*AppFunc, error) {
 	return &doc, nil
 }
 
-func (p *Builder) readFunc(baseDir string) error {
-	dir := filepath.Join(baseDir, "func")
+func (p *Builder) readStage(baseDir string) error {
+	dir := filepath.Join(baseDir, "stage")
 	if !basil.Exists(dir) {
 		return nil
 	}
 
-	p.Func = make(map[string]*AppFunc, 0)
+	p.Stage = make(map[string]*AppStage, 0)
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -43,14 +43,14 @@ func (p *Builder) readFunc(baseDir string) error {
 			return nil
 		}
 
-		doc, err := openFunc(path)
+		doc, err := openStage(path)
 		if err != nil {
 			return err
 		}
 		name := filepath.Base(path[:len(path)-len(filepath.Ext(path))])
 
-		p.Func[name] = doc
-		fmt.Printf("Func: %v\n", path)
+		p.Stage[name] = doc
+		fmt.Printf("Stage: %v\n", path)
 
 		return nil
 	})
@@ -60,7 +60,7 @@ func (p *Builder) readFunc(baseDir string) error {
 	return nil
 }
 
-func (p *Builder) importFunc(app *App) error {
-	app.Func = p.Func
+func (p *Builder) importStage(app *App) error {
+	app.Stage = p.Stage
 	return nil
 }

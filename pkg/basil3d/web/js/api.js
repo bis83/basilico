@@ -13,41 +13,7 @@ const $start = async () => {
       map: {},
       last: 0,
     },
-    func: [],
-    room: [],
-    mob: [],
-    hud: [],
-    camera: {
-      offset: {
-        x: 0,
-        y: 0,
-        z: 0,
-      },
-      fov: 0,
-      near: 0,
-      far: 0,
-    },
-    light: {
-      offset: {
-        ha: 0,
-        va: 0,
-      },
-      color: {
-        r: 0,
-        g: 0,
-        b: 0,
-      },
-      ambient0: {
-        r: 0,
-        g: 0,
-        b: 0,
-      },
-      ambient1: {
-        r: 0,
-        g: 0,
-        b: 0,
-      },
-    },
+    stage: [],
   };
   $__onload(app);
 
@@ -55,7 +21,7 @@ const $start = async () => {
     if ($isLoadCompleted(app)) {
       $__hidFrameBegin(app, time);
       $__gpuFrameBegin(app);
-      $__funcDispatch(app);
+      $__stageStep(app);
       $__gpuFrameEnd(app);
       $__hidFrameEnd(app);
     }
@@ -80,10 +46,18 @@ const $mob = (app, name) => {
   return app.data.mob[name];
 };
 
+const $stage = (app, name) => {
+  return app.data.stage[name];
+};
+
 const $hid = (app, key) => {
   return $__hidMapGet(app.hid.map, key);
 };
 
 const $hidDelta = (app, key) => {
   return $__hidMapDelta(app.hid.map, key);
+};
+
+const $stageCurrent = (app) => {
+  return app.stage.at(-1);
 };

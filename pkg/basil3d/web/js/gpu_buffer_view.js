@@ -4,7 +4,7 @@ const $__gpuBufferView = (app) => {
   const device = gpu.device;
   const buf = new Float32Array(68);
   { // Camera
-    const camera = app.camera;
+    const camera = $stageCurrent(app).camera;
     const aspect = gpu.canvas.width / gpu.canvas.height;
     const fovy = deg2rad(camera.fov);
     const [x, y, z, ha, va] = $getOffset(camera.offset, 0, 0, 0, 0, 0);
@@ -22,7 +22,7 @@ const $__gpuBufferView = (app) => {
     buf.set(eye, 48);
   }
   { // Light
-    const light = app.light;
+    const light = $stageCurrent(app).light;
     const [x, y, z, ha, va] = $getOffset(light.offset, 0, 0, 0, 0, 0);
     const color = $getColor(light.color, 0, 0, 0, 0);
     const ambient0 = $getColor(light.ambient0, 0, 0, 0, 0);
@@ -35,4 +35,3 @@ const $__gpuBufferView = (app) => {
   }
   device.queue.writeBuffer(gpu.cbuffer[0], 0, buf);
 };
-

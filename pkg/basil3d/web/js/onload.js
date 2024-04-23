@@ -12,7 +12,7 @@ const $__onload = (app) => {
     if (data.gpu) {
       await $__gpuInit(data.gpu, data.embed);
     }
-    $__funcInit(app);
+    $__stageNew(app, "main");
 
     delete data.embed;
     data.loading -= 1;

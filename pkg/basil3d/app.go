@@ -10,9 +10,9 @@ type App struct {
 	Embed []*string               `json:"embed"`
 	JSON  map[string]*interface{} `json:"json"`
 
-	Room map[string]*AppRoom `json:"room"`
-	Mob  map[string]*AppMob  `json:"mob"`
-	Func map[string]*AppFunc `json:"func"`
+	Room  map[string]*AppRoom  `json:"room"`
+	Mob   map[string]*AppMob   `json:"mob"`
+	Stage map[string]*AppStage `json:"stage"`
 
 	HID   AppHID   `json:"hid"`
 	GPU   AppGPU   `json:"gpu"`
@@ -120,12 +120,39 @@ type AppMesh struct {
 	Factor2 *AppColor  `json:"factor2,omitempty"`
 }
 
-type AppFunc struct {
-	Branch []*AppFuncBranch `json:"branch"`
+type AppStage struct {
+	Step []*AppStageStep `json:"step"`
+
+	Room   []*AppStageRoom   `json:"room"`
+	Mob    []*AppStageMob    `json:"mob"`
+	Camera []*AppStageCamera `json:"camera"`
+	Light  []*AppStageLight  `json:"light"`
 }
-type AppFuncBranch struct {
-	Next   int      `json:"next"`
-	Action []string `json:"action"`
+type AppStageStep struct {
+	Label string `json:"label,omitempty"`
+	Event string `json:"event,omitempty"`
+	Goto  string `json:"goto,omitempty"`
+	Yield bool   `json:"yield,omitempty"`
+}
+type AppStageRoom struct {
+	Name   string     `json:"name"`
+	Offset *AppOffset `json:"offset"`
+}
+type AppStageMob struct {
+	Name   string     `json:"name"`
+	Offset *AppOffset `json:"offset"`
+}
+type AppStageCamera struct {
+	Offset *AppOffset `json:"offset"`
+	Fov    float32    `json:"fov"`
+	Near   float32    `json:"near"`
+	Far    float32    `json:"far"`
+}
+type AppStageLight struct {
+	Offset   *AppOffset `json:"offset"`
+	Color    *AppColor  `json:"color"`
+	Ambient0 *AppColor  `json:"ambient0"`
+	Ambient1 *AppColor  `json:"ambient1"`
 }
 
 type AppOffset struct {

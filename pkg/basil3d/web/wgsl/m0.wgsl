@@ -21,7 +21,7 @@ fn VS(input : VertexInput) -> VertexOutput {
   var nWorld = mat3x3<f32>(world[0].xyz, world[1].xyz, world[2].xyz);
 
   var output : VertexOutput;
-  output.position = (scene.viewProj * world * vec4(input.position, 1.0));
+  output.position = (stage.viewProj * world * vec4(input.position, 1.0));
   output.normal = normalize(nWorld * input.normal);
   output.id = input.id;
   return output;

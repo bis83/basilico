@@ -5,11 +5,11 @@ import (
 )
 
 type Builder struct {
-	GLTF []*gltf.Document
-	JSON map[string]*interface{}
-	Room map[string]*AppRoom
-	Mob  map[string]*AppMob
-	Func map[string]*AppFunc
+	GLTF  []*gltf.Document
+	JSON  map[string]*interface{}
+	Room  map[string]*AppRoom
+	Mob   map[string]*AppMob
+	Stage map[string]*AppStage
 }
 
 func (p *Builder) read(baseDir string) error {
@@ -25,7 +25,7 @@ func (p *Builder) read(baseDir string) error {
 	if err := p.readMob(baseDir); err != nil {
 		return err
 	}
-	if err := p.readFunc(baseDir); err != nil {
+	if err := p.readStage(baseDir); err != nil {
 		return err
 	}
 	return nil
@@ -52,7 +52,7 @@ func (p *Builder) build() (*App, error) {
 	if err := p.importMob(&app); err != nil {
 		return nil, err
 	}
-	if err := p.importFunc(&app); err != nil {
+	if err := p.importStage(&app); err != nil {
 		return nil, err
 	}
 	return &app, nil
