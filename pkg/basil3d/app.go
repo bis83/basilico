@@ -96,7 +96,10 @@ type AppHIDGamepad struct {
 }
 
 type AppRoom struct {
-	Mesh    []*AppMesh     `json:"mesh"`
+	Mesh   []*AppMesh       `json:"mesh"`
+	Layout []*AppRoomLayout `json:"layout"`
+}
+type AppRoomLayout struct {
 	Node    []*AppRoomNode `json:"node"`
 	Unit    float32        `json:"unit"`
 	Divisor int            `json:"divisor"`
