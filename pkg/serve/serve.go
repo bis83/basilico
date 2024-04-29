@@ -1,7 +1,6 @@
 package serve
 
 import (
-	"io/fs"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -20,13 +19,7 @@ func Serve(p *basil.Basil) error {
 	if err != nil {
 		return err
 	}
-	http.Handle("/app/", http.StripPrefix("/app/", http.FileServer(http.Dir(absPath))))
-
-	root, err := fs.Sub(web, "web")
-	if err != nil {
-		return err
-	}
-	http.Handle("/", http.FileServer(http.FS(root)))
+	http.Handle("/", http.FileServer(http.Dir(absPath)))
 
 	addr := ":8080"
 	log.Printf("basilico start. addr=%v, dir=%v", addr, absPath)

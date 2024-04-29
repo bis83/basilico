@@ -11,14 +11,6 @@ const html_message = () => {
   return document.getElementById("message");
 };
 
-const html_pointer_lock = () => {
-  html_canvas().requestPointerLock();
-};
-
-const html_is_pointer_lock = () => {
-  return document.pointerLockElement === html_canvas();
-};
-
 const html_show_message = (text) => {
   const elem = html_message();
   elem.style.display = ``;

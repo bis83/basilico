@@ -77,9 +77,6 @@ const $__hidInit = (app) => {
     }
   };
   const hidKeyboard = (ev, value, hold) => {
-    if (!html_is_pointer_lock()) {
-      return;
-    }
     const key = hid.keyboard[ev.code];
     if (key) {
       $__hidMapHold(hv.map, key, value, hold);
@@ -88,9 +85,6 @@ const $__hidInit = (app) => {
     }
   };
   const hidMouse = (ev, value, hold) => {
-    if (!html_is_pointer_lock()) {
-      return;
-    }
     const key = hid.mouse.button[ev.button];
     if (key) {
       $__hidMapHold(hv.map, key, value, hold);
@@ -105,12 +99,6 @@ const $__hidInit = (app) => {
   html_listen(window, "blur", (ev) => {
     hidReset();
   });
-  html_listen(document, "click", (ev) => {
-    if (!html_is_pointer_lock()) {
-      html_pointer_lock();
-      hidReset();
-    }
-  });
   html_listen(document, "keydown", (ev) => {
     hidKeyboard(ev, 1, true);
   });
@@ -124,7 +112,7 @@ const $__hidInit = (app) => {
     hidMouse(ev, 0, false);
   });
   html_listen(document, "mousemove", (ev) => {
-    if (!html_is_pointer_lock()) {
+    if (!(ev.buttons & 2)) {
       return;
     }
     const mouseSensitive = 0.25;
@@ -141,6 +129,8 @@ const $__hidInit = (app) => {
     ev.preventDefault();
     hv.last = -1;
   });
+
+  hidReset();
 }
 
 const $__hidFrameBegin = (app, time) => {
