@@ -116,7 +116,7 @@ type AppMob struct {
 }
 
 type AppMesh struct {
-	Name    string     `json:"name"`
+	Data    string     `json:"data"`
 	Offset  *AppOffset `json:"offset"`
 	Factor0 *AppColor  `json:"factor0,omitempty"`
 	Factor1 *AppColor  `json:"factor1,omitempty"`
@@ -138,11 +138,11 @@ type AppStageStep struct {
 	Yield bool   `json:"yield,omitempty"`
 }
 type AppStageRoom struct {
-	Name   string     `json:"name"`
+	Data   string     `json:"data"`
 	Offset *AppOffset `json:"offset"`
 }
 type AppStageMob struct {
-	Name   string     `json:"name"`
+	Data   string     `json:"data"`
 	Offset *AppOffset `json:"offset"`
 }
 type AppStageCamera struct {

@@ -13,7 +13,7 @@ const $__gpuBufferMesh = (app) => {
   const stride = (4 * 28);
   let index = 0;
   for (const obj of $stageCurrent(app).room) {
-    const room = $room(app, obj.name);
+    const room = $room(app, obj.data);
     if (!room) {
       continue;
     }
@@ -35,7 +35,7 @@ const $__gpuBufferMesh = (app) => {
           if (!mesh) {
             continue;
           }
-          const id = $__gpuID(gpu, mesh.name);
+          const id = $__gpuID(gpu, mesh.data);
           if (id < 0) {
             continue;
           }
@@ -60,14 +60,14 @@ const $__gpuBufferMesh = (app) => {
     }
   }
   for (const obj of $stageCurrent(app).mob) {
-    const mob = $mob(app, obj.name);
+    const mob = $mob(app, obj.data);
     if (!mob) {
       continue;
     }
 
     const [x0, y0, z0, ha0, va0] = $getOffset(obj.offset, 0, 0, 0, 0, 0);
     for (const mesh of mob.mesh) {
-      const id = $__gpuID(gpu, mesh.name);
+      const id = $__gpuID(gpu, mesh.data);
       if (id < 0) {
         continue;
       }

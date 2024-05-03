@@ -6,7 +6,7 @@ const $__stageStep = (app) => {
   if (!stage) {
     return;
   }
-  const data = $stage(app, stage.name);
+  const data = $stage(app, stage.data);
   if (!data) {
     return;
   }
@@ -54,7 +54,7 @@ const $__stageNew = (app, name) => {
     return;
   }
   const stage = {
-    name: name,
+    data: name,
     step: 0,
     room: structuredClone(data.room) || [],
     mob: structuredClone(data.mob) || [],
