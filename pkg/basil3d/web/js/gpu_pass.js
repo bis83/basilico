@@ -60,17 +60,17 @@ const $__gpuPassGBuffer = (ce, gpu, batch) => {
     pass.setBindGroup(0, gpu.bindGroup[0]);
     pass.setVertexBuffer(0, gpu.cbuffer[2], b.first * 4);
 
-    const mesh = gpu.mesh[b.id];
-    if (mesh.vb0) {
-      const [index, offset, size] = mesh.vb0;
+    const segment = gpu.segment[b.id];
+    if (segment.vb0) {
+      const [index, offset, size] = segment.vb0;
       pass.setVertexBuffer(1, gpu.buffer[index], offset, size);
     }
-    if (mesh.vb1) {
-      const [index, offset, size] = mesh.vb1;
+    if (segment.vb1) {
+      const [index, offset, size] = segment.vb1;
       pass.setVertexBuffer(2, gpu.buffer[index], offset, size);
     }
-    if (mesh.ib) {
-      const [index, offset, size] = mesh.ib;
+    if (segment.ib) {
+      const [index, offset, size] = segment.ib;
       pass.setIndexBuffer(gpu.buffer[index], "uint16", offset, size);
     }
 

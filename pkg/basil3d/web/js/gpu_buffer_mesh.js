@@ -4,7 +4,7 @@ const $__gpuBufferMesh = (app) => {
   const device = gpu.device;
 
   const instance = [];
-  instance.length = gpu.mesh.length;
+  instance.length = gpu.segment.length;
   for (let i = 0; i < instance.length; ++i) {
     instance[i] = [];
   }
@@ -35,11 +35,11 @@ const $__gpuBufferMesh = (app) => {
           if (!mesh) {
             continue;
           }
-          const id = $__gpuID(gpu, mesh.data);
-          if (id < 0) {
+          const m = gpu.mesh[mesh.data];
+          if (!m) {
             continue;
           }
-          for (const n of gpu.id[id].mesh) {
+          for (const n of m.segment) {
             instance[n].push(index);
           }
 
@@ -67,11 +67,11 @@ const $__gpuBufferMesh = (app) => {
 
     const [x0, y0, z0, ha0, va0] = $getOffset(obj.offset, 0, 0, 0, 0, 0);
     for (const mesh of mob.mesh) {
-      const id = $__gpuID(gpu, mesh.data);
-      if (id < 0) {
+      const m = gpu.mesh[mesh.data];
+      if (!m) {
         continue;
       }
-      for (const n of gpu.id[id].mesh) {
+      for (const n of m.segment) {
         instance[n].push(index);
       }
 
@@ -98,16 +98,16 @@ const $__gpuBufferMesh = (app) => {
     if (instance[i].length <= 0) {
       continue;
     }
-    const mesh = gpu.mesh[i];
+    const segment = gpu.segment[i];
 
     const count = instance[i].length;
     device.queue.writeBuffer(gpu.cbuffer[2], first * 4, new Uint32Array(instance[i]));
 
-    args[0] = mesh.count; // indexCount
-    args[1] = count;      // instanceCount
-    args[2] = 0;          // firstIndex
-    args[3] = 0;          // baseVertex
-    args[4] = 0;          // firstInstance, need "indirect-first-instance"
+    args[0] = segment.count;// indexCount
+    args[1] = count;        // instanceCount
+    args[2] = 0;            // firstIndex
+    args[3] = 0;            // baseVertex
+    args[4] = 0;            // firstInstance, need "indirect-first-instance"
     device.queue.writeBuffer(gpu.cbuffer[3], offset, args);
 
     batch.push({

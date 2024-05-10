@@ -34,11 +34,11 @@ const (
 )
 
 type AppGPU struct {
-	Shader  []*AppGPUShader  `json:"shader,omitempty"`
-	Buffer  []*AppGPUBuffer  `json:"buffer,omitempty"`
-	Texture []*AppGPUTexture `json:"texture,omitempty"`
-	Mesh    []*AppGPUMesh    `json:"mesh,omitempty"`
-	ID      []*AppGPUID      `json:"id,omitempty"`
+	Shader  []*AppGPUShader        `json:"shader,omitempty"`
+	Buffer  []*AppGPUBuffer        `json:"buffer,omitempty"`
+	Texture []*AppGPUTexture       `json:"texture,omitempty"`
+	Segment []*AppGPUSegment       `json:"segment,omitempty"`
+	Mesh    map[string]*AppGPUMesh `json:"mesh,omitempty"`
 }
 type AppGPUShader struct {
 	Embed int `json:"embed,omitempty"`
@@ -49,7 +49,7 @@ type AppGPUBuffer struct {
 type AppGPUTexture struct {
 	Embed int `json:"embed,omitempty"`
 }
-type AppGPUMesh struct {
+type AppGPUSegment struct {
 	Hint int `json:"hint"`
 
 	// Input
@@ -71,9 +71,8 @@ type AppGPUMesh struct {
 
 	Count int `json:"count"`
 }
-type AppGPUID struct {
-	Name string `json:"name"`
-	Mesh []int  `json:"mesh"`
+type AppGPUMesh struct {
+	Segment []int `json:"segment"`
 }
 
 type AppAudio struct {

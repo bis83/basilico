@@ -103,12 +103,3 @@ const $__gpuInit = async (gpu, embed) => {
 
   $__gpuInitPipeline(gpu);
 };
-
-const $__gpuID = (gpu, name) => {
-  for (let i = 0; i < gpu.id.length; ++i) {
-    if (gpu.id[i].name === name) {
-      return i;
-    }
-  }
-  return -1;
-};

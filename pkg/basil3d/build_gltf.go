@@ -69,16 +69,16 @@ func (p *Builder) readGLTF(baseDir string) error {
 }
 
 func (p *Builder) importGLTF(app *App) error {
+	app.GPU.Mesh = make(map[string]*AppGPUMesh)
 	for _, doc := range p.GLTF {
 		for _, mesh := range doc.Meshes {
-			var appID AppGPUID
-			app.GPU.ID = append(app.GPU.ID, &appID)
-			appID.Name = mesh.Name
+			var appMesh AppGPUMesh
+			app.GPU.Mesh[mesh.Name] = &appMesh
 			for _, prim := range mesh.Primitives {
-				// mesh
-				var appMesh AppGPUMesh
-				app.GPU.Mesh = append(app.GPU.Mesh, &appMesh)
-				appID.Mesh = append(appID.Mesh, len(app.GPU.Mesh)-1)
+				// segment
+				var appSegment AppGPUSegment
+				app.GPU.Segment = append(app.GPU.Segment, &appSegment)
+				appMesh.Segment = append(appMesh.Segment, len(app.GPU.Segment)-1)
 
 				// buffer
 				var appBuffer AppGPUBuffer
@@ -97,8 +97,8 @@ func (p *Builder) importGLTF(app *App) error {
 						return err
 					}
 					size := vb.Len() - offset
-					appMesh.Hint |= HasPosition
-					appMesh.VertexBuffer0 = []int{bufferIndex, offset, size}
+					appSegment.Hint |= HasPosition
+					appSegment.VertexBuffer0 = []int{bufferIndex, offset, size}
 				}
 				if attr, ok := prim.Attributes["NORMAL"]; ok {
 					offset := vb.Len()
@@ -110,8 +110,8 @@ func (p *Builder) importGLTF(app *App) error {
 						return err
 					}
 					size := vb.Len() - offset
-					appMesh.Hint |= HasNormal
-					appMesh.VertexBuffer1 = []int{bufferIndex, offset, size}
+					appSegment.Hint |= HasNormal
+					appSegment.VertexBuffer1 = []int{bufferIndex, offset, size}
 				}
 				if prim.Indices != nil {
 					offset := vb.Len()
@@ -120,8 +120,8 @@ func (p *Builder) importGLTF(app *App) error {
 						return err
 					}
 					size := vb.Len() - offset
-					appMesh.IndexBuffer = []int{bufferIndex, offset, size}
-					appMesh.Count = len(ib) / 2
+					appSegment.IndexBuffer = []int{bufferIndex, offset, size}
+					appSegment.Count = len(ib) / 2
 				}
 
 				var err error
@@ -132,13 +132,13 @@ func (p *Builder) importGLTF(app *App) error {
 
 				// Material
 				material := doc.Materials[*prim.Material]
-				appMesh.Factor0 = []float64{
+				appSegment.Factor0 = []float64{
 					float64(material.PBRMetallicRoughness.BaseColorFactor[0]),
 					float64(material.PBRMetallicRoughness.BaseColorFactor[1]),
 					float64(material.PBRMetallicRoughness.BaseColorFactor[2]),
 					float64(material.PBRMetallicRoughness.BaseColorFactor[3]),
 				}
-				appMesh.Factor1 = []float64{
+				appSegment.Factor1 = []float64{
 					float64(1),
 					float64(*material.PBRMetallicRoughness.MetallicFactor),
 					float64(*material.PBRMetallicRoughness.RoughnessFactor),
