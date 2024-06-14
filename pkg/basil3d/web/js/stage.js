@@ -30,6 +30,9 @@ const $__stageStep = (app) => {
           func(app);
         }
       }
+      if (step.solve) {
+        $__stageSolve(app);
+      }
       if (step.goto) {
         stage.step = goto(step.goto);
       } else {
@@ -62,4 +65,72 @@ const $__stageNew = (app, name) => {
     light: structuredClone(data.light[0]),
   };
   app.stage.push(stage);
+};
+
+const $__stageSolve = (app) => {
+  const mobs = $stageCurrent(app).mob;
+  for (let i = 0; i < mobs.length; ++i) {
+    for (let j = i + 1; j < mobs.length; ++j) {
+      $__stageSolveMob2Mob(app, mobs[i], mobs[j]);
+    }
+  }
+  const rooms = $stageCurrent(app).room;
+  for (let i = 0; i < mobs.length; ++i) {
+    for (let j = 0; j < rooms.length; ++j) {
+      $__stageSolveMob2Room(app, mobs[i], rooms[j]);
+    }
+  }
+};
+
+const $__stageSolveMob2Mob = (app, a, b) => {
+  const aa = $mob(app, a.data);
+  if (!aa) {
+    return;
+  }
+  const bb = $mob(app, b.data);
+  if (!bb) {
+    return;
+  }
+  const x0 = a.offset ? (a.offset.x || 0) : 0;
+  const y0 = a.offset ? (a.offset.y || 0) : 0;
+  const z0 = a.offset ? (a.offset.z || 0) : 0;
+  const r0 = aa.radius || 0;
+  const h0 = aa.height || 0;
+  const m0 = (aa.mass || 0) + 0.01;
+
+  const x1 = b.offset ? (b.offset.x || 0) : 0;
+  const y1 = b.offset ? (b.offset.y || 0) : 0;
+  const z1 = b.offset ? (b.offset.z || 0) : 0;
+  const r1 = bb.radius || 0;
+  const h1 = bb.height || 0;
+  const m1 = (bb.mass || 0) + 0.01;
+
+  if (y0 + h0 <= y1 || y1 + h1 <= y0) {
+    return;
+  }
+  const d = xy_length(x1 - x0, z1 - z0) - (r0 + r1);
+  if (d >= 0) {
+    return;
+  }
+
+  const w = m0 / (m0 + m1);
+  const [nx, nz] = xy_normalize(x1 - x0, z1 - z0);
+  a.offset.x = x0 + d * nx * w;
+  a.offset.z = z0 + d * nz * w;
+  b.offset.x = x1 - d * nx * (1 - w);
+  b.offset.z = z1 - d * nz * (1 - w);
+};
+
+const $__stageSolveMob2Room = (app, a, b) => {
+  const aa = $mob(app, a.data);
+  if (!aa) {
+    return;
+  }
+  const bb = $room(app, b.data);
+  if (!bb) {
+    return;
+  }
+  for (const layout of bb.layout) {
+    // TODO:
+  }
 };

@@ -105,13 +105,15 @@ type AppRoomLayout struct {
 	Indices []int          `json:"indices"`
 }
 type AppRoomNode struct {
-	Mesh  []int     `json:"mesh"`
-	Space *AppSpace `json:"space,omitempty"`
+	Mesh   []int   `json:"mesh"`
+	Height float32 `json:"height"`
 }
 
 type AppMob struct {
-	Mesh  []*AppMesh `json:"mesh"`
-	Space *AppSpace  `json:"space,omitempty"`
+	Mesh   []*AppMesh `json:"mesh"`
+	Mass   float32    `json:"mass"`
+	Radius float32    `json:"radius"`
+	Height float32    `json:"height"`
 }
 
 type AppMesh struct {
@@ -134,6 +136,7 @@ type AppStageStep struct {
 	Label string `json:"label,omitempty"`
 	Event string `json:"event,omitempty"`
 	Goto  string `json:"goto,omitempty"`
+	Solve bool   `json:"solve,omitempty"`
 	Yield bool   `json:"yield,omitempty"`
 }
 type AppStageRoom struct {
@@ -169,11 +172,6 @@ type AppColor struct {
 	G float32 `json:"g"`
 	B float32 `json:"b"`
 	A float32 `json:"a"`
-}
-type AppSpace struct {
-	Min    *float32 `json:"min,omitempty"`
-	Max    *float32 `json:"max,omitempty"`
-	Radius *float32 `json:"radius,omitempty"`
 }
 
 func (p *App) AddEmbed(buf string) int {
