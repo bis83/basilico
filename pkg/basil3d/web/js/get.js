@@ -27,3 +27,17 @@ const $getColor = (color, r, g, b, a) => {
   }
   return [r, g, b, a];
 };
+
+const $mobShape = (app, mob) => {
+  const data = $mob(app, mob.data);
+  if (!data) {
+    return [0, 0, 0, 0, 0, 0];
+  }
+  const x = mob.offset ? (mob.offset.x || 0) : 0;
+  const y = mob.offset ? (mob.offset.y || 0) : 0;
+  const z = mob.offset ? (mob.offset.z || 0) : 0;
+  const r = data.radius || 0;
+  const h = data.height || 0;
+  const m = (data.mass || 0) + 0.01;
+  return [x, y, z, r, h, m];
+};

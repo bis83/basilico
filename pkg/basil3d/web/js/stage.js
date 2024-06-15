@@ -83,27 +83,8 @@ const $__stageSolve = (app) => {
 };
 
 const $__stageSolveMob2Mob = (app, a, b) => {
-  const aa = $mob(app, a.data);
-  if (!aa) {
-    return;
-  }
-  const bb = $mob(app, b.data);
-  if (!bb) {
-    return;
-  }
-  const x0 = a.offset ? (a.offset.x || 0) : 0;
-  const y0 = a.offset ? (a.offset.y || 0) : 0;
-  const z0 = a.offset ? (a.offset.z || 0) : 0;
-  const r0 = aa.radius || 0;
-  const h0 = aa.height || 0;
-  const m0 = (aa.mass || 0) + 0.01;
-
-  const x1 = b.offset ? (b.offset.x || 0) : 0;
-  const y1 = b.offset ? (b.offset.y || 0) : 0;
-  const z1 = b.offset ? (b.offset.z || 0) : 0;
-  const r1 = bb.radius || 0;
-  const h1 = bb.height || 0;
-  const m1 = (bb.mass || 0) + 0.01;
+  const [x0, y0, z0, r0, h0, m0] = $mobShape(app, a);
+  const [x1, y1, z1, r1, h1, m1] = $mobShape(app, b);
 
   if (y0 + h0 <= y1 || y1 + h1 <= y0) {
     return;
@@ -122,15 +103,27 @@ const $__stageSolveMob2Mob = (app, a, b) => {
 };
 
 const $__stageSolveMob2Room = (app, a, b) => {
-  const aa = $mob(app, a.data);
-  if (!aa) {
+  const [x0, y0, z0, r0, h0, m0] = $mobShape(app, a);
+
+  const data = $room(app, b.data);
+  if (!data) {
     return;
   }
-  const bb = $room(app, b.data);
-  if (!bb) {
-    return;
-  }
-  for (const layout of bb.layout) {
-    // TODO:
+  const x = b.offset ? (b.offset.x || 0) : 0;
+  const y = b.offset ? (b.offset.y || 0) : 0;
+  const z = b.offset ? (b.offset.z || 0) : 0;
+  for (const layout of data.layout) {
+    const i = Math.round((x0 - x) / layout.unit);
+    const j = Math.round((z0 - z) / layout.unit);
+    const idx = i + j * layout.divisor;
+    if (layout.indices.length <= idx) {
+      continue;
+    }
+    const node = layout.node[layout.indices[idx]];
+    if (!node) {
+      continue;
+    }
+    const h = node.height || 0;
+    a.offset.y = h;
   }
 };
