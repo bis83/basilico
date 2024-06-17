@@ -113,17 +113,41 @@ const $__stageSolveMob2Room = (app, a, b) => {
   const y = b.offset ? (b.offset.y || 0) : 0;
   const z = b.offset ? (b.offset.z || 0) : 0;
   for (const layout of data.layout) {
+    const height = (i, j) => {
+      if (i < 0 || j < 0 || layout.divisor <= i) {
+        return 0;
+      }
+      const idx = i + j * layout.divisor;
+      if (layout.indices.length <= idx) {
+        return 0;
+      }
+      const node = layout.node[layout.indices[idx]];
+      if (!node) {
+        return 0;
+      }
+      return y + (node.height || 0);
+    };
+
+    // adjust y
     const i = Math.round((x0 - x) / layout.unit);
     const j = Math.round((z0 - z) / layout.unit);
-    const idx = i + j * layout.divisor;
-    if (layout.indices.length <= idx) {
-      continue;
-    }
-    const node = layout.node[layout.indices[idx]];
-    if (!node) {
-      continue;
-    }
-    const h = node.height || 0;
+    const h = height(i, j);
     a.offset.y = h;
+
+    // adjust x/z
+    const he = height(i - 1, j);
+    const hw = height(i + 1, j);
+    const hs = height(i, j - 1);
+    const hn = height(i, j + 1);
+    const x1 = x + i * layout.unit;
+    const z1 = z + j * layout.unit;
+    const u = layout.unit;
+    const u2 = u / 2 - r0;
+    a.offset.x = clamp(x0,
+      Math.abs(he - h) <= 0.5 ? x1 - u : x1 - u2,
+      Math.abs(hw - h) <= 0.5 ? x1 + u : x1 + u2);
+    a.offset.z = clamp(z0,
+      Math.abs(hs - h) <= 0.5 ? z1 - u : z1 - u2,
+      Math.abs(hn - h) <= 0.5 ? z1 + u : z1 + u2);
   }
 };

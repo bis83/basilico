@@ -7,6 +7,10 @@ const mod = (v, n) => {
   return ((v % n) + n) % n;
 };
 
+const clamp = (v, l, r) => {
+  return Math.max(l, Math.min(v, r));
+};
+
 const deg2rad = (deg) => {
   return (deg / 180) * Math.PI;
 };
