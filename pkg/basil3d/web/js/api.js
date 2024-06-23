@@ -6,6 +6,8 @@ const $start = async () => {
   }
 
   const app = {
+    dt: 0,
+    now: 0,
     data: {
       loading: 0,
     },
@@ -18,8 +20,10 @@ const $start = async () => {
   $__onload(app);
 
   const frame = (time) => {
+    app.dt = (time - app.now) / 1000;
+    app.now = time;
     if ($isLoadCompleted(app)) {
-      $__hidFrameBegin(app, time);
+      $__hidFrameBegin(app);
       $__gpuFrameBegin(app);
       $__stageStep(app);
       $__gpuFrameEnd(app);

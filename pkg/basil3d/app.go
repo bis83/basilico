@@ -79,7 +79,6 @@ type AppAudio struct {
 }
 
 type AppHID struct {
-	Timer    string             `json:"timer"`
 	Keyboard map[string]*string `json:"keyboard"`
 	Mouse    *AppHIDMouse       `json:"mouse"`
 	Gamepad  *AppHIDGamepad     `json:"gamepad"`

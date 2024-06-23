@@ -133,11 +133,9 @@ const $__hidInit = (app) => {
   hidReset();
 }
 
-const $__hidFrameBegin = (app, time) => {
+const $__hidFrameBegin = (app) => {
   const hv = app.hid;
   const hid = app.data.hid;
-
-  $__hidMapSet(hv.map, hid.timer, time / 1000);
   {
     const gps = navigator.getGamepads();
     for (let i = 0; i < gps.length; ++i) {
