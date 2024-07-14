@@ -13,7 +13,7 @@ const $__gpuBufferMesh = (app) => {
   const stride = (4 * 28);
   let index = 0;
   for (const obj of $stageCurrent(app).room) {
-    const room = $room(app, obj.data);
+    const room = $dataRoom(app, obj.data);
     if (!room) {
       continue;
     }
@@ -60,7 +60,7 @@ const $__gpuBufferMesh = (app) => {
     }
   }
   for (const obj of $stageCurrent(app).mob) {
-    const mob = $mob(app, obj.data);
+    const mob = $dataMob(app, obj.data);
     if (!mob) {
       continue;
     }

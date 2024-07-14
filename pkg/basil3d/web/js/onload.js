@@ -18,3 +18,7 @@ const $__onload = (app) => {
     data.loading -= 1;
   })();
 };
+
+const $__onloadDone = (app) => {
+  return app.data.loading <= 0;
+};

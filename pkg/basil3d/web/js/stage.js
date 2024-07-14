@@ -6,7 +6,7 @@ const $__stageStep = (app) => {
   if (!stage) {
     return;
   }
-  const data = $stage(app, stage.data);
+  const data = $dataStage(app, stage.data);
   if (!data) {
     return;
   }
@@ -52,7 +52,7 @@ const $__stageStep = (app) => {
 };
 
 const $__stageNew = (app, name) => {
-  const data = $stage(app, name);
+  const data = $dataStage(app, name);
   if (!data) {
     return;
   }
@@ -105,7 +105,7 @@ const $__stageSolveMob2Mob = (app, a, b) => {
 const $__stageSolveMob2Room = (app, a, b) => {
   const [x0, y0, z0, r0, h0, m0] = $mobShape(app, a);
 
-  const data = $room(app, b.data);
+  const data = $dataRoom(app, b.data);
   if (!data) {
     return;
   }

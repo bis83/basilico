@@ -29,7 +29,7 @@ const $getColor = (color, r, g, b, a) => {
 };
 
 const $mobShape = (app, mob) => {
-  const data = $mob(app, mob.data);
+  const data = $dataMob(app, mob.data);
   if (!data) {
     return [0, 0, 0, 0, 0, 0];
   }
