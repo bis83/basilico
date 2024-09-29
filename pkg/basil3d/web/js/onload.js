@@ -1,5 +1,5 @@
 
-const $__onload = (app) => {
+const $__onload = (app, start) => {
   app.data.loading += 1;
   (async () => {
     const path = "app.json";
@@ -12,7 +12,7 @@ const $__onload = (app) => {
     if (data.gpu) {
       await $__gpuInit(data.gpu, data.embed);
     }
-    $__stageNew(app, "main");
+    $__stageNew(app, start);
 
     delete data.embed;
     data.loading -= 1;

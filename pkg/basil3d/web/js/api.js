@@ -27,7 +27,11 @@ const $stageCurrent = (app) => {
   return app.stage.at(-1);
 };
 
-const $start = async () => {
+const $callback = (stage, funcs) => {
+  $__exec[stage] = funcs;
+};
+
+const $start = async (start) => {
   if (!navigator.gpu) {
     html_show_message("ERROR: WebGPU not supported.")
     return;
@@ -45,7 +49,7 @@ const $start = async () => {
     },
     stage: [],
   };
-  $__onload(app);
+  $__onload(app, start);
 
   const frame = (time) => {
     app.dt = (time - app.now) / 1000;

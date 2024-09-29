@@ -10,6 +10,7 @@ const $__stageStep = (app) => {
   if (!data) {
     return;
   }
+  const exec = $__exec[stage.data] || {};
   const items = data.step || [];
   const goto = (to) => {
     for (let i = 0; i < items.length; ++i) {
@@ -25,7 +26,7 @@ const $__stageStep = (app) => {
     const step = items[stage.step];
     if (step) {
       if (step.event) {
-        const func = $__exec[step.event];
+        const func = exec[step.event];
         if (func) {
           func(app);
         }
