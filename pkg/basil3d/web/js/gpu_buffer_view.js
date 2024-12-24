@@ -7,7 +7,11 @@ const $__gpuBufferView = (app) => {
     const camera = $stageCurrent(app).camera;
     const aspect = gpu.canvas.width / gpu.canvas.height;
     const fovy = deg2rad(camera.fov);
-    const [x, y, z, ha, va] = $getOffset(camera.offset, 0, 0, 0, 0, 0);
+    const x = camera.x;
+    const y = camera.y;
+    const z = camera.z;
+    const ha = camera.ha;
+    const va = camera.va;
     const dir = vec3dir(ha, va);
     const eye = [x, y, z];
     const at = vec3add(eye, dir);
@@ -23,7 +27,8 @@ const $__gpuBufferView = (app) => {
   }
   { // Light
     const light = $stageCurrent(app).light;
-    const [x, y, z, ha, va] = $getOffset(light.offset, 0, 0, 0, 0, 0);
+    const ha = light.ha;
+    const va = light.va;
     const color = $getColor(light.color, 0, 0, 0, 0);
     const ambient0 = $getColor(light.ambient0, 0, 0, 0, 0);
     const ambient1 = $getColor(light.ambient1, 0, 0, 0, 0);

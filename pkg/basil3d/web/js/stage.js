@@ -97,10 +97,10 @@ const $__stageSolveMob2Mob = (app, a, b) => {
 
   const w = m0 / (m0 + m1);
   const [nx, nz] = xy_normalize(x1 - x0, z1 - z0);
-  a.offset.x = x0 + d * nx * w;
-  a.offset.z = z0 + d * nz * w;
-  b.offset.x = x1 - d * nx * (1 - w);
-  b.offset.z = z1 - d * nz * (1 - w);
+  a.x = x0 + d * nx * w;
+  a.z = z0 + d * nz * w;
+  b.x = x1 - d * nx * (1 - w);
+  b.z = z1 - d * nz * (1 - w);
 };
 
 const $__stageSolveMob2Room = (app, a, b) => {
@@ -110,9 +110,9 @@ const $__stageSolveMob2Room = (app, a, b) => {
   if (!data) {
     return;
   }
-  const x = b.offset ? (b.offset.x || 0) : 0;
-  const y = b.offset ? (b.offset.y || 0) : 0;
-  const z = b.offset ? (b.offset.z || 0) : 0;
+  const x = b.x;
+  const y = b.y;
+  const z = b.z;
   for (const layout of data.layout) {
     const height = (i, j) => {
       if (i < 0 || j < 0 || layout.divisor <= i) {
@@ -133,7 +133,7 @@ const $__stageSolveMob2Room = (app, a, b) => {
     const i = Math.round((x0 - x) / layout.unit);
     const j = Math.round((z0 - z) / layout.unit);
     const h = height(i, j);
-    a.offset.y = h;
+    a.y = h;
 
     // adjust x/z
     const he = height(i - 1, j);
@@ -144,10 +144,10 @@ const $__stageSolveMob2Room = (app, a, b) => {
     const z1 = z + j * layout.unit;
     const u = layout.unit;
     const u2 = u / 2 - r0;
-    a.offset.x = clamp(x0,
+    a.x = clamp(x0,
       Math.abs(he - h) <= 0.5 ? x1 - u : x1 - u2,
       Math.abs(hw - h) <= 0.5 ? x1 + u : x1 + u2);
-    a.offset.z = clamp(z0,
+    a.z = clamp(z0,
       Math.abs(hs - h) <= 0.5 ? z1 - u : z1 - u2,
       Math.abs(hn - h) <= 0.5 ? z1 + u : z1 + u2);
   }

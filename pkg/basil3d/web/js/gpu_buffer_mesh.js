@@ -24,7 +24,11 @@ const $__gpuBufferMesh = (app) => {
       for (let i = 0; i < layout.indices.length; ++i) {
         const dx = mod(i, layout.divisor);
         const dz = div(i, layout.divisor);
-        const [x0, y0, z0, ha0, va0] = $getOffset(obj.offset, dx * layout.unit, 0, dz * layout.unit, 0, 0);
+        const x0 = obj.x + (dx * layout.unit);
+        const y0 = obj.y;
+        const z0 = obj.z + (dz * layout.unit);
+        const ha0 = obj.ha;
+        const va0 = obj.va;
 
         const node = layout.node[layout.indices[i]];
         if (!node) {
@@ -43,7 +47,11 @@ const $__gpuBufferMesh = (app) => {
             instance[n].push(index);
           }
 
-          const [x, y, z, ha, va] = $getOffset(mesh.offset, x0, y0, z0, ha0, va0);
+          const x = x0 + mesh.x;
+          const y = y0 + mesh.y;
+          const z = z0 + mesh.z;
+          const ha = ha0 + mesh.ha;
+          const va = va0 + mesh.va;
           const matrix = mat4angle(ha, va);
           mat4translated(matrix, x, y, z);
           const factor0 = $getColor(mesh.factor0, 1.0, 1.0, 1.0, 1.0);
@@ -65,7 +73,11 @@ const $__gpuBufferMesh = (app) => {
       continue;
     }
 
-    const [x0, y0, z0, ha0, va0] = $getOffset(obj.offset, 0, 0, 0, 0, 0);
+    const x0 = obj.x;
+    const y0 = obj.y;
+    const z0 = obj.z;
+    const ha0 = obj.ha;
+    const va0 = obj.va;
     for (const mesh of mob.mesh) {
       const m = gpu.mesh[mesh.data];
       if (!m) {
@@ -75,7 +87,11 @@ const $__gpuBufferMesh = (app) => {
         instance[n].push(index);
       }
 
-      const [x, y, z, ha, va] = $getOffset(mesh.offset, x0, y0, z0, ha0, va0);
+      const x = x0 + mesh.x;
+      const y = y0 + mesh.y;
+      const z = z0 + mesh.z;
+      const ha = ha0 + mesh.ha;
+      const va = va0 + mesh.va;
       const matrix = mat4angle(ha, va);
       mat4translated(matrix, x, y, z);
       const factor0 = $getColor(mesh.factor0, 1.0, 1.0, 1.0, 1.0);

@@ -116,11 +116,15 @@ type AppMob struct {
 }
 
 type AppMesh struct {
-	Data    string     `json:"data"`
-	Offset  *AppOffset `json:"offset"`
-	Factor0 *AppColor  `json:"factor0,omitempty"`
-	Factor1 *AppColor  `json:"factor1,omitempty"`
-	Factor2 *AppColor  `json:"factor2,omitempty"`
+	Data    string    `json:"data"`
+	X       float32   `json:"x"`
+	Y       float32   `json:"y"`
+	Z       float32   `json:"z"`
+	HA      float32   `json:"ha"`
+	VA      float32   `json:"va"`
+	Factor0 *AppColor `json:"factor0,omitempty"`
+	Factor1 *AppColor `json:"factor1,omitempty"`
+	Factor2 *AppColor `json:"factor2,omitempty"`
 }
 
 type AppStage struct {
@@ -139,33 +143,39 @@ type AppStageStep struct {
 	Yield bool   `json:"yield,omitempty"`
 }
 type AppStageRoom struct {
-	Data   string     `json:"data"`
-	Offset *AppOffset `json:"offset"`
+	Data string  `json:"data"`
+	X    float32 `json:"x"`
+	Y    float32 `json:"y"`
+	Z    float32 `json:"z"`
+	HA   float32 `json:"ha"`
+	VA   float32 `json:"va"`
 }
 type AppStageMob struct {
-	Data   string     `json:"data"`
-	Offset *AppOffset `json:"offset"`
+	Data string  `json:"data"`
+	X    float32 `json:"x"`
+	Y    float32 `json:"y"`
+	Z    float32 `json:"z"`
+	HA   float32 `json:"ha"`
+	VA   float32 `json:"va"`
 }
 type AppStageCamera struct {
-	Offset *AppOffset `json:"offset"`
-	Fov    float32    `json:"fov"`
-	Near   float32    `json:"near"`
-	Far    float32    `json:"far"`
+	X    float32 `json:"x"`
+	Y    float32 `json:"y"`
+	Z    float32 `json:"z"`
+	HA   float32 `json:"ha"`
+	VA   float32 `json:"va"`
+	Fov  float32 `json:"fov"`
+	Near float32 `json:"near"`
+	Far  float32 `json:"far"`
 }
 type AppStageLight struct {
-	Offset   *AppOffset `json:"offset"`
-	Color    *AppColor  `json:"color"`
-	Ambient0 *AppColor  `json:"ambient0"`
-	Ambient1 *AppColor  `json:"ambient1"`
+	HA       float32   `json:"ha"`
+	VA       float32   `json:"va"`
+	Color    *AppColor `json:"color"`
+	Ambient0 *AppColor `json:"ambient0"`
+	Ambient1 *AppColor `json:"ambient1"`
 }
 
-type AppOffset struct {
-	X  float32 `json:"x"`
-	Y  float32 `json:"y"`
-	Z  float32 `json:"z"`
-	HA float32 `json:"ha"`
-	VA float32 `json:"va"`
-}
 type AppColor struct {
 	R float32 `json:"r"`
 	G float32 `json:"g"`
