@@ -29,9 +29,9 @@ const $__gpuBufferView = (app) => {
     const light = $stageCurrent(app).light;
     const ha = light.ha;
     const va = light.va;
-    const color = $getColor(light.color, 0, 0, 0, 0);
-    const ambient0 = $getColor(light.ambient0, 0, 0, 0, 0);
-    const ambient1 = $getColor(light.ambient1, 0, 0, 0, 0);
+    const color = light.color;
+    const ambient0 = light.ambient0;
+    const ambient1 = light.ambient1;
     const ldir = vec3dir(ha, va);
     buf.set(ldir, 52);
     buf.set(color, 56);

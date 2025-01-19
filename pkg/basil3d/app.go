@@ -93,6 +93,18 @@ type AppHIDGamepad struct {
 	Axes    [][]*string `json:"axes"`
 }
 
+type AppMesh struct {
+	Data    string    `json:"data"`
+	X       float32   `json:"x"`
+	Y       float32   `json:"y"`
+	Z       float32   `json:"z"`
+	HA      float32   `json:"ha"`
+	VA      float32   `json:"va"`
+	Factor0 []float32 `json:"factor0"`
+	Factor1 []float32 `json:"factor1"`
+	Factor2 []float32 `json:"factor2"`
+}
+
 type AppRoom struct {
 	Mesh   []*AppMesh       `json:"mesh"`
 	Layout []*AppRoomLayout `json:"layout"`
@@ -115,21 +127,8 @@ type AppMob struct {
 	Height float32    `json:"height"`
 }
 
-type AppMesh struct {
-	Data    string    `json:"data"`
-	X       float32   `json:"x"`
-	Y       float32   `json:"y"`
-	Z       float32   `json:"z"`
-	HA      float32   `json:"ha"`
-	VA      float32   `json:"va"`
-	Factor0 *AppColor `json:"factor0,omitempty"`
-	Factor1 *AppColor `json:"factor1,omitempty"`
-	Factor2 *AppColor `json:"factor2,omitempty"`
-}
-
 type AppStage struct {
-	Step []*AppStageStep `json:"step"`
-
+	Step   []*AppStageStep   `json:"step"`
 	Room   []*AppStageRoom   `json:"room"`
 	Mob    []*AppStageMob    `json:"mob"`
 	Camera []*AppStageCamera `json:"camera"`
@@ -171,16 +170,9 @@ type AppStageCamera struct {
 type AppStageLight struct {
 	HA       float32   `json:"ha"`
 	VA       float32   `json:"va"`
-	Color    *AppColor `json:"color"`
-	Ambient0 *AppColor `json:"ambient0"`
-	Ambient1 *AppColor `json:"ambient1"`
-}
-
-type AppColor struct {
-	R float32 `json:"r"`
-	G float32 `json:"g"`
-	B float32 `json:"b"`
-	A float32 `json:"a"`
+	Color    []float32 `json:"color"`
+	Ambient0 []float32 `json:"ambient0"`
+	Ambient1 []float32 `json:"ambient1"`
 }
 
 func (p *App) AddEmbed(buf string) int {

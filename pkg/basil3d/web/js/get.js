@@ -1,22 +1,4 @@
 
-const $getColor = (color, r, g, b, a) => {
-  if (color) {
-    if (defined(color.r)) {
-      r = color.r;
-    }
-    if (defined(color.g)) {
-      g = color.g;
-    }
-    if (defined(color.r)) {
-      b = color.b;
-    }
-    if (defined(color.a)) {
-      a = color.a;
-    }
-  }
-  return [r, g, b, a];
-};
-
 const $mobShape = (app, mob) => {
   const data = $dataMob(app, mob.data);
   if (!data) {

@@ -54,9 +54,9 @@ const $__gpuBufferMesh = (app) => {
           const va = va0 + mesh.va;
           const matrix = mat4angle(ha, va);
           mat4translated(matrix, x, y, z);
-          const factor0 = $getColor(mesh.factor0, 1.0, 1.0, 1.0, 1.0);
-          const factor1 = $getColor(mesh.factor1, 1.0, 1.0, 1.0, 0.0);
-          const factor2 = $getColor(mesh.factor2, 0.0, 0.0, 0.0, 0.0);
+          const factor0 = mesh.factor0;
+          const factor1 = mesh.factor1;
+          const factor2 = mesh.factor2;
           buf.set(matrix, 0);
           buf.set(factor0, 16);
           buf.set(factor1, 20);
@@ -94,9 +94,9 @@ const $__gpuBufferMesh = (app) => {
       const va = va0 + mesh.va;
       const matrix = mat4angle(ha, va);
       mat4translated(matrix, x, y, z);
-      const factor0 = $getColor(mesh.factor0, 1.0, 1.0, 1.0, 1.0);
-      const factor1 = $getColor(mesh.factor1, 1.0, 1.0, 1.0, 0.0);
-      const factor2 = $getColor(mesh.factor2, 0.0, 0.0, 0.0, 0.0);
+      const factor0 = mesh.factor0;
+      const factor1 = mesh.factor1;
+      const factor2 = mesh.factor2;
       buf.set(matrix, 0);
       buf.set(factor0, 16);
       buf.set(factor1, 20);
