@@ -2,24 +2,22 @@
 
 A single page application generator for Game.
 
-## Build
+## Getting started
 
-```
-cd <clone-directory>
-go get ./...
-go build -ldflags '-s -w' -trimpath ./cmd/...
-```
+Requirement:
+- Go 1.24.0
 
-## Usage
-
+Initialize:
 ```
-./basilico your-project-directory [clean/build/serve]
+go mod init <your-repository-url>
+go get -tool github.com/bis83/basilico/cmd/basilico
 ```
 
+Build & Serve:
+```
+go tool basilico .
+```
 - Start a server. Visit `localhost:8080`
-```
-./basilico your-project-directory serve
-```
 - `dist` are generated files. (No need add to repository)
 
 ## License
