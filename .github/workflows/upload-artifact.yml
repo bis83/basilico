@@ -35,8 +35,3 @@ jobs:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.arch }}
         run: go build -ldflags '-s -w' -trimpath -o dist/ ./cmd/...
-      - name: Upload
-        uses: actions/upload-artifact@v4
-        with:
-          name: basilico-${{ matrix.os }}
-          path: dist/
