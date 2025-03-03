@@ -5,18 +5,18 @@ import (
 )
 
 var wgsl = [][]string{
-	[]string{
+	{
 		"web/wgsl/b0.wgsl",
 		"web/wgsl/b1.wgsl",
 		"web/wgsl/l0.wgsl",
 		"web/wgsl/m0.wgsl",
 	},
-	[]string{
+	{
 		"web/wgsl/b0.wgsl",
 		"web/wgsl/l1.wgsl",
 		"web/wgsl/m1.wgsl",
 	},
-	[]string{
+	{
 		"web/wgsl/b0.wgsl",
 		"web/wgsl/b1.wgsl",
 		"web/wgsl/l0.wgsl",

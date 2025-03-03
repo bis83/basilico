@@ -1,6 +1,6 @@
 module github.com/bis83/basilico
 
-go 1.21
+go 1.24.0
 
 require (
 	github.com/evanw/esbuild v0.23.0
