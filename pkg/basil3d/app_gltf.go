@@ -3,14 +3,9 @@ package basil3d
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
-	"os"
-	"path/filepath"
 
 	"github.com/qmuntal/gltf"
 	"github.com/x448/float16"
-
-	basil "github.com/bis83/basilico/pkg/basil"
 )
 
 func getBytes(doc *gltf.Document, index uint32) []byte {
@@ -37,53 +32,22 @@ func toFloat16Array(data []float32) []uint16 {
 	return data2
 }
 
-func (p *Builder) readGLTF(baseDir string) error {
-	dir := filepath.Join(baseDir, "gltf")
-	if !basil.Exists(dir) {
-		return nil
-	}
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if info.IsDir() {
-			return nil
-		}
-		if filepath.Ext(path) != ".gltf" {
-			return nil
-		}
-
-		doc, err := gltf.Open(path)
-		if err != nil {
-			return err
-		}
-		p.GLTF = append(p.GLTF, doc)
-		fmt.Printf("GLTF: %v\n", path)
-
-		return nil
-	})
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (p *Builder) importGLTF(app *App) error {
-	app.GPU.Mesh = make(map[string]*AppGPUMesh)
-	for _, doc := range p.GLTF {
+func (p *App) buildGLTF(src *Source) error {
+	p.GPU.Mesh = make(map[string]*AppGPUMesh)
+	for _, doc := range src.GLTF {
 		for _, mesh := range doc.Meshes {
 			var appMesh AppGPUMesh
-			app.GPU.Mesh[mesh.Name] = &appMesh
+			p.GPU.Mesh[mesh.Name] = &appMesh
 			for _, prim := range mesh.Primitives {
 				// segment
 				var appSegment AppGPUSegment
-				app.GPU.Segment = append(app.GPU.Segment, &appSegment)
-				appMesh.Segment = append(appMesh.Segment, len(app.GPU.Segment)-1)
+				p.GPU.Segment = append(p.GPU.Segment, &appSegment)
+				appMesh.Segment = append(appMesh.Segment, len(p.GPU.Segment)-1)
 
 				// buffer
 				var appBuffer AppGPUBuffer
-				app.GPU.Buffer = append(app.GPU.Buffer, &appBuffer)
-				bufferIndex := len(app.GPU.Buffer) - 1
+				p.GPU.Buffer = append(p.GPU.Buffer, &appBuffer)
+				bufferIndex := len(p.GPU.Buffer) - 1
 
 				// convert vertex
 				var vb bytes.Buffer
@@ -125,7 +89,7 @@ func (p *Builder) importGLTF(app *App) error {
 				}
 
 				var err error
-				appBuffer.Embed, err = app.AddEmbedBase64(vb.Bytes(), true)
+				appBuffer.Embed, err = p.addEmbedBase64(vb.Bytes(), true)
 				if err != nil {
 					return err
 				}

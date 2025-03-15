@@ -8,14 +8,14 @@ type Middleware struct {
 }
 
 func (p Middleware) PreBuild(bsl *basil.Basil) error {
-	var builder Builder
-	if err := builder.read(bsl.BaseDir()); err != nil {
+	var src Source
+	if err := src.read(bsl.BaseDir()); err != nil {
 		return err
 	}
 
 	// generate app.json
-	app, err := builder.build()
-	if err != nil {
+	var app App
+	if err := app.build(&src); err != nil {
 		return err
 	}
 	path := "app.json"

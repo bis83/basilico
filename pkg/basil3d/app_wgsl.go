@@ -24,10 +24,10 @@ var wgsl = [][]string{
 	},
 }
 
-func (p *Builder) importWGSL(app *App) error {
+func (p *App) buildWGSL() error {
 	for _, src := range wgsl {
 		var appShader AppGPUShader
-		app.GPU.Shader = append(app.GPU.Shader, &appShader)
+		p.GPU.Shader = append(p.GPU.Shader, &appShader)
 
 		var b bytes.Buffer
 		for _, path := range src {
@@ -41,7 +41,7 @@ func (p *Builder) importWGSL(app *App) error {
 		}
 
 		var err error
-		appShader.Embed, err = app.AddEmbedBase64(b.Bytes(), true)
+		appShader.Embed, err = p.addEmbedBase64(b.Bytes(), true)
 		if err != nil {
 			return err
 		}
