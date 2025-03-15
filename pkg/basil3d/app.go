@@ -129,10 +129,7 @@ type AppMob struct {
 
 type AppStage struct {
 	Step   []*AppStageStep   `json:"step"`
-	Room   []*AppStageRoom   `json:"room"`
-	Mob    []*AppStageMob    `json:"mob"`
-	Camera []*AppStageCamera `json:"camera"`
-	Light  []*AppStageLight  `json:"light"`
+	Entity []*AppStageEntity `json:"entity"`
 }
 type AppStageStep struct {
 	Label string `json:"label,omitempty"`
@@ -140,6 +137,12 @@ type AppStageStep struct {
 	Goto  string `json:"goto,omitempty"`
 	Solve bool   `json:"solve,omitempty"`
 	Yield bool   `json:"yield,omitempty"`
+}
+type AppStageEntity struct {
+	Room   *AppStageRoom   `json:"room,omitempty"`
+	Mob    *AppStageMob    `json:"mob,omitempty"`
+	Camera *AppStageCamera `json:"camera,omitempty"`
+	Light  *AppStageLight  `json:"light,omitempty"`
 }
 type AppStageRoom struct {
 	Data string  `json:"data"`

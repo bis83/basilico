@@ -14,50 +14,51 @@ func (p *App) buildStage(src *Source) error {
 			c.Yield = b.Yield
 			a.Step = append(a.Step, &c)
 		}
-		a.Room = make([]*AppStageRoom, 0, len(v.Room))
-		for _, b := range v.Room {
-			var c AppStageRoom
-			c.Data = b.Data
-			c.X = b.X
-			c.Y = b.Y
-			c.Z = b.Z
-			c.HA = b.HA
-			c.VA = b.VA
-			a.Room = append(a.Room, &c)
-		}
-		a.Mob = make([]*AppStageMob, 0, len(v.Mob))
-		for _, b := range v.Mob {
-			var c AppStageMob
-			c.Data = b.Data
-			c.X = b.X
-			c.Y = b.Y
-			c.Z = b.Z
-			c.HA = b.HA
-			c.VA = b.VA
-			a.Mob = append(a.Mob, &c)
-		}
-		a.Camera = make([]*AppStageCamera, 0, len(v.Camera))
-		for _, b := range v.Camera {
-			var c AppStageCamera
-			c.X = b.X
-			c.Y = b.Y
-			c.Z = b.Z
-			c.HA = b.HA
-			c.VA = b.VA
-			c.Fov = b.Fov
-			c.Near = b.Near
-			c.Far = b.Far
-			a.Camera = append(a.Camera, &c)
-		}
-		a.Light = make([]*AppStageLight, 0, len(v.Light))
-		for _, b := range v.Light {
-			var c AppStageLight
-			c.HA = b.HA
-			c.VA = b.VA
-			c.Color = b.Color.toFloat()
-			c.Ambient0 = b.Ambient0.toFloat()
-			c.Ambient1 = b.Ambient1.toFloat()
-			a.Light = append(a.Light, &c)
+		a.Entity = make([]*AppStageEntity, 0, len(v.Entity))
+		for _, b := range v.Entity {
+			var c AppStageEntity
+			if b.Room != nil {
+				c.Room = &AppStageRoom{
+					Data: b.Room.Data,
+					X:    b.Room.X,
+					Y:    b.Room.Y,
+					Z:    b.Room.Z,
+					HA:   b.Room.HA,
+					VA:   b.Room.VA,
+				}
+			}
+			if b.Mob != nil {
+				c.Mob = &AppStageMob{
+					Data: b.Mob.Data,
+					X:    b.Mob.X,
+					Y:    b.Mob.Y,
+					Z:    b.Mob.Z,
+					HA:   b.Mob.HA,
+					VA:   b.Mob.VA,
+				}
+			}
+			if b.Camera != nil {
+				c.Camera = &AppStageCamera{
+					X:    b.Camera.X,
+					Y:    b.Camera.Y,
+					Z:    b.Camera.Z,
+					HA:   b.Camera.HA,
+					VA:   b.Camera.VA,
+					Fov:  b.Camera.Fov,
+					Near: b.Camera.Near,
+					Far:  b.Camera.Far,
+				}
+			}
+			if b.Light != nil {
+				c.Light = &AppStageLight{
+					HA:       b.Light.HA,
+					VA:       b.Light.VA,
+					Color:    b.Light.Color.toFloat(),
+					Ambient0: b.Light.Ambient0.toFloat(),
+					Ambient1: b.Light.Ambient1.toFloat(),
+				}
+			}
+			a.Entity = append(a.Entity, &c)
 		}
 		p.Stage[k] = &a
 	}

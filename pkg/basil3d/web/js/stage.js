@@ -60,11 +60,27 @@ const $__stageNew = (app, name) => {
   const stage = {
     data: name,
     step: 0,
-    room: structuredClone(data.room) || [],
-    mob: structuredClone(data.mob) || [],
-    camera: structuredClone(data.camera[0]),
-    light: structuredClone(data.light[0]),
+    room: [],
+    mob: [],
+    camera: {},
+    light: {},
   };
+  if (data.entity) {
+    for (const e of data.entity) {
+      if (e.room) {
+        stage.room.push(structuredClone(e.room))
+      }
+      if (e.mob) {
+        stage.mob.push(structuredClone(e.mob))
+      }
+      if (e.camera) {
+        stage.camera = structuredClone(e.camera)
+      }
+      if (e.light) {
+        stage.light = structuredClone(e.light)
+      }
+    }
+  }
   app.stage.push(stage);
 };
 

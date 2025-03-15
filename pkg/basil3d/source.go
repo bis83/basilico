@@ -82,10 +82,7 @@ type SrcMob struct {
 
 type SrcStage struct {
 	Step   []*SrcStageStep   `json:"step"`
-	Room   []*SrcStageRoom   `json:"room"`
-	Mob    []*SrcStageMob    `json:"mob"`
-	Camera []*SrcStageCamera `json:"camera"`
-	Light  []*SrcStageLight  `json:"light"`
+	Entity []*SrcStageEntity `json:"entity"`
 }
 type SrcStageStep struct {
 	Label string `json:"label,omitempty"`
@@ -93,6 +90,12 @@ type SrcStageStep struct {
 	Goto  string `json:"goto,omitempty"`
 	Solve bool   `json:"solve,omitempty"`
 	Yield bool   `json:"yield,omitempty"`
+}
+type SrcStageEntity struct {
+	Room   *SrcStageRoom   `json:"room,omitempty"`
+	Mob    *SrcStageMob    `json:"mob,omitempty"`
+	Camera *SrcStageCamera `json:"camera,omitempty"`
+	Light  *SrcStageLight  `json:"light,omitempty"`
 }
 type SrcStageRoom struct {
 	Data string  `json:"data"`
