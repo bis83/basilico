@@ -1,5 +1,20 @@
 package basil3d
 
+type AppRoom struct {
+	Mesh   []*AppMesh       `json:"mesh"`
+	Layout []*AppRoomLayout `json:"layout"`
+}
+type AppRoomLayout struct {
+	Node    []*AppRoomNode `json:"node"`
+	Unit    float32        `json:"unit"`
+	Divisor int            `json:"divisor"`
+	Indices []int          `json:"indices"`
+}
+type AppRoomNode struct {
+	Mesh   []int   `json:"mesh"`
+	Height float32 `json:"height"`
+}
+
 func (p *App) buildRoom(src *Source) error {
 	p.Room = make(map[string]*AppRoom, len(src.Room))
 	for k, v := range src.Room {
@@ -8,15 +23,7 @@ func (p *App) buildRoom(src *Source) error {
 		a.Mesh = make([]*AppMesh, 0, len(v.Mesh))
 		for _, x := range v.Mesh {
 			var m AppMesh
-			m.Data = x.Data
-			m.X = x.X
-			m.Y = x.Y
-			m.Z = x.Z
-			m.HA = x.HA
-			m.VA = x.VA
-			m.Factor0 = x.Factor0.toFloat()
-			m.Factor1 = x.Factor1.toFloat()
-			m.Factor2 = x.Factor2.toFloat()
+			m.set(x)
 			a.Mesh = append(a.Mesh, &m)
 		}
 

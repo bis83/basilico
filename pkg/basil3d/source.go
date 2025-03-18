@@ -26,36 +26,16 @@ type SrcColor struct {
 	A *float32 `json:"a"`
 }
 
-func (p *SrcColor) toFloat() []float32 {
-	var r float32 = 0.0
-	var g float32 = 0.0
-	var b float32 = 0.0
-	var a float32 = 0.0
-	if p.R != nil {
-		r = *p.R
-	}
-	if p.G != nil {
-		g = *p.G
-	}
-	if p.B != nil {
-		b = *p.B
-	}
-	if p.A != nil {
-		a = *p.A
-	}
-	return []float32{r, g, b, a}
-}
-
 type SrcMesh struct {
-	Data    string   `json:"data"`
-	X       float32  `json:"x"`
-	Y       float32  `json:"y"`
-	Z       float32  `json:"z"`
-	HA      float32  `json:"ha"`
-	VA      float32  `json:"va"`
-	Factor0 SrcColor `json:"factor0"`
-	Factor1 SrcColor `json:"factor1"`
-	Factor2 SrcColor `json:"factor2"`
+	Data    string    `json:"data"`
+	X       float32   `json:"x"`
+	Y       float32   `json:"y"`
+	Z       float32   `json:"z"`
+	HA      float32   `json:"ha"`
+	VA      float32   `json:"va"`
+	Factor0 *SrcColor `json:"factor0"`
+	Factor1 *SrcColor `json:"factor1"`
+	Factor2 *SrcColor `json:"factor2"`
 }
 
 type SrcRoom struct {

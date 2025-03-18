@@ -1,5 +1,56 @@
 package basil3d
 
+type AppStage struct {
+	Step   []*AppStageStep   `json:"step"`
+	Entity []*AppStageEntity `json:"entity"`
+}
+type AppStageStep struct {
+	Label string `json:"label,omitempty"`
+	Event string `json:"event,omitempty"`
+	Goto  string `json:"goto,omitempty"`
+	Solve bool   `json:"solve,omitempty"`
+	Yield bool   `json:"yield,omitempty"`
+}
+type AppStageEntity struct {
+	Room   *AppStageRoom   `json:"room,omitempty"`
+	Mob    *AppStageMob    `json:"mob,omitempty"`
+	Camera *AppStageCamera `json:"camera,omitempty"`
+	Light  *AppStageLight  `json:"light,omitempty"`
+}
+type AppStageRoom struct {
+	Data string  `json:"data"`
+	X    float32 `json:"x"`
+	Y    float32 `json:"y"`
+	Z    float32 `json:"z"`
+	HA   float32 `json:"ha"`
+	VA   float32 `json:"va"`
+}
+type AppStageMob struct {
+	Data string  `json:"data"`
+	X    float32 `json:"x"`
+	Y    float32 `json:"y"`
+	Z    float32 `json:"z"`
+	HA   float32 `json:"ha"`
+	VA   float32 `json:"va"`
+}
+type AppStageCamera struct {
+	X    float32 `json:"x"`
+	Y    float32 `json:"y"`
+	Z    float32 `json:"z"`
+	HA   float32 `json:"ha"`
+	VA   float32 `json:"va"`
+	Fov  float32 `json:"fov"`
+	Near float32 `json:"near"`
+	Far  float32 `json:"far"`
+}
+type AppStageLight struct {
+	HA       float32  `json:"ha"`
+	VA       float32  `json:"va"`
+	Color    AppColor `json:"color"`
+	Ambient0 AppColor `json:"ambient0"`
+	Ambient1 AppColor `json:"ambient1"`
+}
+
 func (p *App) buildStage(src *Source) error {
 	p.Stage = make(map[string]*AppStage, len(src.Stage))
 	for k, v := range src.Stage {
@@ -53,9 +104,9 @@ func (p *App) buildStage(src *Source) error {
 				c.Light = &AppStageLight{
 					HA:       b.Light.HA,
 					VA:       b.Light.VA,
-					Color:    b.Light.Color.toFloat(),
-					Ambient0: b.Light.Ambient0.toFloat(),
-					Ambient1: b.Light.Ambient1.toFloat(),
+					Color:    toAppColor0000(b.Light.Color),
+					Ambient0: toAppColor0000(b.Light.Ambient0),
+					Ambient1: toAppColor0000(b.Light.Ambient1),
 				}
 			}
 			a.Entity = append(a.Entity, &c)
