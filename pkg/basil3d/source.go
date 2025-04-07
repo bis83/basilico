@@ -14,6 +14,7 @@ import (
 type Source struct {
 	GLTF  []*gltf.Document
 	JSON  map[string]*interface{}
+	Tile  map[string]*SrcTile
 	Room  map[string]*SrcRoom
 	Mob   map[string]*SrcMob
 	Stage map[string]*SrcStage
@@ -36,6 +37,13 @@ type SrcMesh struct {
 	Factor0 *SrcColor `json:"factor0"`
 	Factor1 *SrcColor `json:"factor1"`
 	Factor2 *SrcColor `json:"factor2"`
+}
+
+type SrcTile struct {
+	Content []*SrcTileContent `json:"content"`
+}
+type SrcTileContent struct {
+	Bg *SrcColor `json:"bg"`
 }
 
 type SrcRoom struct {
@@ -61,8 +69,8 @@ type SrcMob struct {
 }
 
 type SrcStage struct {
-	Step   []*SrcStageStep   `json:"step"`
-	Entity []*SrcStageEntity `json:"entity"`
+	Step    []*SrcStageStep    `json:"step"`
+	Content []*SrcStageContent `json:"content"`
 }
 type SrcStageStep struct {
 	Label string `json:"label,omitempty"`
@@ -71,11 +79,20 @@ type SrcStageStep struct {
 	Solve bool   `json:"solve,omitempty"`
 	Yield bool   `json:"yield,omitempty"`
 }
-type SrcStageEntity struct {
+type SrcStageContent struct {
+	Tile   *SrcStageTile   `json:"tile,omitempty"`
 	Room   *SrcStageRoom   `json:"room,omitempty"`
 	Mob    *SrcStageMob    `json:"mob,omitempty"`
 	Camera *SrcStageCamera `json:"camera,omitempty"`
 	Light  *SrcStageLight  `json:"light,omitempty"`
+}
+type SrcStageTile struct {
+	Data   string  `json:"data"`
+	Origin int     `json:"origin"`
+	X      float32 `json:"x"`
+	Y      float32 `json:"y"`
+	W      float32 `json:"w"`
+	H      float32 `json:"h"`
 }
 type SrcStageRoom struct {
 	Data string  `json:"data"`
@@ -116,6 +133,9 @@ func (p *Source) read(baseDir string) error {
 		return err
 	}
 	if err := p.readJSON(baseDir); err != nil {
+		return err
+	}
+	if err := p.readTile(baseDir); err != nil {
 		return err
 	}
 	if err := p.readRoom(baseDir); err != nil {
@@ -200,6 +220,55 @@ func (p *Source) readJSON(baseDir string) error {
 
 		p.JSON[name] = doc
 		fmt.Printf("JSON: %v\n", path)
+
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func openTile(path string) (*SrcTile, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var doc SrcTile
+	d := json.NewDecoder(bytes.NewReader(data))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&doc); err != nil {
+		return nil, fmt.Errorf("decode %s: %w", path, err)
+	}
+	return &doc, nil
+}
+func (p *Source) readTile(baseDir string) error {
+	dir := filepath.Join(baseDir, "tile")
+	if !basil.Exists(dir) {
+		return nil
+	}
+
+	p.Tile = make(map[string]*SrcTile, 0)
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() {
+			return nil
+		}
+		if filepath.Ext(path) != ".json" {
+			return nil
+		}
+
+		doc, err := openTile(path)
+		if err != nil {
+			return err
+		}
+		name := filepath.Base(path[:len(path)-len(filepath.Ext(path))])
+
+		p.Tile[name] = doc
+		fmt.Printf("Tile: %v\n", path)
 
 		return nil
 	})

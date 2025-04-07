@@ -30,8 +30,12 @@ fn sampleEnvMap(R : vec3<f32>) -> vec3<f32> {
     stage.ambientColor1.rgb * stage.ambientColor1.a,
     dot(R, vec3<f32>(0, 1, 0)) * 0.5 + 0.5);
 }
+fn sampleZ(uv : vec2<f32>) -> f32 {
+  var wh = vec2<f32>(textureDimensions(zbuffer, 0).xy);
+  return textureLoad(zbuffer, vec2<i32>(uv * wh + (0.5 / wh)), 0);
+}
 
-fn AO(uv : vec2<f32>, N : vec3<f32>) -> f32 {
+fn AO(xy : vec2<i32>, N : vec3<f32>) -> f32 {
   const samples : i32 = 16;
   const sampleSphere = array<vec3<f32>, samples>(
     vec3<f32>( 0.5381, 0.1856,-0.4319),
@@ -50,16 +54,17 @@ fn AO(uv : vec2<f32>, N : vec3<f32>) -> f32 {
     vec3<f32>(-0.0533, 0.0596,-0.5411),
     vec3<f32>( 0.0352,-0.0631, 0.5460),
     vec3<f32>(-0.4776, 0.2847,-0.0271));
+  const radius : f32 = 0.01;
 
-  var radius = 0.01;
-  var depth = textureSample(zbuffer, sampler0, uv);
+  var uv = vec2<f32>(xy) / vec2<f32>(textureDimensions(zbuffer, 0).xy);
+  var depth = sampleZ(uv);
 
   var occ : f32 = 0.0;
   for(var i = 0; i < samples; i++) {
     var R = (sampleSphere[i] * radius);
     R *= sign(dot(R, N));
     var uv2 = saturate(uv + vec2(R.x, -R.y));
-    var occDepth = textureSample(zbuffer, sampler0, uv2);
+    var occDepth = sampleZ(uv2);
     occ += step(occDepth, depth);
   }
   return saturate(1.0 - (occ / f32(samples)) + 0.2);
@@ -68,9 +73,8 @@ fn AO(uv : vec2<f32>, N : vec3<f32>) -> f32 {
 @fragment
 fn FS_SSAO(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
   var xy = vec2<i32>(floor(coord.xy));
-  var uv = vec2<f32>(xy) / vec2<f32>(textureDimensions(zbuffer, 0).xy);
   var N = decodeViewNormal(xy);
-  return vec4(AO(uv, N), 0, 0, 0);
+  return vec4(AO(xy, N), 0, 0, 0);
 }
 
 fn D_GGX(NdH : f32, roughness : f32) -> f32 {

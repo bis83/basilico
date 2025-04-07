@@ -10,6 +10,7 @@ type App struct {
 	Embed []*string               `json:"embed"`
 	JSON  map[string]*interface{} `json:"json"`
 
+	Tile  map[string]*AppTile  `json:"tile"`
 	Room  map[string]*AppRoom  `json:"room"`
 	Mob   map[string]*AppMob   `json:"mob"`
 	Stage map[string]*AppStage `json:"stage"`
@@ -63,6 +64,9 @@ func (p *App) build(src *Source) error {
 		return err
 	}
 	if err := p.buildHID(); err != nil {
+		return err
+	}
+	if err := p.buildTile(src); err != nil {
 		return err
 	}
 	if err := p.buildRoom(src); err != nil {

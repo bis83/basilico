@@ -151,7 +151,7 @@ const $__gpuInitPipeline = (gpu) => {
       module: gpu.shader[2],
       entryPoint: "VS",
       buffers: [
-        { arrayStride: 12, attributes: [{ format: "float32x3", offset: 0, shaderLocation: 0 }] }, // position
+        { arrayStride: 8, attributes: [{ format: "float32x2", offset: 0, shaderLocation: 0 }] }, // position
         { arrayStride: 4, attributes: [{ format: "unorm8x4", offset: 0, shaderLocation: 1 }] }, // color
       ],
     },
@@ -159,16 +159,31 @@ const $__gpuInitPipeline = (gpu) => {
       module: gpu.shader[2],
       entryPoint: "FS",
       targets: [
-        { format: gpu.canvasFormat },
+        {
+          format: gpu.canvasFormat,
+          blend: {
+            color: {
+              operation: "add",
+              srcFactor: "src-alpha",
+              dstFactor: "one-minus-src-alpha",
+            },
+            alpha: {
+              operation: "add",
+              srcFactor: "one",
+              dstFactor: "zero",
+            },
+          },
+        },
       ],
     },
     depthStencil: {
       depthWriteEnabled: false,
-      depthCompare: "less",
+      depthCompare: "always",
       format: "depth32float",
     },
     primitive: {
-      topology: "line-list",
+      cullMode: "back",
+      frontFace: "cw",
     },
   });
 };

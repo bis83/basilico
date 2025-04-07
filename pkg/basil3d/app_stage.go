@@ -1,8 +1,8 @@
 package basil3d
 
 type AppStage struct {
-	Step   []*AppStageStep   `json:"step"`
-	Entity []*AppStageEntity `json:"entity"`
+	Step    []*AppStageStep    `json:"step"`
+	Content []*AppStageContent `json:"content"`
 }
 type AppStageStep struct {
 	Label string `json:"label,omitempty"`
@@ -11,11 +11,19 @@ type AppStageStep struct {
 	Solve bool   `json:"solve,omitempty"`
 	Yield bool   `json:"yield,omitempty"`
 }
-type AppStageEntity struct {
+type AppStageContent struct {
+	Tile   *AppStageTile   `json:"tile,omitempty"`
 	Room   *AppStageRoom   `json:"room,omitempty"`
 	Mob    *AppStageMob    `json:"mob,omitempty"`
 	Camera *AppStageCamera `json:"camera,omitempty"`
 	Light  *AppStageLight  `json:"light,omitempty"`
+}
+type AppStageTile struct {
+	Data string  `json:"data"`
+	X    float32 `json:"x"`
+	Y    float32 `json:"y"`
+	W    float32 `json:"w"`
+	H    float32 `json:"h"`
 }
 type AppStageRoom struct {
 	Data string  `json:"data"`
@@ -65,9 +73,18 @@ func (p *App) buildStage(src *Source) error {
 			c.Yield = b.Yield
 			a.Step = append(a.Step, &c)
 		}
-		a.Entity = make([]*AppStageEntity, 0, len(v.Entity))
-		for _, b := range v.Entity {
-			var c AppStageEntity
+		a.Content = make([]*AppStageContent, 0, len(v.Content))
+		for _, b := range v.Content {
+			var c AppStageContent
+			if b.Tile != nil {
+				c.Tile = &AppStageTile{
+					Data: b.Tile.Data,
+					X:    b.Tile.X,
+					Y:    b.Tile.Y,
+					W:    b.Tile.W,
+					H:    b.Tile.H,
+				}
+			}
 			if b.Room != nil {
 				c.Room = &AppStageRoom{
 					Data: b.Room.Data,
@@ -109,7 +126,7 @@ func (p *App) buildStage(src *Source) error {
 					Ambient1: toAppColor0000(b.Light.Ambient1),
 				}
 			}
-			a.Entity = append(a.Entity, &c)
+			a.Content = append(a.Content, &c)
 		}
 		p.Stage[k] = &a
 	}

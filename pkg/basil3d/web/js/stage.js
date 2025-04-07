@@ -60,13 +60,17 @@ const $__stageNew = (app, name) => {
   const stage = {
     data: name,
     step: 0,
+    tile: [],
     room: [],
     mob: [],
     camera: {},
     light: {},
   };
-  if (data.entity) {
-    for (const e of data.entity) {
+  if (data.content) {
+    for (const e of data.content) {
+      if (e.tile) {
+        stage.tile.push(structuredClone(e.tile));
+      }
       if (e.room) {
         stage.room.push(structuredClone(e.room))
       }

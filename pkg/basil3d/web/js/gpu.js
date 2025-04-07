@@ -58,6 +58,8 @@ const $__gpuInit = async (gpu, embed) => {
   createCBuffer(1, 112 * (2 * 1024), GPUBufferUsage.STORAGE);
   createCBuffer(2, 4 * (16 * 1024), GPUBufferUsage.VERTEX);
   createCBuffer(3, 20 * (2 * 1024), GPUBufferUsage.INDIRECT);
+  createCBuffer(4, 12 * (6 * 1024), GPUBufferUsage.VERTEX);
+  createCBuffer(5, 4 * (6 * 1024), GPUBufferUsage.VERTEX);
 
   gpu.sampler[0] = device.createSampler({
     magFilter: 'linear',

@@ -13,6 +13,7 @@ var scripts = []string{
 	"web/js/gpu_gbuffer.js",
 	"web/js/gpu_buffer_view.js",
 	"web/js/gpu_buffer_mesh.js",
+	"web/js/gpu_buffer_tile.js",
 	"web/js/gpu_pipeline.js",
 	"web/js/gpu_pass.js",
 	"web/js/hid.js",

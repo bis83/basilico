@@ -3,6 +3,10 @@ const $dataJson = (app, name) => {
   return app.data.json[name];
 };
 
+const $dataTile = (app, name) => {
+  return app.data.tile[name];
+};
+
 const $dataRoom = (app, name) => {
   return app.data.room[name];
 };

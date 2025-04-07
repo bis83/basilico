@@ -7,20 +7,21 @@ const $__gpuFrameBegin = (app) => {
 const $__gpuFrameEnd = (app) => {
   // Upload Buffers
   $__gpuBufferView(app);
-  const batch = $__gpuBufferMesh(app);
+  const mesh = $__gpuBufferMesh(app);
+  const tile = $__gpuBufferTile(app);
 
   // Create CommandBuffer
   const gpu = app.data.gpu;
   const device = gpu.device;
   const ce = device.createCommandEncoder();
-  $__gpuPassGBuffer(ce, gpu, batch);
+  $__gpuPassGBuffer(ce, gpu, mesh);
   $__gpuPassSSAO(ce, gpu);
   $__gpuPassHDR(ce, gpu);
-  $__gpuPassLDR(ce, gpu);
+  $__gpuPassLDR(ce, gpu, tile);
   device.queue.submit([ce.finish()]);
 };
 
-const $__gpuPassGBuffer = (ce, gpu, batch) => {
+const $__gpuPassGBuffer = (ce, gpu, mesh) => {
   const pass = ce.beginRenderPass({
     depthStencilAttachment: {
       view: gpu.gbuffer[0].createView(),
@@ -55,7 +56,7 @@ const $__gpuPassGBuffer = (ce, gpu, batch) => {
       }
     ],
   });
-  for (const b of batch) {
+  for (const b of mesh) {
     pass.setPipeline(gpu.pipeline[0]);
     pass.setBindGroup(0, gpu.bindGroup[0]);
     pass.setVertexBuffer(0, gpu.cbuffer[2], b.first * 4);
@@ -113,7 +114,7 @@ const $__gpuPassHDR = (ce, gpu) => {
   pass.end();
 };
 
-const $__gpuPassLDR = (ce, gpu) => {
+const $__gpuPassLDR = (ce, gpu, tile) => {
   const pass = ce.beginRenderPass({
     depthStencilAttachment: {
       view: gpu.gbuffer[0].createView(),
@@ -129,5 +130,12 @@ const $__gpuPassLDR = (ce, gpu) => {
   pass.setPipeline(gpu.pipeline[4]);
   pass.setBindGroup(0, gpu.bindGroup[3]);
   pass.draw(4);
+
+  pass.setPipeline(gpu.pipeline[5]);
+  pass.setBindGroup(0, gpu.bindGroup[0]);
+  pass.setVertexBuffer(0, gpu.cbuffer[4]);
+  pass.setVertexBuffer(1, gpu.cbuffer[5]);
+  pass.draw(tile);
+
   pass.end();
 };
