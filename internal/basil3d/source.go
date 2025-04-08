@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	basil "github.com/bis83/basilico/pkg/basil"
+	basil "github.com/bis83/basilico/internal/basil"
 	"github.com/qmuntal/gltf"
 )
 

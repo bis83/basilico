@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
-	basil "github.com/bis83/basilico/pkg/basil"
-	basil3d "github.com/bis83/basilico/pkg/basil3d"
-	serve "github.com/bis83/basilico/pkg/serve"
+	basil "github.com/bis83/basilico/internal/basil"
+	basil3d "github.com/bis83/basilico/internal/basil3d"
+	serve "github.com/bis83/basilico/internal/serve"
 
 	toml "github.com/pelletier/go-toml/v2"
 )

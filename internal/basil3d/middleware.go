@@ -1,7 +1,7 @@
 package basil3d
 
 import (
-	basil "github.com/bis83/basilico/pkg/basil"
+	basil "github.com/bis83/basilico/internal/basil"
 )
 
 type Middleware struct {

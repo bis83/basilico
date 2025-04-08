@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"path/filepath"
 
-	basil "github.com/bis83/basilico/pkg/basil"
+	basil "github.com/bis83/basilico/internal/basil"
 )
 
 func handleAPI(w http.ResponseWriter, _ *http.Request) {
