@@ -38,8 +38,23 @@ func (p *Basil) Middlewares() []string {
 	return p.config.Middleware
 }
 
-func (p *Basil) Read(baseDir string) error {
-	p.baseDir = baseDir
+func (p *Basil) SetDir(path string) error {
+	if Exists(path) {
+		if IsDir(path) {
+			p.baseDir = filepath.Clean(path)
+		} else {
+			p.baseDir = filepath.Clean(filepath.Dir(path))
+		}
+	} else {
+		if err := MakeDir(path); err != nil {
+			return err
+		}
+		p.baseDir = filepath.Clean(path)
+	}
+	return nil
+}
+
+func (p *Basil) Read() error {
 	if err := p.config.Read(p.ConfigJson()); err != nil {
 		return err
 	}

@@ -3,59 +3,11 @@ package main
 import (
 	"errors"
 	"fmt"
+	"os"
 
-	basil "github.com/bis83/basilico/internal/basil"
-	basil3d "github.com/bis83/basilico/internal/basil3d"
-	serve "github.com/bis83/basilico/internal/serve"
-
+	"github.com/bis83/basilico/internal/editor"
 	toml "github.com/pelletier/go-toml/v2"
 )
-
-func getMiddlewares(middlewares []string) ([]basil.Middleware, error) {
-	var mdls []basil.Middleware
-	for _, m := range middlewares {
-		switch m {
-		case "basil3d":
-			mdls = append(mdls, basil3d.Middleware{})
-		default:
-			return nil, fmt.Errorf("UnsupportMiddleware: %v", m)
-		}
-	}
-	return mdls, nil
-}
-
-func steps() error {
-	var args cmdArgs
-	if err := args.parse(); err != nil {
-		return err
-	}
-
-	var bsl basil.Basil
-	if err := bsl.Read(args.baseDir); err != nil {
-		return err
-	}
-
-	if args.doClean {
-		if err := bsl.Clean(); err != nil {
-			return err
-		}
-	}
-	if args.doBuild {
-		mdls, err := getMiddlewares(bsl.Middlewares())
-		if err != nil {
-			return err
-		}
-		if err := bsl.Build(mdls); err != nil {
-			return err
-		}
-	}
-	if args.doServe {
-		if err := serve.Serve(&bsl); err != nil {
-			return err
-		}
-	}
-	return nil
-}
 
 func logError(err error) {
 	fmt.Println(err)
@@ -71,7 +23,16 @@ func logError(err error) {
 }
 
 func main() {
-	err := steps()
+	path := "."
+	args := []string{"clean", "build", "serve"}
+	if len(os.Args) > 1 {
+		path = os.Args[1]
+	}
+	if len(os.Args) > 2 {
+		args = os.Args[2:]
+	}
+
+	err := editor.Run(path, args)
 	if err != nil {
 		logError(err)
 	}
