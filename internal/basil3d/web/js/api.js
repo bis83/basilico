@@ -37,7 +37,6 @@ const $callback = (stage, funcs) => {
 
 const $start = async (start) => {
   if (!navigator.gpu) {
-    html_show_message("ERROR: WebGPU not supported.")
     return;
   }
 
