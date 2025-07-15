@@ -9,17 +9,8 @@ import (
 type App struct {
 	Embed []*string               `json:"embed"`
 	JSON  map[string]*interface{} `json:"json"`
-
-	Tile  map[string]*AppTile  `json:"tile"`
-	Room  map[string]*AppRoom  `json:"room"`
-	Mob   map[string]*AppMob   `json:"mob"`
-	Stage map[string]*AppStage `json:"stage"`
-
-	HID   AppHID   `json:"hid"`
-	GPU   AppGPU   `json:"gpu"`
-	Audio AppAudio `json:"audio"`
-}
-type AppAudio struct {
+	WGSL  AppWGSL                 `json:"wgsl"`
+	GLTF  AppGLTF                 `json:"gltf"`
 }
 
 func (p *App) addEmbed(buf string) int {
@@ -61,21 +52,6 @@ func (p *App) build(src *Source) error {
 		return err
 	}
 	if err := p.buildJSON(src); err != nil {
-		return err
-	}
-	if err := p.buildHID(); err != nil {
-		return err
-	}
-	if err := p.buildTile(src); err != nil {
-		return err
-	}
-	if err := p.buildRoom(src); err != nil {
-		return err
-	}
-	if err := p.buildMob(src); err != nil {
-		return err
-	}
-	if err := p.buildStage(src); err != nil {
 		return err
 	}
 	return nil

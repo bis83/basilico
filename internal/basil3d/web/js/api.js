@@ -1,68 +1,62 @@
 
-const $dataJson = (app, name) => {
-  return app.data.json[name];
+const $$ = {
+  dt: 0,
+  now: 0,
+  data: {
+    loading: 0,
+  },
+  gpu: {
+    adapter: null,
+    device: null,
+    canvasFormat: null,
+    canvas: null,
+    context: null,
+    bindGroupLayout: [],
+    pipelineLayout: [],
+    sampler: [],
+    bindGroup: [],
+    cbuffer: [],
+    gbuffer: []
+  },
+  audio: {
+    context: null
+  }
 };
 
-const $dataTile = (app, name) => {
-  return app.data.tile[name];
+const $dataJson = (name) => {
+  return $$.data.json[name];
 };
 
-const $dataRoom = (app, name) => {
-  return app.data.room[name];
-};
-
-const $dataMob = (app, name) => {
-  return app.data.mob[name];
-};
-
-const $dataStage = (app, name) => {
-  return app.data.stage[name];
-};
-
-const $hid = (app, key) => {
-  return $__hidMapGet(app.hid.map, key);
-};
-
-const $hidDelta = (app, key) => {
-  return $__hidMapDelta(app.hid.map, key);
-};
-
-const $stageCurrent = (app) => {
-  return app.stage.at(-1);
-};
-
-const $callback = (stage, funcs) => {
-  $__exec[stage] = funcs;
-};
-
-const $start = async (start) => {
+const $start = async () => {
   if (!navigator.gpu) {
     return;
   }
+  await $__gpuInit();
+  $__audioInit();
+  $__onload();
 
-  const app = {
-    dt: 0,
-    now: 0,
-    data: {
-      loading: 0,
-    },
-    hid: {
-      map: {},
-      last: 0,
-    },
-    stage: [],
-  };
-  $__onload(app, start);
+  html_listen(document.body, "contextmenu", (ev) => {
+    ev.preventDefault();
+  });
+  html_listen(window, "blur", (ev) => {
+  });
+  html_listen(document, "keydown", (ev) => {
+  });
+  html_listen(document, "keyup", (ev) => {
+  });
+  html_listen(document, "mousedown", (ev) => {
+  });
+  html_listen(document, "mouseup", (ev) => {
+  });
+  html_listen(document, "mousemove", (ev) => {
+  });
 
   const frame = (time) => {
-    app.dt = (time - app.now) / 1000;
-    app.now = time;
-    if ($__onloadDone(app)) {
-      $__hidFrameBegin(app);
-      $__gpuFrameBegin(app);
-      $__stageStep(app);
-      $__gpuFrameEnd(app);
-      $__hidFrameEnd(app);
+    $$.dt = (time - $$.now) / 1000;
+    $$.now = time;
+    if ($__onloadDone()) {
+      $__gpuFrameBegin();
+      $__gpuFrameEnd();
     }
     requestAnimationFrame(frame);
   };

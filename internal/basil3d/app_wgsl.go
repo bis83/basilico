@@ -24,10 +24,17 @@ var wgsl = [][]string{
 	},
 }
 
+type AppWGSL struct {
+	Shader []*AppWGSLShader `json:"shader,omitempty"`
+}
+type AppWGSLShader struct {
+	Embed int `json:"embed,omitempty"`
+}
+
 func (p *App) buildWGSL() error {
 	for _, src := range wgsl {
-		var appShader AppGPUShader
-		p.GPU.Shader = append(p.GPU.Shader, &appShader)
+		var appShader AppWGSLShader
+		p.WGSL.Shader = append(p.WGSL.Shader, &appShader)
 
 		var b bytes.Buffer
 		for _, path := range src {

@@ -8,23 +8,19 @@ import (
 	"github.com/x448/float16"
 )
 
-type AppGPU struct {
-	Shader  []*AppGPUShader        `json:"shader,omitempty"`
-	Buffer  []*AppGPUBuffer        `json:"buffer,omitempty"`
-	Texture []*AppGPUTexture       `json:"texture,omitempty"`
-	Segment []*AppGPUSegment       `json:"segment,omitempty"`
-	Mesh    map[string]*AppGPUMesh `json:"mesh,omitempty"`
+type AppGLTF struct {
+	Buffer  []*AppGLTFBuffer        `json:"buffer,omitempty"`
+	Texture []*AppGLTFTexture       `json:"texture,omitempty"`
+	Segment []*AppGLTFSegment       `json:"segment,omitempty"`
+	Mesh    map[string]*AppGLTFMesh `json:"mesh,omitempty"`
 }
-type AppGPUShader struct {
+type AppGLTFBuffer struct {
 	Embed int `json:"embed,omitempty"`
 }
-type AppGPUBuffer struct {
+type AppGLTFTexture struct {
 	Embed int `json:"embed,omitempty"`
 }
-type AppGPUTexture struct {
-	Embed int `json:"embed,omitempty"`
-}
-type AppGPUSegment struct {
+type AppGLTFSegment struct {
 	Hint int `json:"hint"`
 
 	// Input
@@ -46,7 +42,7 @@ type AppGPUSegment struct {
 
 	Count int `json:"count"`
 }
-type AppGPUMesh struct {
+type AppGLTFMesh struct {
 	Segment []int `json:"segment"`
 }
 
@@ -89,21 +85,21 @@ func toFloat16Array(data []float32) []uint16 {
 }
 
 func (p *App) buildGLTF(src *Source) error {
-	p.GPU.Mesh = make(map[string]*AppGPUMesh)
+	p.GLTF.Mesh = make(map[string]*AppGLTFMesh)
 	for _, doc := range src.GLTF {
 		for _, mesh := range doc.Meshes {
-			var appMesh AppGPUMesh
-			p.GPU.Mesh[mesh.Name] = &appMesh
+			var appMesh AppGLTFMesh
+			p.GLTF.Mesh[mesh.Name] = &appMesh
 			for _, prim := range mesh.Primitives {
 				// segment
-				var appSegment AppGPUSegment
-				p.GPU.Segment = append(p.GPU.Segment, &appSegment)
-				appMesh.Segment = append(appMesh.Segment, len(p.GPU.Segment)-1)
+				var appSegment AppGLTFSegment
+				p.GLTF.Segment = append(p.GLTF.Segment, &appSegment)
+				appMesh.Segment = append(appMesh.Segment, len(p.GLTF.Segment)-1)
 
 				// buffer
-				var appBuffer AppGPUBuffer
-				p.GPU.Buffer = append(p.GPU.Buffer, &appBuffer)
-				bufferIndex := len(p.GPU.Buffer) - 1
+				var appBuffer AppGLTFBuffer
+				p.GLTF.Buffer = append(p.GLTF.Buffer, &appBuffer)
+				bufferIndex := len(p.GLTF.Buffer) - 1
 
 				// convert vertex
 				var vb bytes.Buffer
