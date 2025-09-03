@@ -155,7 +155,7 @@ func (p *App) buildGLTF(src *Source) error {
 					float64(material.PBRMetallicRoughness.BaseColorFactor[3]),
 				}
 				appSegment.Factor1 = []float64{
-					float64(1),
+					float64(1), // Occlusion
 					float64(*material.PBRMetallicRoughness.MetallicFactor),
 					float64(*material.PBRMetallicRoughness.RoughnessFactor),
 					float64(0),

@@ -1,4 +1,9 @@
 
+const __strideOfStageInput = 512;
+const __strideOfMeshInput = 128;
+const __strideOfMeshID = 4;
+const __strideOfIndirectArgs = 20;
+
 const $__gpuInit = async () => {
   const gpu = $$.gpu;
   gpu.adapter = await navigator.gpu.requestAdapter();
@@ -20,12 +25,10 @@ const $__gpuInit = async () => {
       usage: usage | GPUBufferUsage.COPY_DST,
     });
   };
-  createCBuffer(0, 512 * 1, GPUBufferUsage.UNIFORM);
-  createCBuffer(1, 112 * (2 * 1024), GPUBufferUsage.STORAGE);
-  createCBuffer(2, 4 * (16 * 1024), GPUBufferUsage.VERTEX);
-  createCBuffer(3, 20 * (2 * 1024), GPUBufferUsage.INDIRECT);
-  createCBuffer(4, 12 * (6 * 1024), GPUBufferUsage.VERTEX);
-  createCBuffer(5, 4 * (6 * 1024), GPUBufferUsage.VERTEX);
+  createCBuffer(0, __strideOfStageInput * 1, GPUBufferUsage.UNIFORM);                              // StageInput
+  createCBuffer(1, __strideOfMeshInput * (2 * 1024), GPUBufferUsage.STORAGE);     // MeshInput (StorageBuffer)
+  createCBuffer(2, __strideOfMeshID * (16 * 1024), GPUBufferUsage.VERTEX);        // MeshID (PerInstance)
+  createCBuffer(3, __strideOfIndirectArgs * (2 * 1024), GPUBufferUsage.INDIRECT); // IndirectArgs (PerDrawCall)
 
   gpu.sampler[0] = device.createSampler({
     magFilter: 'linear',
@@ -139,10 +142,18 @@ const $__gpuUpdateGBuffer = () => {
 
 const $__gpuFrameBegin = () => {
   $__gpuUpdateGBuffer();
+
+  // reset
+  const gpu = $$.gpu;
+  gpu.indexOfMeshInput = 0;
+  gpu.indexOfMeshID = 0;
+  gpu.indexOfIndirectArgs = 0;
+  gpu.pass3d = [];
 };
 
 const $__gpuFrameEnd = () => {
   // Upload Buffers
+  $__gpuUploadStageInput();
 
   // Create CommandBuffer
   const device = $$.gpu.device;
@@ -154,8 +165,53 @@ const $__gpuFrameEnd = () => {
   device.queue.submit([ce.finish()]);
 };
 
+const $__gpuUploadStageInput = () => {
+  const gpu = $$.gpu;
+  const device = $$.gpu.device;
+
+  const buf = new Float32Array(__strideOfStageInput / 4);
+  { // camera
+    const camera = gpu.stage.camera;
+    const aspect = gpu.canvas.width / gpu.canvas.height;
+    const fovy = deg2rad(camera.fov);
+    const x = camera.x;
+    const y = camera.y;
+    const z = camera.z;
+    const ha = camera.ha;
+    const va = camera.va;
+    const dir = vec3dir(ha, va);
+    const eye = [x, y, z];
+    const at = vec3add(eye, dir);
+    const up = [0, 1, 0];
+    const look = mat4lookat(eye, at, up);
+    const proj = mat4perspective(fovy, aspect, camera.near, camera.far);
+    const vp = mat4multiply(look, proj);
+    const ivp = mat4invert(vp);
+    const ortho = mat4ortho(gpu.canvas.width, gpu.canvas.height, 0.0, 1.0);
+    buf.set(vp, 0);
+    buf.set(ivp, 16);
+    buf.set(look, 32);
+    buf.set(ortho, 48);
+    buf.set(eye, 64);
+  }
+  { // light
+    const light = gpu.stage.light;
+    const ldir = vec3dir(light.ha, light.va);
+    const color = light.color;
+    const ambient0 = light.ambient0;
+    const ambient1 = light.ambient1;
+    buf.set(ldir, 68);
+    buf.set(color, 72);
+    buf.set(ambient0, 76);
+    buf.set(ambient1, 80);
+  }
+  device.queue.writeBuffer(gpu.cbuffer[0], 0, buf);
+};
+
 const $__gpuPassGBuffer = (ce) => {
   const gpu = $$.gpu;
+  const wgsl = $$.data.wgsl;
+  const gltf = $$.data.gltf;
 
   const pass = ce.beginRenderPass({
     depthStencilAttachment: {
@@ -191,13 +247,11 @@ const $__gpuPassGBuffer = (ce) => {
       }
     ],
   });
-  /*
-  for (const b of mesh) {
-    pass.setPipeline(wgsl.pipeline[0]);
-    pass.setBindGroup(0, gpu.bindGroup[0]);
-    pass.setVertexBuffer(0, gpu.cbuffer[2], b.first * 4);
-
-    const segment = gltf.segment[b.id];
+  pass.setPipeline(wgsl.pipeline[0]);
+  pass.setBindGroup(0, gpu.bindGroup[0]);
+  for (const p of gpu.pass3d) {
+    const segment = gltf.segment[p.sid];
+    pass.setVertexBuffer(0, gpu.cbuffer[2], p.indexOfMeshID * __strideOfMeshID);
     if (segment.vb0) {
       const [index, offset, size] = segment.vb0;
       pass.setVertexBuffer(1, gltf.buffer[index], offset, size);
@@ -210,10 +264,8 @@ const $__gpuPassGBuffer = (ce) => {
       const [index, offset, size] = segment.ib;
       pass.setIndexBuffer(gltf.buffer[index], "uint16", offset, size);
     }
-
-    pass.drawIndexedIndirect(gpu.cbuffer[3], b.offset);
+    pass.drawIndexedIndirect(gpu.cbuffer[3], p.indexOfIndirectArgs * __strideOfIndirectArgs);
   }
-  */
   pass.end();
 };
 

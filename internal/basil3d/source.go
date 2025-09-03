@@ -56,19 +56,6 @@ func (p *Source) readGLTF(baseDir string) error {
 	return nil
 }
 
-func openJSONDoc(path string) (*interface{}, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	var doc interface{}
-	if err := json.Unmarshal(data, &doc); err != nil {
-		return nil, fmt.Errorf("decode %s: %w", path, err)
-	}
-	return &doc, nil
-}
-
 func (p *Source) readJSON(baseDir string) error {
 	dir := filepath.Join(baseDir, "json")
 	if !basil.Exists(dir) {
@@ -87,13 +74,17 @@ func (p *Source) readJSON(baseDir string) error {
 			return nil
 		}
 
-		doc, err := openJSONDoc(path)
+		data, err := os.ReadFile(path)
 		if err != nil {
 			return err
 		}
+		var doc interface{}
+		if err := json.Unmarshal(data, &doc); err != nil {
+			return fmt.Errorf("decode %s: %w", path, err)
+		}
 		name := filepath.Base(path[:len(path)-len(filepath.Ext(path))])
 
-		p.JSON[name] = doc
+		p.JSON[name] = &doc
 		fmt.Printf("JSON: %v\n", path)
 
 		return nil
