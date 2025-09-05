@@ -1,6 +1,6 @@
 
 const __strideOfStageInput = 512;
-const __strideOfMeshInput = 128;
+const __strideOfMeshInput = 16;
 const __strideOfMeshID = 4;
 const __strideOfIndirectArgs = 20;
 
@@ -25,9 +25,9 @@ const $__gpuInit = async () => {
       usage: usage | GPUBufferUsage.COPY_DST,
     });
   };
-  createCBuffer(0, __strideOfStageInput * 1, GPUBufferUsage.UNIFORM);                              // StageInput
-  createCBuffer(1, __strideOfMeshInput * (2 * 1024), GPUBufferUsage.STORAGE);     // MeshInput (StorageBuffer)
-  createCBuffer(2, __strideOfMeshID * (16 * 1024), GPUBufferUsage.VERTEX);        // MeshID (PerInstance)
+  createCBuffer(0, __strideOfStageInput * 1, GPUBufferUsage.UNIFORM);             // StageInput
+  createCBuffer(1, __strideOfMeshInput * 65536, GPUBufferUsage.STORAGE);     // MeshInput (StorageBuffer)
+  createCBuffer(2, __strideOfMeshID * (4 * 1024), GPUBufferUsage.VERTEX);        // MeshID (PerInstance)
   createCBuffer(3, __strideOfIndirectArgs * (2 * 1024), GPUBufferUsage.INDIRECT); // IndirectArgs (PerDrawCall)
 
   gpu.sampler[0] = device.createSampler({

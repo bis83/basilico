@@ -6,21 +6,19 @@ import (
 
 var wgsl = [][]string{
 	{
-		"web/wgsl/b0.wgsl",
-		"web/wgsl/b1.wgsl",
-		"web/wgsl/l0.wgsl",
-		"web/wgsl/m0.wgsl",
+		"web/wgsl/type0.wgsl",
+		"web/wgsl/layout0.wgsl",
+		"web/wgsl/module0.wgsl",
 	},
 	{
-		"web/wgsl/b0.wgsl",
-		"web/wgsl/l1.wgsl",
-		"web/wgsl/m1.wgsl",
+		"web/wgsl/type0.wgsl",
+		"web/wgsl/layout1.wgsl",
+		"web/wgsl/module1.wgsl",
 	},
 	{
-		"web/wgsl/b0.wgsl",
-		"web/wgsl/b1.wgsl",
-		"web/wgsl/l0.wgsl",
-		"web/wgsl/m2.wgsl",
+		"web/wgsl/type0.wgsl",
+		"web/wgsl/layout0.wgsl",
+		"web/wgsl/module2.wgsl",
 	},
 }
 

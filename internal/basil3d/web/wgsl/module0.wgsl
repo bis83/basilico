@@ -17,13 +17,20 @@ struct FragmentOutput {
 
 @vertex
 fn VS(input : VertexInput) -> VertexOutput {
-  var world = mesh[input.id].world;
-  var nWorld = mat3x3<f32>(world[0].xyz, world[1].xyz, world[2].xyz);
+  var world = mat4x4<f32>(
+    mesh[input.id + 0],
+    mesh[input.id + 1],
+    mesh[input.id + 2],
+    mesh[input.id + 3]);
+  var nWorld = mat3x3<f32>(
+    world[0].xyz,
+    world[1].xyz,
+    world[2].xyz);
 
   var output : VertexOutput;
   output.position = (stage.viewProj * world * vec4(input.position, 1.0));
   output.normal = normalize(nWorld * input.normal);
-  output.id = input.id;
+  output.id = input.id + 4;
   return output;
 }
 
@@ -31,8 +38,8 @@ fn VS(input : VertexInput) -> VertexOutput {
 fn FS(input : VertexOutput) -> FragmentOutput {
   var output : FragmentOutput;
   output.gbuffer0 = vec4(normalize(input.normal) * 0.5 + 0.5, 0);
-  output.gbuffer1 = mesh[input.id].factor0.xyzw;
-  output.gbuffer2 = mesh[input.id].factor1.xyzw;
-  output.gbuffer3 = mesh[input.id].factor2.xyzw;
+  output.gbuffer1 = mesh[input.id + 0].xyzw;
+  output.gbuffer2 = mesh[input.id + 1].xyzw;
+  output.gbuffer3 = mesh[input.id + 2].xyzw;
   return output;
 }

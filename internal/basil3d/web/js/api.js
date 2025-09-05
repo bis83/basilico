@@ -156,17 +156,16 @@ const $submitMesh = (id, items) => {
     const factor0 = item.factor0;
     const factor1 = item.factor1;
     const factor2 = item.factor2;
-    const factor3 = item.factor3;
 
-    const buf = new Float32Array(__strideOfMeshInput / 4);
+    const count = 7;
+    const buf = new Float32Array(__strideOfMeshInput / 4 * count);
     buf.set(matrix, 0);
     buf.set(factor0, 16); // xyzw: BaseColor
     buf.set(factor1, 20); // x:Occlusion, y:Metallic, z:Roughness, w:reserved
-    buf.set(factor2, 24); // reserved
-    buf.set(factor3, 28); // reserved
+    buf.set(factor2, 24); // x:Occlusion, y:Metallic, z:Roughness, w:reserved
     device.queue.writeBuffer(gpu.cbuffer[1], gpu.indexOfMeshInput * __strideOfMeshInput, buf);
     ids[i] = gpu.indexOfMeshInput;
-    gpu.indexOfMeshInput += 1;
+    gpu.indexOfMeshInput += count;
   }
   device.queue.writeBuffer(gpu.cbuffer[2], gpu.indexOfMeshID * __strideOfMeshID, ids);
   gpu.indexOfMeshID += items.length;
