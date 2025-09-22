@@ -26,8 +26,8 @@ const $__gpuInit = async () => {
     });
   };
   createCBuffer(0, __strideOfStageInput * 1, GPUBufferUsage.UNIFORM);             // StageInput
-  createCBuffer(1, __strideOfMeshInput * 65536, GPUBufferUsage.STORAGE);     // MeshInput (StorageBuffer)
-  createCBuffer(2, __strideOfMeshID * (4 * 1024), GPUBufferUsage.VERTEX);        // MeshID (PerInstance)
+  createCBuffer(1, __strideOfMeshInput * 65536, GPUBufferUsage.STORAGE);          // MeshInput (StorageBuffer)
+  createCBuffer(2, __strideOfMeshID * (4 * 1024), GPUBufferUsage.VERTEX);         // MeshID (PerInstance)
   createCBuffer(3, __strideOfIndirectArgs * (2 * 1024), GPUBufferUsage.INDIRECT); // IndirectArgs (PerDrawCall)
 
   gpu.sampler[0] = device.createSampler({
@@ -152,10 +152,6 @@ const $__gpuFrameBegin = () => {
 };
 
 const $__gpuFrameEnd = () => {
-  // Upload Buffers
-  $__gpuUploadStageInput();
-
-  // Create CommandBuffer
   const device = $$.gpu.device;
   const ce = device.createCommandEncoder();
   $__gpuPassGBuffer(ce);
@@ -163,49 +159,6 @@ const $__gpuFrameEnd = () => {
   $__gpuPassHDR(ce);
   $__gpuPassLDR(ce);
   device.queue.submit([ce.finish()]);
-};
-
-const $__gpuUploadStageInput = () => {
-  const gpu = $$.gpu;
-  const device = $$.gpu.device;
-
-  const buf = new Float32Array(__strideOfStageInput / 4);
-  { // camera
-    const camera = gpu.stage.camera;
-    const aspect = gpu.canvas.width / gpu.canvas.height;
-    const fovy = deg2rad(camera.fov);
-    const x = camera.x;
-    const y = camera.y;
-    const z = camera.z;
-    const ha = camera.ha;
-    const va = camera.va;
-    const dir = vec3dir(ha, va);
-    const eye = [x, y, z];
-    const at = vec3add(eye, dir);
-    const up = [0, 1, 0];
-    const look = mat4lookat(eye, at, up);
-    const proj = mat4perspective(fovy, aspect, camera.near, camera.far);
-    const vp = mat4multiply(look, proj);
-    const ivp = mat4invert(vp);
-    const ortho = mat4ortho(gpu.canvas.width, gpu.canvas.height, 0.0, 1.0);
-    buf.set(vp, 0);
-    buf.set(ivp, 16);
-    buf.set(look, 32);
-    buf.set(ortho, 48);
-    buf.set(eye, 64);
-  }
-  { // light
-    const light = gpu.stage.light;
-    const ldir = vec3dir(light.ha, light.va);
-    const color = light.color;
-    const ambient0 = light.ambient0;
-    const ambient1 = light.ambient1;
-    buf.set(ldir, 68);
-    buf.set(color, 72);
-    buf.set(ambient0, 76);
-    buf.set(ambient1, 80);
-  }
-  device.queue.writeBuffer(gpu.cbuffer[0], 0, buf);
 };
 
 const $__gpuPassGBuffer = (ce) => {
