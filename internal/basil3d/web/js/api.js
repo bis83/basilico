@@ -17,9 +17,9 @@ const $$ = {
     bindGroup: [],
     cbuffer: [],
     gbuffer: [],
-    indexOfMeshInput: 0,
-    indexOfMeshID: 0,
-    indexOfIndirectArgs: 0,
+    indexOfPack: 0,
+    indexOfDrawSlot: 0,
+    indexOfDrawArgs: 0,
     pass3d: []
   },
   audio: {
@@ -182,52 +182,52 @@ const $meshEmissive = (mesh, r, g, b, a) => {
   mesh.f2[3] = a;
 };
 
-const $packStage = (camera, light) => {
+const $packCamera = (camera) => {
   const gpu = $$.gpu;
 
-  const pack = new Float32Array(__strideOfStageInput / 4);
-  { // camera
-    const aspect = gpu.canvas.width / gpu.canvas.height;
-    const fovy = deg2rad(camera.fov);
-    const x = camera.x;
-    const y = camera.y;
-    const z = camera.z;
-    const ha = camera.ha;
-    const va = camera.va;
-    const dir = vec3dir(ha, va);
-    const eye = [x, y, z];
-    const at = vec3add(eye, dir);
-    const up = [0, 1, 0];
-    const look = mat4lookat(eye, at, up);
-    const proj = mat4perspective(fovy, aspect, camera.near, camera.far);
-    const vp = mat4multiply(look, proj);
-    const ivp = mat4invert(vp);
-    const ortho = mat4ortho(gpu.canvas.width, gpu.canvas.height, 0.0, 1.0);
-    pack.set(vp, 0);
-    pack.set(ivp, 16);
-    pack.set(look, 32);
-    pack.set(ortho, 48);
-    pack.set(eye, 64);
-  }
-  { // light
-    const ldir = vec3dir(light.ha, light.va);
-    const color = light.color;
-    const ambient0 = light.ambient0;
-    const ambient1 = light.ambient1;
-    pack.set(ldir, 68);
-    pack.set(color, 72);
-    pack.set(ambient0, 76);
-    pack.set(ambient1, 80);
-  }
+  const aspect = gpu.canvas.width / gpu.canvas.height;
+  const fovy = deg2rad(camera.fov);
+  const x = camera.x;
+  const y = camera.y;
+  const z = camera.z;
+  const ha = camera.ha;
+  const va = camera.va;
+  const dir = vec3dir(ha, va);
+  const eye = [x, y, z];
+  const at = vec3add(eye, dir);
+  const up = [0, 1, 0];
+  const look = mat4lookat(eye, at, up);
+  const proj = mat4perspective(fovy, aspect, camera.near, camera.far);
+  const vp = mat4multiply(look, proj);
+  const ivp = mat4invert(vp);
+  const ortho = mat4ortho(gpu.canvas.width, gpu.canvas.height, 0.0, 1.0);
+
+  const pack = new Float32Array(4 * 17);
+  pack.set(vp, 0);
+  pack.set(ivp, 16);
+  pack.set(look, 32);
+  pack.set(ortho, 48);
+  pack.set(eye, 64);
   return pack;
 };
+const $packLight = (light) => {
+  const ldir = vec3dir(light.ha, light.va);
+  const color = light.color;
+  const ambient0 = light.ambient0;
+  const ambient1 = light.ambient1;
 
+  const pack = new Float32Array(4 * 4);
+  pack.set(ldir, 0);
+  pack.set(color, 4);
+  pack.set(ambient0, 8);
+  pack.set(ambient1, 12);
+  return pack;
+};
 const $packMesh = (mesh) => {
-  const num = 7;
-  const pack = new Float32Array(__strideOfMeshInput / 4 * num);
-
   const matrix = mat4angle(mesh.ha, mesh.va);
   mat4translated(matrix, mesh.x, mesh.y, mesh.z);
+
+  const pack = new Float32Array(4 * 7);
   pack.set(matrix, 0);
   pack.set(mesh.f0, 16); // xyzw: BaseColor
   pack.set(mesh.f1, 20); // x:Occlusion, y:Metallic, z:Roughness, w:reserved
@@ -235,23 +235,32 @@ const $packMesh = (mesh) => {
   return pack;
 };
 
-const $writeStage = (pack) => {
-  const gpu = $$.gpu;
-  const device = $$.gpu.device;
-  device.queue.writeBuffer(gpu.cbuffer[0], 0, pack);
-};
-
-const $writeMesh = (pack) => {
+const $writePack = (pack) => {
   const gpu = $$.gpu;
   const device = $$.gpu.device;
 
-  device.queue.writeBuffer(gpu.cbuffer[1], gpu.indexOfMeshInput * __strideOfMeshInput, pack);
-  const startIndexOfMeshInput = gpu.indexOfMeshInput;
-  gpu.indexOfMeshInput += (pack.length / 4);
-  return startIndexOfMeshInput;
+  const index = gpu.indexOfPack;
+  device.queue.writeBuffer(gpu.cbuffer[0], gpu.indexOfPack * __strideOfPack, pack);
+  gpu.indexOfPack += (pack.length / 4);
+  return index;
 };
+const $writeSlot = (camera, light) => {
+  const gpu = $$.gpu;
+  const device = $$.gpu.device;
 
-const $draw = (id, lst) => {
+  const slot = [camera, light, 0, 0];
+  device.queue.writeBuffer(gpu.cbuffer[1], 0, new Uint32Array(slot));
+};
+const $writeDrawSlot = (lst) => {
+  const gpu = $$.gpu;
+  const device = $$.gpu.device;
+
+  const index = gpu.indexOfDrawSlot;
+  device.queue.writeBuffer(gpu.cbuffer[2], gpu.indexOfDrawSlot * __strideOfDrawSlot, new Uint32Array(lst));
+  gpu.indexOfDrawSlot += lst.length;
+  return index;
+};
+const $writeDrawArgs = (id, count) => {
   const gpu = $$.gpu;
   const device = $$.gpu.device;
   const gltf = $$.data.gltf;
@@ -261,33 +270,46 @@ const $draw = (id, lst) => {
     return;
   }
 
-  const instanceCount = lst.length;
-  if (instanceCount <= 0) {
-    return;
-  }
-
-  const startIndexOfMeshID = gpu.indexOfMeshID;
-  device.queue.writeBuffer(gpu.cbuffer[2], gpu.indexOfMeshID * __strideOfMeshID, new Uint32Array(lst));
-  gpu.indexOfMeshID += instanceCount;
-
+  const index = gpu.indexOfDrawArgs;
   for (const sid of mesh.segment) {
     const segment = gltf.segment[sid];
     if (!segment) {
       continue;
     }
 
-    const args = new Uint32Array(20 / 4);
+    const args = new Uint32Array(__strideOfDrawArgs / 4);
     args[0] = segment.count;  // indexCount
-    args[1] = instanceCount;  // instanceCount
+    args[1] = count;          // instanceCount
     args[2] = 0;              // firstIndex
     args[3] = 0;              // baseVertex
     args[4] = 0;              // firstInstance, need "indirect-first-instance"
-    device.queue.writeBuffer(gpu.cbuffer[3], gpu.indexOfIndirectArgs * __strideOfIndirectArgs, args);
+    device.queue.writeBuffer(gpu.cbuffer[3], gpu.indexOfDrawArgs * __strideOfDrawArgs, args);
+    gpu.indexOfDrawArgs += 1;
+  }
+  return index;
+};
+
+const $draw = (id, slot, args) => {
+  const gpu = $$.gpu;
+  const gltf = $$.data.gltf;
+
+  const mesh = gltf.mesh[id];
+  if (!mesh) {
+    return;
+  }
+
+  let index = 0;
+  for (const sid of mesh.segment) {
+    const segment = gltf.segment[sid];
+    if (!segment) {
+      continue;
+    }
+
     gpu.pass3d.push({
       sid: sid,
-      indexOfMeshID: startIndexOfMeshID,
-      indexOfIndirectArgs: gpu.indexOfIndirectArgs
+      slot: slot,
+      args: args + index
     });
-    gpu.indexOfIndirectArgs += 1;
+    index += 1;
   }
 };

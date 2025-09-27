@@ -11,7 +11,7 @@ fn decodeWorldPosition(xy : vec2<i32>) -> vec3<f32> {
   var d = textureLoad(zbuffer, xy, 0);
   var uv = vec2<f32>(xy) / vec2<f32>(textureDimensions(zbuffer, 0).xy);
   var posClip = vec4<f32>(uv * vec2(2.0, -2.0) + vec2(-1.0, 1.0), d, 1);
-  var posWorldW = stage.invViewProj * posClip;
+  var posWorldW = invViewProj() * posClip;
   var posWorld = posWorldW.xyz / posWorldW.www;
   return posWorld;
 }
@@ -19,15 +19,14 @@ fn decodeNormal(xy : vec2<i32>) -> vec3<f32> {
   return normalize(textureLoad(gbuffer0, xy, 0).xyz * 2.0 - 1.0);
 }
 fn decodeViewNormal(xy : vec2<i32>) -> vec3<f32> {
-  var nView = mat3x3<f32>(stage.view[0].xyz, stage.view[1].xyz, stage.view[2].xyz);
   var N = normalize(textureLoad(gbuffer0, xy, 0).xyz * 2.0 - 1.0);
-  N = normalize(nView * N);
+  N = normalize(normalView() * N);
   return N;
 }
 fn sampleEnvMap(R : vec3<f32>) -> vec3<f32> {
   return mix(
-    stage.ambientColor0.rgb * stage.ambientColor0.a,
-    stage.ambientColor1.rgb * stage.ambientColor1.a,
+    ambientColor0(),
+    ambientColor1(),
     dot(R, vec3<f32>(0, 1, 0)) * 0.5 + 0.5);
 }
 fn sampleZ(uv : vec2<f32>) -> f32 {
@@ -121,11 +120,11 @@ fn FS_HDR(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
   var F1 = textureLoad(gbuffer2, xy, 0);
   var N = decodeNormal(xy);
   var P = decodeWorldPosition(xy);
-  var V = normalize(stage.eyePosition.xyz - P);
+  var V = normalize(eyePosition() - P);
   var R = normalize(reflect(V, N));
 
-  var L = normalize(stage.lightDir.xyz);
-  var C_L = (stage.lightColor.rgb * stage.lightColor.a) * BRDF(N, L, V, F0.rgb, F1.y, F1.z);
+  var L = normalize(lightDir());
+  var C_L = lightColor() * BRDF(N, L, V, F0.rgb, F1.y, F1.z);
   var A = sampleEnvMap(R);
   var C_A = A * F1.x * F0.rgb;
   return vec4(C_L + C_A, 0.0);
@@ -135,7 +134,7 @@ fn FS_HDR(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
 fn FS_HDRSky(@builtin(position) coord : vec4<f32>) -> @location(0) vec4<f32> {
   var xy = vec2<i32>(floor(coord.xy));
   var P = decodeWorldPosition(xy);
-  var V = normalize(stage.eyePosition.xyz - P);
+  var V = normalize(eyePosition() - P);
   var C_A = sampleEnvMap(V);
   return vec4(C_A, 0.0);
 }

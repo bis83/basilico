@@ -1,8 +1,8 @@
 
-const __strideOfStageInput = 512;
-const __strideOfMeshInput = 16;
-const __strideOfMeshID = 4;
-const __strideOfIndirectArgs = 20;
+const __strideOfPack = 16;
+const __strideOfSlot = 16;
+const __strideOfDrawSlot = 4;
+const __strideOfDrawArgs = 20;
 
 const $__gpuInit = async () => {
   const gpu = $$.gpu;
@@ -25,10 +25,10 @@ const $__gpuInit = async () => {
       usage: usage | GPUBufferUsage.COPY_DST,
     });
   };
-  createCBuffer(0, __strideOfStageInput * 1, GPUBufferUsage.UNIFORM);             // StageInput
-  createCBuffer(1, __strideOfMeshInput * 65536, GPUBufferUsage.STORAGE);          // MeshInput (StorageBuffer)
-  createCBuffer(2, __strideOfMeshID * (4 * 1024), GPUBufferUsage.VERTEX);         // MeshID (PerInstance)
-  createCBuffer(3, __strideOfIndirectArgs * (2 * 1024), GPUBufferUsage.INDIRECT); // IndirectArgs (PerDrawCall)
+  createCBuffer(0, __strideOfPack * 65536, GPUBufferUsage.STORAGE);           // Pack (StorageBuffer)
+  createCBuffer(1, __strideOfSlot * 1, GPUBufferUsage.UNIFORM);               // Slot (UniformBuffer)
+  createCBuffer(2, __strideOfDrawSlot * (4 * 1024), GPUBufferUsage.VERTEX);   // DrawSlot (PerInstance)
+  createCBuffer(3, __strideOfDrawArgs * (2 * 1024), GPUBufferUsage.INDIRECT); // DrawArgs (PerDrawCall)
 
   gpu.sampler[0] = device.createSampler({
     magFilter: 'linear',
@@ -38,18 +38,17 @@ const $__gpuInit = async () => {
 
   gpu.bindGroupLayout[0] = device.createBindGroupLayout({
     entries: [
-      { binding: 0, visibility: GPUShaderStage.VERTEX, buffer: {} },
-      { binding: 1, visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT, buffer: { type: "read-only-storage" } },
+      { binding: 0, visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT, buffer: { type: "read-only-storage" } },
+      { binding: 1, visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT, buffer: {} },
     ],
   });
   gpu.bindGroupLayout[1] = device.createBindGroupLayout({
     entries: [
-      { binding: 0, visibility: GPUShaderStage.FRAGMENT, buffer: {} },
-      { binding: 1, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: "depth" } },
+      { binding: 0, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: "depth" } },
+      { binding: 1, visibility: GPUShaderStage.FRAGMENT, texture: {} },
       { binding: 2, visibility: GPUShaderStage.FRAGMENT, texture: {} },
       { binding: 3, visibility: GPUShaderStage.FRAGMENT, texture: {} },
-      { binding: 4, visibility: GPUShaderStage.FRAGMENT, texture: {} },
-      { binding: 5, visibility: GPUShaderStage.FRAGMENT, sampler: {} },
+      { binding: 4, visibility: GPUShaderStage.FRAGMENT, sampler: {} },
     ],
   });
 
@@ -60,6 +59,7 @@ const $__gpuInit = async () => {
   });
   gpu.pipelineLayout[1] = device.createPipelineLayout({
     bindGroupLayouts: [
+      gpu.bindGroupLayout[0],
       gpu.bindGroupLayout[1],
     ],
   });
@@ -125,12 +125,11 @@ const $__gpuUpdateGBuffer = () => {
       gpu.bindGroup[i] = device.createBindGroup({
         layout: gpu.bindGroupLayout[1],
         entries: [
-          { binding: 0, resource: { buffer: gpu.cbuffer[0] }, },
-          { binding: 1, resource: gpu.gbuffer[t0].createView(), },
-          { binding: 2, resource: gpu.gbuffer[t1].createView(), },
-          { binding: 3, resource: gpu.gbuffer[t2].createView(), },
-          { binding: 4, resource: gpu.gbuffer[t3].createView(), },
-          { binding: 5, resource: gpu.sampler[0] },
+          { binding: 0, resource: gpu.gbuffer[t0].createView(), },
+          { binding: 1, resource: gpu.gbuffer[t1].createView(), },
+          { binding: 2, resource: gpu.gbuffer[t2].createView(), },
+          { binding: 3, resource: gpu.gbuffer[t3].createView(), },
+          { binding: 4, resource: gpu.sampler[0] },
         ],
       });
     }
@@ -145,9 +144,9 @@ const $__gpuFrameBegin = () => {
 
   // reset
   const gpu = $$.gpu;
-  gpu.indexOfMeshInput = 0;
-  gpu.indexOfMeshID = 0;
-  gpu.indexOfIndirectArgs = 0;
+  gpu.indexOfPack = 0;
+  gpu.indexOfDrawSlot = 0;
+  gpu.indexOfDrawArgs = 0;
   gpu.pass3d = [];
 };
 
@@ -204,7 +203,11 @@ const $__gpuPassGBuffer = (ce) => {
   pass.setBindGroup(0, gpu.bindGroup[0]);
   for (const p of gpu.pass3d) {
     const segment = gltf.segment[p.sid];
-    pass.setVertexBuffer(0, gpu.cbuffer[2], p.indexOfMeshID * __strideOfMeshID);
+    if (!segment) {
+      continue;
+    }
+
+    pass.setVertexBuffer(0, gpu.cbuffer[2], p.slot * __strideOfDrawSlot);
     if (segment.vb0) {
       const [index, offset, size] = segment.vb0;
       pass.setVertexBuffer(1, gltf.buffer[index], offset, size);
@@ -217,7 +220,7 @@ const $__gpuPassGBuffer = (ce) => {
       const [index, offset, size] = segment.ib;
       pass.setIndexBuffer(gltf.buffer[index], "uint16", offset, size);
     }
-    pass.drawIndexedIndirect(gpu.cbuffer[3], p.indexOfIndirectArgs * __strideOfIndirectArgs);
+    pass.drawIndexedIndirect(gpu.cbuffer[3], p.args * __strideOfDrawArgs);
   }
   pass.end();
 };
@@ -234,7 +237,8 @@ const $__gpuPassSSAO = (ce) => {
     }],
   });
   pass.setPipeline(wgsl.pipeline[1]);
-  pass.setBindGroup(0, gpu.bindGroup[2]);
+  pass.setBindGroup(0, gpu.bindGroup[0]);
+  pass.setBindGroup(1, gpu.bindGroup[2]);
   pass.draw(4);
   pass.end();
 };
@@ -255,7 +259,8 @@ const $__gpuPassHDR = (ce) => {
     }],
   });
   pass.setPipeline(wgsl.pipeline[2]);
-  pass.setBindGroup(0, gpu.bindGroup[1]);
+  pass.setBindGroup(0, gpu.bindGroup[0]);
+  pass.setBindGroup(1, gpu.bindGroup[1]);
   pass.draw(4);
   pass.setPipeline(wgsl.pipeline[3]);
   pass.draw(4);
@@ -279,7 +284,8 @@ const $__gpuPassLDR = (ce) => {
     }],
   });
   pass.setPipeline(wgsl.pipeline[4]);
-  pass.setBindGroup(0, gpu.bindGroup[3]);
+  pass.setBindGroup(0, gpu.bindGroup[0]);
+  pass.setBindGroup(1, gpu.bindGroup[3]);
   pass.draw(4);
 
   /*

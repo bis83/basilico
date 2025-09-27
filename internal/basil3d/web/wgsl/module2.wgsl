@@ -10,7 +10,7 @@ struct VertexOutput {
 @vertex
 fn VS(input : VertexInput) -> VertexOutput {
   var output : VertexOutput;
-  output.position = stage.ortho * vec4<f32>(input.position, 1.0, 1.0);
+  output.position = ortho() * vec4<f32>(input.position, 1.0, 1.0);
   output.color = input.color;
   return output;
 }

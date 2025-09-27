@@ -6,17 +6,15 @@ import (
 
 var wgsl = [][]string{
 	{
-		"web/wgsl/type0.wgsl",
 		"web/wgsl/layout0.wgsl",
 		"web/wgsl/module0.wgsl",
 	},
 	{
-		"web/wgsl/type0.wgsl",
+		"web/wgsl/layout0.wgsl",
 		"web/wgsl/layout1.wgsl",
 		"web/wgsl/module1.wgsl",
 	},
 	{
-		"web/wgsl/type0.wgsl",
 		"web/wgsl/layout0.wgsl",
 		"web/wgsl/module2.wgsl",
 	},

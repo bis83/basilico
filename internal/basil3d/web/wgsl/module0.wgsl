@@ -1,12 +1,12 @@
 struct VertexInput {
-  @location(0) id: u32,
+  @location(0) slot: u32,
   @location(1) position: vec3<f32>,
   @location(2) normal : vec3<f32>,
 };
 struct VertexOutput {
   @builtin(position) position : vec4<f32>,
   @location(0) normal : vec3<f32>,
-  @location(1) @interpolate(flat) id : u32,
+  @location(1) @interpolate(flat) slot : u32,
 };
 struct FragmentOutput {
   @location(0) gbuffer0 : vec4<f32>,
@@ -18,19 +18,19 @@ struct FragmentOutput {
 @vertex
 fn VS(input : VertexInput) -> VertexOutput {
   var world = mat4x4<f32>(
-    mesh[input.id + 0],
-    mesh[input.id + 1],
-    mesh[input.id + 2],
-    mesh[input.id + 3]);
+    pack[input.slot + 0],
+    pack[input.slot + 1],
+    pack[input.slot + 2],
+    pack[input.slot + 3]);
   var nWorld = mat3x3<f32>(
     world[0].xyz,
     world[1].xyz,
     world[2].xyz);
 
   var output : VertexOutput;
-  output.position = (stage.viewProj * world * vec4(input.position, 1.0));
+  output.position = (viewProj() * world * vec4(input.position, 1.0));
   output.normal = normalize(nWorld * input.normal);
-  output.id = input.id + 4;
+  output.slot = input.slot + 4;
   return output;
 }
 
@@ -38,8 +38,8 @@ fn VS(input : VertexInput) -> VertexOutput {
 fn FS(input : VertexOutput) -> FragmentOutput {
   var output : FragmentOutput;
   output.gbuffer0 = vec4(normalize(input.normal) * 0.5 + 0.5, 0);
-  output.gbuffer1 = mesh[input.id + 0].xyzw;
-  output.gbuffer2 = mesh[input.id + 1].xyzw;
-  output.gbuffer3 = mesh[input.id + 2].xyzw;
+  output.gbuffer1 = pack[input.slot + 0].xyzw;
+  output.gbuffer2 = pack[input.slot + 1].xyzw;
+  output.gbuffer3 = pack[input.slot + 2].xyzw;
   return output;
 }
