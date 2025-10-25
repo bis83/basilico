@@ -11,7 +11,7 @@ import (
 type AppGLTF struct {
 	Buffer  []*AppGLTFBuffer        `json:"buffer,omitempty"`
 	Texture []*AppGLTFTexture       `json:"texture,omitempty"`
-	Segment []*AppGLTFSegment       `json:"segment,omitempty"`
+	Input   []*AppGLTFInput         `json:"input,omitempty"`
 	Mesh    map[string]*AppGLTFMesh `json:"mesh,omitempty"`
 }
 type AppGLTFBuffer struct {
@@ -20,8 +20,9 @@ type AppGLTFBuffer struct {
 type AppGLTFTexture struct {
 	Embed int `json:"embed,omitempty"`
 }
-type AppGLTFSegment struct {
-	Hint int `json:"hint"`
+type AppGLTFInput struct {
+	Count int `json:"count"`
+	Hint  int `json:"hint"`
 
 	// Input
 	VertexBuffer0 []int `json:"vb0,omitempty"` // [buffer, offset, size], slot: 0, shaderLocation: 0, format: float32x3 (position)
@@ -39,11 +40,9 @@ type AppGLTFSegment struct {
 	Texture0 int       `json:"texture0,omitempty"` // BaseColorTexture
 	Texture1 int       `json:"texture1,omitempty"` // ParameterTexture(OcclusionMetallicRoughness)
 	Texture2 int       `json:"texture2,omitempty"` // NormalTexture
-
-	Count int `json:"count"`
 }
 type AppGLTFMesh struct {
-	Segment []int `json:"segment"`
+	Input []int `json:"input"`
 }
 
 const (
@@ -91,10 +90,10 @@ func (p *App) buildGLTF(src *Source) error {
 			var appMesh AppGLTFMesh
 			p.GLTF.Mesh[mesh.Name] = &appMesh
 			for _, prim := range mesh.Primitives {
-				// segment
-				var appSegment AppGLTFSegment
-				p.GLTF.Segment = append(p.GLTF.Segment, &appSegment)
-				appMesh.Segment = append(appMesh.Segment, len(p.GLTF.Segment)-1)
+				// input
+				var appInput AppGLTFInput
+				p.GLTF.Input = append(p.GLTF.Input, &appInput)
+				appMesh.Input = append(appMesh.Input, len(p.GLTF.Input)-1)
 
 				// buffer
 				var appBuffer AppGLTFBuffer
@@ -113,8 +112,8 @@ func (p *App) buildGLTF(src *Source) error {
 						return err
 					}
 					size := vb.Len() - offset
-					appSegment.Hint |= HasPosition
-					appSegment.VertexBuffer0 = []int{bufferIndex, offset, size}
+					appInput.Hint |= HasPosition
+					appInput.VertexBuffer0 = []int{bufferIndex, offset, size}
 				}
 				if attr, ok := prim.Attributes["NORMAL"]; ok {
 					offset := vb.Len()
@@ -126,8 +125,8 @@ func (p *App) buildGLTF(src *Source) error {
 						return err
 					}
 					size := vb.Len() - offset
-					appSegment.Hint |= HasNormal
-					appSegment.VertexBuffer1 = []int{bufferIndex, offset, size}
+					appInput.Hint |= HasNormal
+					appInput.VertexBuffer1 = []int{bufferIndex, offset, size}
 				}
 				if prim.Indices != nil {
 					offset := vb.Len()
@@ -136,8 +135,8 @@ func (p *App) buildGLTF(src *Source) error {
 						return err
 					}
 					size := vb.Len() - offset
-					appSegment.IndexBuffer = []int{bufferIndex, offset, size}
-					appSegment.Count = len(ib) / 2
+					appInput.IndexBuffer = []int{bufferIndex, offset, size}
+					appInput.Count = len(ib) / 2
 				}
 
 				var err error
@@ -148,13 +147,13 @@ func (p *App) buildGLTF(src *Source) error {
 
 				// Material
 				material := doc.Materials[*prim.Material]
-				appSegment.Factor0 = []float64{
+				appInput.Factor0 = []float64{
 					float64(material.PBRMetallicRoughness.BaseColorFactor[0]),
 					float64(material.PBRMetallicRoughness.BaseColorFactor[1]),
 					float64(material.PBRMetallicRoughness.BaseColorFactor[2]),
 					float64(material.PBRMetallicRoughness.BaseColorFactor[3]),
 				}
-				appSegment.Factor1 = []float64{
+				appInput.Factor1 = []float64{
 					float64(1), // Occlusion
 					float64(*material.PBRMetallicRoughness.MetallicFactor),
 					float64(*material.PBRMetallicRoughness.RoughnessFactor),

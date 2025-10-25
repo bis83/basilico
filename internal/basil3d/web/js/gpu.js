@@ -202,22 +202,21 @@ const $__gpuPassGBuffer = (ce) => {
   pass.setPipeline(wgsl.pipeline[0]);
   pass.setBindGroup(0, gpu.bindGroup[0]);
   for (const p of gpu.pass3d) {
-    const segment = gltf.segment[p.sid];
-    if (!segment) {
+    const input = gltf.input[p.id];
+    if (!input) {
       continue;
     }
-
     pass.setVertexBuffer(0, gpu.cbuffer[2], p.slot * __strideOfDrawSlot);
-    if (segment.vb0) {
-      const [index, offset, size] = segment.vb0;
+    if (input.vb0) {
+      const [index, offset, size] = input.vb0;
       pass.setVertexBuffer(1, gltf.buffer[index], offset, size);
     }
-    if (segment.vb1) {
-      const [index, offset, size] = segment.vb1;
+    if (input.vb1) {
+      const [index, offset, size] = input.vb1;
       pass.setVertexBuffer(2, gltf.buffer[index], offset, size);
     }
-    if (segment.ib) {
-      const [index, offset, size] = segment.ib;
+    if (input.ib) {
+      const [index, offset, size] = input.ib;
       pass.setIndexBuffer(gltf.buffer[index], "uint16", offset, size);
     }
     pass.drawIndexedIndirect(gpu.cbuffer[3], p.args * __strideOfDrawArgs);

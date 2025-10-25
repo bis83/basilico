@@ -263,53 +263,38 @@ const $writeDrawSlot = (lst) => {
 const $writeDrawArgs = (id, count) => {
   const gpu = $$.gpu;
   const device = $$.gpu.device;
-  const gltf = $$.data.gltf;
 
-  const mesh = gltf.mesh[id];
-  if (!mesh) {
-    return;
-  }
+  const gltf = $$.data.gltf;
+  const icount = gltf.input[id] ? gltf.input[id].count : 0;
+
+  const args = new Uint32Array(__strideOfDrawArgs / 4);
+  args[0] = icount;  // indexCount
+  args[1] = count;   // instanceCount
+  args[2] = 0;       // firstIndex
+  args[3] = 0;       // baseVertex
+  args[4] = 0;       // firstInstance, need "indirect-first-instance"
+  device.queue.writeBuffer(gpu.cbuffer[3], gpu.indexOfDrawArgs * __strideOfDrawArgs, args);
 
   const index = gpu.indexOfDrawArgs;
-  for (const sid of mesh.segment) {
-    const segment = gltf.segment[sid];
-    if (!segment) {
-      continue;
-    }
-
-    const args = new Uint32Array(__strideOfDrawArgs / 4);
-    args[0] = segment.count;  // indexCount
-    args[1] = count;          // instanceCount
-    args[2] = 0;              // firstIndex
-    args[3] = 0;              // baseVertex
-    args[4] = 0;              // firstInstance, need "indirect-first-instance"
-    device.queue.writeBuffer(gpu.cbuffer[3], gpu.indexOfDrawArgs * __strideOfDrawArgs, args);
-    gpu.indexOfDrawArgs += 1;
-  }
+  gpu.indexOfDrawArgs += 1;
   return index;
 };
-
 const $draw = (id, slot, args) => {
   const gpu = $$.gpu;
+
+  gpu.pass3d.push({
+    id: id,
+    slot: slot,
+    args: args
+  });
+};
+
+const $meshInput = (name) => {
   const gltf = $$.data.gltf;
 
-  const mesh = gltf.mesh[id];
+  const mesh = gltf.mesh[name];
   if (!mesh) {
-    return;
+    return [];
   }
-
-  let index = 0;
-  for (const sid of mesh.segment) {
-    const segment = gltf.segment[sid];
-    if (!segment) {
-      continue;
-    }
-
-    gpu.pass3d.push({
-      sid: sid,
-      slot: slot,
-      args: args + index
-    });
-    index += 1;
-  }
+  return mesh.input || [];
 };
