@@ -7,6 +7,7 @@ import (
 )
 
 type Config struct {
+	Dist         *string  `json:"dist"`
 	Title        string   `json:"title"`
 	ExternScript []string `json:"extern-script"`
 	Minify       bool     `json:"minify"`

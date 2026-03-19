@@ -27,7 +27,11 @@ func (p *Basil) BaseDir() string {
 }
 
 func (p *Basil) DistDir() string {
-	return filepath.Join(p.baseDir, "dist")
+	if p.config.Dist != nil {
+		return filepath.Join(p.baseDir, *p.config.Dist)
+	} else {
+		return filepath.Join(p.baseDir, "dist")
+	}
 }
 
 func (p *Basil) Minify() bool {
