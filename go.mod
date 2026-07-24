@@ -4,7 +4,6 @@ go 1.24.0
 
 require (
 	github.com/evanw/esbuild v0.23.0
-	github.com/pelletier/go-toml/v2 v2.2.2
 	github.com/qmuntal/gltf v0.26.0
 	github.com/x448/float16 v0.8.4
 )
