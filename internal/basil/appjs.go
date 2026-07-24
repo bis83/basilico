@@ -33,7 +33,7 @@ func (p *Basil) loadAppScript() error {
 
 func (p *Basil) makeAppJs() error {
 	// esbuild
-	result := esbuild.Transform(string(p.script.Bytes()), esbuild.TransformOptions{
+	result := esbuild.Transform(p.script.String(), esbuild.TransformOptions{
 		MinifyWhitespace:  p.config.Minify,
 		MinifyIdentifiers: p.config.Minify,
 		MinifySyntax:      p.config.Minify,
