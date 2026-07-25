@@ -1,4 +1,3 @@
-
 const $__onload = () => {
   $$.data.loading += 1;
   (async () => {
@@ -48,9 +47,19 @@ const $__onloadWGSL = async (wgsl, embed) => {
       module: wgsl.shader[0],
       entryPoint: "VS",
       buffers: [
-        { arrayStride: 4, attributes: [{ format: "uint32", offset: 0, shaderLocation: 0 }], stepMode: "instance" }, // instance
-        { arrayStride: 12, attributes: [{ format: "float32x3", offset: 0, shaderLocation: 1 }] }, // position
-        { arrayStride: 12, attributes: [{ format: "float32x3", offset: 0, shaderLocation: 2 }] }, // normal
+        {
+          arrayStride: 4,
+          attributes: [{ format: "uint32", offset: 0, shaderLocation: 0 }],
+          stepMode: "instance",
+        }, // instance
+        {
+          arrayStride: 12,
+          attributes: [{ format: "float32x3", offset: 0, shaderLocation: 1 }],
+        }, // position
+        {
+          arrayStride: 12,
+          attributes: [{ format: "float32x3", offset: 0, shaderLocation: 2 }],
+        }, // normal
         /*
         { arrayStride: 4, attributes: [{ format: "float16x2", offset: 0, shaderLocation: 2 }] }, // tangent
         { arrayStride: 4, attributes: [{ format: "float16x2", offset: 0, shaderLocation: 3 }] }, // texcoord0
@@ -175,9 +184,7 @@ const $__onloadWGSL = async (wgsl, embed) => {
     fragment: {
       module: wgsl.shader[1],
       entryPoint: "FS_HDR2LDR",
-      targets: [
-        { format: canvasFormat },
-      ],
+      targets: [{ format: canvasFormat }],
     },
     depthStencil: {
       depthWriteEnabled: false,
@@ -191,8 +198,14 @@ const $__onloadWGSL = async (wgsl, embed) => {
       module: wgsl.shader[2],
       entryPoint: "VS",
       buffers: [
-        { arrayStride: 8, attributes: [{ format: "float32x2", offset: 0, shaderLocation: 0 }] }, // position
-        { arrayStride: 4, attributes: [{ format: "unorm8x4", offset: 0, shaderLocation: 1 }] }, // color
+        {
+          arrayStride: 8,
+          attributes: [{ format: "float32x2", offset: 0, shaderLocation: 0 }],
+        }, // position
+        {
+          arrayStride: 4,
+          attributes: [{ format: "unorm8x4", offset: 0, shaderLocation: 1 }],
+        }, // color
       ],
     },
     fragment: {

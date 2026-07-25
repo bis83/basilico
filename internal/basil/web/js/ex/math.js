@@ -1,4 +1,3 @@
-
 const div = (v, n) => {
   return Math.floor(v / n);
 };
@@ -33,7 +32,7 @@ const xy_mul = (x, y, l) => {
 };
 
 const xy_hit_rect = (x, y, minX, maxX, minY, maxY) => {
-  return (minX <= x) && (x <= maxX) && (minY <= y) && (y <= maxY);
+  return minX <= x && x <= maxX && minY <= y && y <= maxY;
 };
 
 const xy_bounds = (x0, y0, r, x1, y1) => {
@@ -57,63 +56,38 @@ const vec3length = (a) => {
 };
 
 const vec3add = (a, b) => {
-  return [
-    a[0] + b[0],
-    a[1] + b[1],
-    a[2] + b[2]
-  ];
+  return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 };
 
 const vec3sub = (a, b) => {
-  return [
-    a[0] - b[0],
-    a[1] - b[1],
-    a[2] - b[2]
-  ];
+  return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
 };
 
 const vec3mul = (v, x) => {
-  return [
-    v[0] * x,
-    v[1] * x,
-    v[2] * x
-  ];
+  return [v[0] * x, v[1] * x, v[2] * x];
 };
 
 const vec3normalize = (v) => {
   const l = vec3length(v);
-  return [
-    v[0] / l,
-    v[1] / l,
-    v[2] / l
-  ];
+  return [v[0] / l, v[1] / l, v[2] / l];
 };
 
 const vec3cross = (a, b) => {
   return [
     a[1] * b[2] - a[2] * b[1],
     a[2] * b[0] - a[0] * b[2],
-    a[0] * b[1] - a[1] * b[0]
+    a[0] * b[1] - a[1] * b[0],
   ];
 };
 
 const vec3dir = (hang, vang) => {
   const h = deg2rad(hang);
   const v = deg2rad(vang);
-  return [
-    Math.cos(v) * Math.cos(h),
-    Math.sin(v),
-    Math.cos(v) * Math.sin(h),
-  ];
+  return [Math.cos(v) * Math.cos(h), Math.sin(v), Math.cos(v) * Math.sin(h)];
 };
 
 const mat4identity = () => {
-  return [
-    1, 0, 0, 0,
-    0, 1, 0, 0,
-    0, 0, 1, 0,
-    0, 0, 0, 1
-  ];
+  return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 };
 
 const mat4multiply = (a, b) => {
@@ -133,7 +107,7 @@ const mat4multiply = (a, b) => {
     a[12] * b[0] + a[13] * b[4] + a[14] * b[8] + a[15] * b[12],
     a[12] * b[1] + a[13] * b[5] + a[14] * b[9] + a[15] * b[13],
     a[12] * b[2] + a[13] * b[6] + a[14] * b[10] + a[15] * b[14],
-    a[12] * b[3] + a[13] * b[7] + a[14] * b[11] + a[15] * b[15]
+    a[12] * b[3] + a[13] * b[7] + a[14] * b[11] + a[15] * b[15],
   ];
 };
 
@@ -150,7 +124,8 @@ const mat4invert = (a) => {
   const b09 = a[9] * a[14] - a[10] * a[13];
   const b10 = a[9] * a[15] - a[11] * a[13];
   const b11 = a[10] * a[15] - a[11] * a[14];
-  let det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+  let det =
+    b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
   if (!det) {
     return mat4identity();
   }
@@ -171,17 +146,12 @@ const mat4invert = (a) => {
     (a[5] * b07 - a[4] * b09 - a[6] * b06) * det,
     (a[0] * b09 - a[1] * b07 + a[2] * b06) * det,
     (a[13] * b01 - a[12] * b03 - a[14] * b00) * det,
-    (a[8] * b03 - a[9] * b01 + a[10] * b00) * det
+    (a[8] * b03 - a[9] * b01 + a[10] * b00) * det,
   ];
 };
 
 const mat4translate = (x, y, z) => {
-  return [
-    1, 0, 0, 0,
-    0, 1, 0, 0,
-    0, 0, 1, 0,
-    x, y, z, 1
-  ];
+  return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1];
 };
 
 const mat4translated = (m, x, y, z) => {
@@ -195,21 +165,11 @@ const mat4angle = (ha, va) => {
   const sinH = Math.sin(h);
   const cosH = Math.cos(h);
   // const v = deg2rad(va);
-  return [
-    cosH, 0, sinH, 0,
-    0, 1, 0, 0,
-    -sinH, 0, cosH, 0,
-    0, 0, 0, 1,
-  ];
+  return [cosH, 0, sinH, 0, 0, 1, 0, 0, -sinH, 0, cosH, 0, 0, 0, 0, 1];
 };
 
 const mat4scale = (x, y, z) => {
-  return [
-    x, 0, 0, 0,
-    0, y, 0, 0,
-    0, 0, z, 0,
-    0, 0, 0, 1
-  ];
+  return [x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1];
 };
 
 const mat4lookat = (eye, at, up) => {
@@ -220,10 +180,22 @@ const mat4lookat = (eye, at, up) => {
   const dy = vec3dot(eye, ty);
   const dz = vec3dot(eye, tz);
   return [
-    tx[0], ty[0], tz[0], 0,
-    tx[1], ty[1], tz[1], 0,
-    tx[2], ty[2], tz[2], 0,
-    -dx, -dy, -dz, 1
+    tx[0],
+    ty[0],
+    tz[0],
+    0,
+    tx[1],
+    ty[1],
+    tz[1],
+    0,
+    tx[2],
+    ty[2],
+    tz[2],
+    0,
+    -dx,
+    -dy,
+    -dz,
+    1,
   ];
 };
 
@@ -232,12 +204,7 @@ const mat4perspective = (fovy, aspect, near, far) => {
   const sx = sy / aspect;
   const sz = far / (far - near);
   const wz = -(sz * near);
-  return [
-    sx, 0, 0, 0,
-    0, sy, 0, 0,
-    0, 0, sz, 1,
-    0, 0, wz, 0
-  ];
+  return [sx, 0, 0, 0, 0, sy, 0, 0, 0, 0, sz, 1, 0, 0, wz, 0];
 };
 
 const mat4ortho = (w, h, zn, zf) => {
@@ -245,10 +212,5 @@ const mat4ortho = (w, h, zn, zf) => {
   const sy = 2 / h;
   const sz = 1 / (zf - zn);
   const wz = zn / (zn - zf);
-  return [
-    sx, 0, 0, 0,
-    0, sy, 0, 0,
-    0, 0, sz, 0,
-    0, 0, wz, 1
-  ];
+  return [sx, 0, 0, 0, 0, sy, 0, 0, 0, 0, sz, 0, 0, 0, wz, 1];
 };

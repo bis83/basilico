@@ -1,4 +1,3 @@
-
 const __strideOfPack = 16;
 const __strideOfSlot = 16;
 const __strideOfDrawSlot = 4;
@@ -25,26 +24,38 @@ const $__gpuInit = async () => {
       usage: usage | GPUBufferUsage.COPY_DST,
     });
   };
-  createCBuffer(0, __strideOfPack * 65536, GPUBufferUsage.STORAGE);           // Pack (StorageBuffer)
-  createCBuffer(1, __strideOfSlot * 1, GPUBufferUsage.UNIFORM);               // Slot (UniformBuffer)
-  createCBuffer(2, __strideOfDrawSlot * (4 * 1024), GPUBufferUsage.VERTEX);   // DrawSlot (PerInstance)
+  createCBuffer(0, __strideOfPack * 65536, GPUBufferUsage.STORAGE); // Pack (StorageBuffer)
+  createCBuffer(1, __strideOfSlot * 1, GPUBufferUsage.UNIFORM); // Slot (UniformBuffer)
+  createCBuffer(2, __strideOfDrawSlot * (4 * 1024), GPUBufferUsage.VERTEX); // DrawSlot (PerInstance)
   createCBuffer(3, __strideOfDrawArgs * (2 * 1024), GPUBufferUsage.INDIRECT); // DrawArgs (PerDrawCall)
 
   gpu.sampler[0] = device.createSampler({
-    magFilter: 'linear',
-    minFilter: 'linear',
-    mipmapFilter: 'linear',
+    magFilter: "linear",
+    minFilter: "linear",
+    mipmapFilter: "linear",
   });
 
   gpu.bindGroupLayout[0] = device.createBindGroupLayout({
     entries: [
-      { binding: 0, visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT, buffer: { type: "read-only-storage" } },
-      { binding: 1, visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT, buffer: {} },
+      {
+        binding: 0,
+        visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
+        buffer: { type: "read-only-storage" },
+      },
+      {
+        binding: 1,
+        visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
+        buffer: {},
+      },
     ],
   });
   gpu.bindGroupLayout[1] = device.createBindGroupLayout({
     entries: [
-      { binding: 0, visibility: GPUShaderStage.FRAGMENT, texture: { sampleType: "depth" } },
+      {
+        binding: 0,
+        visibility: GPUShaderStage.FRAGMENT,
+        texture: { sampleType: "depth" },
+      },
       { binding: 1, visibility: GPUShaderStage.FRAGMENT, texture: {} },
       { binding: 2, visibility: GPUShaderStage.FRAGMENT, texture: {} },
       { binding: 3, visibility: GPUShaderStage.FRAGMENT, texture: {} },
@@ -53,22 +64,17 @@ const $__gpuInit = async () => {
   });
 
   gpu.pipelineLayout[0] = device.createPipelineLayout({
-    bindGroupLayouts: [
-      gpu.bindGroupLayout[0],
-    ],
+    bindGroupLayouts: [gpu.bindGroupLayout[0]],
   });
   gpu.pipelineLayout[1] = device.createPipelineLayout({
-    bindGroupLayouts: [
-      gpu.bindGroupLayout[0],
-      gpu.bindGroupLayout[1],
-    ],
+    bindGroupLayouts: [gpu.bindGroupLayout[0], gpu.bindGroupLayout[1]],
   });
 
   gpu.bindGroup[0] = device.createBindGroup({
     layout: gpu.bindGroupLayout[0],
     entries: [
-      { binding: 0, resource: { buffer: gpu.cbuffer[0] }, },
-      { binding: 1, resource: { buffer: gpu.cbuffer[1] }, },
+      { binding: 0, resource: { buffer: gpu.cbuffer[0] } },
+      { binding: 1, resource: { buffer: gpu.cbuffer[1] } },
     ],
   });
 };
@@ -79,7 +85,10 @@ const $__gpuUpdateGBuffer = () => {
   const canvas = $$.gpu.canvas;
 
   // resize canvas and destroy render targets
-  if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
+  if (
+    canvas.width !== canvas.clientWidth ||
+    canvas.height !== canvas.clientHeight
+  ) {
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
 
@@ -110,7 +119,8 @@ const $__gpuUpdateGBuffer = () => {
       gpu.gbuffer[i] = device.createTexture({
         size: [canvas.width, canvas.height],
         format: format,
-        usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
+        usage:
+          GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
       });
     }
   };
@@ -125,10 +135,10 @@ const $__gpuUpdateGBuffer = () => {
       gpu.bindGroup[i] = device.createBindGroup({
         layout: gpu.bindGroupLayout[1],
         entries: [
-          { binding: 0, resource: gpu.gbuffer[t0].createView(), },
-          { binding: 1, resource: gpu.gbuffer[t1].createView(), },
-          { binding: 2, resource: gpu.gbuffer[t2].createView(), },
-          { binding: 3, resource: gpu.gbuffer[t3].createView(), },
+          { binding: 0, resource: gpu.gbuffer[t0].createView() },
+          { binding: 1, resource: gpu.gbuffer[t1].createView() },
+          { binding: 2, resource: gpu.gbuffer[t2].createView() },
+          { binding: 3, resource: gpu.gbuffer[t3].createView() },
           { binding: 4, resource: gpu.sampler[0] },
         ],
       });
@@ -153,10 +163,14 @@ const $__gpuFrameBegin = () => {
 const $__gpuFrameEnd = () => {
   const device = $$.gpu.device;
   const ce = device.createCommandEncoder();
-  $__gpuPassGBuffer(ce);
-  $__gpuPassSSAO(ce);
-  $__gpuPassHDR(ce);
-  $__gpuPassLDR(ce);
+  if ($$.gpu.indexOfPack > 0) {
+    $__gpuPassGBuffer(ce);
+    $__gpuPassSSAO(ce);
+    $__gpuPassHDR(ce);
+    $__gpuPassLDR(ce);
+  } else {
+    $__gpuPassLDRClear(ce);
+  }
   device.queue.submit([ce.finish()]);
 };
 
@@ -196,7 +210,7 @@ const $__gpuPassGBuffer = (ce) => {
         clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
         loadOp: "clear",
         storeOp: "store",
-      }
+      },
     ],
   });
   pass.setPipeline(wgsl.pipeline[0]);
@@ -229,11 +243,13 @@ const $__gpuPassSSAO = (ce) => {
   const wgsl = $$.data.wgsl;
 
   const pass = ce.beginRenderPass({
-    colorAttachments: [{
-      view: gpu.gbuffer[3].createView(),
-      loadOp: "load",
-      storeOp: "store",
-    }],
+    colorAttachments: [
+      {
+        view: gpu.gbuffer[3].createView(),
+        loadOp: "load",
+        storeOp: "store",
+      },
+    ],
   });
   pass.setPipeline(wgsl.pipeline[1]);
   pass.setBindGroup(0, gpu.bindGroup[0]);
@@ -251,11 +267,13 @@ const $__gpuPassHDR = (ce) => {
       view: gpu.gbuffer[0].createView(),
       depthReadOnly: true,
     },
-    colorAttachments: [{
-      view: gpu.gbuffer[4].createView(),
-      loadOp: "load",
-      storeOp: "store",
-    }],
+    colorAttachments: [
+      {
+        view: gpu.gbuffer[4].createView(),
+        loadOp: "load",
+        storeOp: "store",
+      },
+    ],
   });
   pass.setPipeline(wgsl.pipeline[2]);
   pass.setBindGroup(0, gpu.bindGroup[0]);
@@ -275,12 +293,14 @@ const $__gpuPassLDR = (ce) => {
       view: gpu.gbuffer[0].createView(),
       depthReadOnly: true,
     },
-    colorAttachments: [{
-      view: gpu.context.getCurrentTexture().createView(),
-      clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
-      loadOp: "clear",
-      storeOp: "store",
-    }],
+    colorAttachments: [
+      {
+        view: gpu.context.getCurrentTexture().createView(),
+        clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+        loadOp: "clear",
+        storeOp: "store",
+      },
+    ],
   });
   pass.setPipeline(wgsl.pipeline[4]);
   pass.setBindGroup(0, gpu.bindGroup[0]);
@@ -295,5 +315,21 @@ const $__gpuPassLDR = (ce) => {
   pass.draw(tile);
   */
 
+  pass.end();
+};
+
+const $__gpuPassLDRClear = (ce) => {
+  const gpu = $$.gpu;
+
+  const pass = ce.beginRenderPass({
+    colorAttachments: [
+      {
+        view: gpu.context.getCurrentTexture().createView(),
+        clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+        loadOp: "clear",
+        storeOp: "store",
+      },
+    ],
+  });
   pass.end();
 };

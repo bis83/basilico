@@ -1,4 +1,3 @@
-
 const $$ = {
   dt: 0,
   now: 0,
@@ -20,11 +19,24 @@ const $$ = {
     indexOfPack: 0,
     indexOfDrawSlot: 0,
     indexOfDrawArgs: 0,
-    pass3d: []
+    pass3d: [],
   },
   audio: {
-    context: null
+    context: null,
+  },
+};
+
+const $__frame = (time) => {
+  $$.dt = (time - $$.now) / 1000;
+  $$.now = time;
+
+  $__gpuFrameBegin();
+  if ($__onloadDone()) {
+    update && update();
   }
+  $__gpuFrameEnd();
+
+  requestAnimationFrame($__frame);
 };
 
 const $start = async (update) => {
@@ -38,47 +50,22 @@ const $start = async (update) => {
   html_listen(document.body, "contextmenu", (ev) => {
     ev.preventDefault();
   });
-  html_listen(window, "blur", (ev) => {
-  });
+  html_listen(window, "blur", (ev) => {});
   html_listen(document, "click", (ev) => {
     $__audioResume();
   });
-  html_listen(document, "keydown", (ev) => {
-  });
-  html_listen(document, "keyup", (ev) => {
-  });
-  html_listen(document, "mousedown", (ev) => {
-  });
-  html_listen(document, "mouseup", (ev) => {
-  });
-  html_listen(document, "mousemove", (ev) => {
-  });
-  html_listen(document, "touchstart", (ev) => {
-  });
-  html_listen(document, "touchend", (ev) => {
-  });
-  html_listen(document, "touchmove", (ev) => {
-  });
-  html_listen(document, "touchcancel", (ev) => {
-  });
-  html_listen(document, "gamepadconnected", (ev) => {
-  });
-  html_listen(document, "gamepaddisconnected", (ev) => {
-  });
-
-  const frame = (time) => {
-    $$.dt = (time - $$.now) / 1000;
-    $$.now = time;
-    if ($__onloadDone()) {
-      $__gpuFrameBegin();
-      if (update) {
-        update();
-      }
-      $__gpuFrameEnd();
-    }
-    requestAnimationFrame(frame);
-  };
-  requestAnimationFrame(frame);
+  html_listen(document, "keydown", (ev) => {});
+  html_listen(document, "keyup", (ev) => {});
+  html_listen(document, "mousedown", (ev) => {});
+  html_listen(document, "mouseup", (ev) => {});
+  html_listen(document, "mousemove", (ev) => {});
+  html_listen(document, "touchstart", (ev) => {});
+  html_listen(document, "touchend", (ev) => {});
+  html_listen(document, "touchmove", (ev) => {});
+  html_listen(document, "touchcancel", (ev) => {});
+  html_listen(document, "gamepadconnected", (ev) => {});
+  html_listen(document, "gamepaddisconnected", (ev) => {});
+  requestAnimationFrame($__frame);
 };
 
 const $json = (name) => {
@@ -98,7 +85,7 @@ const $newCamera = () => {
     va: 0,
     fov: 0,
     near: 0,
-    far: 0
+    far: 0,
   };
 };
 const $cameraPosition = (camera, x, y, z) => {
@@ -124,7 +111,7 @@ const $newLight = () => {
     va: 0,
     color: 0,
     ambient0: 0,
-    ambient1: 0
+    ambient1: 0,
   };
 };
 const $lightDirection = (light, ha, va) => {
@@ -150,7 +137,7 @@ const $newMesh = () => {
     va: 0,
     f0: [1, 1, 1, 1],
     f1: [1, 0, 0, 0],
-    f2: [0, 0, 0, 0]
+    f2: [0, 0, 0, 0],
   };
 };
 const $meshPosition = (mesh, x, y, z) => {
@@ -240,8 +227,12 @@ const $writePack = (pack) => {
   const device = $$.gpu.device;
 
   const index = gpu.indexOfPack;
-  device.queue.writeBuffer(gpu.cbuffer[0], gpu.indexOfPack * __strideOfPack, pack);
-  gpu.indexOfPack += (pack.length / 4);
+  device.queue.writeBuffer(
+    gpu.cbuffer[0],
+    gpu.indexOfPack * __strideOfPack,
+    pack,
+  );
+  gpu.indexOfPack += pack.length / 4;
   return index;
 };
 const $writeSlot = (camera, light) => {
@@ -256,7 +247,11 @@ const $writeDrawSlot = (lst) => {
   const device = $$.gpu.device;
 
   const index = gpu.indexOfDrawSlot;
-  device.queue.writeBuffer(gpu.cbuffer[2], gpu.indexOfDrawSlot * __strideOfDrawSlot, new Uint32Array(lst));
+  device.queue.writeBuffer(
+    gpu.cbuffer[2],
+    gpu.indexOfDrawSlot * __strideOfDrawSlot,
+    new Uint32Array(lst),
+  );
   gpu.indexOfDrawSlot += lst.length;
   return index;
 };
@@ -268,12 +263,16 @@ const $writeDrawArgs = (id, count) => {
   const icount = gltf.input[id] ? gltf.input[id].count : 0;
 
   const args = new Uint32Array(__strideOfDrawArgs / 4);
-  args[0] = icount;  // indexCount
-  args[1] = count;   // instanceCount
-  args[2] = 0;       // firstIndex
-  args[3] = 0;       // baseVertex
-  args[4] = 0;       // firstInstance, need "indirect-first-instance"
-  device.queue.writeBuffer(gpu.cbuffer[3], gpu.indexOfDrawArgs * __strideOfDrawArgs, args);
+  args[0] = icount; // indexCount
+  args[1] = count; // instanceCount
+  args[2] = 0; // firstIndex
+  args[3] = 0; // baseVertex
+  args[4] = 0; // firstInstance, need "indirect-first-instance"
+  device.queue.writeBuffer(
+    gpu.cbuffer[3],
+    gpu.indexOfDrawArgs * __strideOfDrawArgs,
+    args,
+  );
 
   const index = gpu.indexOfDrawArgs;
   gpu.indexOfDrawArgs += 1;
@@ -285,7 +284,7 @@ const $draw = (id, slot, args) => {
   gpu.pass3d.push({
     id: id,
     slot: slot,
-    args: args
+    args: args,
   });
 };
 

@@ -100,7 +100,7 @@ fn BRDF(N : vec3<f32>, L : vec3<f32>, V : vec3<f32>, baseColor : vec3<f32>, meta
     var H = normalize(V + L);
     var NdH = saturate(dot(N, H));
     var VdH = saturate(dot(V, H));
-    
+
     var D = D_GGX(NdH, roughness);
     var G = G_SchlicksmithGGX(NdL, NdV, roughness);
     var F = F_Schlick(VdH, baseColor, metallic);
