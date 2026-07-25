@@ -2,7 +2,7 @@
 const $__onload = () => {
   $$.data.loading += 1;
   (async () => {
-    const path = "app.json";
+    const path = "ar0.json";
     const res = await fetch(path);
     const json = await res.json();
 

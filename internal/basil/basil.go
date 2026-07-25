@@ -67,19 +67,19 @@ func (p *Basil) Clean() error {
 }
 
 func (p *Basil) Build() error {
-	if err := p.makeAppJs(); err != nil {
+	if err := p.buildScript(); err != nil {
 		return err
 	}
-	if err := p.makeAppJSON(); err != nil {
+	if err := p.buildArchive(); err != nil {
 		return err
 	}
-	if err := p.makeStyleCss(); err != nil {
+	if err := p.buildStyleCss(); err != nil {
 		return err
 	}
-	if err := p.makeIndexHtml(); err != nil {
+	if err := p.buildIndexHtml(); err != nil {
 		return err
 	}
-	if err := p.makeExtern(); err != nil {
+	if err := p.buildExtern(); err != nil {
 		return err
 	}
 	if err := p.writeFiles(); err != nil {

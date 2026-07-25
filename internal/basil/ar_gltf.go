@@ -8,19 +8,19 @@ import (
 	"github.com/x448/float16"
 )
 
-type AppGLTF struct {
-	Buffer  []*AppGLTFBuffer        `json:"buffer,omitempty"`
-	Texture []*AppGLTFTexture       `json:"texture,omitempty"`
-	Input   []*AppGLTFInput         `json:"input,omitempty"`
-	Mesh    map[string]*AppGLTFMesh `json:"mesh,omitempty"`
+type ArGLTF struct {
+	Buffer  []*ArGLTFBuffer        `json:"buffer,omitempty"`
+	Texture []*ArGLTFTexture       `json:"texture,omitempty"`
+	Input   []*ArGLTFInput         `json:"input,omitempty"`
+	Mesh    map[string]*ArGLTFMesh `json:"mesh,omitempty"`
 }
-type AppGLTFBuffer struct {
+type ArGLTFBuffer struct {
 	Embed int `json:"embed,omitempty"`
 }
-type AppGLTFTexture struct {
+type ArGLTFTexture struct {
 	Embed int `json:"embed,omitempty"`
 }
-type AppGLTFInput struct {
+type ArGLTFInput struct {
 	Count int `json:"count"`
 	Hint  int `json:"hint"`
 
@@ -41,7 +41,7 @@ type AppGLTFInput struct {
 	Texture1 int       `json:"texture1,omitempty"` // ParameterTexture(OcclusionMetallicRoughness)
 	Texture2 int       `json:"texture2,omitempty"` // NormalTexture
 }
-type AppGLTFMesh struct {
+type ArGLTFMesh struct {
 	Input []int `json:"input"`
 }
 
@@ -83,21 +83,21 @@ func toFloat16Array(data []float32) []uint16 {
 	return data2
 }
 
-func (p *App) buildGLTF(src *Source) error {
-	p.GLTF.Mesh = make(map[string]*AppGLTFMesh)
+func (p *Archive) buildGLTF(src *Source) error {
+	p.GLTF.Mesh = make(map[string]*ArGLTFMesh)
 	for _, doc := range src.GLTF {
 		for _, mesh := range doc.Meshes {
-			var appMesh AppGLTFMesh
-			p.GLTF.Mesh[mesh.Name] = &appMesh
+			var arMesh ArGLTFMesh
+			p.GLTF.Mesh[mesh.Name] = &arMesh
 			for _, prim := range mesh.Primitives {
 				// input
-				var appInput AppGLTFInput
-				p.GLTF.Input = append(p.GLTF.Input, &appInput)
-				appMesh.Input = append(appMesh.Input, len(p.GLTF.Input)-1)
+				var arInput ArGLTFInput
+				p.GLTF.Input = append(p.GLTF.Input, &arInput)
+				arMesh.Input = append(arMesh.Input, len(p.GLTF.Input)-1)
 
 				// buffer
-				var appBuffer AppGLTFBuffer
-				p.GLTF.Buffer = append(p.GLTF.Buffer, &appBuffer)
+				var arBuffer ArGLTFBuffer
+				p.GLTF.Buffer = append(p.GLTF.Buffer, &arBuffer)
 				bufferIndex := len(p.GLTF.Buffer) - 1
 
 				// convert vertex
@@ -112,8 +112,8 @@ func (p *App) buildGLTF(src *Source) error {
 						return err
 					}
 					size := vb.Len() - offset
-					appInput.Hint |= HasPosition
-					appInput.VertexBuffer0 = []int{bufferIndex, offset, size}
+					arInput.Hint |= HasPosition
+					arInput.VertexBuffer0 = []int{bufferIndex, offset, size}
 				}
 				if attr, ok := prim.Attributes["NORMAL"]; ok {
 					offset := vb.Len()
@@ -125,8 +125,8 @@ func (p *App) buildGLTF(src *Source) error {
 						return err
 					}
 					size := vb.Len() - offset
-					appInput.Hint |= HasNormal
-					appInput.VertexBuffer1 = []int{bufferIndex, offset, size}
+					arInput.Hint |= HasNormal
+					arInput.VertexBuffer1 = []int{bufferIndex, offset, size}
 				}
 				if prim.Indices != nil {
 					offset := vb.Len()
@@ -135,25 +135,25 @@ func (p *App) buildGLTF(src *Source) error {
 						return err
 					}
 					size := vb.Len() - offset
-					appInput.IndexBuffer = []int{bufferIndex, offset, size}
-					appInput.Count = len(ib) / 2
+					arInput.IndexBuffer = []int{bufferIndex, offset, size}
+					arInput.Count = len(ib) / 2
 				}
 
 				var err error
-				appBuffer.Embed, err = p.addEmbedBase64(vb.Bytes(), true)
+				arBuffer.Embed, err = p.addEmbedBase64(vb.Bytes(), true)
 				if err != nil {
 					return err
 				}
 
 				// Material
 				material := doc.Materials[*prim.Material]
-				appInput.Factor0 = []float64{
+				arInput.Factor0 = []float64{
 					float64(material.PBRMetallicRoughness.BaseColorFactor[0]),
 					float64(material.PBRMetallicRoughness.BaseColorFactor[1]),
 					float64(material.PBRMetallicRoughness.BaseColorFactor[2]),
 					float64(material.PBRMetallicRoughness.BaseColorFactor[3]),
 				}
-				appInput.Factor1 = []float64{
+				arInput.Factor1 = []float64{
 					float64(1), // Occlusion
 					float64(*material.PBRMetallicRoughness.MetallicFactor),
 					float64(*material.PBRMetallicRoughness.RoughnessFactor),

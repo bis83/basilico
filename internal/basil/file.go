@@ -1,10 +1,14 @@
 package basil
 
 import (
+	"embed"
 	"io"
 	"os"
 	"path/filepath"
 )
+
+//go:embed web
+var fs embed.FS
 
 type File struct {
 	Name string

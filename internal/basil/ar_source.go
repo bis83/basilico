@@ -14,17 +14,17 @@ type Source struct {
 	JSON map[string]*interface{}
 }
 
-func (p *Source) read(baseDir string) error {
-	if err := p.readGLTF(baseDir); err != nil {
+func (p *Source) load(baseDir string) error {
+	if err := p.loadGLTF(baseDir); err != nil {
 		return err
 	}
-	if err := p.readJSON(baseDir); err != nil {
+	if err := p.loadJSON(baseDir); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (p *Source) readGLTF(baseDir string) error {
+func (p *Source) loadGLTF(baseDir string) error {
 	dir := filepath.Join(baseDir, "gltf")
 	if !Exists(dir) {
 		return nil
@@ -55,7 +55,7 @@ func (p *Source) readGLTF(baseDir string) error {
 	return nil
 }
 
-func (p *Source) readJSON(baseDir string) error {
+func (p *Source) loadJSON(baseDir string) error {
 	dir := filepath.Join(baseDir, "json")
 	if !Exists(dir) {
 		return nil

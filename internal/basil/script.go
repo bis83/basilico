@@ -9,6 +9,21 @@ import (
 	esbuild "github.com/evanw/esbuild/pkg/api"
 )
 
+var scriptCore = []string{
+	"web/js/core/html.js",
+	"web/js/core/localstorage.js",
+	"web/js/core/alias.js",
+}
+
+var scriptEx = []string{
+	"web/js/ex/math.js",
+	"web/js/ex/onload.js",
+	"web/js/ex/onload_decode.js",
+	"web/js/ex/gpu.js",
+	"web/js/ex/audio.js",
+	"web/js/ex/api.js",
+}
+
 func (p *Basil) loadScript() error {
 	for _, path := range scriptCore {
 		data, err := fs.ReadFile(path)
@@ -43,7 +58,7 @@ func (p *Basil) loadAppScript() error {
 	return nil
 }
 
-func (p *Basil) bundleAppJs() error {
+func (p *Basil) bundleScript() error {
 	// esbuild
 	result := esbuild.Transform(p.script.String(), esbuild.TransformOptions{
 		MinifyWhitespace:  p.config.Minify,
@@ -60,14 +75,14 @@ func (p *Basil) bundleAppJs() error {
 	return nil
 }
 
-func (p *Basil) makeAppJs() error {
+func (p *Basil) buildScript() error {
 	if err := p.loadScript(); err != nil {
 		return err
 	}
 	if err := p.loadAppScript(); err != nil {
 		return err
 	}
-	if err := p.bundleAppJs(); err != nil {
+	if err := p.bundleScript(); err != nil {
 		return err
 	}
 	return nil

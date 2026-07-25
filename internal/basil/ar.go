@@ -7,14 +7,14 @@ import (
 	"encoding/json"
 )
 
-type App struct {
+type Archive struct {
 	Embed []*string               `json:"embed"`
 	JSON  map[string]*interface{} `json:"json"`
-	WGSL  AppWGSL                 `json:"wgsl"`
-	GLTF  AppGLTF                 `json:"gltf"`
+	WGSL  ArWGSL                  `json:"wgsl"`
+	GLTF  ArGLTF                  `json:"gltf"`
 }
 
-func (p *App) addEmbed(buf string) int {
+func (p *Archive) addEmbed(buf string) int {
 	for i, v := range p.Embed {
 		if v != nil && *v == buf {
 			return i
@@ -25,7 +25,7 @@ func (p *App) addEmbed(buf string) int {
 	return i
 }
 
-func (p *App) addEmbedBase64(buf []byte, compress bool) (int, error) {
+func (p *Archive) addEmbedBase64(buf []byte, compress bool) (int, error) {
 	if compress {
 		var b bytes.Buffer
 		w, err := flate.NewWriter(&b, flate.BestCompression)
@@ -44,7 +44,7 @@ func (p *App) addEmbedBase64(buf []byte, compress bool) (int, error) {
 	}
 }
 
-func (p *App) build(src *Source) error {
+func (p *Archive) build(src *Source) error {
 	p.Embed = append(p.Embed, nil)
 	if err := p.buildWGSL(); err != nil {
 		return err
@@ -58,7 +58,7 @@ func (p *App) build(src *Source) error {
 	return nil
 }
 
-func (p *App) buildJSON(src *Source) error {
+func (p *Archive) buildJSON(src *Source) error {
 	p.JSON = src.JSON
 	return nil
 }
@@ -79,26 +79,25 @@ func marshalJSON(v interface{}, minify bool) ([]byte, error) {
 	}
 }
 
-func (p *Basil) makeAppJSON() error {
+func (p *Basil) buildArchive() error {
 	if p.config.CoreOnly {
 		return nil
 	}
 
 	var src Source
-	if err := src.read(p.BaseDir()); err != nil {
+	if err := src.load(p.BaseDir()); err != nil {
 		return err
 	}
 
-	// generate app.json
-	var app App
-	if err := app.build(&src); err != nil {
+	var arc Archive
+	if err := arc.build(&src); err != nil {
 		return err
 	}
-	data, err := marshalJSON(app, p.Minify())
+	data, err := marshalJSON(arc, p.Minify())
 	if err != nil {
 		return err
 	}
-	p.AddFile("app.json", data)
+	p.AddFile("ar0.json", data)
 
 	return nil
 }

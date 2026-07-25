@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-func (p *Basil) makeStyleCss() error {
+func (p *Basil) buildStyleCss() error {
 	fr, err := fs.ReadFile("web/style.css")
 	if err != nil {
 		return err
@@ -17,7 +17,7 @@ func (p *Basil) makeStyleCss() error {
 	return nil
 }
 
-func (p *Basil) makeIndexHtml() error {
+func (p *Basil) buildIndexHtml() error {
 	var b bytes.Buffer
 
 	fr, err := fs.ReadFile("web/index.html")
@@ -33,7 +33,7 @@ func (p *Basil) makeIndexHtml() error {
 	return nil
 }
 
-func (p *Basil) makeExtern() error {
+func (p *Basil) buildExtern() error {
 	for _, rsc := range p.config.Extern {
 		data, err := os.ReadFile(filepath.Join(p.baseDir, rsc))
 		if err != nil {
