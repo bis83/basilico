@@ -1,24 +1,8 @@
-package basil3d
+package basil
 
 import (
 	"bytes"
 )
-
-var wgsl = [][]string{
-	{
-		"web/wgsl/layout0.wgsl",
-		"web/wgsl/module0.wgsl",
-	},
-	{
-		"web/wgsl/layout0.wgsl",
-		"web/wgsl/layout1.wgsl",
-		"web/wgsl/module1.wgsl",
-	},
-	{
-		"web/wgsl/layout0.wgsl",
-		"web/wgsl/module2.wgsl",
-	},
-}
 
 type AppWGSL struct {
 	Shader []*AppWGSLShader `json:"shader,omitempty"`

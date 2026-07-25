@@ -11,9 +11,7 @@
 </head>
 
 <body>
-  {{range $v := .ExternScript}}
-  <script src="{{$v}}"></script>
-  {{end}}
+  {{range $v := .Script}}<script src="{{$v}}"></script>{{end}}
   <script src="app.js"></script>
   <canvas id="canvas"></canvas>
 </body>

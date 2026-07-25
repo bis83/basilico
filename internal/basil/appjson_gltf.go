@@ -1,4 +1,4 @@
-package basil3d
+package basil
 
 import (
 	"bytes"

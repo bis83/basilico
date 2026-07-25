@@ -1,4 +1,4 @@
-package basil3d
+package basil
 
 import (
 	"encoding/json"
@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 
-	basil "github.com/bis83/basilico/internal/basil"
 	"github.com/qmuntal/gltf"
 )
 
@@ -27,7 +26,7 @@ func (p *Source) read(baseDir string) error {
 
 func (p *Source) readGLTF(baseDir string) error {
 	dir := filepath.Join(baseDir, "gltf")
-	if !basil.Exists(dir) {
+	if !Exists(dir) {
 		return nil
 	}
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
@@ -58,7 +57,7 @@ func (p *Source) readGLTF(baseDir string) error {
 
 func (p *Source) readJSON(baseDir string) error {
 	dir := filepath.Join(baseDir, "json")
-	if !basil.Exists(dir) {
+	if !Exists(dir) {
 		return nil
 	}
 

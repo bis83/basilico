@@ -6,10 +6,6 @@ import (
 	"path/filepath"
 )
 
-type Middleware interface {
-	PreBuild(bsl *Basil) error
-}
-
 type Basil struct {
 	baseDir string
 	config  Config
@@ -36,10 +32,6 @@ func (p *Basil) DistDir() string {
 
 func (p *Basil) Minify() bool {
 	return p.config.Minify
-}
-
-func (p *Basil) Middlewares() []string {
-	return p.config.Middleware
 }
 
 func (p *Basil) SetDir(path string) error {
@@ -74,19 +66,11 @@ func (p *Basil) Clean() error {
 	return nil
 }
 
-func (p *Basil) Build(middleware []Middleware) error {
-	if err := p.loadCoreScript(); err != nil {
-		return err
-	}
-	for _, mdl := range middleware {
-		if err := mdl.PreBuild(p); err != nil {
-			return err
-		}
-	}
-	if err := p.loadAppScript(); err != nil {
-		return err
-	}
+func (p *Basil) Build() error {
 	if err := p.makeAppJs(); err != nil {
+		return err
+	}
+	if err := p.makeAppJSON(); err != nil {
 		return err
 	}
 	if err := p.makeStyleCss(); err != nil {
@@ -95,9 +79,16 @@ func (p *Basil) Build(middleware []Middleware) error {
 	if err := p.makeIndexHtml(); err != nil {
 		return err
 	}
-	if err := p.makeResource(); err != nil {
+	if err := p.makeExtern(); err != nil {
 		return err
 	}
+	if err := p.writeFiles(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *Basil) writeFiles() error {
 	if err := MakeDir(p.DistDir()); err != nil {
 		return err
 	}

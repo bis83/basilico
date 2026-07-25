@@ -13,7 +13,7 @@ func logError(err error) {
 
 func main() {
 	path := "."
-	args := []string{"clean", "build", "serve"}
+	args := []string{}
 	if len(os.Args) > 1 {
 		path = os.Args[1]
 	}

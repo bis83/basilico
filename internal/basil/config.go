@@ -7,14 +7,14 @@ import (
 )
 
 type Config struct {
-	Dist         *string  `json:"dist"`
-	Title        string   `json:"title"`
-	ExternScript []string `json:"extern-script"`
-	Minify       bool     `json:"minify"`
+	Dist     *string  `json:"dist"`
+	Title    string   `json:"title"`
+	Script   []string `json:"script"`
+	Minify   bool     `json:"minify"`
+	CoreOnly bool     `json:"coreonly"`
 
-	Middleware []string `json:"middleware"`
-	Script     []string `json:"script"`
-	Resource   []string `json:"resource"`
+	Use    []string `json:"use"`
+	Extern []string `json:"extern"`
 }
 
 func (p *Config) Read(path string) error {

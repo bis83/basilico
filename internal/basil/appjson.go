@@ -1,9 +1,10 @@
-package basil3d
+package basil
 
 import (
 	"bytes"
 	"compress/flate"
 	"encoding/base64"
+	"encoding/json"
 )
 
 type App struct {
@@ -59,5 +60,45 @@ func (p *App) build(src *Source) error {
 
 func (p *App) buildJSON(src *Source) error {
 	p.JSON = src.JSON
+	return nil
+}
+
+func marshalJSON(v interface{}, minify bool) ([]byte, error) {
+	if minify {
+		data, err := json.Marshal(v)
+		if err != nil {
+			return nil, err
+		}
+		return data, nil
+	} else {
+		data, err := json.MarshalIndent(v, "", "    ")
+		if err != nil {
+			return nil, err
+		}
+		return data, nil
+	}
+}
+
+func (p *Basil) makeAppJSON() error {
+	if p.config.CoreOnly {
+		return nil
+	}
+
+	var src Source
+	if err := src.read(p.BaseDir()); err != nil {
+		return err
+	}
+
+	// generate app.json
+	var app App
+	if err := app.build(&src); err != nil {
+		return err
+	}
+	data, err := marshalJSON(app, p.Minify())
+	if err != nil {
+		return err
+	}
+	p.AddFile("app.json", data)
+
 	return nil
 }

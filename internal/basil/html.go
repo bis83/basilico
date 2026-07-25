@@ -3,6 +3,8 @@ package basil
 import (
 	"bytes"
 	"html/template"
+	"os"
+	"path/filepath"
 )
 
 func (p *Basil) makeStyleCss() error {
@@ -28,5 +30,16 @@ func (p *Basil) makeIndexHtml() error {
 	}
 	p.AddFile("index.html", b.Bytes())
 
+	return nil
+}
+
+func (p *Basil) makeExtern() error {
+	for _, rsc := range p.config.Extern {
+		data, err := os.ReadFile(filepath.Join(p.baseDir, rsc))
+		if err != nil {
+			return err
+		}
+		p.AddFile(rsc, data)
+	}
 	return nil
 }
