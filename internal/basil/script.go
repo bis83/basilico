@@ -9,35 +9,24 @@ import (
 	esbuild "github.com/evanw/esbuild/pkg/api"
 )
 
-var scriptCore = []string{
-	"web/js/core/html.js",
-	"web/js/core/localstorage.js",
-	"web/js/core/alias.js",
+var script = map[string][]string{
+	"core": {
+		"web/js/core/html.js",
+		"web/js/core/localstorage.js",
+		"web/js/core/alias.js",
+	},
+	"ex": {
+		"web/js/ex/math.js",
+		"web/js/ex/onload.js",
+		"web/js/ex/onload_decode.js",
+		"web/js/ex/gpu.js",
+		"web/js/ex/audio.js",
+		"web/js/ex/api.js",
+	},
 }
 
-var scriptEx = []string{
-	"web/js/ex/math.js",
-	"web/js/ex/onload.js",
-	"web/js/ex/onload_decode.js",
-	"web/js/ex/gpu.js",
-	"web/js/ex/audio.js",
-	"web/js/ex/api.js",
-}
-
-func (p *Basil) loadScript() error {
-	for _, path := range scriptCore {
-		data, err := fs.ReadFile(path)
-		if err != nil {
-			return err
-		}
-		p.AddScript(data)
-	}
-	if p.config.CoreOnly {
-		return nil
-	}
-
-	// extera core
-	for _, path := range scriptEx {
+func (p *Basil) loadEmbedScript(key string) error {
+	for _, path := range script[key] {
 		data, err := fs.ReadFile(path)
 		if err != nil {
 			return err
@@ -47,7 +36,22 @@ func (p *Basil) loadScript() error {
 	return nil
 }
 
-func (p *Basil) loadAppScript() error {
+func (p *Basil) loadScript() error {
+	if err := p.loadEmbedScript("core"); err != nil {
+		return nil
+	}
+	if p.config.CoreOnly {
+		return nil
+	}
+
+	// load extra script
+	if err := p.loadEmbedScript("ex"); err != nil {
+		return nil
+	}
+	return nil
+}
+
+func (p *Basil) loadUserScript() error {
 	for _, path := range p.config.Use {
 		data, err := os.ReadFile(filepath.Join(p.baseDir, path))
 		if err != nil {
@@ -79,7 +83,7 @@ func (p *Basil) buildScript() error {
 	if err := p.loadScript(); err != nil {
 		return err
 	}
-	if err := p.loadAppScript(); err != nil {
+	if err := p.loadUserScript(); err != nil {
 		return err
 	}
 	if err := p.bundleScript(); err != nil {

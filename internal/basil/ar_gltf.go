@@ -83,82 +83,89 @@ func toFloat16Array(data []float32) []uint16 {
 	return data2
 }
 
+func (p *Archive) buildGLTFMesh(doc *gltf.Document, mesh *gltf.Mesh) error {
+	var arMesh ArGLTFMesh
+	p.GLTF.Mesh[mesh.Name] = &arMesh
+	for _, prim := range mesh.Primitives {
+		// input
+		var arInput ArGLTFInput
+		p.GLTF.Input = append(p.GLTF.Input, &arInput)
+		arMesh.Input = append(arMesh.Input, len(p.GLTF.Input)-1)
+
+		// buffer
+		var arBuffer ArGLTFBuffer
+		p.GLTF.Buffer = append(p.GLTF.Buffer, &arBuffer)
+		bufferIndex := len(p.GLTF.Buffer) - 1
+
+		// convert vertex
+		var vb bytes.Buffer
+		if attr, ok := prim.Attributes["POSITION"]; ok {
+			offset := vb.Len()
+			buf, err := toFloat32Array(getBytes(doc, attr))
+			if err != nil {
+				return err
+			}
+			if err := binary.Write(&vb, binary.LittleEndian, buf); err != nil {
+				return err
+			}
+			size := vb.Len() - offset
+			arInput.Hint |= HasPosition
+			arInput.VertexBuffer0 = []int{bufferIndex, offset, size}
+		}
+		if attr, ok := prim.Attributes["NORMAL"]; ok {
+			offset := vb.Len()
+			buf, err := toFloat32Array(getBytes(doc, attr))
+			if err != nil {
+				return err
+			}
+			if err := binary.Write(&vb, binary.LittleEndian, buf); err != nil {
+				return err
+			}
+			size := vb.Len() - offset
+			arInput.Hint |= HasNormal
+			arInput.VertexBuffer1 = []int{bufferIndex, offset, size}
+		}
+		if prim.Indices != nil {
+			offset := vb.Len()
+			ib := getBytes(doc, *prim.Indices)
+			if err := binary.Write(&vb, binary.LittleEndian, ib); err != nil {
+				return err
+			}
+			size := vb.Len() - offset
+			arInput.IndexBuffer = []int{bufferIndex, offset, size}
+			arInput.Count = len(ib) / 2
+		}
+
+		var err error
+		arBuffer.Embed, err = p.addEmbedBase64(vb.Bytes(), true)
+		if err != nil {
+			return err
+		}
+
+		// Material
+		material := doc.Materials[*prim.Material]
+		arInput.Factor0 = []float64{
+			float64(material.PBRMetallicRoughness.BaseColorFactor[0]),
+			float64(material.PBRMetallicRoughness.BaseColorFactor[1]),
+			float64(material.PBRMetallicRoughness.BaseColorFactor[2]),
+			float64(material.PBRMetallicRoughness.BaseColorFactor[3]),
+		}
+		arInput.Factor1 = []float64{
+			float64(1), // Occlusion
+			float64(*material.PBRMetallicRoughness.MetallicFactor),
+			float64(*material.PBRMetallicRoughness.RoughnessFactor),
+			float64(0),
+		}
+	}
+	return nil
+}
+
 func (p *Archive) buildGLTF(src *Source) error {
 	p.GLTF.Mesh = make(map[string]*ArGLTFMesh)
 	for _, doc := range src.GLTF {
 		for _, mesh := range doc.Meshes {
-			var arMesh ArGLTFMesh
-			p.GLTF.Mesh[mesh.Name] = &arMesh
-			for _, prim := range mesh.Primitives {
-				// input
-				var arInput ArGLTFInput
-				p.GLTF.Input = append(p.GLTF.Input, &arInput)
-				arMesh.Input = append(arMesh.Input, len(p.GLTF.Input)-1)
-
-				// buffer
-				var arBuffer ArGLTFBuffer
-				p.GLTF.Buffer = append(p.GLTF.Buffer, &arBuffer)
-				bufferIndex := len(p.GLTF.Buffer) - 1
-
-				// convert vertex
-				var vb bytes.Buffer
-				if attr, ok := prim.Attributes["POSITION"]; ok {
-					offset := vb.Len()
-					buf, err := toFloat32Array(getBytes(doc, attr))
-					if err != nil {
-						return err
-					}
-					if err := binary.Write(&vb, binary.LittleEndian, buf); err != nil {
-						return err
-					}
-					size := vb.Len() - offset
-					arInput.Hint |= HasPosition
-					arInput.VertexBuffer0 = []int{bufferIndex, offset, size}
-				}
-				if attr, ok := prim.Attributes["NORMAL"]; ok {
-					offset := vb.Len()
-					buf, err := toFloat32Array(getBytes(doc, attr))
-					if err != nil {
-						return err
-					}
-					if err := binary.Write(&vb, binary.LittleEndian, buf); err != nil {
-						return err
-					}
-					size := vb.Len() - offset
-					arInput.Hint |= HasNormal
-					arInput.VertexBuffer1 = []int{bufferIndex, offset, size}
-				}
-				if prim.Indices != nil {
-					offset := vb.Len()
-					ib := getBytes(doc, *prim.Indices)
-					if err := binary.Write(&vb, binary.LittleEndian, ib); err != nil {
-						return err
-					}
-					size := vb.Len() - offset
-					arInput.IndexBuffer = []int{bufferIndex, offset, size}
-					arInput.Count = len(ib) / 2
-				}
-
-				var err error
-				arBuffer.Embed, err = p.addEmbedBase64(vb.Bytes(), true)
-				if err != nil {
-					return err
-				}
-
-				// Material
-				material := doc.Materials[*prim.Material]
-				arInput.Factor0 = []float64{
-					float64(material.PBRMetallicRoughness.BaseColorFactor[0]),
-					float64(material.PBRMetallicRoughness.BaseColorFactor[1]),
-					float64(material.PBRMetallicRoughness.BaseColorFactor[2]),
-					float64(material.PBRMetallicRoughness.BaseColorFactor[3]),
-				}
-				arInput.Factor1 = []float64{
-					float64(1), // Occlusion
-					float64(*material.PBRMetallicRoughness.MetallicFactor),
-					float64(*material.PBRMetallicRoughness.RoughnessFactor),
-					float64(0),
-				}
+			if err := p.buildGLTFMesh(doc, mesh); err != nil {
+				return err
 			}
 		}
 	}
