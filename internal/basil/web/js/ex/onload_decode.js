@@ -1,9 +1,5 @@
 const $__decodeBufferEmbed = async (str) => {
-  const base64 = window.atob(str);
-  const bytes = new Uint8Array(base64.length);
-  for (let i = 0; i < base64.length; ++i) {
-    bytes[i] = base64.charCodeAt(i);
-  }
+  const bytes = Uint8Array.fromBase64(str);
   const stream = new Blob([bytes])
     .stream()
     .pipeThrough(new DecompressionStream("deflate-raw"));
@@ -12,11 +8,7 @@ const $__decodeBufferEmbed = async (str) => {
 };
 
 const $__decodeShaderEmbed = async (str) => {
-  const base64 = window.atob(str);
-  const bytes = new Uint8Array(base64.length);
-  for (let i = 0; i < base64.length; ++i) {
-    bytes[i] = base64.charCodeAt(i);
-  }
+  const bytes = Uint8Array.fromBase64(str);
   const stream = new Blob([bytes])
     .stream()
     .pipeThrough(new DecompressionStream("deflate-raw"));
