@@ -43,7 +43,7 @@ const $writeDrawArgs = (id, count) => {
   const gpu = __gpu;
   const device = __gpu.device;
 
-  const gltf = $__ar0.gltf;
+  const gltf = $ar[0].gltf;
   const icount = gltf.input[id] ? gltf.input[id].count : 0;
 
   const args = new Uint32Array(__strideOfDrawArgs / 4);

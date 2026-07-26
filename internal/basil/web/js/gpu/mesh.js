@@ -58,7 +58,7 @@ const $packMesh = (mesh) => {
 };
 
 const $meshInput = (name) => {
-  const gltf = $__ar0.gltf;
+  const gltf = $ar[0].gltf;
 
   const mesh = gltf.mesh[name];
   if (!mesh) {

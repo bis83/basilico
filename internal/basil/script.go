@@ -19,30 +19,30 @@ var script = map[string][]string{
 		"web/js/math/math.js",
 	},
 	"ar": {
-		"web/js/ar/onload.js",
+		"web/js/ar/init.js",
 		"web/js/ar/decode.js",
 		"web/js/ar/gltf.js",
 		"web/js/ar/wgsl.js",
 	},
 	"gpu": {
-		"web/js/gpu/device.js",
+		"web/js/gpu/init.js",
 		"web/js/gpu/cbuffer.js",
 		"web/js/gpu/gbuffer.js",
 		"web/js/gpu/mesh.js",
 		"web/js/gpu/camera.js",
 		"web/js/gpu/light.js",
 		"web/js/gpu/draw.js",
-		"web/js/gpu/onpaint.js",
 		"web/js/gpu/pass_gbuffer.js",
 		"web/js/gpu/pass_ssao.js",
 		"web/js/gpu/pass_hdr.js",
 		"web/js/gpu/pass_ldr.js",
 	},
 	"audio": {
-		"web/js/audio/device.js",
+		"web/js/audio/init.js",
 	},
 	"event": {
 		"web/js/event/onload.js",
+		"web/js/event/timer.js",
 	},
 }
 

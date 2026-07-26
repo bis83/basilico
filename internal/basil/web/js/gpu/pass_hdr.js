@@ -1,6 +1,6 @@
 const $__gpuPassHDR = (ce) => {
   const gpu = __gpu;
-  const wgsl = $__ar0.wgsl;
+  const wgsl = $ar[0].wgsl;
 
   const pass = ce.beginRenderPass({
     depthStencilAttachment: {

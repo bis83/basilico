@@ -1,7 +1,7 @@
 const $__gpuPassGBuffer = (ce) => {
   const gpu = __gpu;
-  const wgsl = $__ar0.wgsl;
-  const gltf = $__ar0.gltf;
+  const wgsl = $ar[0].wgsl;
+  const gltf = $ar[0].gltf;
 
   const pass = ce.beginRenderPass({
     depthStencilAttachment: {

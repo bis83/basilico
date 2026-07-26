@@ -1,8 +1,17 @@
-let __dt = 0;
-let __now = 0;
 let __onupdate = () => {};
 
-const $__listenInit = () => {
+const __animationFrame = (time) => {
+  $__timer(time);
+  $__gpuDrawBegin();
+  if ($__arLoadCompleted()) {
+    __onupdate();
+  }
+  $__gpuDrawEnd();
+
+  requestAnimationFrame(__animationFrame);
+};
+
+const __listenEvents = () => {
   html_listen(document.body, "contextmenu", (ev) => {
     ev.preventDefault();
   });
@@ -23,27 +32,12 @@ const $__listenInit = () => {
   html_listen(document, "gamepaddisconnected", (ev) => {});
 };
 
-const $__frame = (time) => {
-  __dt = (time - __now) / 1000;
-  __now = time;
-
-  $__gpuFrameBegin();
-  if ($__onloadDone()) {
-    __onupdate();
-  }
-  $__gpuFrameEnd();
-
-  requestAnimationFrame($__frame);
-};
-
-const $onload = async () => {
-  await $__gpuInit();
-  $__audioInit();
-  $__listenInit();
-  $__onload();
-  requestAnimationFrame($__frame);
-};
-
-const $dt = () => {
-  return __dt;
-};
+html_listen(window, "load", () => {
+  (async () => {
+    await $__gpuInit();
+    $__audioInit();
+    $__arInit();
+    __listenEvents();
+    requestAnimationFrame(__animationFrame);
+  })();
+});

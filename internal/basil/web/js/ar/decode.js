@@ -7,7 +7,7 @@ const $__decodeBufferEmbed = async (str) => {
   return new Uint8Array(arrayBuffer);
 };
 
-const $__decodeShaderEmbed = async (str) => {
+const $__decodeTextEmbed = async (str) => {
   const bytes = Uint8Array.fromBase64(str);
   const stream = new Blob([bytes])
     .stream()

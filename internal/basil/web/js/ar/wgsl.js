@@ -4,7 +4,7 @@ const $__onloadWGSL = async (wgsl, embed) => {
   if (wgsl.shader) {
     for (let i = 0; i < wgsl.shader.length; ++i) {
       const data = wgsl.shader[i];
-      const code = await $__decodeShaderEmbed(embed[data.embed]);
+      const code = await $__decodeTextEmbed(embed[data.embed]);
       const shader = device.createShaderModule({
         code: code,
       });
