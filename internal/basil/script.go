@@ -15,13 +15,34 @@ var script = map[string][]string{
 		"web/js/core/localstorage.js",
 		"web/js/core/alias.js",
 	},
-	"ex": {
-		"web/js/ex/math.js",
-		"web/js/ex/onload.js",
-		"web/js/ex/onload_decode.js",
-		"web/js/ex/gpu.js",
-		"web/js/ex/audio.js",
-		"web/js/ex/api.js",
+	"math": {
+		"web/js/math/math.js",
+	},
+	"ar": {
+		"web/js/ar/onload.js",
+		"web/js/ar/decode.js",
+		"web/js/ar/gltf.js",
+		"web/js/ar/wgsl.js",
+	},
+	"gpu": {
+		"web/js/gpu/device.js",
+		"web/js/gpu/cbuffer.js",
+		"web/js/gpu/gbuffer.js",
+		"web/js/gpu/mesh.js",
+		"web/js/gpu/camera.js",
+		"web/js/gpu/light.js",
+		"web/js/gpu/draw.js",
+		"web/js/gpu/onpaint.js",
+		"web/js/gpu/pass_gbuffer.js",
+		"web/js/gpu/pass_ssao.js",
+		"web/js/gpu/pass_hdr.js",
+		"web/js/gpu/pass_ldr.js",
+	},
+	"audio": {
+		"web/js/audio/device.js",
+	},
+	"event": {
+		"web/js/event/onload.js",
 	},
 }
 
@@ -44,9 +65,10 @@ func (p *Basil) loadScript() error {
 		return nil
 	}
 
-	// load extra script
-	if err := p.loadEmbedScript("ex"); err != nil {
-		return nil
+	for _, key := range []string{"math", "ar", "gpu", "audio", "event"} {
+		if err := p.loadEmbedScript(key); err != nil {
+			return nil
+		}
 	}
 	return nil
 }

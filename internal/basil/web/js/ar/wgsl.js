@@ -1,30 +1,5 @@
-const $__onload = () => {
-  $$.data.loading += 1;
-  (async () => {
-    const path = "ar0.json";
-    const res = await fetch(path);
-    const json = await res.json();
-
-    const data = $$.data;
-    Object.assign(data, json);
-    if (data.wgsl) {
-      await $__onloadWGSL(data.wgsl, data.embed);
-    }
-    if (data.gltf) {
-      await $__onloadGLTF(data.gltf, data.embed);
-    }
-
-    delete data.embed;
-    data.loading -= 1;
-  })();
-};
-
-const $__onloadDone = () => {
-  return $$.data.loading <= 0;
-};
-
 const $__onloadWGSL = async (wgsl, embed) => {
-  const device = $$.gpu.device;
+  const device = __gpu.device;
 
   if (wgsl.shader) {
     for (let i = 0; i < wgsl.shader.length; ++i) {
@@ -37,8 +12,8 @@ const $__onloadWGSL = async (wgsl, embed) => {
     }
   }
 
-  const pipelineLayout = $$.gpu.pipelineLayout;
-  const canvasFormat = $$.gpu.canvasFormat;
+  const pipelineLayout = __gpu.pipelineLayout;
+  const canvasFormat = __gpu.canvasFormat;
 
   wgsl.pipeline = [];
   wgsl.pipeline[0] = device.createRenderPipeline({
@@ -239,26 +214,4 @@ const $__onloadWGSL = async (wgsl, embed) => {
       frontFace: "cw",
     },
   });
-};
-
-const $__onloadGLTF = async (gltf, embed) => {
-  const device = $$.gpu.device;
-
-  if (gltf.buffer) {
-    for (let i = 0; i < gltf.buffer.length; ++i) {
-      const data = gltf.buffer[i];
-      const binary = await $__decodeBufferEmbed(embed[data.embed]);
-      const buffer = device.createBuffer({
-        size: binary.length,
-        usage: GPUBufferUsage.VERTEX | GPUBufferUsage.INDEX,
-        mappedAtCreation: true,
-      });
-      const view = new DataView(buffer.getMappedRange());
-      for (let i = 0; i < binary.length; ++i) {
-        view.setUint8(i, binary[i]);
-      }
-      buffer.unmap();
-      gltf.buffer[i] = buffer;
-    }
-  }
 };
