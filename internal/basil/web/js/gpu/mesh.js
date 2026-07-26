@@ -35,7 +35,7 @@ const $meshOcclusion = (mesh, v) => {
 
 const $meshMetallicRoughness = (mesh, metallic, roughness) => {
   mesh.f1[1] = metallic;
-  mesh.f1[2] = raoughness;
+  mesh.f1[2] = roughness;
 };
 
 const $meshEmissive = (mesh, r, g, b, a) => {
